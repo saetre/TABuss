@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:orientation="vertical"
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent">
+    
+    <TextView  
+    android:id="@+id/myLocationText"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text=""
+    /> 
+    
+  
+    <RelativeLayout
+	android:id="@+id/widget61"
+	android:layout_width="264px"
+	android:layout_height="59px"
+	android:layout_x="17px"
+	android:layout_y="50px"
+	>
+	<Button
+	android:id="@+id/Button"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:text="Send!"
+	android:layout_alignTop="@+id/eText"
+	android:layout_alignParentRight="true"
+	>
+	</Button>
+	<EditText
+	android:id="@+id/eText"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:hint="Hvor vil du dra?"
+	android:textSize="18sp"
+	android:layout_centerVertical="true"
+	android:layout_alignParentLeft="true"
+	>
+	</EditText>
+	
+	</RelativeLayout>
+    <com.google.android.maps.MapView 
+        android:id="@+id/mapView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:enabled="true"
+        android:clickable="true"
+        android:apiKey="0dCUiNqFL6Gm7zlu9-mmK_yI7tIC4UBM4UoYO0g"
+        />
+        
+ 
+    <LinearLayout android:id="@+id/zoom" 
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content" 
+        android:layout_alignParentBottom="true" 
+        android:layout_centerHorizontal="true" 
+        /> 
+ 
+</LinearLayout>
