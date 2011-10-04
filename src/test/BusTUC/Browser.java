@@ -258,29 +258,37 @@ public class Browser
         BusStops wantedBusStop = new BusStops(); 
         wantedBusStop.setLine(9999);
         if (j_a != null){
-            for (int i = 0; i < j_a.length(); i++){
-                
-                BusStops t = new BusStops();
-                t.line = j_a.getJSONObject(i).getInt("codAzLinea");
-                SimpleDateFormat formatter = new SimpleDateFormat("d/M/y H:mm"); 
-                Date date = (Date)formatter.parse(j_a.getJSONObject(i).getString("orario"));
-                t.arrivalTime = date;
-                String prev = j_a.getJSONObject(i).getString("statoPrevisione");
-                
-                if (prev.equals("Prev") || prev.equals("prev")){
-                    t.realTime = true;
-                }
-                else if (prev.equals("sched")){
-                    t.realTime = false;
-                }
-                
-         //       Log.d("line",String.valueOf(t.line));
-         //       Log.d("arrivalTime",String.valueOf(t.arrivalTime));
-         //       Log.d("ATB", t.toString());
-                if(t.line == wantedLine && wantedBusStop.getLine() == 9999)
-                {
-                  	wantedBusStop = t;
-                }
+        	try
+        	{
+	            for (int i = 0; i < j_a.length(); i++){
+	                
+	                BusStops t = new BusStops();
+	                t.line = j_a.getJSONObject(i).getInt("codAzLinea");
+	                SimpleDateFormat formatter = new SimpleDateFormat("d/M/y H:mm"); 
+	                Date date = (Date)formatter.parse(j_a.getJSONObject(i).getString("orario"));
+	                t.arrivalTime = date;
+	                String prev = j_a.getJSONObject(i).getString("statoPrevisione");
+	                
+	                if (prev.equals("Prev") || prev.equals("prev")){
+	                    t.realTime = true;
+	                }
+	                else if (prev.equals("sched")){
+	                    t.realTime = false;
+	                }
+	                
+	         //       Log.d("line",String.valueOf(t.line));
+	         //       Log.d("arrivalTime",String.valueOf(t.arrivalTime));
+	         //       Log.d("ATB", t.toString());
+	                if(t.line == wantedLine && wantedBusStop.getLine() == 9999)
+	                {
+	                  	wantedBusStop = t;
+	                }
+	            }
+        	}
+            catch(JSONException e)
+            {
+            	System.out.println("FAAAAAAAAAAAIL");
+            	e.printStackTrace();
             }
         
             

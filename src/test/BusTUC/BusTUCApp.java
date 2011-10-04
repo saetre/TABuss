@@ -72,7 +72,9 @@ public class BusTUCApp extends MapActivity
     private float mAccelCurrent; // current acceleration including gravity
     private float mAccelLast; // last acceleration including gravity
 
+
     // Devices built in sensor for detecting movement
+    // Have a few bugs, need to fix later
     private final SensorEventListener mSensorListener = new SensorEventListener() 
     {
 
@@ -89,13 +91,14 @@ public class BusTUCApp extends MapActivity
           // End of formulas found online
           
           // If movement has happened. Originally set to 5, but adjusted to a high number, to avoid uncontrolled detections
-          if(mAccel > 2)
+          if(mAccel > 100)
           {
+        	  System.out.println("MOVEMENT!!!!!!!!!!!!!!!!!!");
         	  // Set to sentrum for testing
         	  // Plan is to let the shaking trigger a favourite set to "home"
         	editTe.setText("sentrum");
+        	mAccelCurrent = 5;
         	send();
-        	mAccel = 0.00f;
           }
         }
 
@@ -236,13 +239,15 @@ public class BusTUCApp extends MapActivity
     	if(!tSet.isEmpty())
   	     {
     	  // Creates a request to BusTuc
-          String[] html_page = k_browser.getRequest(tSet,editTe.getText().toString(),false);
-    	  
+    		System.out.println("K-browserobj " + k_browser.toString()); 
+          String[] html_page = k_browser.getRequest(tSet,editTe.getText().toString(),false);   
+          System.out.println("TEKST: " + editTe.getText().toString() );
+          System.out.println("HTML LENGTH: " + html_page.length); 
           StringBuilder str = new StringBuilder(); 
           // Parses the returned html
-          for(int i = 0;i<html_page.length;i++)
+          for(int i = 0;i<html_page.length;i++) 
           {
-          Log.v("CONTENT"+i, html_page[i]);
+          Log.v("CONTENT"+i, html_page[i]); 
           if(!html_page[i].contains("</body>"))
           {
           str.append(html_page[i] + "\n"); 
@@ -270,7 +275,7 @@ public class BusTUCApp extends MapActivity
          	 }
          	 else
          	 {
-          		routes[i].setWalkingDistance(-1);
+          		routes[i].setWalkingDistance(-1); 
          	 }
           }
           calculator.printOutRoutes("BEFORE",routes, false);
@@ -286,9 +291,12 @@ public class BusTUCApp extends MapActivity
         	  
         	  tempId = Integer.parseInt(realTimeCodes.get(finalRoutes[i].getBusStopNumber()).toString());
         	  int wantedLine = finalRoutes[i].getBusNumber();
+        	  System.out.println("FUUUUUUUUUUUUUUUUUUUUUU " + tempId + "   " + wantedLine);
         	  BusStops nextBus = k_browser.specificRequest(tempId,wantedLine); 
         	  if(nextBus.getArrivalTime() == null)
-        	  {}
+        	  {
+        		  
+        	  }
         	  else{
         		  finalRoutes[i].setArrivalTime(nextBus.getArrivalTime().getHours()+""+String.format("%02d",nextBus.getArrivalTime().getMinutes())+"");
         	  }
@@ -377,7 +385,7 @@ public class BusTUCApp extends MapActivity
      		   Log.v("SAME","SAMEID:"+newID);
      	   }else { counter.put(newID,1); }
      	   newMap.put(newID, hMap);
-            
+             
         } 
         return newMap; 
     }
@@ -399,8 +407,9 @@ public class BusTUCApp extends MapActivity
     		}
     		else if(!maxLoc && currentValue < m && i != 0)
     		{
+    			System.out.println("MAXLOC = FALSE ");
     			minValues.add(currentValue); 
-    			finalMap.put(currentValue, newMap.get(keys[y]).get(currentValue));
+    			finalMap.put(currentValue, newMap.get(keys[y]).get(currentValue)); 
     		}
     		else if(maxLoc)
     		{
@@ -429,6 +438,7 @@ public class BusTUCApp extends MapActivity
     	   Log.v("sort","TreeValue"+next);	
     	 //  Log.v("finalmap","finalmap="+finalMap.get(next).getProvider()+":"+next);
     	}
+    	System.out.println("FINAL MAP: " + finalMap.size()); 
     	return finalMap; 
     }
 
@@ -539,7 +549,7 @@ public class BusTUCApp extends MapActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) 
     {
     	super.onActivityResult(requestCode, resultCode, data);
-    	
+    	System.out.println("ACTIVITY RESULT RECIEVED!!! ");
     	if(!data.getStringExtra("test").isEmpty())
     	{
     		String item = data.getStringExtra("test");
