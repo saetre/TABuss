@@ -1,7 +1,13 @@
 package test.BusTUC; 
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -19,6 +25,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -73,23 +80,50 @@ public class Browser
 		String wanted_string = start2 + " til " + stop; 
 		String wanted_string2 = "fra gl�shaugen til nardo";
 		Log.v("BUSTUCSTR", "wanted_string:"+wanted_string);
-		HttpPost m_post= new HttpPost("http://www.idi.ntnu.no/~tagore/cgi-bin/busstuc/busq.cgi");
+	    HttpPost m_post= new HttpPost("http://www.idi.ntnu.no/~tagore/cgi-bin/busstuc/busq.cgi");
+		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
 		Long time = System.nanoTime();
 		try {
+			//File file = new File("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question="+wanted_string);
+			URL atb = new URL("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question="+wanted_string);
+			
+			//InputStream in = new Inp
+            BufferedReader reader = new BufferedReader(new InputStreamReader(atb.openStream()));
+            String foo = "";
+            System.out.println("BEFORE RUNAR " + wanted_string);
+            while((foo = reader.readLine()) != null){
+            	System.out.println("LINEMOTHERFUCKER " + foo);
+            	
+            }
+            reader.close();
+            System.out.println("AFter RUNAR");
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);  
 	        nameValuePairs.add(new BasicNameValuePair("lang", "eng"));  
 	        nameValuePairs.add(new BasicNameValuePair("quest", wanted_string)); 
 	        m_post.setEntity(new UrlEncodedFormEntity(nameValuePairs));  
-	        
+	        Log.v("m_Post", m_post.toString());
+	        System.out.println("m_post entity " + m_post.getEntity());
 			HttpResponse m_response = m_client.execute(m_post);
+			Log.v("m_response", m_response.toString());
+			
 			html_string = httpF.request(m_response);
+			// Will fail if server is busy or down
+			Log.v("html_string", "Returned html: " + html_string);
 		} catch (ClientProtocolException e) {
 			Log.v("CLIENTPROTOCOL EX", "e:"+e.toString());
 		} catch (IOException e) {
 			Log.v("IO EX", "e:"+e.toString());
 		}
+		catch(NullPointerException e)
+		{
+			 Log.v("NULL", "NullPointer");
+		}
 		Long newTime = System.nanoTime() - time;
 		System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +  newTime/1000000000.0);
+		for(int i =0; i< html_string.length;i++)
+		{
+			Log.v("HTMLFOO", html_string[i]);
+		}
 		return html_string; 
 	}
 	

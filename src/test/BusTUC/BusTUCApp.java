@@ -1,5 +1,6 @@
 package test.BusTUC;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,6 +31,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -62,6 +64,7 @@ public class BusTUCApp extends MapActivity
     Browser k_browser;
     HashMap realTimeCodes; 
     GeoPoint[] closestBusStops; 
+    BusOracle oracle;
     Button button;
     // adds edittext box
     EditText editTe;
@@ -126,6 +129,8 @@ public class BusTUCApp extends MapActivity
         GetGPS k_gps = new GetGPS(myImageFileEndings);
         // Formats the bus coordinates
         gpsCords = k_gps.fCords();
+        //Oracle
+        oracle = new BusOracle();
         
         // Accelometer properties
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -232,14 +237,71 @@ public class BusTUCApp extends MapActivity
             }
         });
     }
+    class AtbThreadTest extends AsyncTask<Void, Void, Void>
+    {
+        private Context context;
+
+        public AtbThreadTest(Context context)
+        {
+            this.context = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params)
+        {
+            oracle.ask();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused)
+        {
+            if (oracle.getAnswer().trim().equals("No question supplied."))
+            {
+               // answerDialogSetText(getString(R.string.help_string));
+                //answerView.setText(getString(R.string.answer_field));
+            } else
+            {
+            
+            	myLocationText.setText(oracle.getAnswer());
+
+                //answerView.setText(bussen.getAnswer());
+               // new MarkBusStops(getApplicationContext()).execute();
+            }
+        }
+    }
+    
+    private void doSearch() 
+    {
+    	DecimalFormat decifo = new DecimalFormat("###");
+    	Object[] keys = tSet.keySet().toArray();
+    	int hSize = tSet.keySet().size(); 
+    	String start2 = "";
+        for(int i = 0;i<hSize;i++)
+        {
+           String output2 = decifo.format(Math.ceil((Double.parseDouble(keys[i].toString())/1.7)/60));
+     	   start2 = start2 + "" + tSet.get(keys[i]).getProvider()+""+"+"+output2; 
+     	   if(i+1<hSize)
+     	   {
+     		   start2 = start2 + ","; 
+     		   oracle.setQuestion(tSet.get(keys[i]).getProvider() + "  " + editTe.getText().toString().trim());
+     	        new AtbThreadTest(getApplicationContext()).execute();
+     	   }
+        }
+        
+    }
+    /*public void send()
+    {
+    	doSearch();   	
+    
+    }*/
     
     public void send()
     {
     	// Perform action on clicks
     	if(!tSet.isEmpty())
   	     {
-    	  // Creates a request to BusTuc
-    		System.out.println("K-browserobj " + k_browser.toString()); 
+    	  System.out.println("K-browserobj " + k_browser.toString()); 
           String[] html_page = k_browser.getRequest(tSet,editTe.getText().toString(),false);   
           System.out.println("TEKST: " + editTe.getText().toString() );
           System.out.println("HTML LENGTH: " + html_page.length); 
@@ -253,6 +315,7 @@ public class BusTUCApp extends MapActivity
           str.append(html_page[i] + "\n"); 
           }
           }
+          
           int indexOf = str.lastIndexOf("}");
           String jsonSubString = str.substring(0, indexOf+1); 
           jsonSubString = jsonSubString.replaceAll("\\}", "},");
@@ -260,6 +323,9 @@ public class BusTUCApp extends MapActivity
           Log.v("manipulatedString","New JSON:"+jsonSubString);
           int wantedBusStop = 0;  
           Calculate calculator = new Calculate(); 
+          
+          
+          // Create routes based on jsonSubString
           Route[] routes = calculator.createRoutes(jsonSubString);
   
           for(int i = 0;i<routes.length;i++)

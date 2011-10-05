@@ -21,10 +21,13 @@ public class HttpFormat {
             StringBuilder str = new StringBuilder();
             StringBuilder content = new StringBuilder(); 
             String line = null;
-             
-            while((line = reader.readLine()) != null){
+             System.out.println("IN HTTPFORMAT");
+            
+          while((line = reader.readLine()) != null){
+            	System.out.println("LINE " + line);
             	if(line.endsWith("</body>"))
             	{
+            		
             		contentArray = line.split("<br>");
             		content.append(line + "\n");
             	}
@@ -32,10 +35,15 @@ public class HttpFormat {
             }
             in.close();
             result = str.toString();
+            System.out.println("RESULT: " + result + "  " +result.length());
         }catch(Exception ex){
             result = "Error";
+            System.out.println("ERROR IN HTTPFORMAT!!!!!!!!!!!!!!");
         }
-    
+        for(int i=0; i< contentArray.length; i++)
+        {
+        	System.out.println("Contentarray: " + contentArray[i]);
+        }
         return contentArray;
     }
 }
