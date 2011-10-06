@@ -53,7 +53,7 @@ public class BusTUCApp extends MapActivity
 	MapController mc; // Controller for the map
 	List<String> prov; // List of providers
     GeoPoint p,p2; // p is current location, p2 is closest bus stop. 
-    GetGPS k_gps; // Object of the GetGPS class. 
+    GPS k_gps; // Object of the GetGPS class. 
     Location currentlocation, busLoc; // Location objects
     HashMap<Integer,Location> tSet; // HashMap used for finding closest locations
     LocationManager locationManager; // Location Manager
@@ -125,10 +125,10 @@ public class BusTUCApp extends MapActivity
         myLocationText.setText("");
         LinearLayout zoomLayout = (LinearLayout)findViewById(R.id.zoom);  
         // Gets the coordinates from the bus XML file
-        String[] myImageFileEndings = getResources().getStringArray(R.array.coords2); 
-        GetGPS k_gps = new GetGPS(myImageFileEndings);
+        String[] gpsCoordinates = getResources().getStringArray(R.array.coords2); 
+        //GPS k_gps = new GPS(myImageFileEndings);
         // Formats the bus coordinates
-        gpsCords = k_gps.fCords();
+        gpsCords = GPS.formatCoordinates(gpsCoordinates);
         //Oracle
         oracle = new BusOracle();
         

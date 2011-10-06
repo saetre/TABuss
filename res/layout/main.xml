@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:background="#79AA30" 
     android:orientation="vertical"
     android:layout_width="fill_parent" 
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    >
     
     <TextView  
     android:id="@+id/myLocationText"
@@ -13,11 +16,11 @@
     
   
     <RelativeLayout
+    android:gravity = "bottom"
+    android:background="#79AA30"
 	android:id="@+id/widget61"
-	android:layout_width="264px"
-	android:layout_height="59px"
-	android:layout_x="17px"
-	android:layout_y="50px"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
 	>
 	<Button
 	android:id="@+id/Button"
@@ -28,9 +31,9 @@
 	android:layout_alignParentRight="true"
 	>
 	</Button>
-	<EditText
+	<EditText	
 	android:id="@+id/eText"
-	android:layout_width="wrap_content"
+	android:layout_width = "wrap_content"
 	android:layout_height="wrap_content"
 	android:hint="Hvor vil du dra?"
 	android:textSize="18sp"
