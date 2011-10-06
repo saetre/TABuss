@@ -36,14 +36,17 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.location.Location;
 import android.net.ParseException;
+import android.text.InputFilter.LengthFilter;
 import android.util.Log;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 public class Browser
 {
@@ -54,6 +57,26 @@ public class Browser
 	{
 		m_client = new DefaultHttpClient();
 		httpF = new HttpFormat(); 
+	}
+	
+	// For testing
+	private String inputStreamToString(InputStream is) {
+	    String s = "";
+	    String line = "";
+	    
+	    // Wrap a BufferedReader around the InputStream
+	    BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+	    
+	    // Read response until the end
+	    try {
+			while ((line = rd.readLine()) != null) { s += line; }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
+	    // Return full string
+	    return s;
 	}
 
 	String[] getRequest(HashMap<Integer,Location> startMap, String stop, Boolean formated)
@@ -85,7 +108,7 @@ public class Browser
 		Long time = System.nanoTime();
 		try {
 			//File file = new File("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question="+wanted_string);
-			URL atb = new URL("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question="+wanted_string);
+		/*	URL atb = new URL("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question="+wanted_string);
 			
 			//InputStream in = new Inp
             BufferedReader reader = new BufferedReader(new InputStreamReader(atb.openStream()));
@@ -96,19 +119,31 @@ public class Browser
             	
             }
             reader.close();
-            System.out.println("AFter RUNAR");
+            System.out.println("AFter RUNAR");*/
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);  
 	        nameValuePairs.add(new BasicNameValuePair("lang", "eng"));  
 	        nameValuePairs.add(new BasicNameValuePair("quest", wanted_string)); 
-	        m_post.setEntity(new UrlEncodedFormEntity(nameValuePairs));  
-	        Log.v("m_Post", m_post.toString());
-	        System.out.println("m_post entity " + m_post.getEntity());
+	        UrlEncodedFormEntity url = new UrlEncodedFormEntity(nameValuePairs);	        
+	        System.out.println("URLENC: " + url.toString());
+	        m_post.setEntity(url);  
+	        System.out.println("m_post entity " + m_post.getEntity().getContentLength());
+	        System.out.println("m_Post.getMethod() " + m_post.getMethod());
+	        String responseBody = EntityUtils.toString(m_post.getEntity());
+
+	       System.out.println("m_Post.getMethod() " + responseBody);
+	       
+	       // Execute. Will not crash if route info is not found(which is not cool)
 			HttpResponse m_response = m_client.execute(m_post);
-			Log.v("m_response", m_response.toString());
-			
+			Log.v("m_response", inputStreamToString(m_response.getEntity().getContent()));
+			System.out.println("Wanted String: " + wanted_string);
+		//	System.out.println("RESPONSE: " + m_response.get);
+			// Request
 			html_string = httpF.request(m_response);
+			
 			// Will fail if server is busy or down
 			Log.v("html_string", "Returned html: " + html_string);
+			Long newTime = System.nanoTime() - time;
+			System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +  newTime/1000000000.0);
 		} catch (ClientProtocolException e) {
 			Log.v("CLIENTPROTOCOL EX", "e:"+e.toString());
 		} catch (IOException e) {
@@ -118,12 +153,20 @@ public class Browser
 		{
 			 Log.v("NULL", "NullPointer");
 		}
-		Long newTime = System.nanoTime() - time;
-		System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +  newTime/1000000000.0);
+		catch(StringIndexOutOfBoundsException e)
+		{
+			 Log.v("StringIndexOutOfBounds", "Exception");
+		}
+		catch(Exception e)
+		{
+			 Log.v("FUCKINGTOLARGE", "Exception");
+		}
+		
 		for(int i =0; i< html_string.length;i++)
 		{
 			Log.v("HTMLFOO", html_string[i]);
 		}
+		
 		return html_string; 
 	}
 	
@@ -165,9 +208,9 @@ public class Browser
 			byte[] result = null; 
 			String soap = soapMessage; 
 	        HttpParams httpParameters = new BasicHttpParams();
-	        int timeoutConnection = 15000;
+	        int timeoutConnection = 30000;
 	        HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
-	        int timeoutSocket = 35000;
+	        int timeoutSocket = 50000;
 	        HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 	        
 	        DefaultHttpClient httpclient = new DefaultHttpClient(httpParameters); 

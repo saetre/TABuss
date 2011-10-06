@@ -23,7 +23,8 @@ public class HttpFormat {
             String line = null;
              System.out.println("IN HTTPFORMAT");
             
-          while((line = reader.readLine()) != null){
+          while((line = reader.readLine()) != null)
+          {
             	System.out.println("LINE " + line);
             	if(line.endsWith("</body>"))
             	{
@@ -34,9 +35,13 @@ public class HttpFormat {
                 str.append(line + "\n");
             }
             in.close();
+            reader.close();
             result = str.toString();
             System.out.println("RESULT: " + result + "  " +result.length());
-        }catch(Exception ex){
+        }
+        
+        
+        catch(Exception ex){
             result = "Error";
             System.out.println("ERROR IN HTTPFORMAT!!!!!!!!!!!!!!");
         }

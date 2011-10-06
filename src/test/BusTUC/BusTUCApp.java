@@ -319,6 +319,7 @@ public class BusTUCApp extends MapActivity
           int indexOf = str.lastIndexOf("}");
           String jsonSubString = str.substring(0, indexOf+1); 
           jsonSubString = jsonSubString.replaceAll("\\}", "},");
+          // If answer is malformed -> IndexOutOfBounds
           jsonSubString = jsonSubString.substring(0, jsonSubString.length()-1);
           Log.v("manipulatedString","New JSON:"+jsonSubString);
           int wantedBusStop = 0;  
@@ -332,7 +333,10 @@ public class BusTUCApp extends MapActivity
           {
         	 int intBusStopNumber = routes[i].getBusStopNumber(); 
          	 String strBusStopNumber = String.valueOf(intBusStopNumber);
+         	System.out.println("strBusStopNumber: " + strBusStopNumber);
          	 int newBSN = Integer.parseInt(strBusStopNumber.substring(strBusStopNumber.length()-3));
+         	 System.out.println("newBSN: " + newBSN);
+         	 
          	 
          	 if(locationsArray.containsKey(newBSN))
          	 {
@@ -341,6 +345,7 @@ public class BusTUCApp extends MapActivity
          	 }
          	 else
          	 {
+         		 
           		routes[i].setWalkingDistance(-1); 
          	 }
           }
@@ -361,7 +366,7 @@ public class BusTUCApp extends MapActivity
         	  BusStops nextBus = k_browser.specificRequest(tempId,wantedLine); 
         	  if(nextBus.getArrivalTime() == null)
         	  {
-        		  
+        		   
         	  }
         	  else{
         		  finalRoutes[i].setArrivalTime(nextBus.getArrivalTime().getHours()+""+String.format("%02d",nextBus.getArrivalTime().getMinutes())+"");
