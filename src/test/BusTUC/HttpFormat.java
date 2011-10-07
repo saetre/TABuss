@@ -16,7 +16,9 @@ public class HttpFormat {
         String result = "";
         String[] contentArray = null;
         try{
+        	System.out.println("FIRST");
             InputStream in = response.getEntity().getContent();
+            System.out.println("SECOND");
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             StringBuilder str = new StringBuilder();
             StringBuilder content = new StringBuilder(); 
@@ -44,6 +46,9 @@ public class HttpFormat {
         catch(Exception ex){
             result = "Error";
             System.out.println("ERROR IN HTTPFORMAT!!!!!!!!!!!!!!");
+            // Just add "error" as value. Detect in BusTUCApp
+            contentArray = new String[5];
+            contentArray[0] = result;
         }
         for(int i=0; i< contentArray.length; i++)
         {

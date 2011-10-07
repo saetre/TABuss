@@ -296,7 +296,7 @@ public class BusTUCApp extends MapActivity
     
     }*/
     
-    public void send()
+    public boolean send()
     {
     	// Perform action on clicks
     	if(!tSet.isEmpty())
@@ -309,17 +309,23 @@ public class BusTUCApp extends MapActivity
           // Parses the returned html
           for(int i = 0;i<html_page.length;i++) 
           {
-          Log.v("CONTENT"+i, html_page[i]); 
-          if(!html_page[i].contains("</body>"))
-          {
-          str.append(html_page[i] + "\n"); 
-          }
+	          Log.v("CONTENT"+i, html_page[i]); 
+	          if(!html_page[i].contains("</body>"))
+	          {
+	          str.append(html_page[i] + "\n"); 
+	          }
+	          // Simple error handling. If the object contains "error", return false
+	          if(html_page[0].equalsIgnoreCase("error"))
+	          {
+	        	  Toast.makeText(this, "Not found", Toast.LENGTH_SHORT).show();
+	        	  System.out.println("NOT FOUND ERROR FOO");
+	        	  return false;
+	          }
           }
           
           int indexOf = str.lastIndexOf("}");
           String jsonSubString = str.substring(0, indexOf+1); 
           jsonSubString = jsonSubString.replaceAll("\\}", "},");
-          // If answer is malformed -> IndexOutOfBounds
           jsonSubString = jsonSubString.substring(0, jsonSubString.length()-1);
           Log.v("manipulatedString","New JSON:"+jsonSubString);
           int wantedBusStop = 0;  
@@ -409,6 +415,8 @@ public class BusTUCApp extends MapActivity
           myLocationText.setText(presentation.toString());
           
       }
+        return true;
+
     }
     @SuppressWarnings("static-access")
 	@Override

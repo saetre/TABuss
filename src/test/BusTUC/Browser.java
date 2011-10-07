@@ -162,10 +162,10 @@ public class Browser
 			 Log.v("FUCKINGTOLARGE", "Exception");
 		}
 		
-		for(int i =0; i< html_string.length;i++)
+	/*	for(int i =0; i< html_string.length;i++)
 		{
 			Log.v("HTMLFOO", html_string[i]);
-		}
+		}*/
 		
 		return html_string; 
 	}
