@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 import test.BusTUC.R;
 
@@ -16,6 +17,7 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.MapView.LayoutParams;
 import com.google.android.maps.OverlayItem;
  
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -49,12 +51,13 @@ public class BusTUCApp extends MapActivity
 {    
 	MapOverlay mapOverlay;
 	MapView mapView; // Google Maps
-	String[][] gpsCords;  // Array containing bus stops
+	public static String[][] gpsCords;  // Array containing bus stops
 	MapController mc; // Controller for the map
 	List<String> prov; // List of providers
     GeoPoint p,p2; // p is current location, p2 is closest bus stop. 
     GPS k_gps; // Object of the GetGPS class. 
     Location currentlocation, busLoc; // Location objects
+    // Static because of access from BusList
     HashMap<Integer,Location> tSet; // HashMap used for finding closest locations
     LocationManager locationManager; // Location Manager
     HashMap<Integer,HashMap<Integer,Location>> locationsArray;
@@ -64,10 +67,13 @@ public class BusTUCApp extends MapActivity
     Browser k_browser;
     HashMap realTimeCodes; 
     GeoPoint[] closestBusStops; 
-    BusOracle oracle;
     Button button;
     // adds edittext box
     EditText editTe;
+    StringBuffer presentation; // String which contain answer from bussTUC
+    private Route [] routes; // Routes returned from bussTUC
+    private Route [] finalRoutes; // Routes after real-time processing
+
     
     // Accelometer
     private SensorManager mSensorManager;
@@ -101,7 +107,7 @@ public class BusTUCApp extends MapActivity
         	  // Plan is to let the shaking trigger a favourite set to "home"
         	editTe.setText("sentrum");
         	mAccelCurrent = 5;
-        	send();
+        	sendToOracle();
           }
         }
 
@@ -126,12 +132,26 @@ public class BusTUCApp extends MapActivity
         LinearLayout zoomLayout = (LinearLayout)findViewById(R.id.zoom);  
         // Gets the coordinates from the bus XML file
         String[] gpsCoordinates = getResources().getStringArray(R.array.coords2); 
+        
+       /* for(int i=0; i< gpsCoordinates.length; i++)
+        {
+        	System.out.println("COORDINATES: " + gpsCoordinates[i]);
+        }*/
         //GPS k_gps = new GPS(myImageFileEndings);
         // Formats the bus coordinates
         gpsCords = GPS.formatCoordinates(gpsCoordinates);
-        //Oracle
-        oracle = new BusOracle();
-        
+        for(int i=0; i< gpsCords.length; i++)
+        {
+        	for(int j=0; j<gpsCords[i].length; j++)
+        	{
+        		
+        		// 0 - Busstoppnr
+        		// 1 - navn
+        		// 2 - lat
+        		// 3 - long
+        		//System.out.println("COORDINATES2 " + gpsCords[i][j]); 
+        	}
+        }
         // Accelometer properties
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensorManager.registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
@@ -156,6 +176,13 @@ public class BusTUCApp extends MapActivity
         provider = locationManager.getBestProvider(criteria, true);
         k_browser = new Browser(); 
         realTimeCodes = k_browser.realTimeData();
+        Iterator it = realTimeCodes.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pairs = (Map.Entry)it.next();
+            System.out.println(pairs.getKey() + " = " + pairs.getValue());
+            it.remove(); // avoids a ConcurrentModificationException
+        }
+
         Log.v("provider","provider:"+ provider);
        
         // Creates a locationListener
@@ -233,70 +260,76 @@ public class BusTUCApp extends MapActivity
        // binds listener to the button
        button.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                send();           
+    	    	new OracleThread(getApplicationContext()).execute();
             }
         });
     }
-    class AtbThreadTest extends AsyncTask<Void, Void, Void>
-    {
-        private Context context;
-
-        public AtbThreadTest(Context context)
-        {
-            this.context = context;
-        }
-
-        @Override
-        protected Void doInBackground(Void... params)
-        {
-            oracle.ask();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void unused)
-        {
-            if (oracle.getAnswer().trim().equals("No question supplied."))
-            {
-               // answerDialogSetText(getString(R.string.help_string));
-                //answerView.setText(getString(R.string.answer_field));
-            } else
-            {
-            
-            	myLocationText.setText(oracle.getAnswer());
-
-                //answerView.setText(bussen.getAnswer());
-               // new MarkBusStops(getApplicationContext()).execute();
-            }
-        }
-    }
     
-    private void doSearch() 
+   
+    
+
+    public void computeRealTime()
     {
-    	DecimalFormat decifo = new DecimalFormat("###");
-    	Object[] keys = tSet.keySet().toArray();
-    	int hSize = tSet.keySet().size(); 
-    	String start2 = "";
-        for(int i = 0;i<hSize;i++)
-        {
-           String output2 = decifo.format(Math.ceil((Double.parseDouble(keys[i].toString())/1.7)/60));
-     	   start2 = start2 + "" + tSet.get(keys[i]).getProvider()+""+"+"+output2; 
-     	   if(i+1<hSize)
-     	   {
-     		   start2 = start2 + ","; 
-     		   oracle.setQuestion(tSet.get(keys[i]).getProvider() + "  " + editTe.getText().toString().trim());
-     	        new AtbThreadTest(getApplicationContext()).execute();
-     	   }
-        }
+    	Calculate calculator = new Calculate();
+    	int tempId = 0; 
+      //  Log.v("routesl","length:"+routes.length);
+       presentation = new StringBuffer();
         
+        boolean noTransfer = true; 
+        for(int i = 0;i<finalRoutes.length;i++)
+        {
+      	  System.out.println("FANT BUSSTOPP: " +finalRoutes[i].getBusStopNumber());
+      	  tempId = Integer.parseInt(realTimeCodes.get(finalRoutes[i].getBusStopNumber()).toString());
+      	  int wantedLine = finalRoutes[i].getBusNumber();
+      	  BusStops nextBus = k_browser.specificRequest(tempId,wantedLine); 
+      	  if(nextBus.getArrivalTime() == null)
+      	  {
+      		   
+      	  }
+      	  else{
+      		  finalRoutes[i].setArrivalTime(nextBus.getArrivalTime().getHours()+""+String.format("%02d",nextBus.getArrivalTime().getMinutes())+"");
+      	  }
+      	  int k_totalTime = calculator.calculateTotalTime(finalRoutes[i].getArrivalTime(), finalRoutes[i].getTravelTime());
+      	  finalRoutes[i].setTotalTime(k_totalTime);
+        }
+        calculator.printOutRoutes("AFTERREALTIME",finalRoutes, true);
+        Route[] printRoute = calculator.sortByTotalTime(finalRoutes);
+        for(int i = 0;i<finalRoutes.length;i++)
+        {
+      //	 int intBusStopNumber = printRoute[i].getBusStopNumber(); 
+     // 	 String strBusStopNumber = String.valueOf(intBusStopNumber);
+     // 	 int newBSN = Integer.parseInt(strBusStopNumber.substring(strBusStopNumber.length()-3));
+      	 
+      	 if(noTransfer)
+      	 {
+   //   		Object[] keys = locationsArray.get(newBSN).keySet().toArray();
+        	    presentation.append((i+1)+": Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" ("+printRoute[i].getWalkingDistance()+" meter)"+" klokken "+printRoute[i].getArrivalTime()+". Du vil n� "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
+        	    if(routes[i].isTransfer())
+        	    {
+        	    	noTransfer = false;
+        	    }
+      	 }
+      	 else 
+      	 {
+         	  presentation.append((i+1)+": Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" klokken "+printRoute[i].getArrivalTime()+". Du vil n� "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
+      	 }
+         
+        }
+        Object[] keys = tSet.keySet().toArray();
+        for(Object key : keys)
+        {
+      	Log.v("Keys","Key:"+Double.parseDouble(key.toString()));
+      	Log.v("Value","Value:"+tSet.get(key).getProvider());
+        }
+                          
+		  //Log.v("wantedbus","wantedbus:"+wantedBusStop);
+  //	  int newId = Integer.parseInt(realTimeCodes.get(wantedBusStop).toString());
+      //  myLocationText.setText(presentation.toString());
+        
+    
+    	
     }
-    /*public void send()
-    {
-    	doSearch();   	
-    
-    }*/
-    
-    public boolean send()
+    public boolean sendToOracle()
     {
     	// Perform action on clicks
     	if(!tSet.isEmpty())
@@ -317,7 +350,7 @@ public class BusTUCApp extends MapActivity
 	          // Simple error handling. If the object contains "error", return false
 	          if(html_page[0].equalsIgnoreCase("error"))
 	          {
-	        	  Toast.makeText(this, "Not found", Toast.LENGTH_SHORT).show();
+	        	 // Toast.makeText(this, "Not found", Toast.LENGTH_SHORT).show();
 	        	  System.out.println("NOT FOUND ERROR FOO");
 	        	  return false;
 	          }
@@ -333,7 +366,7 @@ public class BusTUCApp extends MapActivity
           
           
           // Create routes based on jsonSubString
-          Route[] routes = calculator.createRoutes(jsonSubString);
+          routes = calculator.createRoutes(jsonSubString);
   
           for(int i = 0;i<routes.length;i++)
           {
@@ -350,71 +383,14 @@ public class BusTUCApp extends MapActivity
          		routes[i].setWalkingDistance(Integer.parseInt(keys[0].toString()));
          	 }
          	 else
-         	 {
-         		 
+         	 {         		 
           		routes[i].setWalkingDistance(-1); 
          	 }
           }
           calculator.printOutRoutes("BEFORE",routes, false);
-          Route[] finalRoutes = calculator.suggestRoutes(routes);
+          finalRoutes = calculator.suggestRoutes(routes);
           calculator.printOutRoutes("AFTER",finalRoutes, false);
-
-          int tempId = 0; 
-          Log.v("routesl","length:"+routes.length);
-          StringBuffer presentation = new StringBuffer();
-          boolean noTransfer = true; 
-          for(int i = 0;i<finalRoutes.length;i++)
-          {
-        	  
-        	  tempId = Integer.parseInt(realTimeCodes.get(finalRoutes[i].getBusStopNumber()).toString());
-        	  int wantedLine = finalRoutes[i].getBusNumber();
-        	  System.out.println("FUUUUUUUUUUUUUUUUUUUUUU " + tempId + "   " + wantedLine);
-        	  BusStops nextBus = k_browser.specificRequest(tempId,wantedLine); 
-        	  if(nextBus.getArrivalTime() == null)
-        	  {
-        		   
-        	  }
-        	  else{
-        		  finalRoutes[i].setArrivalTime(nextBus.getArrivalTime().getHours()+""+String.format("%02d",nextBus.getArrivalTime().getMinutes())+"");
-        	  }
-        	  int k_totalTime = calculator.calculateTotalTime(finalRoutes[i].getArrivalTime(), finalRoutes[i].getTravelTime());
-        	  finalRoutes[i].setTotalTime(k_totalTime);
-          }
-          calculator.printOutRoutes("AFTERREALTIME",finalRoutes, true);
-          Route[] printRoute = calculator.sortByTotalTime(finalRoutes);
-          for(int i = 0;i<finalRoutes.length;i++)
-          {
-        //	 int intBusStopNumber = printRoute[i].getBusStopNumber(); 
-       // 	 String strBusStopNumber = String.valueOf(intBusStopNumber);
-       // 	 int newBSN = Integer.parseInt(strBusStopNumber.substring(strBusStopNumber.length()-3));
-        	 
-        	 if(noTransfer)
-        	 {
-     //   		Object[] keys = locationsArray.get(newBSN).keySet().toArray();
-          	    presentation.append((i+1)+": Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" ("+printRoute[i].getWalkingDistance()+" meter)"+" klokken "+printRoute[i].getArrivalTime()+". Du vil n� "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
-          	    if(routes[i].isTransfer())
-          	    {
-          	    	noTransfer = false;
-          	    }
-        	 }
-        	 else 
-        	 {
-           	  presentation.append((i+1)+": Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" klokken "+printRoute[i].getArrivalTime()+". Du vil n� "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
-        	 }
-           
-          }
-          Object[] keys = tSet.keySet().toArray();
-          for(Object key : keys)
-          {
-        	Log.v("Keys","Key:"+key.toString());
-        	Log.v("Value","Value:"+tSet.get(key).getProvider());
-          }
-                            
-		  Log.v("wantedbus","wantedbus:"+wantedBusStop);
-    //	  int newId = Integer.parseInt(realTimeCodes.get(wantedBusStop).toString());
-          myLocationText.setText(presentation.toString());
-          
-      }
+  	     }
         return true;
 
     }
@@ -635,14 +611,86 @@ public class BusTUCApp extends MapActivity
 	    	editTe.setText(item);
 	    	System.out.println("SET TO: " + item);
 	    	Toast.makeText(this, editTe.getText().toString(), Toast.LENGTH_LONG).show();
-	    	send();
+	    	new OracleThread(getApplicationContext()).execute();
     	}
+    }
+    
+    
+    
+    // Thread classes //
+    // Thread starting the oracle queries
+    class OracleThread extends AsyncTask<Void, Void, Void>
+    {
+        private Context context;    
+
+        public OracleThread(Context context)
+        {
+            this.context = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params)
+        {
+        	long time = System.nanoTime();
+        	sendToOracle();        	
+        	Long newTime = System.nanoTime() - time;
+			System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
+        	
+            return null;
+        }
+        
+        @Override
+        protected void onPreExecute()
+        {
+        	editTe.setEnabled(false);
+        	button.setEnabled(false);
+        }
+
+        @Override
+       protected void onPostExecute(Void unused)
+        {
+        	// Start real-time computing
+	    	new RealTimeThread(getApplicationContext()).execute();
+
+        }
+    }
+    
+    // Real-time queries
+    class RealTimeThread extends AsyncTask<Void, Void, Void>
+    {
+        private Context context;
+     
+
+        public RealTimeThread(Context context)
+        {
+            this.context = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params)
+        {
+        	long time = System.nanoTime();
+        	computeRealTime();        	
+        	Long newTime = System.nanoTime() - time;
+			System.out.println("TIME REALTIME: " +  newTime/1000000000.0);
+            return null;
+        }       
+      
+
+        @Override
+       protected void onPostExecute(Void unused)
+        {
+            myLocationText.setText(presentation.toString());   
+         	editTe.setEnabled(true);
+         	button.setEnabled(true);
+        }
     }
     
     
     // The class which draws on the map
     /*class MapOverlay extends com.google.android.maps.Overlay
-    {
+    {	    	new OracleThread(getApplicationContext()).execute();
+
 
         @Override
         public boolean draw(Canvas canvas, MapView mapView,boolean shadow, long when) 

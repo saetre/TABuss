@@ -1,7 +1,10 @@
 package test.BusTUC;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import test.BusTUC.BusTUCApp.OracleThread;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
@@ -11,8 +14,10 @@ import com.google.android.maps.OverlayItem;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -20,11 +25,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class BusList extends ListActivity
 {
 	
 	public static String ID;
+	static  String[] stops;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	  super.onCreate(savedInstanceState);
@@ -36,7 +43,7 @@ public class BusList extends ListActivity
 	  setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, COUNTRIES));
 	 
 	}
-	
+
 	
 	 static final String[] COUNTRIES = new String[] {
 		    "Rute 5 - Dronningens gate     2 min","Rute 8 - Dronningens gate     1 min",

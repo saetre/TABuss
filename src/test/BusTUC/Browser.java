@@ -58,26 +58,7 @@ public class Browser
 		m_client = new DefaultHttpClient();
 		httpF = new HttpFormat(); 
 	}
-	
-	// For testing
-	private String inputStreamToString(InputStream is) {
-	    String s = "";
-	    String line = "";
-	    
-	    // Wrap a BufferedReader around the InputStream
-	    BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-	    
-	    // Read response until the end
-	    try {
-			while ((line = rd.readLine()) != null) { s += line; }
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    
-	    // Return full string
-	    return s;
-	}
+
 
 	String[] getRequest(HashMap<Integer,Location> startMap, String stop, Boolean formated)
 	{		
@@ -88,10 +69,13 @@ public class Browser
 		String start2 = "(";
 		Object[] keys = startMap.keySet().toArray();
 		Arrays.sort(keys);
+		// Name of busstop
 		wantedStart = startMap.get(keys[0]).getProvider();
 		int hSize = startMap.keySet().size(); 
         for(int i = 0;i<hSize;i++)
         {
+        	// Walking distance in minutes
+        	System.out.println("WALK: " + Double.parseDouble(keys[i].toString()));
            String output2 = decifo.format(Math.ceil((Double.parseDouble(keys[i].toString())/1.7)/60));
      	   start2 = start2 + "" + startMap.get(keys[i]).getProvider()+""+"+"+output2; 
      	   if(i+1<hSize)
@@ -134,16 +118,16 @@ public class Browser
 	       
 	       // Execute. Will not crash if route info is not found(which is not cool)
 			HttpResponse m_response = m_client.execute(m_post);
-			Log.v("m_response", inputStreamToString(m_response.getEntity().getContent()));
+			//Log.v("m_response", inputStreamToString(m_response.getEntity().getContent()));
 			System.out.println("Wanted String: " + wanted_string);
 		//	System.out.println("RESPONSE: " + m_response.get);
 			// Request
 			html_string = httpF.request(m_response);
 			
 			// Will fail if server is busy or down
-			Log.v("html_string", "Returned html: " + html_string);
-			Long newTime = System.nanoTime() - time;
-			System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +  newTime/1000000000.0);
+		Log.v("html_string", "Returned html: " + html_string);
+			//Long newTime = System.nanoTime() - time;
+			//System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +  newTime/1000000000.0);
 		} catch (ClientProtocolException e) {
 			Log.v("CLIENTPROTOCOL EX", "e:"+e.toString());
 		} catch (IOException e) {
@@ -316,6 +300,100 @@ public class Browser
 	  //      realTimeCode = (Integer)realTimeNumbers.get(m_wantedBus);
 		return realTimeNumbers; 
 	}
+	
+	public BusStops specificRequestForStop(int k_RealTimeId)
+	{
+	        int realTimeId = k_RealTimeId;  
+	        HttpPost httppost = new HttpPost("http://195.0.188.74/InfoTransit/userservices.asmx?op=getUserRealTimeForecast");
+	        httppost.setHeader("Content-Type", "text/xml; charset=utf-8");
+	        final StringBuffer soap = new StringBuffer();
+	        soap.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+	        soap.append("<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">");
+	        soap.append("<soap:Body>");
+	        soap.append("<getUserRealTimeForecast xmlns=\"http://miz.it/infotransit\">");
+	        soap.append("<auth>");
+	        soap.append("<user>Lingit</user>");
+	        soap.append("<password>t1gn1l</password>");
+	        soap.append("</auth>");
+	        soap.append("<busStopId>"+realTimeId+"</busStopId>");
+	        soap.append("</getUserRealTimeForecast>");
+	        soap.append("</soap:Body>");
+	        soap.append("</soap:Envelope>");
+	        soap.append("");
+	        String str1 = sendSoapRequest("http://195.0.188.74/InfoTransit/userservices.asmx?op=getUserRealTimeForecast", soap.toString());
+	        BusStops test = null; 
+	        try {
+			test = parseRealTimeDataForStop(str1);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (java.text.ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return test; 
+	}
+	public BusStops parseRealTimeDataForStop(String data) throws JSONException, java.text.ParseException
+	{
+		  Pattern p = Pattern.compile(
+	                "<getUserRealTimeForecastResult>(.*?)</getUserRealTimeForecastResult>",
+	                Pattern.DOTALL | Pattern.CASE_INSENSITIVE
+	            );
+	        Matcher matcher = p.matcher(data);
+	        String result = null;
+	        while(matcher.find()){
+	                result = (matcher.group(1));
+	        }
+	        JSONObject j_o = null;
+	        JSONArray j_a = null;
+	        
+	        j_o = new JSONObject(result);
+	        j_a = new JSONArray(j_o.getString("Orari"));
+	        BusStops wantedBusStop = new BusStops(); 
+	        wantedBusStop.setLine(9999);
+	        if (j_a != null){
+	        	try
+	        	{
+		            for (int i = 0; i < j_a.length(); i++){
+		                
+		                BusStops t = new BusStops();
+		                t.line = j_a.getJSONObject(i).getInt("codAzLinea");
+		                SimpleDateFormat formatter = new SimpleDateFormat("d/M/y H:mm"); 
+		                Date date = (Date)formatter.parse(j_a.getJSONObject(i).getString("orario"));
+		                t.arrivalTime = date;
+		                String prev = j_a.getJSONObject(i).getString("statoPrevisione");
+		                
+		                if (prev.equals("Prev") || prev.equals("prev")){
+		                    t.realTime = true;
+		                }
+		                else if (prev.equals("sched")){
+		                    t.realTime = false;
+		                }
+		                
+		         //       Log.d("line",String.valueOf(t.line));
+		         //       Log.d("arrivalTime",String.valueOf(t.arrivalTime));
+		         //       Log.d("ATB", t.toString());
+		                if(wantedBusStop.getLine() == 9999)
+		                {
+		                  	wantedBusStop = t;
+		                }
+		            }
+	        	}
+	            catch(JSONException e)
+	            {
+	            	System.out.println("FAAAAAAAAAAAIL");
+	            	e.printStackTrace();
+	            }
+	        
+	            
+	        }
+	       
+	        return wantedBusStop;
+		}
+	
 	public BusStops parseRealTimeData(String data, int m_speciLine) throws ParseException, JSONException, java.text.ParseException{
         Pattern p = Pattern.compile(
                 "<getUserRealTimeForecastResult>(.*?)</getUserRealTimeForecastResult>",

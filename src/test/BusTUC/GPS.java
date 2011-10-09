@@ -14,6 +14,7 @@ public class GPS
 				 formatedGPSCords[i][y] = line[y].trim();
 			 }
 		 }
+		
 	     return formatedGPSCords;
 	}
 }
