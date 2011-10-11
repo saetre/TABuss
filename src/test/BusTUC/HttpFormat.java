@@ -16,17 +16,25 @@ public class HttpFormat {
         String result = "";
         String[] contentArray = null;
         try{
-        	System.out.println("FIRST");
+        	//System.out.println("FIRST");
             InputStream in = response.getEntity().getContent();
-            System.out.println("SECOND");
+            // System.out.println("SECOND");
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             StringBuilder str = new StringBuilder();
             StringBuilder content = new StringBuilder(); 
             String line = null;
-             System.out.println("IN HTTPFORMAT");
+            //  System.out.println("IN HTTPFORMAT");
             
           while((line = reader.readLine()) != null)
           {
+        	  if(line.contains("Beklager"))
+        	  {
+        		  result = "Error";
+        		  contentArray = new String[5];
+        		  contentArray[0] = result;
+        		  System.out.println("Error in if in HttpFormat");
+        		  break;
+        	  }
             	System.out.println("LINE " + line);
             	if(line.endsWith("</body>"))
             	{

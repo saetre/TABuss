@@ -63,7 +63,7 @@ public class Browser
 	String[] getRequest(HashMap<Integer,Location> startMap, String stop, Boolean formated)
 	{		
 		String[] html_string = null; 
-		Log.v("BUSTUCS","startmapsize:"+startMap.size());
+		//Log.v("BUSTUCS","startmapsize:"+startMap.size());
 		DecimalFormat decifo = new DecimalFormat("###");
 		String wantedStart = ""; 
 		String start2 = "(";
@@ -108,18 +108,18 @@ public class Browser
 	        nameValuePairs.add(new BasicNameValuePair("lang", "eng"));  
 	        nameValuePairs.add(new BasicNameValuePair("quest", wanted_string)); 
 	        UrlEncodedFormEntity url = new UrlEncodedFormEntity(nameValuePairs);	        
-	        System.out.println("URLENC: " + url.toString());
+	        //  System.out.println("URLENC: " + url.toString());
 	        m_post.setEntity(url);  
-	        System.out.println("m_post entity " + m_post.getEntity().getContentLength());
-	        System.out.println("m_Post.getMethod() " + m_post.getMethod());
+	        //   System.out.println("m_post entity " + m_post.getEntity().getContentLength());
+	        // System.out.println("m_Post.getMethod() " + m_post.getMethod());
 	        String responseBody = EntityUtils.toString(m_post.getEntity());
 
-	       System.out.println("m_Post.getMethod() " + responseBody);
+	        //   System.out.println("m_Post.getMethod() " + responseBody);
 	       
 	       // Execute. Will not crash if route info is not found(which is not cool)
 			HttpResponse m_response = m_client.execute(m_post);
 			//Log.v("m_response", inputStreamToString(m_response.getEntity().getContent()));
-			System.out.println("Wanted String: " + wanted_string);
+			//System.out.println("Wanted String: " + wanted_string);
 		//	System.out.println("RESPONSE: " + m_response.get);
 			// Request
 			html_string = httpF.request(m_response);

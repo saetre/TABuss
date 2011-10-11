@@ -177,11 +177,12 @@ public class BusTUCApp extends MapActivity
         k_browser = new Browser(); 
         realTimeCodes = k_browser.realTimeData();
         Iterator it = realTimeCodes.entrySet().iterator();
-        while (it.hasNext()) {
+        System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
+      /*  while (it.hasNext()) {
             Map.Entry pairs = (Map.Entry)it.next();
-            System.out.println(pairs.getKey() + " = " + pairs.getValue());
+           // System.out.println(pairs.getKey() + " = " + pairs.getValue());
             it.remove(); // avoids a ConcurrentModificationException
-        }
+        }*/
 
         Log.v("provider","provider:"+ provider);
        
@@ -197,6 +198,7 @@ public class BusTUCApp extends MapActivity
         //		busLoc = closestLoc(gpsCords);
         		// creates a HashMap containing all the location objects
                 locationsArray = getLocations(gpsCords);
+                //System.out.println("REALTIMEX: " + realTimeCodes.size());
                 Log.v("sort","returnedHmap:"+locationsArray.size());	
                 // creates a HashMap with all the relevant bus stops
                 tSet = m_partialSort(locationsArray,5,500,false);
@@ -219,7 +221,7 @@ public class BusTUCApp extends MapActivity
                 p = new GeoPoint(
                         (int) (currentlocation.getLatitude() * 1E6), 
                         (int) (currentlocation.getLongitude() * 1E6));
-                Log.v("GEOPOINT","GEO2" + p.getLatitudeE6() + ":" + p.getLongitudeE6());
+                //Log.v("GEOPOINT","GEO2" + p.getLatitudeE6() + ":" + p.getLongitudeE6());
                 addUser(p);
                 showOverlay();
                 /*
@@ -276,9 +278,11 @@ public class BusTUCApp extends MapActivity
        presentation = new StringBuffer();
         
         boolean noTransfer = true; 
+        //System.out.println("Length of finalRoutes: " + finalRoutes.length);
         for(int i = 0;i<finalRoutes.length;i++)
         {
-      	  System.out.println("FANT BUSSTOPP: " +finalRoutes[i].getBusStopNumber());
+      	 // System.out.println("FANT BUSSTOPP: " +finalRoutes[i].getBusStopNumber());
+ //       	System.out.println("Realtimecodes: " + realTimeCodes.size());
       	  tempId = Integer.parseInt(realTimeCodes.get(finalRoutes[i].getBusStopNumber()).toString());
       	  int wantedLine = finalRoutes[i].getBusNumber();
       	  BusStops nextBus = k_browser.specificRequest(tempId,wantedLine); 
@@ -318,8 +322,8 @@ public class BusTUCApp extends MapActivity
         Object[] keys = tSet.keySet().toArray();
         for(Object key : keys)
         {
-      	Log.v("Keys","Key:"+Double.parseDouble(key.toString()));
-      	Log.v("Value","Value:"+tSet.get(key).getProvider());
+        	Log.v("Keys","Key:"+Double.parseDouble(key.toString()));
+        	Log.v("Value","Value:"+tSet.get(key).getProvider());
         }
                           
 		  //Log.v("wantedbus","wantedbus:"+wantedBusStop);
@@ -334,10 +338,10 @@ public class BusTUCApp extends MapActivity
     	// Perform action on clicks
     	if(!tSet.isEmpty())
   	     {
-    	  System.out.println("K-browserobj " + k_browser.toString()); 
+    	 // System.out.println("K-browserobj " + k_browser.toString() + "realtimelength: " + realTimeCodes.size()); 
           String[] html_page = k_browser.getRequest(tSet,editTe.getText().toString(),false);   
-          System.out.println("TEKST: " + editTe.getText().toString() );
-          System.out.println("HTML LENGTH: " + html_page.length); 
+          //System.out.println("TEKST: " + editTe.getText().toString() );
+          //System.out.println("HTML LENGTH: " + html_page.length); 
           StringBuilder str = new StringBuilder(); 
           // Parses the returned html
           for(int i = 0;i<html_page.length;i++) 
@@ -372,9 +376,9 @@ public class BusTUCApp extends MapActivity
           {
         	 int intBusStopNumber = routes[i].getBusStopNumber(); 
          	 String strBusStopNumber = String.valueOf(intBusStopNumber);
-         	System.out.println("strBusStopNumber: " + strBusStopNumber);
+         	//	System.out.println("strBusStopNumber: " + strBusStopNumber);
          	 int newBSN = Integer.parseInt(strBusStopNumber.substring(strBusStopNumber.length()-3));
-         	 System.out.println("newBSN: " + newBSN);
+         	//System.out.println("newBSN: " + newBSN);
          	 
          	 
          	 if(locationsArray.containsKey(newBSN))
@@ -390,6 +394,7 @@ public class BusTUCApp extends MapActivity
           calculator.printOutRoutes("BEFORE",routes, false);
           finalRoutes = calculator.suggestRoutes(routes);
           calculator.printOutRoutes("AFTER",finalRoutes, false);
+          return true;
   	     }
         return true;
 
@@ -604,12 +609,12 @@ public class BusTUCApp extends MapActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) 
     {
     	super.onActivityResult(requestCode, resultCode, data);
-    	System.out.println("ACTIVITY RESULT RECIEVED!!! ");
+    	//	System.out.println("ACTIVITY RESULT RECIEVED!!! ");
     	if(!data.getStringExtra("test").isEmpty())
     	{
     		String item = data.getStringExtra("test");
 	    	editTe.setText(item);
-	    	System.out.println("SET TO: " + item);
+	    	//System.out.println("SET TO: " + item);
 	    	Toast.makeText(this, editTe.getText().toString(), Toast.LENGTH_LONG).show();
 	    	new OracleThread(getApplicationContext()).execute();
     	}
@@ -622,9 +627,11 @@ public class BusTUCApp extends MapActivity
     class OracleThread extends AsyncTask<Void, Void, Void>
     {
         private Context context;    
+        boolean check = false;
 
         public OracleThread(Context context)
         {
+        	
             this.context = context;
         }
 
@@ -632,7 +639,7 @@ public class BusTUCApp extends MapActivity
         protected Void doInBackground(Void... params)
         {
         	long time = System.nanoTime();
-        	sendToOracle();        	
+        	if(sendToOracle()) check = true;        	
         	Long newTime = System.nanoTime() - time;
 			System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
         	
@@ -650,43 +657,24 @@ public class BusTUCApp extends MapActivity
        protected void onPostExecute(Void unused)
         {
         	// Start real-time computing
-	    	new RealTimeThread(getApplicationContext()).execute();
+        	if(check)
+        	{
+        		long time = System.nanoTime();
+        		computeRealTime();
+            	Long newTime = System.nanoTime() - time;
+    			System.out.println("TIME RealTime: " +  newTime/1000000000.0);
+        		myLocationText.setText(presentation.toString());
+        	}
+        	else
+        	{
+        		editTe.setEnabled(true);
+             	button.setEnabled(true);
+             	
+        	}
 
         }
     }
-    
-    // Real-time queries
-    class RealTimeThread extends AsyncTask<Void, Void, Void>
-    {
-        private Context context;
-     
-
-        public RealTimeThread(Context context)
-        {
-            this.context = context;
-        }
-
-        @Override
-        protected Void doInBackground(Void... params)
-        {
-        	long time = System.nanoTime();
-        	computeRealTime();        	
-        	Long newTime = System.nanoTime() - time;
-			System.out.println("TIME REALTIME: " +  newTime/1000000000.0);
-            return null;
-        }       
-      
-
-        @Override
-       protected void onPostExecute(Void unused)
-        {
-            myLocationText.setText(presentation.toString());   
-         	editTe.setEnabled(true);
-         	button.setEnabled(true);
-        }
-    }
-    
-    
+   
     // The class which draws on the map
     /*class MapOverlay extends com.google.android.maps.Overlay
     {	    	new OracleThread(getApplicationContext()).execute();
