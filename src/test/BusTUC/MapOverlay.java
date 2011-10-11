@@ -23,7 +23,8 @@ class MapOverlay extends ItemizedOverlay
 	private Context m_Context;
 	private List items;
 	private Drawable drawable;
-	
+	public static ArrayList <BusStops> foundStopsOutgoing;
+	public static ArrayList <BusStops> foundStopsIncoming;
 	public MapOverlay(Drawable defaultMarker) {
 		super(defaultMarker);
 		drawable = defaultMarker;
@@ -53,39 +54,35 @@ class MapOverlay extends ItemizedOverlay
 	{
 		OverlayItem item = (OverlayItem)items.get(index);			
 
-		int lat = (int) ((int) (item.getPoint().getLatitudeE6())); 
+		int lat = (int) (item.getPoint().getLatitudeE6()); 
         int longi = (int) (item.getPoint().getLongitudeE6());
        // Object[] keys = BusTUCApp.gpsCords;//tSet.keySet().toArray();
         Browser k_browser = new Browser();
         HashMap realTimeCodes = k_browser.realTimeData();
      //   System.out.println("SIZE: " + realTimeCodes.size());
-        DecimalFormat df = new DecimalFormat("##.##");
+        DecimalFormat df = new DecimalFormat("##.#####");
 
         for(int i=0; i<BusTUCApp.gpsCords.length; i++)
         {
-        System.out.println("FOO: " + df.format(Double.parseDouble(BusTUCApp.gpsCords[i][3])) + "   " + (lat/ 1E6)  + "  " +df.format(Double.parseDouble(BusTUCApp.gpsCords[i][2]))+ "  " +(longi/1E6));
+     //   System.out.println("FOO: " + BusTUCApp.gpsCords[i][1] + ": " + df.format(Double.parseDouble(BusTUCApp.gpsCords[i][3])) + "   " + df.format((lat/ 1E6))  + "  " +df.format(Double.parseDouble(BusTUCApp.gpsCords[i][2]))+ "  " +df.format(longi/1E6));
         	if(df.format(Double.parseDouble(BusTUCApp.gpsCords[i][3])).equals(""+df.format(lat/1E6)) && df.format(Double.parseDouble(BusTUCApp.gpsCords[i][2])).equals("" +df.format(longi/1E6)))
         	{
         		
-              //	Log.v("Value","Value:"+Double.parseDouble(BusTUCApp.tSet.get(keys[i]).toString()));
-        		System.out.println("FOUND PRESSED STOP! " + BusTUCApp.gpsCords[i][1]);
-        		Iterator it = realTimeCodes.entrySet().iterator();
-                while (it.hasNext()) {
-                    Map.Entry pairs = (Map.Entry)it.next();
-                    String tmp = (String) pairs.getKey();
-                  //  System.out.println(" Hashmap: " +pairs.getKey() + " = " + pairs.getValue());
-                    if(Integer.parseInt(BusTUCApp.gpsCords[i][0].substring(5, 7)) == Integer.parseInt(tmp.substring(5, 5)))
-                    {
-                    	System.out.println("FOUND REALTIMECODE: " + tmp);
-                    	
-                    }
-                    else
-                    {
-                    	System.out.println("NOT FOUND REAL");
-                    }
-                    it.remove(); // avoids a ConcurrentModificationException
-                }
-        		
+        		System.out.println("FOUND PRESSED STOP! " + BusTUCApp.gpsCords[i][1]);        	
+        		int line = Integer.parseInt(BusTUCApp.gpsCords[i][0]);
+        		int tempIdOutgoing = Integer.parseInt(realTimeCodes.get(line).toString());
+        		StringBuffer temp = new StringBuffer(""+tempIdOutgoing);
+        		// Replace 0 with 1 -> direction towards the city centre
+        		int tempIdIncoming = Integer.parseInt(temp.replace(4, 5, "1").toString());
+        		//int tempId = Integer.parseInt(realTimeCodes.get(16011333).toString());
+                System.out.println("FOUND REALTIMECODE: " +BusTUCApp.gpsCords[i][0]);
+                foundStopsOutgoing = Browser.specificRequestForStop(tempIdOutgoing);
+                foundStopsIncoming = Browser.specificRequestForStop(tempIdIncoming);
+                
+             //   for(int j=0; j< foundStopsOutgoing.size(); j++)
+                //{
+                //	System.out.println("Foundstop: " + foundStopsOutgoing.get(j).getLine() + "   " + foundStopsOutgoing.get(j).getArrivalTime().getHours() + "."+ foundStopsOutgoing.get(j).getArrivalTime().getMinutes());
+               // }
         	}
         }
 		Intent intent = new Intent(m_Context, BusList.class);

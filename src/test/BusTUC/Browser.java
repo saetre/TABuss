@@ -187,7 +187,7 @@ public class Browser
 			}
 			return realT; 
 	}
-	public String sendSoapRequest(String postHeader, String soapMessage)
+	public static String sendSoapRequest(String postHeader, String soapMessage)
 	{
 			byte[] result = null; 
 			String soap = soapMessage; 
@@ -252,6 +252,8 @@ public class Browser
 	        soap.append("</soap:Envelope>");
 	        soap.append("");
 	        String str1 = sendSoapRequest("http://195.0.188.74/InfoTransit/userservices.asmx?op=getUserRealTimeForecast", soap.toString());
+	        System.out.println("SOAP: " + soap);
+	        System.out.println("Str1:" +str1);
 	        BusStops test = null; 
 	        try {
 			test = parseRealTimeData(str1,specifiedLine);
@@ -301,9 +303,10 @@ public class Browser
 		return realTimeNumbers; 
 	}
 	
-	public BusStops specificRequestForStop(int k_RealTimeId)
+	public static ArrayList <BusStops> specificRequestForStop(int k_RealTimeId)
 	{
 	        int realTimeId = k_RealTimeId;  
+	        System.out.println("REAL-TIME ID RECEIVED: " + realTimeId);
 	        HttpPost httppost = new HttpPost("http://195.0.188.74/InfoTransit/userservices.asmx?op=getUserRealTimeForecast");
 	        httppost.setHeader("Content-Type", "text/xml; charset=utf-8");
 	        final StringBuffer soap = new StringBuffer();
@@ -321,8 +324,10 @@ public class Browser
 	        soap.append("</soap:Envelope>");
 	        soap.append("");
 	        String str1 = sendSoapRequest("http://195.0.188.74/InfoTransit/userservices.asmx?op=getUserRealTimeForecast", soap.toString());
-	        BusStops test = null; 
+	        ArrayList <BusStops> test = null; 
 	        try {
+	        	System.out.println("Soap: " +soap);
+	        	System.out.println("Str: " +str1);
 			test = parseRealTimeDataForStop(str1);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -336,8 +341,9 @@ public class Browser
 			}
 			return test; 
 	}
-	public BusStops parseRealTimeDataForStop(String data) throws JSONException, java.text.ParseException
+	public static ArrayList <BusStops> parseRealTimeDataForStop(String data) throws JSONException, java.text.ParseException
 	{
+		ArrayList <BusStops> buses = new ArrayList<BusStops>();
 		  Pattern p = Pattern.compile(
 	                "<getUserRealTimeForecastResult>(.*?)</getUserRealTimeForecastResult>",
 	                Pattern.DOTALL | Pattern.CASE_INSENSITIVE
@@ -346,6 +352,7 @@ public class Browser
 	        String result = null;
 	        while(matcher.find()){
 	                result = (matcher.group(1));
+	                System.out.println("Result from soap: " + result);
 	        }
 	        JSONObject j_o = null;
 	        JSONArray j_a = null;
@@ -357,7 +364,8 @@ public class Browser
 	        if (j_a != null){
 	        	try
 	        	{
-		            for (int i = 0; i < j_a.length(); i++){
+		            for (int i = 0; i < j_a.length(); i++)
+		            {
 		                
 		                BusStops t = new BusStops();
 		                t.line = j_a.getJSONObject(i).getInt("codAzLinea");
@@ -366,10 +374,12 @@ public class Browser
 		                t.arrivalTime = date;
 		                String prev = j_a.getJSONObject(i).getString("statoPrevisione");
 		                
-		                if (prev.equals("Prev") || prev.equals("prev")){
+		                if (prev.equals("Prev") || prev.equals("prev"))
+		                {
 		                    t.realTime = true;
 		                }
-		                else if (prev.equals("sched")){
+		                else if (prev.equals("sched"))
+		                {
 		                    t.realTime = false;
 		                }
 		                
@@ -380,6 +390,7 @@ public class Browser
 		                {
 		                  	wantedBusStop = t;
 		                }
+		                buses.add(t);
 		            }
 	        	}
 	            catch(JSONException e)
@@ -390,8 +401,13 @@ public class Browser
 	        
 	            
 	        }
+	        
+	        else
+	        {
+	        	System.out.println("Could not find property in Browser");
+	        }
 	       
-	        return wantedBusStop;
+	        return buses;
 		}
 	
 	public BusStops parseRealTimeData(String data, int m_speciLine) throws ParseException, JSONException, java.text.ParseException{
@@ -404,6 +420,8 @@ public class Browser
         String result = null;
         while(matcher.find()){
                 result = (matcher.group(1));
+                System.out.println("Result from soap: " + result);
+
         }
         JSONObject j_o = null;
         JSONArray j_a = null;

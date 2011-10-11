@@ -285,6 +285,7 @@ public class BusTUCApp extends MapActivity
  //       	System.out.println("Realtimecodes: " + realTimeCodes.size());
       	  tempId = Integer.parseInt(realTimeCodes.get(finalRoutes[i].getBusStopNumber()).toString());
       	  int wantedLine = finalRoutes[i].getBusNumber();
+      	  System.out.println("TMPID: " + tempId);
       	  BusStops nextBus = k_browser.specificRequest(tempId,wantedLine); 
       	  if(nextBus.getArrivalTime() == null)
       	  {
