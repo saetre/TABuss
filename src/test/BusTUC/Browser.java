@@ -170,7 +170,8 @@ public class Browser
 	        soap.append("</soap:Envelope>");
 	        soap.append("");
 	        String str1 = sendSoapRequest("http://195.0.188.74/InfoTransit/userservices.asmx?op=GetBusStopsList",soap.toString());
-	        int code = 0; 
+	        System.out.println("FUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU " + str1);
+	        int code = 0;  
 	        HashMap realT = new HashMap();
 	        try {
 			//	ArrayList<BusStops> test = parseRealTimeData(str1);
@@ -293,7 +294,7 @@ public class Browser
 	            for (int i = 0; i < j_a.length(); i++){
 	              int realTimeInt = Integer.parseInt(j_a.getJSONObject(i).getString("cinFermata"));
 	              int mobileCode = Integer.parseInt(j_a.getJSONObject(i).getString("codAzNodo"));
-	         //     Log.v("Busstop", "ID:"+mobileCode+" RID:"+realTimeInt);
+	      //       Log.v("Busstop", "ID:"+mobileCode+" RID:"+realTimeInt);
 	              realTimeNumbers.put(mobileCode, new Integer(realTimeInt));
 	            }
 	        }
@@ -354,7 +355,7 @@ public class Browser
 	                result = (matcher.group(1));
 	                System.out.println("Result from soap: " + result);
 	        }
-	        JSONObject j_o = null;
+	        JSONObject j_o = null; 
 	        JSONArray j_a = null;
 	        
 	        j_o = new JSONObject(result);
@@ -368,10 +369,11 @@ public class Browser
 		            {
 		                
 		                BusStops t = new BusStops();
-		                t.line = j_a.getJSONObject(i).getInt("codAzLinea");
+		                t.line = j_a.getJSONObject(i).getInt("descrizioneLinea");
 		                SimpleDateFormat formatter = new SimpleDateFormat("d/M/y H:mm"); 
 		                Date date = (Date)formatter.parse(j_a.getJSONObject(i).getString("orario"));
 		                t.arrivalTime = date;
+		                t.dest = j_a.getJSONObject(i).getString("capDest");
 		                String prev = j_a.getJSONObject(i).getString("statoPrevisione");
 		                
 		                if (prev.equals("Prev") || prev.equals("prev"))
@@ -436,7 +438,7 @@ public class Browser
 	            for (int i = 0; i < j_a.length(); i++){
 	                
 	                BusStops t = new BusStops();
-	                t.line = j_a.getJSONObject(i).getInt("codAzLinea");
+	                t.line = j_a.getJSONObject(i).getInt("descrizioneLinea");
 	                SimpleDateFormat formatter = new SimpleDateFormat("d/M/y H:mm"); 
 	                Date date = (Date)formatter.parse(j_a.getJSONObject(i).getString("orario"));
 	                t.arrivalTime = date;

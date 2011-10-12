@@ -7,9 +7,20 @@ public class BusStops {
 	public int line; 
 	public Date arrivalTime; 
 	public boolean realTime; 
+	public String dest;
 	BusStops()
 	{
 		
+	}
+	
+	public String getDest()
+	{
+		return dest;
+	}
+	
+	public void setDest(String dest)
+	{
+		this.dest = dest;
 	}
 	public int getLine() {
 		return line;

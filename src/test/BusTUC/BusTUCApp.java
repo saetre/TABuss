@@ -51,7 +51,7 @@ public class BusTUCApp extends MapActivity
 {    
 	MapOverlay mapOverlay;
 	MapView mapView; // Google Maps
-	public static String[][] gpsCords;  // Array containing bus stops
+	String[][] gpsCords;  // Array containing bus stops
 	MapController mc; // Controller for the map
 	List<String> prov; // List of providers
     GeoPoint p,p2; // p is current location, p2 is closest bus stop. 
@@ -131,7 +131,7 @@ public class BusTUCApp extends MapActivity
         myLocationText.setText("");
         LinearLayout zoomLayout = (LinearLayout)findViewById(R.id.zoom);  
         // Gets the coordinates from the bus XML file
-        String[] gpsCoordinates = getResources().getStringArray(R.array.coords2); 
+        String[] gpsCoordinates = getResources().getStringArray(R.array.coords3); 
         
        /* for(int i=0; i< gpsCoordinates.length; i++)
         {
@@ -175,6 +175,7 @@ public class BusTUCApp extends MapActivity
         
         provider = locationManager.getBestProvider(criteria, true);
         k_browser = new Browser(); 
+        // Load real-time codes
         realTimeCodes = k_browser.realTimeData();
         Iterator it = realTimeCodes.entrySet().iterator();
         System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
@@ -201,7 +202,7 @@ public class BusTUCApp extends MapActivity
                 //System.out.println("REALTIMEX: " + realTimeCodes.size());
                 Log.v("sort","returnedHmap:"+locationsArray.size());	
                 // creates a HashMap with all the relevant bus stops
-                tSet = m_partialSort(locationsArray,5,500,false);
+                tSet = m_partialSort(locationsArray,100,10000,false);
                 int numberofStops = tSet.size();
                 closestBusStops = new GeoPoint[numberofStops];
                 Log.v("sort","returnedtSet"+tSet.size());	
@@ -431,21 +432,23 @@ public class BusTUCApp extends MapActivity
         for(int i = 0;i<clength;i++)
         {
      	   closestLocation[i] = new Location(provider);
-     	   closestLocation[i].setProvider(tempCords[i][1]); 
-     	   closestLocation[i].setLatitude(Double.parseDouble(tempCords[i][3])); 
-     	   closestLocation[i].setLongitude(Double.parseDouble(tempCords[i][2]));
+     	   closestLocation[i].setProvider(tempCords[i][2]); 
+     	   closestLocation[i].setLatitude(Double.parseDouble(tempCords[i][4])); // 1 i gps2.xml
+     	   closestLocation[i].setLongitude(Double.parseDouble(tempCords[i][3])); // 2 i gps2.xml
+     	  // System.out.println("Set long: " + closestLocation[i].getProvider());
      	   int distance = (int)closestLocation[i].distanceTo(currentlocation);
      	   HashMap<Integer, Location> hMap = new HashMap<Integer,Location>(); 
      	   hMap.put(distance, closestLocation[i]);
-     	   String busStopId = tempCords[i][0]; 
-     	   int newID = Integer.parseInt(busStopId.substring(busStopId.length()-3));
+     	   String busStopId = tempCords[i][1]; // 0 i gps2.xml
+     	 //  int newID = Integer.parseInt(busStopId.substring(busStopId.length()-3));
    //  	   Log.v("newId","newID:"+newID);    	   
-     	   if(counter.containsKey(newID))
+     	   /*if(counter.containsKey(newID))
      	   {
      		   counter.put(newID, counter.get(newID)+1);
      		   Log.v("SAME","SAMEID:"+newID);
-     	   }else { counter.put(newID,1); }
-     	   newMap.put(newID, hMap);
+     	   }else { counter.put(newID,1); }*/
+     	   
+     	   newMap.put(Integer.parseInt(busStopId), hMap);
              
         } 
         return newMap; 
@@ -468,7 +471,6 @@ public class BusTUCApp extends MapActivity
     		}
     		else if(!maxLoc && currentValue < m && i != 0)
     		{
-    			System.out.println("MAXLOC = FALSE ");
     			minValues.add(currentValue); 
     			finalMap.put(currentValue, newMap.get(keys[y]).get(currentValue)); 
     		}
@@ -492,14 +494,7 @@ public class BusTUCApp extends MapActivity
     			finalMap.remove(newkeys[k]);
     		}
     	}
-    	Iterator<Integer> iter = minValues.iterator();
-    	while(iter.hasNext())
-    	{
-    	   int next = iter.next();
-    	   Log.v("sort","TreeValue"+next);	
-    	 //  Log.v("finalmap","finalmap="+finalMap.get(next).getProvider()+":"+next);
-    	}
-    	System.out.println("FINAL MAP: " + finalMap.size()); 
+    
     	return finalMap; 
     }
 
@@ -535,7 +530,7 @@ public class BusTUCApp extends MapActivity
     	
 		item.setMarker(icon);
 		mapOverlay.addItem(item);
-		System.out.println("ADDING STOP: " + mapOverlay.size());
+		//System.out.println("ADDING STOP: " + mapOverlay.size());
         
     }
     
@@ -577,7 +572,7 @@ public class BusTUCApp extends MapActivity
 
     //	mapView.getOverlays().clear();
         Drawable tmp = getResources().getDrawable(R.drawable.s_busstop2);
-        mapOverlay = new MapOverlay(tmp, this);        
+        mapOverlay = new MapOverlay(tmp, this,realTimeCodes, gpsCords);        
        
         //
     }
@@ -665,6 +660,8 @@ public class BusTUCApp extends MapActivity
             	Long newTime = System.nanoTime() - time;
     			System.out.println("TIME RealTime: " +  newTime/1000000000.0);
         		myLocationText.setText(presentation.toString());
+        		editTe.setEnabled(true);
+             	button.setEnabled(true);
         	}
         	else
         	{

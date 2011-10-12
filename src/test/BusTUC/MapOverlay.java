@@ -1,5 +1,6 @@
 package test.BusTUC;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,8 +24,13 @@ class MapOverlay extends ItemizedOverlay
 	private Context m_Context;
 	private List items;
 	private Drawable drawable;
-	public static ArrayList <BusStops> foundStopsOutgoing;
-	public static ArrayList <BusStops> foundStopsIncoming;
+	// Change to none-static later if necessary
+	public static ArrayList <BusStops> foundStopsList;
+	//public static ArrayList <BusStops> foundStopsIncoming;
+	//
+	public static String foundBusStop;
+	HashMap realTimeCodes;
+	String [][] gpsCords;
 	public MapOverlay(Drawable defaultMarker) {
 		super(defaultMarker);
 		drawable = defaultMarker;
@@ -32,11 +38,15 @@ class MapOverlay extends ItemizedOverlay
 		// TODO Auto-generated constructor stub
 	}
 
-	public MapOverlay(Drawable defaultMarker, Context context) {
+	public MapOverlay(Drawable defaultMarker, Context context, HashMap realTimeCodes, String [][] gpsCords) {
 		super(defaultMarker);
 		drawable = defaultMarker;
 		m_Context = context;
+		this.realTimeCodes = realTimeCodes;
+		this.gpsCords = gpsCords;
 		items = new ArrayList();
+		
+
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -44,7 +54,6 @@ class MapOverlay extends ItemizedOverlay
 	{
 		items.add(item);
 		populate();
-		System.out.println("ADDITEMSIZE: " + items.size());
 	}
 
 	
@@ -56,39 +65,29 @@ class MapOverlay extends ItemizedOverlay
 
 		int lat = (int) (item.getPoint().getLatitudeE6()); 
         int longi = (int) (item.getPoint().getLongitudeE6());
-       // Object[] keys = BusTUCApp.gpsCords;//tSet.keySet().toArray();
         Browser k_browser = new Browser();
-        HashMap realTimeCodes = k_browser.realTimeData();
-     //   System.out.println("SIZE: " + realTimeCodes.size());
         DecimalFormat df = new DecimalFormat("##.#####");
 
-        for(int i=0; i<BusTUCApp.gpsCords.length; i++)
+        for(int i=0; i<gpsCords.length; i++)
         {
-     //   System.out.println("FOO: " + BusTUCApp.gpsCords[i][1] + ": " + df.format(Double.parseDouble(BusTUCApp.gpsCords[i][3])) + "   " + df.format((lat/ 1E6))  + "  " +df.format(Double.parseDouble(BusTUCApp.gpsCords[i][2]))+ "  " +df.format(longi/1E6));
-        	if(df.format(Double.parseDouble(BusTUCApp.gpsCords[i][3])).equals(""+df.format(lat/1E6)) && df.format(Double.parseDouble(BusTUCApp.gpsCords[i][2])).equals("" +df.format(longi/1E6)))
+     //   	System.out.println("Search for: " + Double.parseDouble(gpsCords[i][3])).equals(""+df.format(lat/1E6)) && df.format(Double.parseDouble(gpsCords[i][2])).equals("" +df.format(longi/1E6)))
+        	
+        	// Compare lat long of pressed spot with lat long of bus stops in gpsCords
+        	if(df.format(Double.parseDouble(gpsCords[i][4])).equals(""+df.format(lat/1E6)) && df.format(Double.parseDouble(gpsCords[i][3])).equals("" +df.format(longi/1E6)))
         	{
         		
-        		System.out.println("FOUND PRESSED STOP! " + BusTUCApp.gpsCords[i][1]);        	
-        		int line = Integer.parseInt(BusTUCApp.gpsCords[i][0]);
+        		System.out.println("FOUND PRESSED STOP! " + gpsCords[i][1]);        
+        		foundBusStop = gpsCords[i][2];
+        		int line = Integer.parseInt(gpsCords[i][1]);
         		int tempIdOutgoing = Integer.parseInt(realTimeCodes.get(line).toString());
-        		StringBuffer temp = new StringBuffer(""+tempIdOutgoing);
-        		// Replace 0 with 1 -> direction towards the city centre
-        		int tempIdIncoming = Integer.parseInt(temp.replace(4, 5, "1").toString());
-        		//int tempId = Integer.parseInt(realTimeCodes.get(16011333).toString());
-                System.out.println("FOUND REALTIMECODE: " +BusTUCApp.gpsCords[i][0]);
-                foundStopsOutgoing = Browser.specificRequestForStop(tempIdOutgoing);
-                foundStopsIncoming = Browser.specificRequestForStop(tempIdIncoming);
-                
-             //   for(int j=0; j< foundStopsOutgoing.size(); j++)
-                //{
-                //	System.out.println("Foundstop: " + foundStopsOutgoing.get(j).getLine() + "   " + foundStopsOutgoing.get(j).getArrivalTime().getHours() + "."+ foundStopsOutgoing.get(j).getArrivalTime().getMinutes());
-               // }
-        	}
+                System.out.println("FOUND REALTIMECODE: " +gpsCords[i][0]);
+                // Add to arrayList
+                foundStopsList = Browser.specificRequestForStop(tempIdOutgoing);
+           	}
         }
 		Intent intent = new Intent(m_Context, BusList.class);
 		m_Context.startActivity(intent);
-		//BusList.ID = item.getTitle();
-		return true;
+				return true;
 		
 	}
 	

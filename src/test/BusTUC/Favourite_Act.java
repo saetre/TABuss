@@ -41,6 +41,7 @@ public class Favourite_Act extends ListActivity
 	{
 	  super.onCreate(savedInstanceState);
 	  itemList =  new ArrayList<String>();
+	  
 	  for(int i=0; i< getFilesFromSD().size(); i++)
 	  {
 		  System.out.println("ADDING: " + getFilesFromSD().get(i));

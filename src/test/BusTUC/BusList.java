@@ -37,71 +37,46 @@ import android.widget.ViewFlipper;
 public class BusList extends ListActivity
 {
 	public static String ID;
-	static  String[] stops;
+
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{
 	  super.onCreate(savedInstanceState);
 	  ListView lv = getListView();
 	  TextView text = new TextView(this);
-	  text.setText(ID +"\n" + "Kommende busser:");
+	  text.setText(MapOverlay.foundBusStop +"\n");
 	  lv.addHeaderView(text);
 	  lv.setTextFilterEnabled(true);
-	  StringBuffer nso
-	  String [] neededStopsOutgoing = new String [MapOverlay.foundStopsOutgoing.size()];
-	  String [] neededStopsIncoming = new String [MapOverlay.foundStopsIncoming.size()];
-	  StringBuffer first;
-	  StringBuffer second;
-	  String minute1;
-	  String minute2;
-	  neededStopsOutgoing[0] = "Busser fra sentrum: \n";
-	  neededStopsIncoming[0] = "Busser til sentrum: \n";
-	  
-	  // Find outgoing bustops
-	  for(int i=1; i<neededStopsOutgoing.length; i++)
-	  {		
-		// if minte = 0-9, add a zero
-		minute1 = "" +MapOverlay.foundStopsOutgoing.get(i).arrivalTime.getMinutes();
-		first = new StringBuffer("" + minute1);
-		if(first.length() == 1)
-		{
-			first.insert(0, "0");
-		}
-		// Append to string array
-		neededStopsOutgoing[i]= "Buss " + MapOverlay.foundStopsOutgoing.get(i).getLine() + " går " +MapOverlay.foundStopsOutgoing.get(i).arrivalTime.getHours() + ":" +first;
+	  try
+	  {
+		  String [] neededStopsOutgoing = new String [MapOverlay.foundStopsList.size()];
+		  StringBuffer buf;
+		  String minute1;
+		  neededStopsOutgoing[0] =  "Kommende busser:\n";
 		  
+		  // Find outgoing bustops
+		  for(int i=1; i<neededStopsOutgoing.length; i++)
+		  {		
+			// if minte = 0-9, add a zero
+			minute1 = "" +MapOverlay.foundStopsList.get(i).arrivalTime.getMinutes();
+			buf = new StringBuffer("" + minute1);
+			if(buf.length() == 1)
+			{
+				buf.insert(0, "0");
+			}
+			// Append to string array
+			neededStopsOutgoing[i]= "Buss " + MapOverlay.foundStopsList.get(i).getLine() + " går " +MapOverlay.foundStopsList.get(i).arrivalTime.getHours() + ":" +buf + " til " +MapOverlay.foundStopsList.get(i).getDest() ;
+			  
+		  }
+		  // Show in list
+		  setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, neededStopsOutgoing));
+		  }
+	  catch(Exception e)
+	  {
+		  System.out.println("No routes found");
+		  Toast.makeText(this, "No routes found", Toast.LENGTH_SHORT);
 	  }
-	  
-	  // Same for incoming busses
-	  for(int i=1; i<neededStopsIncoming.length; i++)
-	  {		
-	 
-		minute2 = "" +MapOverlay.foundStopsIncoming.get(i).arrivalTime.getMinutes();
-		second = new StringBuffer("" + minute2);
-		if(second.length() == 1)
-		{
-			second.insert(0, "0");
-		}
-		
-		neededStopsIncoming[i]= "Buss " + MapOverlay.foundStopsIncoming.get(i).getLine() + " går " +MapOverlay.foundStopsIncoming.get(i).arrivalTime.getHours() + ":" +second; 
-		  
-	  }
-	  
-	  List<String> list = new ArrayList<String>(Arrays.asList(neededStopsIncoming));
-      list.addAll(Arrays.asList(neededStopsOutgoing));      
-      Object [] combined = list.toArray();
-      String [] returnArray = new String[combined.length];
-      
-      for(int i=0; i<combined.length; i++)
-      {
-    	  returnArray[i] = (String)combined[i];
-      }
-      System.out.println("ARRAY SYZE: " + returnArray.length);
-
-	  
-	  
-	  
-	  setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, returnArray));
 	}
 
 
