@@ -47,6 +47,7 @@ public class BusList extends ListActivity
 	  text.setText(ID +"\n" + "Kommende busser:");
 	  lv.addHeaderView(text);
 	  lv.setTextFilterEnabled(true);
+	  StringBuffer nso
 	  String [] neededStopsOutgoing = new String [MapOverlay.foundStopsOutgoing.size()];
 	  String [] neededStopsIncoming = new String [MapOverlay.foundStopsIncoming.size()];
 	  StringBuffer first;
@@ -55,20 +56,23 @@ public class BusList extends ListActivity
 	  String minute2;
 	  neededStopsOutgoing[0] = "Busser fra sentrum: \n";
 	  neededStopsIncoming[0] = "Busser til sentrum: \n";
+	  
+	  // Find outgoing bustops
 	  for(int i=1; i<neededStopsOutgoing.length; i++)
 	  {		
-	 
+		// if minte = 0-9, add a zero
 		minute1 = "" +MapOverlay.foundStopsOutgoing.get(i).arrivalTime.getMinutes();
 		first = new StringBuffer("" + minute1);
 		if(first.length() == 1)
 		{
 			first.insert(0, "0");
 		}
-		
+		// Append to string array
 		neededStopsOutgoing[i]= "Buss " + MapOverlay.foundStopsOutgoing.get(i).getLine() + " går " +MapOverlay.foundStopsOutgoing.get(i).arrivalTime.getHours() + ":" +first;
 		  
 	  }
 	  
+	  // Same for incoming busses
 	  for(int i=1; i<neededStopsIncoming.length; i++)
 	  {		
 	 
