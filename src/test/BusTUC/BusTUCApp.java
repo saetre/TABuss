@@ -64,7 +64,7 @@ public class BusTUCApp extends MapActivity
     String provider; // Provider 
     TextView myLocationText; 
     LocationListener locationListener;
-    Browser k_browser;
+    Browser k_browser; 
     HashMap realTimeCodes; 
     GeoPoint[] closestBusStops; 
     Button button;
