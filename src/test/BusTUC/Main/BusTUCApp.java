@@ -266,6 +266,7 @@ public class BusTUCApp extends MapActivity
         }
         calculator.printOutRoutes("AFTERREALTIME",finalRoutes, true);
         Route[] printRoute = calculator.sortByTotalTime(finalRoutes);
+        
         for(int i = 0;i<finalRoutes.length;i++)
         {
       //	 int intBusStopNumber = printRoute[i].getBusStopNumber(); 

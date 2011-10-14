@@ -5,7 +5,8 @@ import java.util.Comparator;
 import test.BusTUC.R;
 
 
-public class Route{
+public class Route implements Comparable<Route>
+{
      
 	private String arrivalTime; 
 	private String busStopName; 
@@ -87,6 +88,7 @@ public class Route{
 		this.destination = destination;
 	}
 	
+	 @Override
 	public int compareTo( Route otherRoute ) {
 	    final int BEFORE = -1;
 	    final int EQUAL = 0;
@@ -99,4 +101,6 @@ public class Route{
 
 	    return EQUAL;
 	  }
+
+
 }
