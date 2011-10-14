@@ -139,34 +139,22 @@ public class Calculate {
 		tt = difference + k_tt; 
 		return tt; 
 	 }
+	 
 	 public Route[] sortByTotalTime(Route[] routeSuggestion)
 	 {
-		 
-		 for(int i=0; i<routeSuggestion.length; i++)
+		
+		 Route[] rs = routeSuggestion;  
+		 for(int i=0; i<rs.length; i++)
 		 {
-			 System.out.println("FOOO " + routeSuggestion[i].getTotalTime());
+			 System.out.println("Before: " + rs[i].getTotalTime());
 		 }
-		 
-		 HashMap<Integer,Integer> temp = new HashMap<Integer,Integer>();	 		 
-		 Route[] rs = routeSuggestion; 
-		 Route[] newroutes = new Route[rs.length];
-		 for(int i = 0;i<rs.length;i++)
-		 {		
-			temp.put(i, rs[i].getTotalTime());
-		//	 System.out.println("Added: " + rs[i].getTotalTime() + "  " + i );		
-			 
-		 }
-		 Object[] keys = temp.values().toArray();
-		 System.out.println("Temp size: " + temp.size());
-		 System.out.println("Keys size: " + keys.length);
-		 System.out.println("RS length: " + rs.length);
-		 Arrays.sort(keys);
-		 for(int y = 0;y<rs.length;y++)
+		 // Overriden compareTo in Route
+		 Arrays.sort(rs);
+		 for(int i=0; i<rs.length; i++)
 		 {
-			 newroutes[y] = new Route();
-			 System.out.println("NewRoute: " + keys[y]);//+ "   "  +rs[temp.get(keys[y])]);
-			 newroutes[y] = rs[temp.get(keys[y])];			
+			 System.out.println("After: " + rs[i].getTotalTime());
 		 }
-		 return newroutes; 
+		
+		 return rs; 
 	 }
 }
