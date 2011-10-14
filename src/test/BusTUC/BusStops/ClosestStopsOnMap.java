@@ -5,6 +5,7 @@ import com.google.android.maps.GeoPoint;
 /*
  * Class containing properties for the closest stops.
  * This to avoid doing huge lookup regarding lat/long
+ * foooo
  */
 public class ClosestStopsOnMap 
 {
