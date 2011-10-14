@@ -1,8 +1,10 @@
 package test.BusTUC.Calc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -139,18 +141,22 @@ public class Calculate {
 	 }
 	 public Route[] sortByTotalTime(Route[] routeSuggestion)
 	 {
-		 HashMap<Integer,Integer> temp = new HashMap<Integer,Integer>();
 		 
+		 for(int i=0; i<routeSuggestion.length; i++)
+		 {
+			 System.out.println("FOOO " + routeSuggestion[i].getTotalTime());
+		 }
+		 
+		 HashMap<Integer,Integer> temp = new HashMap<Integer,Integer>();	 		 
 		 Route[] rs = routeSuggestion; 
 		 Route[] newroutes = new Route[rs.length];
 		 for(int i = 0;i<rs.length;i++)
-		 {
-			 System.out.println("In for loop: " + i);
-			 temp.put(rs[i].getTotalTime(), i);
+		 {		
+			temp.put(i, rs[i].getTotalTime());
+		//	 System.out.println("Added: " + rs[i].getTotalTime() + "  " + i );		
 			 
 		 }
-		
-		 Object[] keys = temp.keySet().toArray();
+		 Object[] keys = temp.values().toArray();
 		 System.out.println("Temp size: " + temp.size());
 		 System.out.println("Keys size: " + keys.length);
 		 System.out.println("RS length: " + rs.length);
@@ -158,9 +164,8 @@ public class Calculate {
 		 for(int y = 0;y<rs.length;y++)
 		 {
 			 newroutes[y] = new Route();
-			 System.out.println("NewRoute: " + temp.get(keys[y]));
-			 newroutes[y] = rs[temp.get(keys[y])];
-			
+			 System.out.println("NewRoute: " + keys[y]);//+ "   "  +rs[temp.get(keys[y])]);
+			 newroutes[y] = rs[temp.get(keys[y])];			
 		 }
 		 return newroutes; 
 	 }
