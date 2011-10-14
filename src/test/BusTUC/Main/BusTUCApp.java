@@ -1,6 +1,7 @@
-package test.BusTUC;
+package test.BusTUC.Main;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,6 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import test.BusTUC.R;
+import test.BusTUC.Calc.Calculate;
+import test.BusTUC.Calc.Sort;
+import test.BusTUC.Favourites.Favourite_Act;
+import test.BusTUC.GPS.GPS;
+import test.BusTUC.Queries.Browser;
+import test.BusTUC.Stops.BusStops;
+import test.BusTUC.Stops.ClosestStopsOnMap;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -58,7 +66,8 @@ public class BusTUCApp extends MapActivity
     GPS k_gps; // Object of the GetGPS class. 
     Location currentlocation, busLoc; // Location objects
     // Static because of access from BusList
-    HashMap<Integer,Location> tSet; // HashMap used for finding closest locations
+    HashMap<Integer,Location> tSetExclude; // HashMap used for finding closest locations. Ignores stops at both sides of the road
+    HashMap<Integer,Location> tSetAllStops; // HashMap used for finding closest locations. Adds stops from both sides of the road. For use on map w
     LocationManager locationManager; // Location Manager
     HashMap<Integer,HashMap<Integer,Location>> locationsArray;
     String provider; // Provider 
@@ -66,58 +75,13 @@ public class BusTUCApp extends MapActivity
     LocationListener locationListener;
     Browser k_browser; 
     HashMap realTimeCodes; 
-    GeoPoint[] closestBusStops; 
+    ClosestStopsOnMap [] cl; // Object containing geopoint of closest stops. 
     Button button;
     // adds edittext box
     EditText editTe;
     StringBuffer presentation; // String which contain answer from bussTUC
     private Route [] routes; // Routes returned from bussTUC
     private Route [] finalRoutes; // Routes after real-time processing
-
-    
-    // Accelometer
-    private SensorManager mSensorManager;
-    private float mAccel; // acceleration apart from gravity
-    private float mAccelCurrent; // current acceleration including gravity
-    private float mAccelLast; // last acceleration including gravity
-
-
-    // Devices built in sensor for detecting movement
-    // Have a few bugs, need to fix later
-    private final SensorEventListener mSensorListener = new SensorEventListener() 
-    {
-
-        public void onSensorChanged(SensorEvent se) 
-        {
-          float x = se.values[0];
-          float y = se.values[1];
-          float z = se.values[2];
-          // Formulas found online
-          mAccelLast = mAccelCurrent;
-          mAccelCurrent = (float) Math.sqrt((double) (x*x + y*y + z*z));
-          float delta = mAccelCurrent - mAccelLast;
-          mAccel = mAccel * 0.9f + delta; // perform low-cut filter
-          // End of formulas found online
-          
-          // If movement has happened. Originally set to 5, but adjusted to a high number, to avoid uncontrolled detections
-          if(mAccel > 100)
-          {
-        	  System.out.println("MOVEMENT!!!!!!!!!!!!!!!!!!");
-        	  // Set to sentrum for testing
-        	  // Plan is to let the shaking trigger a favourite set to "home"
-        	editTe.setText("sentrum");
-        	mAccelCurrent = 5;
-        	sendToOracle();
-          }
-        }
-
-        public void onAccuracyChanged(Sensor sensor, int accuracy) 
-        {
-        	
-        }
-
-		
-      };
 
     /** Called when the activity is first created. */
     
@@ -140,25 +104,14 @@ public class BusTUCApp extends MapActivity
         //GPS k_gps = new GPS(myImageFileEndings);
         // Formats the bus coordinates
         gpsCords = GPS.formatCoordinates(gpsCoordinates);
-        for(int i=0; i< gpsCords.length; i++)
-        {
-        	for(int j=0; j<gpsCords[i].length; j++)
-        	{
+       
         		
         		// 0 - Busstoppnr
         		// 1 - navn
         		// 2 - lat
         		// 3 - long
         		//System.out.println("COORDINATES2 " + gpsCords[i][j]); 
-        	}
-        }
-        // Accelometer properties
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensorManager.registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
-        mAccel = 0.00f;
-        mAccelCurrent = SensorManager.GRAVITY_EARTH;
-        mAccelLast = SensorManager.GRAVITY_EARTH;
-        
+    
         View zoomView = mapView.getZoomControls(); 
  
         zoomLayout.addView(zoomView, 
@@ -169,23 +122,28 @@ public class BusTUCApp extends MapActivity
         
         mc = mapView.getController();
         // Creates a locationManager. 
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        // If no connection, quit
+        try
+        {
+	        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+	        Criteria criteria = new Criteria();
+	        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+	        provider = locationManager.getBestProvider(criteria, true);
+	        k_browser = new Browser(); 
+	        // Load real-time codes
+	        realTimeCodes = k_browser.realTimeData();
+	        System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
+	            Log.v("provider","provider:"+ provider);
+        }
+        catch(Exception e)
+        {
+        	//Toast.makeText(this, "No connection", Toast.LENGTH_LONG).show();
+            System.exit(0);
+        	
+        }
         
-        provider = locationManager.getBestProvider(criteria, true);
-        k_browser = new Browser(); 
-        // Load real-time codes
-        realTimeCodes = k_browser.realTimeData();
-        Iterator it = realTimeCodes.entrySet().iterator();
-        System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
-      /*  while (it.hasNext()) {
-            Map.Entry pairs = (Map.Entry)it.next();
-           // System.out.println(pairs.getKey() + " = " + pairs.getValue());
-            it.remove(); // avoids a ConcurrentModificationException
-        }*/
-
-        Log.v("provider","provider:"+ provider);
+        
+       
        
         // Creates a locationListener
         locationListener = new LocationListener() {
@@ -193,7 +151,7 @@ public class BusTUCApp extends MapActivity
         	// This method runs whenever the criteria for change is met. 
             public void onLocationChanged(Location location) {
             	currentlocation = location; 
-            	initialize();
+            	
         		Log.v("currentLoc","PROV:LOC=" + currentlocation.getLatitude()+":"+currentlocation.getLongitude());
                // finds the closest bus stop
         //		busLoc = closestLoc(gpsCords);
@@ -202,33 +160,41 @@ public class BusTUCApp extends MapActivity
                 //System.out.println("REALTIMEX: " + realTimeCodes.size());
                 Log.v("sort","returnedHmap:"+locationsArray.size());	
                 // creates a HashMap with all the relevant bus stops
-                tSet = m_partialSort(locationsArray,100,10000,false);
-                int numberofStops = tSet.size();
-                closestBusStops = new GeoPoint[numberofStops];
-                Log.v("sort","returnedtSet"+tSet.size());	
+                Sort sort = new Sort();
+                tSetExclude = sort.m_partialSort(locationsArray,5,500,false, false);
+                tSetAllStops = sort.m_partialSort(locationsArray,5,500,false, true);
+                int numberofStops = tSetAllStops.size();
+                cl = new ClosestStopsOnMap[numberofStops];
+                
+                Log.v("sort","returnedtSet"+tSetExclude.size());	
                 // adds the closest bus stop as a GeoPoint
                 int busCounter = 0; 
-                Object[] keys = tSet.keySet().toArray();
+                Object[] keys = tSetAllStops.keySet().toArray();
+                Object[] foo = locationsArray.keySet().toArray();
         		Arrays.sort(keys);
                 for(int i = 0;i<numberofStops;i++)
                 {
-                   closestBusStops[i] = new GeoPoint(
-                		   (int)	(tSet.get(keys[i]).getLatitude() * 1E6),
-                		   (int)	(tSet.get(keys[i]).getLongitude() * 1E6));
-                   addStops(closestBusStops[i]);
+                  cl[i] = new ClosestStopsOnMap(new GeoPoint(
+               		   (int)	(tSetAllStops.get(keys[i]).getLatitude() * 1E6),
+               		   (int)	(tSetAllStops.get(keys[i]).getLongitude() * 1E6)),
+               		   (int) tSetAllStops.get(keys[i]).getAltitude(),
+               		   tSetAllStops.get(keys[i]).getProvider());
+                  
+                 // System.out.println("ADDING: " +(int) tSet.get(keys[i]).getAltitude());   
                 		                	  
                 }
+                initialize();
+                for(int i=0; i<cl.length; i++)
+                {
+                	addStops(cl[i]);
+                }
+                
                 // add the current location as a GeoPoint
                 p = new GeoPoint(
                         (int) (currentlocation.getLatitude() * 1E6), 
                         (int) (currentlocation.getLongitude() * 1E6));
-                //Log.v("GEOPOINT","GEO2" + p.getLatitudeE6() + ":" + p.getLongitudeE6());
                 addUser(p);
                 showOverlay();
-                /*
-                List<Overlay> listOfOverlays = mapView.getOverlays();
-                listOfOverlays.clear();
-                listOfOverlays.add(mapOverlay);*/
                 mc.animateTo(p);
                 mc.setZoom(16);  
                 
@@ -321,82 +287,89 @@ public class BusTUCApp extends MapActivity
       	 }
          
         }
-        Object[] keys = tSet.keySet().toArray();
+        Object[] keys = tSetExclude.keySet().toArray();
         for(Object key : keys)
         {
         	Log.v("Keys","Key:"+Double.parseDouble(key.toString()));
-        	Log.v("Value","Value:"+tSet.get(key).getProvider());
+        	Log.v("Value","Value:"+tSetExclude.get(key).getProvider());
         }
-                          
-		  //Log.v("wantedbus","wantedbus:"+wantedBusStop);
-  //	  int newId = Integer.parseInt(realTimeCodes.get(wantedBusStop).toString());
-      //  myLocationText.setText(presentation.toString());
-        
-    
-    	
+  
     }
-    public boolean sendToOracle()
+    public boolean sendToOracle(String input)
     {
     	// Perform action on clicks
-    	if(!tSet.isEmpty())
+    	if(!tSetExclude.isEmpty())
   	     {
-    	 // System.out.println("K-browserobj " + k_browser.toString() + "realtimelength: " + realTimeCodes.size()); 
-          String[] html_page = k_browser.getRequest(tSet,editTe.getText().toString(),false);   
-          //System.out.println("TEKST: " + editTe.getText().toString() );
-          //System.out.println("HTML LENGTH: " + html_page.length); 
-          StringBuilder str = new StringBuilder(); 
-          // Parses the returned html
-          for(int i = 0;i<html_page.length;i++) 
-          {
-	          Log.v("CONTENT"+i, html_page[i]); 
-	          if(!html_page[i].contains("</body>"))
+    		try
+    		{
+	    	 // System.out.println("K-browserobj " + k_browser.toString() + "realtimelength: " + realTimeCodes.size()); 
+    			
+    			long time = System.nanoTime();
+	          String[] html_page = k_browser.getRequest(tSetExclude,input,false);   
+	          long newTime = System.nanoTime() - time;
+				System.out.println("TIME ORACLEREQUEST: " +  newTime/1000000000.0);
+	          //System.out.println("TEKST: " + editTe.getText().toString() );
+	          //System.out.println("HTML LENGTH: " + html_page.length); 
+	          StringBuilder str = new StringBuilder(); 
+	          // Parses the returned html
+	          for(int i = 0;i<html_page.length;i++) 
 	          {
-	          str.append(html_page[i] + "\n"); 
+		          Log.v("CONTENT"+i, html_page[i]); 
+		          if(!html_page[i].contains("</body>"))
+		          {
+		          str.append(html_page[i] + "\n"); 
+		          }
+		          // Simple error handling. If the object contains "error", return false
+		          if(html_page[0].equalsIgnoreCase("error"))
+		          {
+		        	 // Toast.makeText(this, "Not found", Toast.LENGTH_SHORT).show();
+		        	  System.out.println("NOT FOUND ERROR FOO");
+		        	  Toast.makeText(this, "Query timed out", Toast.LENGTH_LONG).show();
+		        	  return false;
+		          }
 	          }
-	          // Simple error handling. If the object contains "error", return false
-	          if(html_page[0].equalsIgnoreCase("error"))
+	          
+	          int indexOf = str.lastIndexOf("}");
+	          String jsonSubString = str.substring(0, indexOf+1); 
+	          jsonSubString = jsonSubString.replaceAll("\\}", "},");
+	          jsonSubString = jsonSubString.substring(0, jsonSubString.length()-1);
+	          Log.v("manipulatedString","New JSON:"+jsonSubString);
+	          int wantedBusStop = 0;  
+	          Calculate calculator = new Calculate(); 
+	          
+	          
+	          // Create routes based on jsonSubString
+	          routes = calculator.createRoutes(jsonSubString);
+	  
+	          for(int i = 0;i<routes.length;i++)
 	          {
-	        	 // Toast.makeText(this, "Not found", Toast.LENGTH_SHORT).show();
-	        	  System.out.println("NOT FOUND ERROR FOO");
-	        	  return false;
+	        	 int intBusStopNumber = routes[i].getBusStopNumber(); 
+	         	 String strBusStopNumber = String.valueOf(intBusStopNumber);
+	         	//	System.out.println("strBusStopNumber: " + strBusStopNumber);
+	         	 int newBSN = Integer.parseInt(strBusStopNumber.substring(strBusStopNumber.length()-3));
+	         	//System.out.println("newBSN: " + newBSN);
+	         	 
+	         	 
+	         	 if(locationsArray.containsKey(newBSN))
+	         	 {
+	         		Object[] keys = locationsArray.get(newBSN).keySet().toArray();
+	         		routes[i].setWalkingDistance(Integer.parseInt(keys[0].toString()));
+	         	 }
+	         	 else
+	         	 {         		 
+	          		routes[i].setWalkingDistance(-1); 
+	         	 }
 	          }
-          }
-          
-          int indexOf = str.lastIndexOf("}");
-          String jsonSubString = str.substring(0, indexOf+1); 
-          jsonSubString = jsonSubString.replaceAll("\\}", "},");
-          jsonSubString = jsonSubString.substring(0, jsonSubString.length()-1);
-          Log.v("manipulatedString","New JSON:"+jsonSubString);
-          int wantedBusStop = 0;  
-          Calculate calculator = new Calculate(); 
-          
-          
-          // Create routes based on jsonSubString
-          routes = calculator.createRoutes(jsonSubString);
-  
-          for(int i = 0;i<routes.length;i++)
-          {
-        	 int intBusStopNumber = routes[i].getBusStopNumber(); 
-         	 String strBusStopNumber = String.valueOf(intBusStopNumber);
-         	//	System.out.println("strBusStopNumber: " + strBusStopNumber);
-         	 int newBSN = Integer.parseInt(strBusStopNumber.substring(strBusStopNumber.length()-3));
-         	//System.out.println("newBSN: " + newBSN);
-         	 
-         	 
-         	 if(locationsArray.containsKey(newBSN))
-         	 {
-         		Object[] keys = locationsArray.get(newBSN).keySet().toArray();
-         		routes[i].setWalkingDistance(Integer.parseInt(keys[0].toString()));
-         	 }
-         	 else
-         	 {         		 
-          		routes[i].setWalkingDistance(-1); 
-         	 }
-          }
-          calculator.printOutRoutes("BEFORE",routes, false);
-          finalRoutes = calculator.suggestRoutes(routes);
-          calculator.printOutRoutes("AFTER",finalRoutes, false);
-          return true;
+	          calculator.printOutRoutes("BEFORE",routes, false);
+	          finalRoutes = calculator.suggestRoutes(routes);
+	          calculator.printOutRoutes("AFTER",finalRoutes, false);
+	          return true;
+    		}
+    		catch(Exception e)
+    		{
+    			e.printStackTrace();
+    			return false;
+    		}
   	     }
         return true;
 
@@ -407,16 +380,10 @@ public class BusTUCApp extends MapActivity
 		super.onResume();
 	    // Sets the restrictions on the location update. 
 		locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 100, 1, locationListener);
-	    mSensorManager.registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 
 	}
     
-    @Override
-    protected void onStop()
-    {
-      mSensorManager.unregisterListener(mSensorListener);
-      super.onStop();
-    }
+  
 
 
     // Creates the HashMap for the locations. 
@@ -432,14 +399,15 @@ public class BusTUCApp extends MapActivity
         for(int i = 0;i<clength;i++)
         {
      	   closestLocation[i] = new Location(provider);
-     	   closestLocation[i].setProvider(tempCords[i][2]); 
-     	   closestLocation[i].setLatitude(Double.parseDouble(tempCords[i][4])); // 1 i gps2.xml
-     	   closestLocation[i].setLongitude(Double.parseDouble(tempCords[i][3])); // 2 i gps2.xml
-     	  // System.out.println("Set long: " + closestLocation[i].getProvider());
+     	   closestLocation[i].setProvider(tempCords[i][1]); 
+     	   closestLocation[i].setLatitude(Double.parseDouble(tempCords[i][3])); // 1 i gps2.xml
+     	   closestLocation[i].setLongitude(Double.parseDouble(tempCords[i][2])); // 2 i gps2.xml
+     	   int alt = Integer.parseInt(tempCords[i][0]);
+     	   closestLocation[i].setAltitude(alt); // Add bus stop ID as altitude
      	   int distance = (int)closestLocation[i].distanceTo(currentlocation);
      	   HashMap<Integer, Location> hMap = new HashMap<Integer,Location>(); 
      	   hMap.put(distance, closestLocation[i]);
-     	   String busStopId = tempCords[i][1]; // 0 i gps2.xml
+     	   String busStopId = tempCords[i][0]; // 0 i gps2.xml
      	 //  int newID = Integer.parseInt(busStopId.substring(busStopId.length()-3));
    //  	   Log.v("newId","newID:"+newID);    	   
      	   /*if(counter.containsKey(newID))
@@ -452,50 +420,6 @@ public class BusTUCApp extends MapActivity
              
         } 
         return newMap; 
-    }
-    // Finds either N closest bus stops or the bus stops within a radius M
-    public HashMap<Integer,Location> m_partialSort(HashMap<Integer,HashMap<Integer,Location>> lHMap, int i, int m, boolean maxLoc)
-    {
-    	HashMap<Integer,HashMap<Integer,Location>> newMap = lHMap;
-    	Log.v("sort","lHMap:"+lHMap.size());
-    	HashMap<Integer,Location> finalMap = new HashMap<Integer,Location>();
-    	TreeSet<Integer> minValues = new TreeSet<Integer>();
-    	Object[] keys = newMap.keySet().toArray();
-    	for(int y = 0;y<newMap.size();y++)
-    	{
-    		int currentValue = Integer.parseInt(newMap.get(keys[y]).keySet().toArray()[0].toString());
-    		if(minValues.size() < i && maxLoc && currentValue < m)
-    		{
-    		   minValues.add(currentValue);
-    		   finalMap.put(currentValue, newMap.get(keys[y]).get(currentValue));
-    		}
-    		else if(!maxLoc && currentValue < m && i != 0)
-    		{
-    			minValues.add(currentValue); 
-    			finalMap.put(currentValue, newMap.get(keys[y]).get(currentValue)); 
-    		}
-    		else if(maxLoc)
-    		{
-    			if(currentValue < minValues.last())
-    			{
-    				minValues.remove(minValues.last());
-    				finalMap.remove(minValues.last());
-    				minValues.add(currentValue); 
-    				finalMap.put(currentValue, newMap.get(keys[y]).get(currentValue));
-    			}
-    		}
-    	}
-    	if(i != 0 && m != 0)
-    	{
-    		Object[] newkeys = finalMap.keySet().toArray();
-    		Arrays.sort(newkeys);
-    		for(int k = finalMap.size()-1;k>=i;k--)
-    		{
-    			finalMap.remove(newkeys[k]);
-    		}
-    	}
-    
-    	return finalMap; 
     }
 
     @Override
@@ -522,11 +446,11 @@ public class BusTUCApp extends MapActivity
 			}
 			return currentLocation;
 	} 
-    protected void addStops(GeoPoint loc) 
+    protected void addStops(ClosestStopsOnMap loc) 
     {
     	Drawable icon = getResources().getDrawable(R.drawable.s_busstop2);
     	icon.setBounds(0,0, 15, 15);
-    	OverlayItem item = new OverlayItem(loc, "", null);	
+    	OverlayItem item = new OverlayItem(loc.getPoint(), "", null);	
     	
 		item.setMarker(icon);
 		mapOverlay.addItem(item);
@@ -572,7 +496,7 @@ public class BusTUCApp extends MapActivity
 
     //	mapView.getOverlays().clear();
         Drawable tmp = getResources().getDrawable(R.drawable.s_busstop2);
-        mapOverlay = new MapOverlay(tmp, this,realTimeCodes, gpsCords);        
+        mapOverlay = new MapOverlay(tmp, this,realTimeCodes, cl);        
        
         //
     }
@@ -635,8 +559,8 @@ public class BusTUCApp extends MapActivity
         protected Void doInBackground(Void... params)
         {
         	long time = System.nanoTime();
-        	if(sendToOracle()) check = true;        	
-        	Long newTime = System.nanoTime() - time;
+        	if(sendToOracle(editTe.getText().toString())) check = true;        	
+        	long newTime = System.nanoTime() - time;
 			System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
         	
             return null;
@@ -671,52 +595,7 @@ public class BusTUCApp extends MapActivity
         	}
 
         }
-    }
+    }  
+    
    
-    // The class which draws on the map
-    /*class MapOverlay extends com.google.android.maps.Overlay
-    {	    	new OracleThread(getApplicationContext()).execute();
-
-
-        @Override
-        public boolean draw(Canvas canvas, MapView mapView,boolean shadow, long when) 
-        {
-            super.draw(canvas, mapView, shadow);     
-            Point startPts = new Point(0,0);
-         //   Point busPts = new Point(0,0);
-            try
-            {
-            Bitmap bmpBus = BitmapFactory.decodeResource(
-                        getResources(), R.drawable.s_busstop2);  
-            // translate the GeoPoint to screen pixels
-            if(closestBusStops != null)
-            {
-            	int counter = closestBusStops.length;
-            	Point[] bussPts = new Point[counter];
-            	for(int i = 0;i<counter;i++)
-            	{
-            		bussPts[i] = new Point(0,0);
-            		mapView.getProjection().toPixels(closestBusStops[i], bussPts[i]);
-            		canvas.drawBitmap(bmpBus, bussPts[i].x, bussPts[i].y-50, null); 
-            	}
-            }
-            startPts = new Point();
-            // Adds the current location
-            mapView.getProjection().toPixels(p, startPts);
-      //      busPts = new Point();
-            // Adds the closest bus stop
-     //       mapView.getProjection().toPixels(p2, busPts);
-            } catch (Exception e)
-            { Log.v("DRAW", "MapView getProjection:"+e.toString()); }
- 
-            // add the marker
-            Bitmap bmp = BitmapFactory.decodeResource(
-                getResources(), R.drawable.pp);            
-            canvas.drawBitmap(bmp, startPts.x, startPts.y-50, null);   
-                
-            return true;
-        }
-       
-    }	*/
-  
 }

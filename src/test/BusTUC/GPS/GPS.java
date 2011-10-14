@@ -1,10 +1,10 @@
-package test.BusTUC;
+package test.BusTUC.GPS;
 
 public class GPS
 {
 	
 	public static String[][] formatCoordinates(String[] unformattedCoordinates){	
-		String[][] formatedGPSCords = new String[unformattedCoordinates.length][6];
+		String[][] formatedGPSCords = new String[unformattedCoordinates.length][4];
 		for(int i=0;i<unformattedCoordinates.length;i++)
 		 {
 			 String startString = unformattedCoordinates[i];

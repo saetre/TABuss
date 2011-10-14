@@ -1,4 +1,4 @@
-package test.BusTUC; 
+package test.BusTUC.Queries; 
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -41,6 +41,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import test.BusTUC.Stops.BusStops;
+
 import android.location.Location;
 import android.net.ParseException;
 import android.text.InputFilter.LengthFilter;
@@ -53,24 +55,22 @@ public class Browser
 	WebView web;
 	HttpClient m_client; 
 	HttpFormat httpF; 
-	Browser()
+	public Browser()
 	{
 		m_client = new DefaultHttpClient();
 		httpF = new HttpFormat(); 
+		
 	}
 
 
-	String[] getRequest(HashMap<Integer,Location> startMap, String stop, Boolean formated)
+	public String[] getRequest(HashMap<Integer,Location> startMap, String stop, Boolean formated)
 	{		
 		String[] html_string = null; 
-		//Log.v("BUSTUCS","startmapsize:"+startMap.size());
 		DecimalFormat decifo = new DecimalFormat("###");
-		String wantedStart = ""; 
 		String start2 = "(";
 		Object[] keys = startMap.keySet().toArray();
 		Arrays.sort(keys);
 		// Name of busstop
-		wantedStart = startMap.get(keys[0]).getProvider();
 		int hSize = startMap.keySet().size(); 
         for(int i = 0;i<hSize;i++)
         {
@@ -78,6 +78,7 @@ public class Browser
         	System.out.println("WALK: " + Double.parseDouble(keys[i].toString()));
            String output2 = decifo.format(Math.ceil((Double.parseDouble(keys[i].toString())/1.7)/60));
      	   start2 = start2 + "" + startMap.get(keys[i]).getProvider()+""+"+"+output2; 
+     	   System.out.println("START TO SATT: " + start2);
      	   if(i+1<hSize)
      	   {
      		   start2 = start2 + ","; 
@@ -91,36 +92,18 @@ public class Browser
 		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
 		Long time = System.nanoTime();
 		try {
-			//File file = new File("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question="+wanted_string);
-		/*	URL atb = new URL("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question="+wanted_string);
-			
-			//InputStream in = new Inp
-            BufferedReader reader = new BufferedReader(new InputStreamReader(atb.openStream()));
-            String foo = "";
-            System.out.println("BEFORE RUNAR " + wanted_string);
-            while((foo = reader.readLine()) != null){
-            	System.out.println("LINEMOTHERFUCKER " + foo);
-            	
-            }
-            reader.close();
-            System.out.println("AFter RUNAR");*/
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);  
 	        nameValuePairs.add(new BasicNameValuePair("lang", "eng"));  
 	        nameValuePairs.add(new BasicNameValuePair("quest", wanted_string)); 
 	        UrlEncodedFormEntity url = new UrlEncodedFormEntity(nameValuePairs);	        
 	        //  System.out.println("URLENC: " + url.toString());
 	        m_post.setEntity(url);  
-	        //   System.out.println("m_post entity " + m_post.getEntity().getContentLength());
-	        // System.out.println("m_Post.getMethod() " + m_post.getMethod());
-	        String responseBody = EntityUtils.toString(m_post.getEntity());
-
-	        //   System.out.println("m_Post.getMethod() " + responseBody);
-	       
+	        String responseBody = EntityUtils.toString(m_post.getEntity());       
 	       // Execute. Will not crash if route info is not found(which is not cool)
 			HttpResponse m_response = m_client.execute(m_post);
+		
 			//Log.v("m_response", inputStreamToString(m_response.getEntity().getContent()));
-			//System.out.println("Wanted String: " + wanted_string);
-		//	System.out.println("RESPONSE: " + m_response.get);
+			System.out.println("Wanted String: " + wanted_string);
 			// Request
 			html_string = httpF.request(m_response);
 			
@@ -193,7 +176,7 @@ public class Browser
 			byte[] result = null; 
 			String soap = soapMessage; 
 	        HttpParams httpParameters = new BasicHttpParams();
-	        int timeoutConnection = 30000;
+	        int timeoutConnection = 50000;
 	        HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
 	        int timeoutSocket = 50000;
 	        HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);

@@ -1,4 +1,4 @@
-package test.BusTUC;
+package test.BusTUC.Favourites;
 
 public class Favourite
 {

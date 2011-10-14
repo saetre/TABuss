@@ -1,4 +1,4 @@
-package test.BusTUC;
+package test.BusTUC.Calc;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import test.BusTUC.R;
+import test.BusTUC.Main.Route;
 
 import android.util.Log;
 
@@ -16,7 +17,7 @@ public class Calculate {
 	 private JSONObject json_obj; 
 	 private JSONArray json_arr; 
 
-	 Calculate()
+	 public Calculate()
 	 {
 	 }
 	 public Route[] createRoutes(String jsonString)
@@ -139,18 +140,27 @@ public class Calculate {
 	 public Route[] sortByTotalTime(Route[] routeSuggestion)
 	 {
 		 HashMap<Integer,Integer> temp = new HashMap<Integer,Integer>();
+		 
 		 Route[] rs = routeSuggestion; 
 		 Route[] newroutes = new Route[rs.length];
 		 for(int i = 0;i<rs.length;i++)
 		 {
+			 System.out.println("In for loop: " + i);
 			 temp.put(rs[i].getTotalTime(), i);
+			 
 		 }
+		
 		 Object[] keys = temp.keySet().toArray();
+		 System.out.println("Temp size: " + temp.size());
+		 System.out.println("Keys size: " + keys.length);
+		 System.out.println("RS length: " + rs.length);
 		 Arrays.sort(keys);
 		 for(int y = 0;y<rs.length;y++)
 		 {
 			 newroutes[y] = new Route();
+			 System.out.println("NewRoute: " + temp.get(keys[y]));
 			 newroutes[y] = rs[temp.get(keys[y])];
+			
 		 }
 		 return newroutes; 
 	 }

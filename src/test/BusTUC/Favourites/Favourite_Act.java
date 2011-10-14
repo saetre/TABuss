@@ -1,4 +1,4 @@
-package test.BusTUC;
+package test.BusTUC.Favourites;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,6 +11,10 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
+
+import test.BusTUC.R;
+import test.BusTUC.R.id;
+import test.BusTUC.R.layout;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -196,7 +200,6 @@ public class Favourite_Act extends ListActivity
     			{
     				//File file = new File(files[i].listFiles()[j].getName());
     				
-    			//	System.out.println("GOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO: " + file.exists());
     				try {
     					System.out.println("Streaming files: " + files[i].listFiles()[j].getName());
 						fu = new FileInputStream(files[i].listFiles()[j]);

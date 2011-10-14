@@ -1,10 +1,12 @@
-package test.BusTUC;
+package test.BusTUC.Queries;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.http.HttpResponse;
+
+import android.widget.Toast;
 import test.BusTUC.R;
 
 public class HttpFormat {
@@ -27,15 +29,16 @@ public class HttpFormat {
             
           while((line = reader.readLine()) != null)
           {
+        	  System.out.println("LINE " + line);
         	  if(line.contains("Beklager"))
         	  {
         		  result = "Error";
         		  contentArray = new String[5];
         		  contentArray[0] = result;
         		  System.out.println("Error in if in HttpFormat");
+        		 
         		  break;
         	  }
-            	System.out.println("LINE " + line);
             	if(line.endsWith("</body>"))
             	{
             		

@@ -1,11 +1,12 @@
-package test.BusTUC;
+package test.BusTUC.Main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import test.BusTUC.BusTUCApp.OracleThread;
+import test.BusTUC.R;
+import test.BusTUC.Main.BusTUCApp.OracleThread;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
@@ -34,7 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-public class BusList extends ListActivity
+public class RealTimeList extends ListActivity
 {
 	public static String ID;
 

@@ -1,4 +1,4 @@
-package test.BusTUC;
+package test.BusTUC.Main;
 
 import test.BusTUC.R;
 
@@ -22,7 +22,7 @@ public class Route {
 		travelTime = k_tt; 
 		destination = k_d; 
 	}
-	Route()
+	public Route()
 	{
 		
 	}
