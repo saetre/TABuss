@@ -5,7 +5,7 @@ import java.util.Comparator;
 import test.BusTUC.R;
 
 
-public class Route {
+public class Route{
      
 	private String arrivalTime; 
 	private String busStopName; 
@@ -86,4 +86,17 @@ public class Route {
 	public void setDestination(String destination) {
 		this.destination = destination;
 	}
+	
+	public int compareTo( Route otherRoute ) {
+	    final int BEFORE = -1;
+	    final int EQUAL = 0;
+	    final int AFTER = 1;
+
+	    if ( this == otherRoute ) return EQUAL;
+
+	    if (this.totalTime < otherRoute.totalTime) return BEFORE;
+	    if (this.totalTime > otherRoute.totalTime) return AFTER;
+
+	    return EQUAL;
+	  }
 }
