@@ -346,6 +346,7 @@ public class Browser
 	        
 	        j_o = new JSONObject(result);
 	        j_a = new JSONArray(j_o.getString("Orari"));
+	        System.out.println("J_a length: " + j_a.length());
 	        BusStops wantedBusStop = new BusStops(); 
 	        wantedBusStop.setLine(9999);
 	        if (j_a != null){
@@ -374,10 +375,10 @@ public class Browser
 		         //       Log.d("line",String.valueOf(t.line));
 		         //       Log.d("arrivalTime",String.valueOf(t.arrivalTime));
 		         //       Log.d("ATB", t.toString());
-		                if(wantedBusStop.getLine() == 9999)
-		                {
+		              //  if(wantedBusStop.getLine() == 9999)
+		                //{
 		                  	wantedBusStop = t;
-		                }
+		                //}
 		                buses.add(t);
 		            }
 	        	}
