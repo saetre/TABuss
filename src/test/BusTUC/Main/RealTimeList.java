@@ -57,7 +57,7 @@ public class RealTimeList extends ListActivity
 		  neededStopsOutgoing[0] =  "Kommende busser:\n";
 		  
 		  // Find outgoing bustops
-		  for(int i=1; i<neededStopsOutgoing.length; i++)
+		  for(int i=0; i<neededStopsOutgoing.length; i++)
 		  {		
 			// if minte = 0-9, add a zero
 			minute1 = "" +MapOverlay.foundStopsList.get(i).arrivalTime.getMinutes();
