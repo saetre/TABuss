@@ -220,7 +220,7 @@ public class Browser
 	}
 	public BusStops specificRequest(int k_RealTimeId, int k_specifiedLine)
 	{
-	        int realTimeId = k_RealTimeId;  
+	        int realTimeId = k_RealTimeId;   
 	        int specifiedLine = k_specifiedLine;
 	        HttpPost httppost = new HttpPost("http://195.0.188.74/InfoTransit/userservices.asmx?op=getUserRealTimeForecast");
 	        httppost.setHeader("Content-Type", "text/xml; charset=utf-8");
@@ -247,13 +247,8 @@ public class Browser
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (java.text.ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			} 
+	    //    System.out.println("Arrivaltime in request: " + test.getArrivalTime().getHours() + "   " + test.getArrivalTime().getMinutes());
 			return test; 
 	}
 	public HashMap getRealTimeCode(String data) throws ParseException, JSONException, java.text.ParseException
@@ -399,7 +394,7 @@ public class Browser
 	        return buses;
 		}
 	
-	public BusStops parseRealTimeData(String data, int m_speciLine) throws ParseException, JSONException, java.text.ParseException{
+	public BusStops parseRealTimeData(String data, int m_speciLine) {
         Pattern p = Pattern.compile(
                 "<getUserRealTimeForecastResult>(.*?)</getUserRealTimeForecastResult>",
                 Pattern.DOTALL | Pattern.CASE_INSENSITIVE
@@ -415,23 +410,44 @@ public class Browser
         JSONObject j_o = null;
         JSONArray j_a = null;
         
-        j_o = new JSONObject(result);
-        j_a = new JSONArray(j_o.getString("Orari"));
+        try {
+			j_o = new JSONObject(result);
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        try {
+			j_a = new JSONArray(j_o.getString("Orari"));
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
         BusStops wantedBusStop = new BusStops(); 
         wantedBusStop.setLine(9999);
-        if (j_a != null){
+        BusStops t = new BusStops();
+        boolean foundWantedLine = false;
+        if (j_a != null)
+        {
         	try
         	{
+        		//System.out.println("len på array: " + j_a.length());
 	            for (int i = 0; i < j_a.length(); i++){
-	                
-	                BusStops t = new BusStops();
+	                //System.out.println("In for-loop j_a");
+	                t = new BusStops();
 	                t.line = j_a.getJSONObject(i).getInt("descrizioneLinea");
-	                SimpleDateFormat formatter = new SimpleDateFormat("d/M/y H:mm"); 
-	                Date date = (Date)formatter.parse(j_a.getJSONObject(i).getString("orario"));
+	                SimpleDateFormat formatter = new SimpleDateFormat("d/M/y HH:mm"); 
+	                Date date = new Date();
+					try {
+						date = (Date)formatter.parse(j_a.getJSONObject(i).getString("orario"));
+					} catch (java.text.ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 	                t.arrivalTime = date;
+	               // System.out.println("Date: " + t.arrivalTime.toString() + " line: " + t.line);
 	                String prev = j_a.getJSONObject(i).getString("statoPrevisione");
 	                
-	                if (prev.equals("Prev") || prev.equals("prev")){
+	                if (prev.equalsIgnoreCase("prev")){
 	                    t.realTime = true;
 	                }
 	                else if (prev.equals("sched")){
@@ -441,10 +457,16 @@ public class Browser
 	         //       Log.d("line",String.valueOf(t.line));
 	         //       Log.d("arrivalTime",String.valueOf(t.arrivalTime));
 	         //       Log.d("ATB", t.toString());
+	                
+	                // If the SOAP contains the line we want, return it
+	                // Else break
 	                if(t.line == wantedLine && wantedBusStop.getLine() == 9999)
 	                {
+	                	//System.out.println("IF Wanted line: " +wantedLine + " t.line: " + t.line);
+	                	foundWantedLine = true;
 	                  	wantedBusStop = t;
 	                }
+	                
 	            }
         	}
             catch(JSONException e)
@@ -455,8 +477,13 @@ public class Browser
         
             
         }
-       
-        return wantedBusStop;
+        
+      //  System.out.println("Returning unmatched: " + t.getLine() + "  " + t.getLine());
+        if(foundWantedLine)
+        {
+        	return wantedBusStop;
+        }
+        else return t;
 	}
 }
 
