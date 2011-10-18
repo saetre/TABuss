@@ -2,6 +2,10 @@ package test.BusTUC.Stops;
 
 import java.util.Date;
 
+
+/*
+ * General class representing a bus stop, for use with the oracle
+ */
 public class BusStops {
 	public int line; 
 	public Date arrivalTime; 
