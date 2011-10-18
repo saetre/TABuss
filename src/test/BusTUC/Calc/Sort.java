@@ -21,8 +21,7 @@ public class Sort
     	int currentValue = 0;
     	String check = "";
     	for(int y = 0;y<newMap.size();y++)
-    	{
-    		
+    	{    		
    			currentValue = Integer.parseInt(newMap.get(keys[y]).keySet().toArray()[0].toString());    
    			String foo = newMap.get(keys[y]).get(currentValue).getProvider();
    		//	System.out.println("CURRENT: " + newMap.get(keys[y]).get(currentValue).getProvider());
