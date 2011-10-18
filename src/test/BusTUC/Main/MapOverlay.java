@@ -10,10 +10,12 @@ import java.util.Map;
 
 import test.BusTUC.Queries.Browser;
 import test.BusTUC.Stops.BusStops;
-import test.BusTUC.Stops.ClosestStopsOnMap;
+import test.BusTUC.Stops.Icon;
+import test.BusTUC.Main.Database;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -34,7 +36,7 @@ class MapOverlay extends ItemizedOverlay
 	// FUUUUU
 	public static String foundBusStop;
 	HashMap realTimeCodes;
-	ClosestStopsOnMap[] cl;
+	Icon[] cl;
 	public MapOverlay(Drawable defaultMarker) {
 		super(defaultMarker);
 		drawable = defaultMarker;
@@ -42,7 +44,7 @@ class MapOverlay extends ItemizedOverlay
 		// TODO Auto-generated constructor stub
 	}
 
-	public MapOverlay(Drawable defaultMarker, Context context, HashMap realTimeCodes, ClosestStopsOnMap[] cl) {
+	public MapOverlay(Drawable defaultMarker, Context context, HashMap realTimeCodes, Icon[] cl) {
 		super(defaultMarker);
 		drawable = defaultMarker;
 		m_Context = context;
@@ -89,7 +91,8 @@ class MapOverlay extends ItemizedOverlay
  		System.out.println("TIME LOOKUP: " +  newTime/1000000000.0);
         foundStopsList = Browser.specificRequestForStop(tempIdOutgoing);       
 		Intent intent = new Intent(m_Context, RealTimeList.class);
-		m_Context.startActivity(intent);
+		m_Context.startActivity(intent);			
+		
 		return true;
 		
 	}

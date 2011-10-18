@@ -28,8 +28,7 @@ public class Route implements Comparable<Route>
 	public Route()
 	{
 		
-	}
-	
+	}	
 
 	 
 	
