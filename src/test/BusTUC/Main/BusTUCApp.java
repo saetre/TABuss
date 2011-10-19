@@ -15,7 +15,7 @@ import test.BusTUC.Favourites.Favourite_Act;
 import test.BusTUC.GPS.GPS;
 import test.BusTUC.Queries.Browser;
 
-import test.BusTUC.Stops.Icon;
+import test.BusTUC.Stops.ClosestHolder;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -77,7 +77,7 @@ public class BusTUCApp extends MapActivity
     LocationListener locationListener;
     Browser k_browser; 
     HashMap realTimeCodes; 
-    Icon [] cl; // Object containing geopoint of closest stops. 
+    ClosestHolder [] cl; // Object containing geopoint of closest stops. 
     Button button;
     // adds edittext box
     EditText editTe;
@@ -170,7 +170,7 @@ public class BusTUCApp extends MapActivity
                 tSetExclude = sort.m_partialSort(locationsArray,5,500,false, false);
                 tSetAllStops = sort.m_partialSort(locationsArray,10,500,false, true);
                 int numberofStops = tSetAllStops.size();
-                cl = new Icon[numberofStops];
+                cl = new ClosestHolder[numberofStops];
                 
                 Log.v("sort","returnedtSet"+tSetExclude.size());	
                 // adds the closest bus stop as a GeoPoint
@@ -179,7 +179,7 @@ public class BusTUCApp extends MapActivity
         		Arrays.sort(keys);
                 for(int i = 0;i<numberofStops;i++)
                 {
-                  cl[i] = new Icon(new GeoPoint(
+                  cl[i] = new ClosestHolder(new GeoPoint(
                		   (int)	(tSetAllStops.get(keys[i]).getLatitude() * 1E6),
                		   (int)	(tSetAllStops.get(keys[i]).getLongitude() * 1E6)),
                		   (int) tSetAllStops.get(keys[i]).getAltitude(),
@@ -335,7 +335,6 @@ public class BusTUCApp extends MapActivity
       class OracleThread extends AsyncTask<Void, Void, Void>
       {
           private Context context;    
-          boolean check = false;
           Route [] foundRoutes;
           StringBuffer buf;// = new StringBuffer();
           public OracleThread(Context context)
@@ -349,7 +348,6 @@ public class BusTUCApp extends MapActivity
           {
           	long time = System.nanoTime();
           	buf = Helpers.run(editTe.getText().toString(),tSetExclude, locationsArray,k_browser, realTimeCodes);
-          	//if(foundRoutes != null) check = true;        	
           	long newTime = System.nanoTime() - time;
   			System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
   			

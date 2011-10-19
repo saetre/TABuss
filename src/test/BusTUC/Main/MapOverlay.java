@@ -10,7 +10,7 @@ import java.util.Map;
 
 import test.BusTUC.Queries.Browser;
 import test.BusTUC.Stops.BusStops;
-import test.BusTUC.Stops.Icon;
+import test.BusTUC.Stops.ClosestHolder;
 import test.BusTUC.Main.Database;
 
 import android.content.Context;
@@ -36,7 +36,7 @@ class MapOverlay extends ItemizedOverlay
 	// FUUUUU
 	public static String foundBusStop;
 	HashMap realTimeCodes;
-	Icon[] cl;
+	ClosestHolder[] cl;
 	public MapOverlay(Drawable defaultMarker) {
 		super(defaultMarker);
 		drawable = defaultMarker;
@@ -44,7 +44,7 @@ class MapOverlay extends ItemizedOverlay
 		// TODO Auto-generated constructor stub
 	}
 
-	public MapOverlay(Drawable defaultMarker, Context context, HashMap realTimeCodes, Icon[] cl) {
+	public MapOverlay(Drawable defaultMarker, Context context, HashMap realTimeCodes, ClosestHolder[] cl) {
 		super(defaultMarker);
 		drawable = defaultMarker;
 		m_Context = context;

@@ -8,7 +8,7 @@ import java.util.List;
 import test.BusTUC.Calc.Calculate;
 import test.BusTUC.Queries.Browser;
 import test.BusTUC.Stops.BusStops;
-import test.BusTUC.Stops.Icon;
+import test.BusTUC.Stops.ClosestHolder;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.util.Log;
@@ -219,7 +219,7 @@ public class Helpers
     }
     
     // Add bus stop icons to map
-    public static void addStops(Icon loc, Drawable icon, MapOverlay mapOverlay) 
+    public static void addStops(ClosestHolder loc, Drawable icon, MapOverlay mapOverlay) 
     {
     	icon.setBounds(0,0, 15, 15);
     	OverlayItem item = new OverlayItem(loc.getPoint(), "", null);	
