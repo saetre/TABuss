@@ -24,6 +24,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.MapView.LayoutParams;
 import com.google.android.maps.OverlayItem;
+import com.google.android.maps.Projection;
  
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -33,6 +34,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
@@ -198,11 +201,12 @@ public class BusTUCApp extends MapActivity
                 p = new GeoPoint(
                         (int) (currentlocation.getLatitude() * 1E6), 
                         (int) (currentlocation.getLongitude() * 1E6));
+
                Helpers.addUser(p,mapOverlay, getResources().getDrawable(R.drawable.pp));
                System.out.println("My loc: " + currentlocation.getLatitude() *1E6 + "  " + currentlocation.getLongitude() *1E6);
                 showOverlay();
                 mc.animateTo(p);
-                mc.setZoom(16);  
+                mc.setZoom(16);
                 
             }
 
@@ -237,6 +241,19 @@ public class BusTUCApp extends MapActivity
     	    	new OracleThread(getApplicationContext()).execute();
             }
         });*/
+    }
+    
+    public void drawPath(int stopid){
+    	GeoPoint busStop = findStopInCl(stopid, cl);
+    	if(p!=null && cl!=null)mapView.getOverlays().add(new DirectionPathOverlay(p, cl[0].getPoint()));
+        else System.out.println("INGEN PUNKTER MOTHERFUCKER");
+    }
+    
+    public GeoPoint findStopInCl(int stopid, ClosestHolder[] cl){
+    	for(ClosestHolder closest : cl){
+    		if(closest.getBusStopID()==stopid) return closest.getPoint();
+    	}
+    	return null;
     }
     
     public void onBackPressed()
@@ -374,10 +391,43 @@ public class BusTUCApp extends MapActivity
           }
       }  */
    
-    
+      public class DirectionPathOverlay extends Overlay {
 
-   
-  
-    
-   
-}
+    	    private GeoPoint gp1;
+    	    private GeoPoint gp2;
+
+    	    public DirectionPathOverlay(GeoPoint gp1, GeoPoint gp2) {
+    	        this.gp1 = gp1;
+    	        this.gp2 = gp2;
+    	    }
+
+    	    @Override
+    	    public boolean draw(Canvas canvas, MapView mapView, boolean shadow,
+    	            long when) {
+    	        // TODO Auto-generated method stub
+    	        Projection projection = mapView.getProjection();
+    	        if (shadow == false) {
+
+    	            Paint paint = new Paint();
+    	            paint.setAntiAlias(true);
+    	            Point point = new Point();
+    	            projection.toPixels(gp1, point);
+    	            paint.setColor(Color.BLUE);
+    	            Point point2 = new Point();
+    	            projection.toPixels(gp2, point2);
+    	            paint.setStrokeWidth(2);
+    	            canvas.drawLine((float) point.x, (float) point.y, (float) point2.x,
+    	                    (float) point2.y, paint);
+    	        }
+    	        return super.draw(canvas, mapView, shadow, when);
+    	    }
+
+    	    @Override
+    	    public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+    	        // TODO Auto-generated method stub
+
+    	        super.draw(canvas, mapView, shadow);
+    	    }
+
+    	}
+  	}
