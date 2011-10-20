@@ -156,7 +156,7 @@ public class Favourite_Act extends ListActivity
     }
     
     
-    public boolean deleteFileFromSD(String fileName)
+    public static boolean deleteFileFromSD(String fileName)
     {
     	
     	boolean deleted = false;
@@ -183,7 +183,7 @@ public class Favourite_Act extends ListActivity
     	}
 		return deleted;
     }
-    public ArrayList <String> getFilesFromSD()
+    public static  ArrayList <String> getFilesFromSD()
     {
     	ArrayList <String> fileContent = new ArrayList<String>();
     	FileInputStream fu;
@@ -230,7 +230,7 @@ public class Favourite_Act extends ListActivity
     	return fileContent;
     }
     
-    public boolean generateNoteOnSD(String sFileName, String sBody)
+    public static boolean generateNoteOnSD(String sFileName, String sBody)
     {
         try
         {
@@ -248,7 +248,7 @@ public class Favourite_Act extends ListActivity
                 writer.append(sBody);
                 writer.flush();
                 writer.close();
-                Toast.makeText(this, "Saved first if", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Saved first if", Toast.LENGTH_SHORT).show();
                 return true;
             }
             else
@@ -266,34 +266,16 @@ public class Favourite_Act extends ListActivity
                     writer.append(sBody);
                     writer.flush();
                     writer.close();
-                    Toast.makeText(this, "Saved in else", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(this, "Saved in else", Toast.LENGTH_SHORT).show();
                     return true;
             	}
             	
             	else
             	{
-            		Toast.makeText(this, "Already exists", Toast.LENGTH_SHORT).show();
+            		//Toast.makeText(this, "Already exists", Toast.LENGTH_SHORT).show();
             		return false;
             	}
             }
-            
-            // Print files on sd-card, for testing
-            /*File file[] = Environment.getExternalStorageDirectory().listFiles();  
-            
-            for(int i=0; i< file.length; i++)
-            	{
-            	if(file[i].getName().equalsIgnoreCase("fav_routes"))
-            	{
-            		for(int j=0; j<file[i].listFiles().length; j++)
-            		{
-            			System.out.println( "FOOOOOOOOOO " + file[i].list()[j]);  
-            		}
-            	}
-            	
-            	}*/
-            
-            
-
 
         }
         catch(IOException e)
