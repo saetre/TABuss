@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import test.BusTUC.R;
-import test.BusTUC.Main.BusTUCApp.OracleThread;
+
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;

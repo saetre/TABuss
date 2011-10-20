@@ -73,14 +73,14 @@ public class BusTUCApp extends MapActivity
     LocationManager locationManager; // Location Manager
     HashMap<Integer,HashMap<Integer,Location>> locationsArray;
     String provider; // Provider 
-    TextView myLocationText; 
+    //TextView myLocationText; 
     LocationListener locationListener;
     Browser k_browser; 
     HashMap realTimeCodes; 
     ClosestHolder [] cl; // Object containing geopoint of closest stops. 
-    Button button;
+    //Button button;
     // adds edittext box
-    EditText editTe;
+   // EditText editTe;
     StringBuffer presentation; // String which contain answer from bussTUC
     private Route [] routes; // Routes returned from bussTUC
     private Route [] finalRoutes; // Routes after real-time processing
@@ -93,8 +93,8 @@ public class BusTUCApp extends MapActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         mapView = (MapView) findViewById(R.id.mapView); 
-        myLocationText = (TextView)findViewById(R.id.myLocationText);
-        myLocationText.setText("");
+     //   myLocationText = (TextView)findViewById(R.id.myLocationText);
+       // myLocationText.setText("");
         LinearLayout zoomLayout = (LinearLayout)findViewById(R.id.zoom);  
         // Gets the coordinates from the bus XML file
         String[] gpsCoordinates = getResources().getStringArray(R.array.coords3); 
@@ -109,14 +109,15 @@ public class BusTUCApp extends MapActivity
         
         
         // Formats the bus coordinates
+    	// 1 - navn
+		// 2 - lat
+		// 3 - long
         gpsCords = GPS.formatCoordinates(gpsCoordinates);
        
         		
-        		// 0 - Busstoppnr
-        		// 1 - navn
-        		// 2 - lat
-        		// 3 - long
-        		//System.out.println("COORDINATES2 " + gpsCords[i][j]); 
+        // 0 - Busstoppnr
+        	
+        //System.out.println("COORDINATES2 " + gpsCords[i][j]); 
     
         View zoomView = mapView.getZoomControls(); 
  
@@ -146,8 +147,7 @@ public class BusTUCApp extends MapActivity
         	//Toast.makeText(this, "No connection", Toast.LENGTH_LONG).show();
             System.exit(0);
         	
-        }
-        
+        }       
         
        
        
@@ -168,7 +168,7 @@ public class BusTUCApp extends MapActivity
                 // creates a HashMap with all the relevant bus stops
                 Sort sort = new Sort();
                 tSetExclude = sort.m_partialSort(locationsArray,5,500,false, false);
-                tSetAllStops = sort.m_partialSort(locationsArray,10,500,false, true);
+                tSetAllStops = sort.m_partialSort(locationsArray,10,1000,false, true);
                 int numberofStops = tSetAllStops.size();
                 cl = new ClosestHolder[numberofStops];
                 
@@ -228,21 +228,21 @@ public class BusTUCApp extends MapActivity
         };
         
        // adds button
-       button = (Button) findViewById(R.id.Button);
+//       button = (Button) findViewById(R.id.Button);
        // adds edittext box
-       editTe = (EditText) findViewById(R.id.eText);
+  //     editTe = (EditText) findViewById(R.id.eText);
        // binds listener to the button
-       button.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
+    //   button.setOnClickListener(new OnClickListener() {
+           /* public void onClick(View v) {
     	    	new OracleThread(getApplicationContext()).execute();
             }
-        });
+        });*/
     }
     
     public void onBackPressed()
     {
+    	
     	this.finish();
-    	System.exit(0);
     }
     @SuppressWarnings("static-access")
   	@Override
@@ -289,7 +289,7 @@ public class BusTUCApp extends MapActivity
          
       }
       
-      
+      /*
       // Menu properties
       @Override
       public boolean onCreateOptionsMenu(Menu menu) {
@@ -310,8 +310,8 @@ public class BusTUCApp extends MapActivity
           default:
               return super.onOptionsItemSelected(item);
           }
-      }
-      
+      }*/
+      /*
       // Result returned from child activity
       @Override
       protected void onActivityResult(int requestCode, int resultCode, Intent data) 
@@ -326,13 +326,13 @@ public class BusTUCApp extends MapActivity
   	    	Toast.makeText(this, editTe.getText().toString(), Toast.LENGTH_LONG).show();
   	    	new OracleThread(getApplicationContext()).execute();
       	}
-      }
+      }*/
       
       
       
       // Thread classes //
       // Thread starting the oracle queries
-      class OracleThread extends AsyncTask<Void, Void, Void>
+     /* class OracleThread extends AsyncTask<Void, Void, Void>
       {
           private Context context;    
           Route [] foundRoutes;
@@ -366,13 +366,13 @@ public class BusTUCApp extends MapActivity
           {
         	  if(buf != null)
         	  {
-            	myLocationText.setText(buf.toString());
+            	//myLocationText.setText(buf.toString());
         	  }
             	editTe.setEnabled(true);
                 button.setEnabled(true);
             	
           }
-      }  
+      }  */
    
     
 

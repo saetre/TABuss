@@ -3,6 +3,7 @@ package test.BusTUC.Main;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import test.BusTUC.Calc.Calculate;
@@ -162,7 +163,7 @@ public class Helpers
         for(int i = 0;i<clength;i++)
         {
      	   closestLocation[i] = new Location(provider);
-     	   closestLocation[i].setProvider(tempCords[i][1]); 
+     	   closestLocation[i].setProvider(tempCords[i][1]); // Bus stop name
      	   closestLocation[i].setLatitude(Double.parseDouble(tempCords[i][3])); // 1 i gps2.xml
      	   closestLocation[i].setLongitude(Double.parseDouble(tempCords[i][2])); // 2 i gps2.xml
      	   int alt = Integer.parseInt(tempCords[i][0]);
@@ -292,23 +293,23 @@ public class Helpers
 		}
     	
     	// Route array to return
-    Route [] retRoutes = new Route[tempRoutes.length];
+    	Route [] retRoutes = new Route[tempRoutes.length];
     	
     	// Iterate through received routes
     	for(int i = 0;i<tempRoutes.length;i++)
         {
       	 // System.out.println("FANT BUSSTOPP: " +finalRoutes[i].getBusStopNumber());
- //       	System.out.println("Realtimecodes: " + realTimeCodes.size());
+    	 // System.out.println("Realtimecodes: " + realTimeCodes.size());
       	  int tempId = Integer.parseInt(realTimeCodes.get(tempRoutes[i].getBusStopNumber()).toString());
       	  int wantedLine = tempRoutes[i].getBusNumber();
       	  System.out.println("WantedLine: " + wantedLine);
       	  System.out.println("TMPID: " + tempId);
       	  BusStops nextBus = k_browser.specificRequest(tempId,wantedLine);      
       	  System.out.println("Nextbus: " + nextBus);
-      	tempRoutes[i].setArrivalTime(nextBus.getArrivalTime().getHours()+""+String.format("%02d",nextBus.getArrivalTime().getMinutes())+"");
+      	  tempRoutes[i].setArrivalTime(nextBus.getArrivalTime().getHours()+""+String.format("%02d",nextBus.getArrivalTime().getMinutes())+"");
       	  
       	  int k_totalTime = calculator.calculateTotalTime(tempRoutes[i].getArrivalTime(), tempRoutes[i].getTravelTime());
-      	tempRoutes[i].setTotalTime(k_totalTime); 
+      	  tempRoutes[i].setTotalTime(k_totalTime); 
         }
     	
     	// Remove suggestions where buses passing same stops have huge total time difference
@@ -392,6 +393,18 @@ public class Helpers
     	return retRoutes;
     	
     	
+    }
+    
+    
+    public static boolean containsIgnoreCase(List <String> l, String s)
+    {
+    	Iterator <String> it = l.iterator();
+    	while(it.hasNext())
+    	{
+    	if(it.next().equalsIgnoreCase(s))
+    	return true;
+    	 }
+    	return false;
     }
     
     
