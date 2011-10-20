@@ -1,5 +1,7 @@
 package test.BusTUC.Main;
 
+
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,6 +29,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
@@ -40,9 +43,11 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -57,6 +62,8 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemLongClickListener;
 
 public class Homescreen extends Activity {
+	private String [] bgColors = {"#3C434A","#A3AB19","#F66F89","#D9F970"};
+	private int currentBgColor = 0;
 	private int numButtons = 6;
 	//private int[] buttons = {R.id.button1,R.id.button2,R.id.button3,R.id.button4,R.id.button5, R.id.button6};
 	private Button[] buttons;
@@ -82,6 +89,13 @@ public class Homescreen extends Activity {
     ClosestHolder [] cl; // Object containing geopoint of closest stops. 
     // adds edittext box
     Context context;
+    
+    private static final int SWIPE_MIN_DISTANCE = 120;
+    private static final int SWIPE_MAX_OFF_PATH = 250;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+    private GestureDetector gestureDetector;
+    View.OnTouchListener gestureListener;
+	LinearLayout line;
 
 
     public void updateButtons(String[] busStop, Button[]buttons)
@@ -138,6 +152,11 @@ public class Homescreen extends Activity {
         buttons = new Button[6];
         goButton = (Button)this.findViewById(R.id.goButton);
         editText = (EditText)this.findViewById(R.id.editText);
+        
+        ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(this);
+        line = (LinearLayout)this.findViewById(R.id.homelayout);
+        line.setOnTouchListener(activitySwipeDetector);
+        
         // Hide keyboard on start
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         // Retrieve favourites
@@ -444,6 +463,75 @@ public class Homescreen extends Activity {
 	  		locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 100, 1, locationListener);
 	
 	  	}
-    }
+    
+public class ActivitySwipeDetector implements View.OnTouchListener {
+
+	static final String logTag = "ActivitySwipeDetector";
+	private Activity activity;
+	static final int MIN_DISTANCE = 100;
+	private float downX, downY, upX, upY;
+	LinearLayout ll = (LinearLayout)findViewById(R.id.homelayout);
+	public ActivitySwipeDetector(Activity activity){
+	    this.activity = activity;
+	}
+
+	public void onRightToLeftSwipe(){
+	    Log.i(logTag, "RightToLeftSwipe!");
+	    if(currentBgColor>0) currentBgColor--;
+	    line.setBackgroundColor(Color.parseColor(bgColors[currentBgColor]));
+	}
+
+	public void onLeftToRightSwipe(){
+	    Log.i(logTag, "LeftToRightSwipe!");
+	    if(currentBgColor<(bgColors.length-1)) currentBgColor++;
+	    line.setBackgroundColor(Color.parseColor(bgColors[currentBgColor]));
+	}
+
+	public void onTopToBottomSwipe(){
+	    Log.i(logTag, "onTopToBottomSwipe!");
+	    
+	}
+
+	public void onBottomToTopSwipe(){
+	    Log.i(logTag, "onBottomToTopSwipe!");
+	    
+	}
+
+	public boolean onTouch(View v, MotionEvent event) {
+	    switch(event.getAction()){
+	        case MotionEvent.ACTION_DOWN: {
+	            downX = event.getX();
+	            downY = event.getY();
+	            return true;
+	        }
+	        case MotionEvent.ACTION_UP: {
+	            upX = event.getX();
+	            upY = event.getY();
+
+	            float deltaX = downX - upX;
+	            float deltaY = downY - upY;
+
+	            // swipe horizontal?
+	            if(Math.abs(deltaX) > MIN_DISTANCE){
+	                // left or right
+	                if(deltaX < 0) { this.onLeftToRightSwipe(); return true; }
+	                if(deltaX > 0) { this.onRightToLeftSwipe(); return true; }
+	            } else { Log.i(logTag, "Swipe was only " + Math.abs(deltaX) + " long, need at least " + MIN_DISTANCE); }
+
+	            // swipe vertical?
+	            if(Math.abs(deltaY) > MIN_DISTANCE){
+	                // top or down
+	                if(deltaY < 0) { this.onTopToBottomSwipe(); return true; }
+	                if(deltaY > 0) { this.onBottomToTopSwipe(); return true; }
+	            } else { Log.i(logTag, "Swipe was only " + Math.abs(deltaX) + " long, need at least " + MIN_DISTANCE); }
+
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+
+	}
+}
 	
 

@@ -61,6 +61,8 @@ class MapOverlay extends ItemizedOverlay
 		items.add(item);
 		populate();
 	}
+	
+	
 
 	
 	// Funker ikke nå, må fikses. Will do på tirsdag:)
