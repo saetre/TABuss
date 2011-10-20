@@ -27,9 +27,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
@@ -40,6 +42,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -56,10 +59,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.VideoView;
 
 public class Homescreen extends Activity {
 	private String [] bgColors = {"#3C434A","#A3AB19","#F66F89","#D9F970"};
@@ -69,20 +74,25 @@ public class Homescreen extends Activity {
 	private Button[] buttons;
 	private Button goButton; 
 	private EditText editText;
-	String[][] gpsCords;  // Array containing bus stops
+	
+	// Global variables that need to be accessed from other contexts
+	public static String[][] gpsCords;  // Array containing bus stops
+	public static Location currentlocation, busLoc; // Location objects
+	public static HashMap<Integer,HashMap<Integer,Location>> locationsArray; // GPS coordinates
+	public static Browser k_browser; // Object doing communation with bussTUC and Real-Time system
+	// End of global variables
+	
 	MapController mc; // Controller for the map
 	List<String> prov; // List of providers
     GeoPoint p,p2; // p is current location, p2 is closest bus stop. 
     GPS k_gps; // Object of the GetGPS class. 
-    Location currentlocation, busLoc; // Location objects
+
     // Static because of access from BusList
     HashMap<Integer,Location> tSetExclude; // HashMap used for finding closest locations. Ignores stops at both sides of the road
-    HashMap<Integer,Location> tSetAllStops; // HashMap used for finding closest locations. Adds stops from both sides of the road. For use on map w
     LocationManager locationManager; // Location Manager
-    HashMap<Integer,HashMap<Integer,Location>> locationsArray;
     String provider; // Provider 
     LocationListener locationListener;
-    Browser k_browser; 
+    
     HashMap realTimeCodes; 
     String[] busStop = new String[numButtons];
     ArrayList <String> favorites;
@@ -148,6 +158,8 @@ public class Homescreen extends Activity {
     {
         super.onCreate(savedInstanceState);
         context = this;
+        this.setRequestedOrientation(
+        		ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.homescreen);
         buttons = new Button[6];
         goButton = (Button)this.findViewById(R.id.goButton);
@@ -156,13 +168,11 @@ public class Homescreen extends Activity {
         ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(this);
         line = (LinearLayout)this.findViewById(R.id.homelayout);
         line.setOnTouchListener(activitySwipeDetector);
-        
         // Hide keyboard on start
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         // Retrieve favourites
         // Can have 6 favourites
         // Bind listeners to favourites
-       // busStop = {"Buenget", "Tiller", "Moholt", "Pirbadet", "Dragvoll", "Ilsvika"};
         updateButtons(busStop,buttons);
          
        
@@ -175,10 +185,7 @@ public class Homescreen extends Activity {
 		// 3 - long
         gpsCords = GPS.formatCoordinates(gpsCoordinates);
        
-        		
-        // 0 - Busstoppnr
-        	
-        //System.out.println("COORDINATES2 " + gpsCords[i][j]); 
+
 
         // Creates a locationManager. 
         // If no connection, quit
@@ -211,20 +218,16 @@ public class Homescreen extends Activity {
             	 System.out.println("LOCATIONLISTENER");
             	currentlocation = location; 
         		Log.v("currentLoc","PROV:LOC=" + currentlocation.getLatitude()+":"+currentlocation.getLongitude());
-               // finds the closest bus stop
-        //		busLoc = closestLoc(gpsCords);
+
         		// creates a HashMap containing all the location objects
                 locationsArray = Helpers.getLocations(gpsCords,provider, currentlocation);
                 //System.out.println("REALTIMEX: " + realTimeCodes.size());
                 Log.v("sort","returnedHmap:"+locationsArray.size());	
                 // creates a HashMap with all the relevant bus stops
                 Sort sort = new Sort();
-                tSetExclude = sort.m_partialSort(locationsArray,2,500,false, false);
-                tSetAllStops = sort.m_partialSort(locationsArray,10,1000,false, true);
+                tSetExclude = sort.m_partialSort(locationsArray,5,500,false, false);
                 System.out.println("TSET SET: " + tSetExclude.size());
-                int numberofStops = tSetAllStops.size();
-                cl = new ClosestHolder[numberofStops];
-                
+
                 Log.v("sort","returnedtSet"+tSetExclude.size());	
                 // adds the closest bus stop as a GeoPoint
                 int busCounter = 0; 
@@ -357,7 +360,8 @@ public class Homescreen extends Activity {
     {
         private Context context;    
         Route [] foundRoutes;
-        StringBuffer buf = new StringBuffer();
+    //    StringBuffer buf = new StringBuffer();
+        ArrayList <String> buf = new ArrayList <String>();
         ProgressDialog myDialog = null;
         public OracleThread(Context context)
         {
@@ -395,7 +399,7 @@ public class Homescreen extends Activity {
 	      	{
         		System.out.println("Starting activity");
 	          	Intent intent = new Intent(getApplicationContext(), Answer.class);
-	          	intent.putExtra("test", buf.toString());
+	          	intent.putExtra("test", buf);
 	          	context.startActivity(intent);
 	        	
 		    }
@@ -410,7 +414,7 @@ public class Homescreen extends Activity {
     
     // Thread classes //
     // Thread starting the oracle queries
-    class MapThread extends AsyncTask<Void, Void, Void>
+  class MapThread extends AsyncTask<Void, Void, Void>
     {
         private Context context;    
         Intent intent;
@@ -424,7 +428,7 @@ public class Homescreen extends Activity {
         @Override
         protected Void doInBackground(Void... params)
         {
-
+        	intent = new Intent(getApplicationContext(), BusTUCApp.class);
         	context.startActivity(intent);
         	return null;
         }
@@ -432,7 +436,6 @@ public class Homescreen extends Activity {
         @Override
         protected void onPreExecute()
         {
-        	intent = new Intent(getApplicationContext(), BusTUCApp.class);
         	
         	myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
         	editText.setEnabled(false);
@@ -464,6 +467,7 @@ public class Homescreen extends Activity {
 	
 	  	}
     
+
 public class ActivitySwipeDetector implements View.OnTouchListener {
 
 	static final String logTag = "ActivitySwipeDetector";

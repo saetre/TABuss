@@ -64,30 +64,16 @@ public class BusTUCApp extends MapActivity
 {    
 	MapOverlay mapOverlay;
 	MapView mapView; // Google Maps
-	String[][] gpsCords;  // Array containing bus stops
 	MapController mc; // Controller for the map
 	List<String> prov; // List of providers
     GeoPoint p,p2; // p is current location, p2 is closest bus stop. 
     GPS k_gps; // Object of the GetGPS class. 
-    Location currentlocation, busLoc; // Location objects
-    // Static because of access from BusList
-    HashMap<Integer,Location> tSetExclude; // HashMap used for finding closest locations. Ignores stops at both sides of the road
     HashMap<Integer,Location> tSetAllStops; // HashMap used for finding closest locations. Adds stops from both sides of the road. For use on map w
-    LocationManager locationManager; // Location Manager
-    HashMap<Integer,HashMap<Integer,Location>> locationsArray;
     String provider; // Provider 
-    //TextView myLocationText; 
-    LocationListener locationListener;
-    Browser k_browser; 
     HashMap realTimeCodes; 
     ClosestHolder [] cl; // Object containing geopoint of closest stops. 
-    //Button button;
-    // adds edittext box
-   // EditText editTe;
     StringBuffer presentation; // String which contain answer from bussTUC
-    private Route [] routes; // Routes returned from bussTUC
-    private Route [] finalRoutes; // Routes after real-time processing
-    
+
     /** Called when the activity is first created. */
     
     @Override
@@ -96,11 +82,8 @@ public class BusTUCApp extends MapActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         mapView = (MapView) findViewById(R.id.mapView); 
-     //   myLocationText = (TextView)findViewById(R.id.myLocationText);
-       // myLocationText.setText("");
         LinearLayout zoomLayout = (LinearLayout)findViewById(R.id.zoom);  
         // Gets the coordinates from the bus XML file
-        String[] gpsCoordinates = getResources().getStringArray(R.array.coords3); 
         
         
 		// Test database stuff
@@ -109,18 +92,7 @@ public class BusTUCApp extends MapActivity
         Cursor cursor = db.rawQuery("SELECT destination FROM test", new String[]{""+1});
         System.out.println("Found in db: " + cursor.getCount());*/
         // End database stuff
-        
-        
-        // Formats the bus coordinates
-    	// 1 - navn
-		// 2 - lat
-		// 3 - long
-        gpsCords = GPS.formatCoordinates(gpsCoordinates);
-       
-        		
-        // 0 - Busstoppnr
-        	
-        //System.out.println("COORDINATES2 " + gpsCords[i][j]); 
+
     
         View zoomView = mapView.getZoomControls(); 
  
@@ -131,19 +103,16 @@ public class BusTUCApp extends MapActivity
         mapView.displayZoomControls(true);
         
         mc = mapView.getController();
-        // Creates a locationManager. 
-        // If no connection, quit
+        System.out.println("Sjekker lengde: " +Homescreen.gpsCords.length);
+        System.out.println("Sjekker browser: " +Homescreen.k_browser.toString());
+
+    
         try
         {
-	        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-	        Criteria criteria = new Criteria();
-	        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-	        provider = locationManager.getBestProvider(criteria, true);
-	        k_browser = new Browser(); 
-	        // Load real-time codes
-	        realTimeCodes = k_browser.realTimeData();
+
+	        realTimeCodes = Homescreen.k_browser.realTimeData();
 	        System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
-	            Log.v("provider","provider:"+ provider);
+	        Log.v("provider","provider:"+ provider);
         }
         catch(Exception e)
         {
@@ -152,124 +121,99 @@ public class BusTUCApp extends MapActivity
         	
         }       
         
-       
-       
-        // Creates a locationListener
-        locationListener = new LocationListener() {
-            
-        	// This method runs whenever the criteria for change is met. 
-            public void onLocationChanged(Location location) {
-            	currentlocation = location; 
-            	
-        		Log.v("currentLoc","PROV:LOC=" + currentlocation.getLatitude()+":"+currentlocation.getLongitude());
-               // finds the closest bus stop
-        //		busLoc = closestLoc(gpsCords);
-        		// creates a HashMap containing all the location objects
-                locationsArray = Helpers.getLocations(gpsCords,provider, currentlocation);
-                //System.out.println("REALTIMEX: " + realTimeCodes.size());
-                Log.v("sort","returnedHmap:"+locationsArray.size());	
-                // creates a HashMap with all the relevant bus stops
-                Sort sort = new Sort();
-                tSetExclude = sort.m_partialSort(locationsArray,5,500,false, false);
-                tSetAllStops = sort.m_partialSort(locationsArray,10,1000,false, true);
-                int numberofStops = tSetAllStops.size();
-                cl = new ClosestHolder[numberofStops];
-                
-                Log.v("sort","returnedtSet"+tSetExclude.size());	
-                // adds the closest bus stop as a GeoPoint
-                int busCounter = 0; 
-                Object[] keys = tSetAllStops.keySet().toArray();
-        		Arrays.sort(keys);
-                for(int i = 0;i<numberofStops;i++)
-                {
-                  cl[i] = new ClosestHolder(new GeoPoint(
-               		   (int)	(tSetAllStops.get(keys[i]).getLatitude() * 1E6),
-               		   (int)	(tSetAllStops.get(keys[i]).getLongitude() * 1E6)),
-               		   (int) tSetAllStops.get(keys[i]).getAltitude(),
-               		   tSetAllStops.get(keys[i]).getProvider());
-                  
-                 // System.out.println("ADDING: " +(int) tSet.get(keys[i]).getAltitude());   
-                		                	  
-                }
-                initialize();
-                for(int i=0; i<cl.length; i++)
-                {
-                	Helpers.addStops(cl[i],getResources().getDrawable(R.drawable.s_busstop2),mapOverlay);
-                }
-                
-                // add the current location as a GeoPoint
-                p = new GeoPoint(
-                        (int) (currentlocation.getLatitude() * 1E6), 
-                        (int) (currentlocation.getLongitude() * 1E6));
-
-               Helpers.addUser(p,mapOverlay, getResources().getDrawable(R.drawable.pp));
-               System.out.println("My loc: " + currentlocation.getLatitude() *1E6 + "  " + currentlocation.getLongitude() *1E6);
-                showOverlay();
-                mc.animateTo(p);
-                mc.setZoom(16);
-                
-            }
-
-			@Override
-			public void onProviderDisabled(String provider) {
-				Log.v("PROV","PROV:DISABLED");
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onProviderEnabled(String provider) {
-				Log.v("PROV","PROV:ENABLED");
-				
-			}
-
-			@Override
-			public void onStatusChanged(String provider, int status,
-					Bundle extras) {
-				Log.v("PROV","PROV:STATUSCHANGE");
-				
-			}
-        };
+        Sort sort = new Sort();
+        //tSetExclude = sort.m_partialSort(locationsArray,5,500,false, false);
+        tSetAllStops = sort.m_partialSort(Homescreen.locationsArray,10,1000,false, true);
+        int numberofStops = tSetAllStops.size();
+        cl = new ClosestHolder[numberofStops];
         
-       // adds button
-//       button = (Button) findViewById(R.id.Button);
-       // adds edittext box
-  //     editTe = (EditText) findViewById(R.id.eText);
-       // binds listener to the button
-    //   button.setOnClickListener(new OnClickListener() {
-           /* public void onClick(View v) {
-    	    	new OracleThread(getApplicationContext()).execute();
-            }
-        });*/
+     //   Log.v("sort","returnedtSet"+tSetExclude.size());	
+        // adds the closest bus stop as a GeoPoint
+        int busCounter = 0; 
+        Object[] keys = tSetAllStops.keySet().toArray();
+		Arrays.sort(keys);
+        for(int i = 0;i<numberofStops;i++)
+        {
+          cl[i] = new ClosestHolder(new GeoPoint(
+       		   (int)	(tSetAllStops.get(keys[i]).getLatitude() * 1E6),
+       		   (int)	(tSetAllStops.get(keys[i]).getLongitude() * 1E6)),
+       		   (int) tSetAllStops.get(keys[i]).getAltitude(),
+       		   tSetAllStops.get(keys[i]).getProvider());
+          
+         // System.out.println("ADDING: " +(int) tSet.get(keys[i]).getAltitude());   
+        		                	  
+        }
+        initialize();
+        for(int i=0; i<cl.length; i++)
+        {
+        	Helpers.addStops(cl[i],getResources().getDrawable(R.drawable.s_busstop2),mapOverlay);
+        }
+        
+        // add the current location as a GeoPoint
+        p = new GeoPoint(
+                (int) (Homescreen.currentlocation.getLatitude() * 1E6), 
+                (int) (Homescreen.currentlocation.getLongitude() * 1E6));
+
+       Helpers.addUser(p,mapOverlay, getResources().getDrawable(R.drawable.pp));
+       System.out.println("My loc: " + Homescreen.currentlocation.getLatitude() *1E6 + "  " + Homescreen.currentlocation.getLongitude() *1E6);
+        showOverlay();
+        mc.animateTo(p);
+        mc.setZoom(16);
+        Bundle extras = getIntent().getExtras();
+        String value = "";
+        ArrayList <Integer> id = new ArrayList <Integer>();
+		if(extras !=null) 
+		{
+		   value = extras.getString("test");
+		   for(int i=0; i<cl.length; i++)
+		   {
+			   if(value.contains(cl[i].getStopName()))
+			   {
+				   id.add(cl[i].getBusStopID());
+				   System.out.println("FOUND ID: " + id);
+			   }
+		   }
+           drawPath(id);
+
+	
+		}
     }
-    
-    public void drawPath(int stopid){
-    	GeoPoint busStop = findStopInCl(stopid, cl);
-    	if(p!=null && cl!=null)mapView.getOverlays().add(new DirectionPathOverlay(p, cl[0].getPoint()));
+
+    public void drawPath(ArrayList<Integer> id){
+    	ArrayList <GeoPoint> busStop = findStopInCl(id, cl);
+    	System.out.println("Found point: " + busStop);
+    	if(p!=null && cl!=null)mapView.getOverlays().add(new DirectionPathOverlay(p, busStop));
         else System.out.println("INGEN PUNKTER MOTHERFUCKER");
     }
     
-    public GeoPoint findStopInCl(int stopid, ClosestHolder[] cl){
-    	for(ClosestHolder closest : cl){
-    		if(closest.getBusStopID()==stopid) return closest.getPoint();
+    public ArrayList <GeoPoint> findStopInCl(ArrayList <Integer> id, ClosestHolder[] cl){
+    	ArrayList <GeoPoint> retList = new ArrayList<GeoPoint>();
+    	for(int i=0; i<cl.length; i++)
+    	{
+    		for(int j=0; j<id.size(); j++)
+    		{
+    			if(cl[i].getBusStopID() == id.get(j))
+    			{
+    				retList.add(cl[i].getPoint());
+    			}
+    		}
     	}
-    	return null;
+    	return retList;
     }
     
     public void onBackPressed()
     {
     	
-    	this.finish();
+    	finish();
     }
     @SuppressWarnings("static-access")
   	@Override
   	protected void onResume() {
   		super.onResume();
   	    // Sets the restrictions on the location update. 
-  		locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 100, 1, locationListener);
+  		//locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 100, 1, locationListener);
 
-  	}
-    
+  	}   
 
       @Override
       protected boolean isRouteDisplayed() {
@@ -306,97 +250,13 @@ public class BusTUCApp extends MapActivity
          
       }
       
-      /*
-      // Menu properties
-      @Override
-      public boolean onCreateOptionsMenu(Menu menu) {
-          MenuInflater inflater = getMenuInflater();
-          inflater.inflate(R.layout.menu, menu);
-          return true;
-      }
-      
-      @Override
-      public boolean onOptionsItemSelected(MenuItem item) {
-          // Handle item selection
-          switch (item.getItemId()) {
-          case R.id.favoritt:
-          	Intent intent = new Intent(this, Favourite_Act.class);
-              startActivityForResult(intent, 0); // 0, not used
-              return true;
-          // Add other menu items
-          default:
-              return super.onOptionsItemSelected(item);
-          }
-      }*/
-      /*
-      // Result returned from child activity
-      @Override
-      protected void onActivityResult(int requestCode, int resultCode, Intent data) 
-      {
-      	super.onActivityResult(requestCode, resultCode, data);
-      	//	System.out.println("ACTIVITY RESULT RECIEVED!!! ");
-      	if(!data.getStringExtra("test").isEmpty())
-      	{
-      		String item = data.getStringExtra("test");
-  	    	editTe.setText(item);
-  	    	//System.out.println("SET TO: " + item);
-  	    	Toast.makeText(this, editTe.getText().toString(), Toast.LENGTH_LONG).show();
-  	    	new OracleThread(getApplicationContext()).execute();
-      	}
-      }*/
-      
-      
-      
-      // Thread classes //
-      // Thread starting the oracle queries
-     /* class OracleThread extends AsyncTask<Void, Void, Void>
-      {
-          private Context context;    
-          Route [] foundRoutes;
-          StringBuffer buf;// = new StringBuffer();
-          public OracleThread(Context context)
-          {
-          	
-              this.context = context;
-          }
-
-          @Override
-          protected Void doInBackground(Void... params)
-          {
-          	long time = System.nanoTime();
-          	buf = Helpers.run(editTe.getText().toString(),tSetExclude, locationsArray,k_browser, realTimeCodes);
-          	long newTime = System.nanoTime() - time;
-  			System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
-  			
-              return null;
-          }
-          
-          @Override
-          protected void onPreExecute()
-          {
-          	editTe.setEnabled(false);
-          	button.setEnabled(false);
-          }
-
-          @Override
-         protected void onPostExecute(Void unused)
-          {
-        	  if(buf != null)
-        	  {
-            	//myLocationText.setText(buf.toString());
-        	  }
-            	editTe.setEnabled(true);
-                button.setEnabled(true);
-            	
-          }
-      }  */
-   
+     
       public class DirectionPathOverlay extends Overlay {
 
     	    private GeoPoint gp1;
-    	    private GeoPoint gp2;
+    	    private ArrayList <GeoPoint> gp2;
 
-    	    public DirectionPathOverlay(GeoPoint gp1, GeoPoint gp2) {
+    	    public DirectionPathOverlay(GeoPoint gp1, ArrayList <GeoPoint> gp2) {
     	        this.gp1 = gp1;
     	        this.gp2 = gp2;
     	    }
@@ -413,11 +273,16 @@ public class BusTUCApp extends MapActivity
     	            Point point = new Point();
     	            projection.toPixels(gp1, point);
     	            paint.setColor(Color.BLUE);
-    	            Point point2 = new Point();
-    	            projection.toPixels(gp2, point2);
-    	            paint.setStrokeWidth(2);
-    	            canvas.drawLine((float) point.x, (float) point.y, (float) point2.x,
-    	                    (float) point2.y, paint);
+    	            Point []point2 = new Point[gp2.size()];
+    	            System.out.println("Size of point: " + point2.length);
+    	            for(int i=0; i<point2.length; i++)
+    	            {
+    	            	point2[i] = new Point();
+    	            	projection.toPixels(gp2.get(i), point2[i]);    	            
+	    	            paint.setStrokeWidth(2);
+	    	            canvas.drawLine((float) point.x, (float) point.y, (float) point2[i].x,
+	    	                    (float) point2[i].y, paint);
+    	            }
     	        }
     	        return super.draw(canvas, mapView, shadow, when);
     	    }
