@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:id="@+id/homelayout" xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="fill_parent"
-    android:orientation="vertical" android:background="#3c434a">
-    
+    android:orientation="vertical" android:background="#3c434a">    
+	
+	
+	
     <RelativeLayout
     android:gravity = "top"
 	android:id="@+id/widget61"
@@ -23,20 +25,29 @@
 	android:layout_alignParentRight="true">
 	</Button>
 	
-	<EditText 
-	android:id="@+id/editText" 
-	android:layout_width="fill_parent" 
-	android:maxLines="1" 
-	android:hint="Hvor vil du dra?" 
-	android:background="@drawable/edittext" 
-	android:layout_height="wrap_content" 
-	android:textSize="8pt" 
-	android:layout_toRightOf="@+id/editButton"
-	android:layout_toLeftOf="@+id/goButton">
-	</EditText>
+
+	
+	<TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"         
+		android:textSize="8pt" 
+		
+      />
+    <AutoCompleteTextView android:id="@+id/autocomplete"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+       	android:maxLines="1" 
+       android:layout_toRightOf="@+id/editButton"
+       android:hint="Hvor vil du dra?" 
+       android:layout_alignParentTop="true" 
+	android:layout_alignParentLeft="true"
+		android:layout_toLeftOf="@+id/goButton"
+        android:layout_marginLeft="5dp"/>
 	
 	
-	<ScrollView android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/editText">
+	
+	<ScrollView android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/autocomplete">
 	<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
 	<Button android:layout_margin="15px" android:text="Button" android:id="@+id/button1" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
    	<Button android:layout_margin="15px" android:text="Button" android:id="@+id/button2" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>

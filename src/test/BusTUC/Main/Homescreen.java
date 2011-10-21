@@ -16,7 +16,7 @@ import com.google.android.maps.MapView.LayoutParams;
 import test.BusTUC.R;
 import test.BusTUC.Calc.Sort;
 import test.BusTUC.Favourites.Favourite;
-import test.BusTUC.Favourites.Favourite_Act;
+import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.GPS.GPS;
 import test.BusTUC.Queries.Browser;
 import test.BusTUC.Stops.ClosestHolder;
@@ -57,6 +57,8 @@ import android.view.View.OnLongClickListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -73,15 +75,16 @@ public class Homescreen extends Activity {
 	//private int[] buttons = {R.id.button1,R.id.button2,R.id.button3,R.id.button4,R.id.button5, R.id.button6};
 	private Button[] buttons;
 	private Button goButton; 
-	private EditText editText;
+	//private EditText editText;
 	
 	// Global variables that need to be accessed from other contexts
+	// No prob to let them stay public static, as they anyway are accessed by the same process
 	public static String[][] gpsCords;  // Array containing bus stops
 	public static Location currentlocation, busLoc; // Location objects
 	public static HashMap<Integer,HashMap<Integer,Location>> locationsArray; // GPS coordinates
 	public static Browser k_browser; // Object doing communation with bussTUC and Real-Time system
 	// End of global variables
-	
+	AutoCompleteTextView textView;
 	MapController mc; // Controller for the map
 	List<String> prov; // List of providers
     GeoPoint p,p2; // p is current location, p2 is closest bus stop. 
@@ -118,7 +121,7 @@ public class Homescreen extends Activity {
          busStop[4] = "Dragvoll";
          busStop[5] = "Ilsvika";
          
-        ArrayList <String> favorites = Favourite_Act.getFilesFromSD();
+        ArrayList <String> favorites = SDCard.getFilesFromSD("fav_routes");
     	List <String> temp = Arrays.asList(busStop);
     	int addedfavorites = 0;
     	// Set font
@@ -163,8 +166,25 @@ public class Homescreen extends Activity {
         setContentView(R.layout.homescreen);
         buttons = new Button[6];
         goButton = (Button)this.findViewById(R.id.goButton);
-        editText = (EditText)this.findViewById(R.id.editText);
+        //editText = (EditText)this.findViewById(R.id.editText);
         
+        // Gets the coordinates from the bus XML file
+        String[] gpsCoordinates = getResources().getStringArray(R.array.coords3);      
+        
+
+        
+        // Formats the bus coordinates
+    	// 1 - navn
+		// 2 - lat
+		// 3 - long
+        gpsCords = GPS.formatCoordinates(gpsCoordinates);
+        
+     // Autocompletion
+        ArrayList <String> dictionary = Helpers.createDictionary(gpsCords);
+        textView = (AutoCompleteTextView) findViewById(R.id.autocomplete);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, dictionary);
+        textView.setAdapter(adapter);
+
         ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(this);
         line = (LinearLayout)this.findViewById(R.id.homelayout);
         line.setOnTouchListener(activitySwipeDetector);
@@ -173,20 +193,9 @@ public class Homescreen extends Activity {
         // Retrieve favourites
         // Can have 6 favourites
         // Bind listeners to favourites
-        updateButtons(busStop,buttons);
-         
+        updateButtons(busStop,buttons);      
        
-        // Gets the coordinates from the bus XML file
-        String[] gpsCoordinates = getResources().getStringArray(R.array.coords3);         
-        
-        // Formats the bus coordinates
-    	// 1 - navn
-		// 2 - lat
-		// 3 - long
-        gpsCords = GPS.formatCoordinates(gpsCoordinates);
        
-
-
         // Creates a locationManager. 
         // If no connection, quit
         try
@@ -257,7 +266,8 @@ public class Homescreen extends Activity {
 			
         };       
         
-
+     
+        
        // binds listener to the button
        goButton.setOnClickListener(new OnClickListener() 
        {
@@ -275,7 +285,7 @@ public class Homescreen extends Activity {
 	       {
 	    	  public void onClick(View v) 
 	          {
-		            editText.setText(butz.getText());
+	    		  textView.setText(butz.getText());
 		    	    new OracleThread(context).execute();
 	    	  
 	          }
@@ -285,17 +295,36 @@ public class Homescreen extends Activity {
 	 	  {
 			@Override
 			public boolean onLongClick(View v) {
-				String tmp = (String) butz.getText();
-	   			if(Favourite_Act.deleteFileFromSD(tmp))
-	   			{
-	   				updateButtons(busStop, buttons);
-	   				return true;
-	   			}
-	   			
-	   			System.out.println("NOT DELETED: " + tmp);
-	   			return false;
+				DialogInterface.OnClickListener dc = new DialogInterface.OnClickListener() 
+				{
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) 
+					{
+						switch(which)
+						{
+						case DialogInterface.BUTTON_POSITIVE:
+							String tmp = (String) butz.getText();
+				   			if(SDCard.deleteFileFromSD(tmp,"fav_routes"))
+				   			{
+				   				updateButtons(busStop, buttons);
+				   			}
+						case DialogInterface.BUTTON_NEGATIVE:
+							// Do nothing
+
+						}
+							
+					}
+						
+				};	
+				AlertDialog.Builder builder = new AlertDialog.Builder(context);
+				builder.setMessage("Slette fil?").setPositiveButton("Ja", dc)
+				    .setNegativeButton("Nei", dc).show();			
+		   			
+	   			return true;
 			}
 	   	  });
+	      
        }    
   	
   }
@@ -333,12 +362,14 @@ public class Homescreen extends Activity {
 	        	{
 	        	
 	        	  String value = input.getText().toString();
+	        	  ArrayList <String> queries = new ArrayList <String>();
 	        	  fav.setQuery(value);
+	        	  queries.add(value);
 	        	  // For now, store query as filename, as the file does not contain anything else
-	        	  if(Favourite_Act.generateNoteOnSD(fav.getQuery(), fav.getQuery()))
-	            {
+	        	  if(SDCard.generateNoteOnSD(fav.getQuery(), queries,"fav_routes"))
+	        	  {
 	        		  updateButtons(busStop,buttons);
-	            }
+	        	  }
 	        	  
 	          	
 	        	 }
@@ -359,9 +390,9 @@ public class Homescreen extends Activity {
     class OracleThread extends AsyncTask<Void, Void, Void>
     {
         private Context context;    
-        Route [] foundRoutes;
+        ArrayList <Route> buf;
     //    StringBuffer buf = new StringBuffer();
-        ArrayList <String> buf = new ArrayList <String>();
+      //  ArrayList <String> buf = new ArrayList <String>();
         ProgressDialog myDialog = null;
         public OracleThread(Context context)
         {
@@ -373,7 +404,7 @@ public class Homescreen extends Activity {
         protected Void doInBackground(Void... params)
         {
         	long time = System.nanoTime();
-        	buf = Helpers.run(editText.getText().toString(),tSetExclude, locationsArray,k_browser, realTimeCodes);
+        	buf = Helpers.run(textView.getText().toString(),tSetExclude, locationsArray,k_browser, realTimeCodes);
         	long newTime = System.nanoTime() - time;
 			System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 			return null;
@@ -383,10 +414,9 @@ public class Homescreen extends Activity {
         protected void onPreExecute()
         {
            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); 
-        	imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+        	imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
         	myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
-
-        	editText.setEnabled(false);
+        	textView.setEnabled(false);
         	goButton.setEnabled(false);
         }
 
@@ -399,13 +429,15 @@ public class Homescreen extends Activity {
 	      	{
         		System.out.println("Starting activity");
 	          	Intent intent = new Intent(getApplicationContext(), Answer.class);
-	          	intent.putExtra("test", buf);
+	          	intent.putParcelableArrayListExtra("test", buf);
+	          	
+	          	//intent.putExtra("test", buf);
 	          	context.startActivity(intent);
 	        	
 		    }
         	
         	
-      	  editText.setEnabled(true);
+        	textView.setEnabled(true);
       	  goButton.setEnabled(true);
         }
     }  
@@ -438,7 +470,7 @@ public class Homescreen extends Activity {
         {
         	
         	myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
-        	editText.setEnabled(false);
+        	textView.setEnabled(false);
         	goButton.setEnabled(false);
         }
 
@@ -460,7 +492,7 @@ public class Homescreen extends Activity {
 	  	protected void onResume() 
 	    {
 	  		super.onResume();
-	  		editText.setEnabled(true);
+	  	//	editText.setEnabled(true);
 	     	goButton.setEnabled(true);  
 	  	    // Sets the restrictions on the location update. 
 	  		locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 100, 1, locationListener);

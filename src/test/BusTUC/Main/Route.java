@@ -2,10 +2,13 @@ package test.BusTUC.Main;
 
 import java.util.Comparator;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import test.BusTUC.R;
 
 
-public class Route implements Comparable<Route>
+public class Route implements Comparable<Route>, Parcelable
 {
      
 	private String arrivalTime; 
@@ -17,7 +20,7 @@ public class Route implements Comparable<Route>
 	private boolean transfer; 
 	private int walkingDistance; 
     private int totalTime; 
-	Route(String k_a, String k_be, int k_br, String k_tt, String k_d)
+	public Route(String k_a, String k_be, int k_br, String k_tt, String k_d)
 	{
 		arrivalTime = k_a; 
 		busStopName = k_be; 
@@ -25,10 +28,15 @@ public class Route implements Comparable<Route>
 		travelTime = k_tt; 
 		destination = k_d; 
 	}
+	public Route(Parcel in)
+	{
+		readFromParcel(in);
+	}	
+	
 	public Route()
 	{
 		
-	}	
+	}
 
 	 
 	
@@ -100,6 +108,50 @@ public class Route implements Comparable<Route>
 
 	    return EQUAL;
 	  }
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		
+		dest.writeString(arrivalTime);
+		dest.writeString(busStopName);
+		dest.writeInt(busStopNumber);
+		dest.writeInt(busNumber);
+		dest.writeString(travelTime);
+		dest.writeString(destination);
+		dest.writeString(String.valueOf(transfer));
+		dest.writeInt(walkingDistance);
+		dest.writeInt(totalTime);
+		
+	}
+	
+	private void readFromParcel(Parcel source) {
+		 
+		arrivalTime = source.readString();
+    	busStopName = source.readString();
+    	busStopNumber = source.readInt(); 
+    	busNumber = source.readInt();
+    	travelTime = source.readString();
+    	destination = source.readString(); 
+    	transfer = Boolean.parseBoolean(source.readString()); 
+    	walkingDistance = source.readInt(); 
+    	totalTime = source.readInt(); 
+	}
+
+	public static final Parcelable.Creator CREATOR =
+    	new Parcelable.Creator() {
+            public Route createFromParcel(Parcel in) {
+                return new Route(in);
+            }
+ 
+            public Route[] newArray(int size) {
+                return new Route[size];
+            }
+        };
+
 
 
 }

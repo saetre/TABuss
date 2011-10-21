@@ -3,11 +3,13 @@ package test.BusTUC.Main;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
 import test.BusTUC.Calc.Calculate;
 import test.BusTUC.Calc.Sort;
+import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.Queries.Browser;
 import test.BusTUC.Stops.BusStops;
 import test.BusTUC.Stops.ClosestHolder;
@@ -25,11 +27,92 @@ import com.google.android.maps.OverlayItem;
  */
 public class Helpers 
 {
+	// Add dictionary to app. If not stored in SD-card previously, do so
+	public static ArrayList <String> createDictionary(String[][] gpsCords)
+	{
+		ArrayList <String> dictionary = SDCard.getFilesFromSD("dictionary_test");
+		
+		if(dictionary.size() == 0)
+		{
+			for(int i=0; i<gpsCords.length; i++)
+	        {
+	        	dictionary.add(gpsCords[i][1]);
+	        }
+			for(int i=0; i<dictionary.size(); i++)
+			{
+			//	System.out.println("FIRST: " + dictionary.get(i));
+			}
+			// Remove duplicates
+			HashSet set = new HashSet();
+			set.addAll(dictionary);
+			// Clear and add back to ArrayList 
+			dictionary.clear();
+			dictionary.addAll(set);
+			for(int i=0; i<dictionary.size(); i++)
+			{
+			//	System.out.println("SECOND: " + dictionary.get(i));
+			}
+			SDCard.generateNoteOnSD("dictionary_test", dictionary, "dictionary"); 
+		}
+	    return dictionary;
+	}
+	
+	public static ArrayList <String> parseData(ArrayList <Route> value)
+	{
+		ArrayList <String> text = new ArrayList <String>();
+		boolean noTransfer = true;
+		   for(int i=0; i<value.size(); i++)
+		   {
+			   if(noTransfer)//(!value.get(i).isTransfer())
+			   {
+		        	text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+		        	if(value.get(i).isTransfer())
+		        	{
+		        		noTransfer = false;
+		        	}
+			   }
+			   else
+			   {
+				   if(Integer.parseInt(value.get(i-1).getArrivalTime()+ value.get(i-1).getTravelTime()) > Integer.parseInt(value.get(i).getArrivalTime()))
+		      		  {
+		      			  text.set(i-1,text.get(i-1) + "\n"+(i+1)+ ": Oh shit, bussen har alt dratt");
+
+		      			  // Send new query based on updated info
+		      			 /* Sort sort = new Sort();
+		      			  System.out.println("Creating: " + printRoute[i-1].getBusStopName() + "  " + Homescreen.gpsCords.length);
+		      			  HashMap<Integer,HashMap <Integer, Location>> newCoords = getLocationsBasedOnString(Homescreen.gpsCords, printRoute[i].getBusStopName());
+		      			 
+		      			  System.out.println("new coords size: " + newCoords.size());
+
+		      			  HashMap<Integer,Location> newTsetExclude = new HashMap <Integer, Location>();
+		      			  Object[] keys = newCoords.keySet().toArray();
+		      			  int currentVal = Integer.parseInt(newCoords.get(keys[0]).keySet().toArray()[0].toString());
+		      			  newTsetExclude.put(currentVal, newCoords.get(keys[0]).get(currentVal));
+		      			  System.out.println("new set size: " + newTsetExclude.size());
+		      			  
+		      			  // Idea is to set new query containing the second stop -> destination with updated times.
+		      			  // The problem is which query to send to busTUC. So for now, an error message is shown if the second bus has left before arrival to that stop
+		      			  int arrivalTime = Integer.parseInt(printRoute[i-1].getArrivalTime());
+		      			  int travelTime = Integer.parseInt(printRoute[i-1].getTravelTime());
+		      			  int sum = arrivalTime + travelTime;
+		      			  run(printRoute[i].getDestination() + " etter " + sum, newTsetExclude, newCoords, k_browser, realTimeCodes);*/
+		      		
+
+		      		  }
+		      		  else
+		      		  {
+		      			  
+		      			  text.add((i+1)+": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+		      		  }
+			   }
+		   }
+		   return text;
+	
+		}	
 	
 	
 	
-	
-	 public static ArrayList <String> computeRealTime(Route [] foundRoutes, Route [] routes, HashMap<Integer,Location> tSetExclude, HashMap realTimeCodes, Browser k_browser)
+	 public static ArrayList <Route> computeRealTime(Route [] foundRoutes, Route [] routes, HashMap<Integer,Location> tSetExclude, HashMap realTimeCodes, Browser k_browser)
 	    {
 	    	Calculate calculator = new Calculate();
 	    	int tempId = 0; 
@@ -37,6 +120,7 @@ public class Helpers
 	        StringBuffer presentation = new StringBuffer();        
 	        boolean noTransfer = true; 
 	        Route [] returnRoutes = new Route[foundRoutes.length];
+	        ArrayList<Route> temp = new ArrayList <Route>();
 	        ArrayList <String>ret = new ArrayList <String>();
 	        // Sets the travel and total time for each route
 	        try
@@ -51,17 +135,16 @@ public class Helpers
 	        
 	       
 	        calculator.printOutRoutes("AFTERREALTIME",foundRoutes, true);
-	        Route[] printRoute = calculator.sortByTotalTime(returnRoutes);
-	        
+	        /*
 	        for(int i = 0;i<returnRoutes.length;i++)
 	        {    
 	      	 
 	      	 if(noTransfer)
 	      	 {
 	      		 	System.out.println("APPENDING IN FIRST IF");
-	    		 	System.out.println((i+1)+": Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" ("+printRoute[i].getWalkingDistance()+" meter)"+" klokken "+printRoute[i].getArrivalTime()+". Du vil nå "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
-	        	    presentation.append((i+1)+": Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" ("+printRoute[i].getWalkingDistance()+" meter)"+" klokken "+printRoute[i].getArrivalTime()+". Du vil nå "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
-	        	    ret.add((i+1)+": Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" ("+printRoute[i].getWalkingDistance()+" meter)"+" klokken "+printRoute[i].getArrivalTime()+". Du vil nå "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
+	    		 	System.out.println((i+1)+": Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" ("+printRoute[i].getWalkingDistance()+" meter)"+" klokken "+printRoute[i].getArrivalTime()+". Du vil nï¿½ "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
+	        	    presentation.append((i+1)+": Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" ("+printRoute[i].getWalkingDistance()+" meter)"+" klokken "+printRoute[i].getArrivalTime()+". Du vil nï¿½ "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
+	        	    ret.add((i+1)+": Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" ("+printRoute[i].getWalkingDistance()+" meter)"+" klokken "+printRoute[i].getArrivalTime()+". Du vil nï¿½ "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
 	        	    
 	        	    if(routes[i].isTransfer())
 	        	    {
@@ -72,7 +155,7 @@ public class Helpers
 	      	 {
 	      		  if(Integer.parseInt(printRoute[i-1].getArrivalTime()+ printRoute[i-1].getTravelTime()) > Integer.parseInt(printRoute[i].getArrivalTime()))
 	      		  {
-	      			  System.out.println("BUSSEN HAR ALLEREDE GÅTT GITT!: " + printRoute[i-1].getArrivalTime() + "  " + printRoute[i].getArrivalTime() );
+	      			  System.out.println("BUSSEN HAR ALLEREDE Gï¿½TT GITT!: " + printRoute[i-1].getArrivalTime() + "  " + printRoute[i].getArrivalTime() );
 	      			  // Send new query based on updated info
 	      			 /* Sort sort = new Sort();
 	      			  System.out.println("Creating: " + printRoute[i-1].getBusStopName() + "  " + Homescreen.gpsCords.length);
@@ -92,16 +175,16 @@ public class Helpers
 	      			  int travelTime = Integer.parseInt(printRoute[i-1].getTravelTime());
 	      			  int sum = arrivalTime + travelTime;
 	      			  run(printRoute[i].getDestination() + " etter " + sum, newTsetExclude, newCoords, k_browser, realTimeCodes);*/
-	      			  ret.set(i-1,ret.get(i-1) + "\n"+(i+1)+ ": Oh shit, bussen har alt dratt");
-	      			presentation.append((i+1)+" Har dessverre gått før din ankomst");
-	      			//  presentation.append((i+1)+": OVERGANGFIXX: Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" klokken "+printRoute[i].getArrivalTime()+". Du vil nå "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
+	      		/*	  ret.set(i-1,ret.get(i-1) + "\n"+(i+1)+ ": Oh shit, bussen har alt dratt");
+	      			presentation.append((i+1)+" Har dessverre gï¿½tt fï¿½r din ankomst");
+	      			//  presentation.append((i+1)+": OVERGANGFIXX: Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" klokken "+printRoute[i].getArrivalTime()+". Du vil nï¿½ "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
 
 	      		  }
 	      		  else
 	      		  {
 	      			  
-	      			  presentation.append((i+1)+": OVERGANG: Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" klokken "+printRoute[i].getArrivalTime()+". Du vil nå "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
-	      			  ret.add((i+1)+": OVERGANG: Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" klokken "+printRoute[i].getArrivalTime()+". Du vil nå "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
+	      			  presentation.append((i+1)+": OVERGANG: Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" klokken "+printRoute[i].getArrivalTime()+". Du vil nï¿½ "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
+	      			 ret.add((i+1)+": OVERGANG: Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" klokken "+printRoute[i].getArrivalTime()+". Du vil nï¿½ "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
 	      		  }
 	      	 }
 	         
@@ -111,15 +194,22 @@ public class Helpers
 	        {
 	        	Log.v("Keys","Key:"+Double.parseDouble(key.toString()));
 	        	Log.v("Value","Value:"+tSetExclude.get(key).getProvider());
+	        }*/
+	        Route[] printRoute = calculator.sortByTotalTime(returnRoutes);
+	        for(int i=0; i<printRoute.length; i++)
+	        {
+	        	temp.add(printRoute[i]);
 	        }
+	        System.out.println("SIZE OF ARRAYLIST : " + temp.size());
+			return temp;
 	        
 	        } catch(Exception e)
 	        {
 	        	e.printStackTrace();
 	        	//Toast.makeText(this, "Real-time fail", Toast.LENGTH_LONG).show();
 	        }
-	        System.out.println("SIZE OF ARRAYLIST : " + ret.size());
-			return ret;
+	        
+	        return null;
 	    }
 	 
 	 public static Route[] createJSON(String jsonSubString, Calculate calculator)
@@ -129,7 +219,7 @@ public class Helpers
 	 }
 	    
 
-	    public static ArrayList <String> run(String input, HashMap<Integer, Location> tSetExclude,  HashMap<Integer,HashMap<Integer,Location>> locationsArray, Browser k_browser, HashMap realTimeCodes)
+	    public static ArrayList <Route> run(String input, HashMap<Integer, Location> tSetExclude,  HashMap<Integer,HashMap<Integer,Location>> locationsArray, Browser k_browser, HashMap realTimeCodes)
 	    {
 	    	Route[] finalRoutes;
 	    	// Perform action on clicks
@@ -167,10 +257,9 @@ public class Helpers
 		         finalRoutes = calculator.suggestRoutes(routes);
 		          calculator.printOutRoutes("AFTER",finalRoutes, false);
 		          // Compute real time
-		        ArrayList <String> realTime =  computeRealTime(finalRoutes, routes, tSetExclude, realTimeCodes, k_browser);
-		        System.out.println("SIZE OF LIST IN RUN: " + realTime.size());
-		        System.out.println("BUFFER: " + realTime.size());
-		          return realTime;
+		        ArrayList <Route> returnRoutes =  computeRealTime(finalRoutes, routes, tSetExclude, realTimeCodes, k_browser);
+		
+		          return returnRoutes;
 		         }
 	    		}
 	    		catch(Exception e)
@@ -389,7 +478,6 @@ public class Helpers
       	  BusStops nextBus = k_browser.specificRequest(tempId,wantedLine);      
       	  System.out.println("Nextbus: " + nextBus);
       	  tempRoutes[i].setArrivalTime(nextBus.getArrivalTime().getHours()+""+String.format("%02d",nextBus.getArrivalTime().getMinutes())+"");
-      	  
       	  int k_totalTime = calculator.calculateTotalTime(tempRoutes[i].getArrivalTime(), tempRoutes[i].getTravelTime());
       	  tempRoutes[i].setTotalTime(k_totalTime); 
         }

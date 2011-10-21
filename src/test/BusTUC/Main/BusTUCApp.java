@@ -11,7 +11,7 @@ import java.util.TreeSet;
 import test.BusTUC.R;
 import test.BusTUC.Calc.Calculate;
 import test.BusTUC.Calc.Sort;
-import test.BusTUC.Favourites.Favourite_Act;
+import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.GPS.GPS;
 import test.BusTUC.Queries.Browser;
 
@@ -160,17 +160,22 @@ public class BusTUCApp extends MapActivity
         mc.animateTo(p);
         mc.setZoom(16);
         Bundle extras = getIntent().getExtras();
+        ArrayList <Route> foundRoutes = new ArrayList <Route>();
         String value = "";
         ArrayList <Integer> id = new ArrayList <Integer>();
 		if(extras !=null) 
 		{
-		   value = extras.getString("test");
+		   foundRoutes = extras.getParcelableArrayList("test");
+		 //  value = extras.getString("test");
 		   for(int i=0; i<cl.length; i++)
 		   {
-			   if(value.contains(cl[i].getStopName()))
+			   for(int j = 0; j<foundRoutes.size(); j++)
 			   {
-				   id.add(cl[i].getBusStopID());
-				   System.out.println("FOUND ID: " + id);
+				   if(cl[i].getBusStopID() == foundRoutes.get(j).getBusStopNumber())
+				   {
+					   id.add(cl[i].getBusStopID());
+					   System.out.println("FOUND ID: " + id);
+				   }
 			   }
 		   }
            drawPath(id);

@@ -5,7 +5,7 @@ import java.util.List;
 
 import test.BusTUC.R;
 import test.BusTUC.Favourites.Favourite;
-import test.BusTUC.Favourites.Favourite_Act;
+import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.Main.Homescreen.MapThread;
 import test.BusTUC.Main.Homescreen.OracleThread;
 import android.app.Activity;
@@ -18,6 +18,8 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,33 +41,53 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.MapView.LayoutParams;
 import com.google.android.maps.OverlayItem;
 
-public class Answer extends  ListActivity {
-	private ListView lv1;
-	private Button showButton;
-	private String lv_arr[]={"Ruteforslag 1: ","Ruteforslag 2: ","Ruteforslag 3: ","Ruteforslag 4: "};
+public class Answer extends  ListActivity{
+
 	private ArrayAdapter ad;
-	private ArrayList <String> value;
+	private ArrayList <Route> value;
 	Object o;
 	private Context context;
+	
+	// Variables needed for Parcelable
+	private String arrivalTime; 
+	private String busStopName; 
+	private int busStopNumber; 
+	private int busNumber; 
+	private String travelTime; 
+	private String destination; 
+	private boolean transfer; 
+	private int walkingDistance; 
+    private int totalTime; 
+    public Answer()
+    {
+   
+    }
+    
+
+    
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-		showButton = (Button)this.findViewById(R.id.showinmap);
+		//showButton = (Button)this.findViewById(R.id.showinmap);
 		super.onCreate(savedInstanceState);
 		context = this;
-		value = new ArrayList<String>();
+		value = new ArrayList<Route>();
 		ListView lv = getListView();
-		lv.setTextFilterEnabled(true);	
+		lv.setTextFilterEnabled(true);
+		
 		//setContentView(R.layout.list_item);
  
 		Bundle extras = getIntent().getExtras();
+
 		if(extras !=null) 
 		{
-		   value = extras.getStringArrayList("test");
-	
-		}	
-		ad = new ArrayAdapter<String>(this, R.layout.list_item, value);
-		setListAdapter(ad);
+
+		   value = extras.getParcelableArrayList("test");	
+		   ArrayList <String> text = Helpers.parseData(value);
+
+		   ad = new ArrayAdapter<String>(this, R.layout.list_item, text);
+		   setListAdapter(ad);
+		}
 
 	
 		
@@ -115,7 +137,8 @@ public class Answer extends  ListActivity {
         protected void onPreExecute()
         {
         	intent = new Intent(context, BusTUCApp.class);
-          	intent.putExtra("test", (String)o);
+          	intent.putParcelableArrayListExtra("test", value);
+         // 	intent.putExtra("test", value);
         	myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
 
         }
@@ -126,8 +149,9 @@ public class Answer extends  ListActivity {
           	myDialog.dismiss();
           	
         }
-    }  
-	
+    }
+
+
 	
 
 	

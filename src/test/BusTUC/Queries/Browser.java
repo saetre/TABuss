@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.URL;
 
 import java.text.DecimalFormat;
@@ -50,7 +51,7 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-public class Browser
+public class Browser implements Serializable
 {
 	WebView web;
 	HttpClient m_client; 
@@ -61,8 +62,6 @@ public class Browser
 		httpF = new HttpFormat(); 
 		
 	}
-	
-	
 
 
 	public String[] getRequest(HashMap<Integer,Location> startMap, String stop, Boolean formated)
@@ -430,7 +429,7 @@ public class Browser
         {
         	try
         	{
-        		//System.out.println("len på array: " + j_a.length());
+        		//System.out.println("len pï¿½ array: " + j_a.length());
 	            for (int i = 0; i < j_a.length(); i++){
 	                //System.out.println("In for-loop j_a");
 	                t = new BusStops();
