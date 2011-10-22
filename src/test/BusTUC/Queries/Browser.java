@@ -51,7 +51,7 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-public class Browser implements Serializable
+public class Browser 
 {
 	WebView web;
 	HttpClient m_client; 
@@ -155,7 +155,6 @@ public class Browser implements Serializable
 	        soap.append("</soap:Envelope>");
 	        soap.append("");
 	        String str1 = sendSoapRequest("http://195.0.188.74/InfoTransit/userservices.asmx?op=GetBusStopsList",soap.toString());
-	        System.out.println("FUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU " + str1);
 	        int code = 0;  
 	        HashMap realT = new HashMap();
 	        try {

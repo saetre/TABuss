@@ -7,7 +7,8 @@ import android.os.Parcelable;
 
 import test.BusTUC.R;
 
-
+// Parcelable will assure Route objects can be sent as extra, to
+// other activities. Can be seen as marshalling
 public class Route implements Comparable<Route>, Parcelable
 {
      

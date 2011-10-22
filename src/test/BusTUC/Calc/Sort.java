@@ -34,7 +34,6 @@ public class Sort
     			}
     			else
     			{
-	    			System.out.println("Comparing: " + foo);
 	    			Object [] len = finalMap.keySet().toArray();
 	    			boolean exists = false;
 	    			for(int k = 0; k <finalMap.size(); k++)
@@ -47,12 +46,10 @@ public class Sort
 	    			
 	    			if(!exists)
 	    			{
-	    			   System.out.println("Go first");
 	    			   
 	    				minValues.add(currentValue);    		   
 	    			   finalMap.put(currentValue, newMap.get(keys[y]).get(currentValue));
 	    		   }
-	    			else System.out.println("Val exists");
 	    			exists = false;
     			}
     		}
@@ -65,7 +62,6 @@ public class Sort
     			}
     			else
     			{
-	    			System.out.println("Comparing: " + foo);
 	    			Object [] len = finalMap.keySet().toArray();
 	    			boolean exists = false;
 	    			for(int k = 0; k <finalMap.size(); k++)
@@ -78,12 +74,10 @@ public class Sort
 	    			
 	    			if(!exists)
 	    			{
-	    				 System.out.println("Go second");
 	     				minValues.add(currentValue);     			
 	     				finalMap.put(currentValue, newMap.get(keys[y]).get(currentValue));
 	     				
 	    			}
-	    			else System.out.println("Val exists");
 	    			exists = false;
     			}
     	
@@ -94,7 +88,6 @@ public class Sort
     			{
     				if(showOnMap)
         			{
-    					 System.out.println("Go third");
  	    				minValues.remove(minValues.last());
  	    				finalMap.remove(minValues.last());
  	    				minValues.add(currentValue); 
@@ -102,7 +95,6 @@ public class Sort
         			}
     				else
     				{
-	    				System.out.println("Comparing: " + foo);
 	        			Object [] len = finalMap.keySet().toArray();
 	        			boolean exists = false;
 	        			for(int k = 0; k <finalMap.size(); k++)
@@ -115,13 +107,11 @@ public class Sort
 	        			
 	        			if(!exists)
 	        			{
-	    					 System.out.println("Go third");
 		    				minValues.remove(minValues.last());
 		    				finalMap.remove(minValues.last());
 		    				minValues.add(currentValue); 
 		    				finalMap.put(currentValue, newMap.get(keys[y]).get(currentValue));
 	    				}
-	        			else System.out.println("Val exists");
 	        			exists = false;
 	    			}
     			}

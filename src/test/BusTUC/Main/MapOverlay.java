@@ -28,7 +28,7 @@ import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
-class MapOverlay extends ItemizedOverlay
+public class MapOverlay extends ItemizedOverlay
 {
 	private Context m_Context;
 	private List items;
@@ -58,6 +58,13 @@ class MapOverlay extends ItemizedOverlay
 		
 
 		// TODO Auto-generated constructor stub
+	}
+	
+	public MapOverlay(Drawable defaultMarker, Context context)
+	{
+		super(boundCenter(defaultMarker));
+		drawable = defaultMarker;
+		m_Context = context;
 	}
 	
 	public void addItem(OverlayItem item)
