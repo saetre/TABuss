@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:id="@+id/homelayout" xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="fill_parent"
-    android:orientation="vertical" android:background="#3c434a">    
+    android:orientation="vertical" android:background="@drawable/splashscreen">    
 	
 	
 	
@@ -19,8 +19,8 @@
 	android:text="Gå" 
 	android:textSize="8pt"
 	android:textColor="#ffffff" 
-	android:layout_marginRight="3px"
-	android:layout_marginLeft="5px"
+	android:layout_marginRight="15dp"
+	android:layout_marginLeft="5dp"
 	android:layout_alignParentTop="true" 
 	android:layout_alignParentRight="true">
 	</Button>
@@ -38,23 +38,23 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
        	android:maxLines="1" 
-       android:layout_toRightOf="@+id/editButton"
-       android:hint="Hvor vil du dra?" 
-       android:layout_alignParentTop="true" 
-	android:layout_alignParentLeft="true"
+       	android:layout_toRightOf="@+id/editButton"
+       	android:hint="Hvor vil du dra?" 
+       	android:layout_alignParentTop="true" 
+		android:layout_alignParentLeft="true"
 		android:layout_toLeftOf="@+id/goButton"
-        android:layout_marginLeft="5dp"/>
+        android:layout_marginLeft="15dp"/>
 	
 	
 	
 	<ScrollView android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/autocomplete">
 	<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
-	<Button android:layout_margin="15px" android:text="Button" android:id="@+id/button1" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
-   	<Button android:layout_margin="15px" android:text="Button" android:id="@+id/button2" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
-   	<Button android:layout_margin="15px" android:text="Button" android:id="@+id/button3" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
-   	<Button android:layout_margin="15px" android:text="Button" android:id="@+id/button4" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
-   	<Button android:layout_margin="15px" android:text="Button" android:id="@+id/button5" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
-   	<Button android:layout_margin="15px" android:text="Button" android:id="@+id/button6" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
+	<Button android:layout_margin="15dp" android:text="Button" android:id="@+id/button1" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
+   	<Button android:layout_margin="15dp" android:text="Button" android:id="@+id/button2" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
+   	<Button android:layout_margin="15dp" android:text="Button" android:id="@+id/button3" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
+   	<Button android:layout_margin="15dp" android:text="Button" android:id="@+id/button4" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
+   	<Button android:layout_margin="15dp" android:text="Button" android:id="@+id/button5" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
+   	<Button android:layout_margin="15dp" android:text="Button" android:id="@+id/button6" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
    	</LinearLayout>
    	</ScrollView>
    	</RelativeLayout>
