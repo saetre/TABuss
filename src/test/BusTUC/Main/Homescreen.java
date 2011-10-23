@@ -45,6 +45,8 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -62,6 +64,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
@@ -108,6 +111,10 @@ public class Homescreen extends Activity {
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+    private static final int REQUEST_CODE = 1234;
+
+    private Spinner mSupportedLanguageView;
+
     private GestureDetector gestureDetector;
     View.OnTouchListener gestureListener;
 	LinearLayout line;
@@ -162,6 +169,7 @@ public class Homescreen extends Activity {
 	public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         context = this;
         this.setRequestedOrientation(
         		ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -172,7 +180,7 @@ public class Homescreen extends Activity {
         
         // Gets the coordinates from the bus XML file
         long f = System.nanoTime();              
-        String[] gpsCoordinates = getResources().getStringArray(R.array.coords3);      
+        String[] gpsCoordinates = getResources().getStringArray(R.array.coords2);      
 
 		// creates a HashMap containing all the location objects 
 
@@ -234,6 +242,8 @@ public class Homescreen extends Activity {
             public void onLocationChanged(Location location) {
             	 System.out.println("LOCATIONLISTENER");
             	currentlocation = location; 
+            	currentlocation.setLatitude(63.430487);
+            	currentlocation.setLongitude(10.395061);
         		Log.v("currentLoc","PROV:LOC=" + currentlocation.getLatitude()+":"+currentlocation.getLongitude());
         		
         		   long f = System.nanoTime();              
@@ -305,7 +315,12 @@ public class Homescreen extends Activity {
         };       
         // Only request updates if > 500 ms and 10 m
         locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
-
+      /*  try {
+			System.out.println("OVERSATT: " +Helpers.translateRequest("skole"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
         
        // binds listener to the button
        goButton.setOnClickListener(new OnClickListener() 
@@ -359,7 +374,6 @@ public class Homescreen extends Activity {
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				builder.setMessage("Slette fil?").setPositiveButton("Ja", dc)
 				    .setNegativeButton("Nei", dc).show();			
-		   			
 	   			return true;
 			}
 	   	  });
@@ -367,6 +381,32 @@ public class Homescreen extends Activity {
        }    
   	
   }
+	
+   private void startVoiceRecognitionActivity()
+   {
+	        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+	        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+	                RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+	        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Voice recognition Demo...");
+	        startActivityForResult(intent, REQUEST_CODE);
+   }
+   
+   @Override
+   protected void onActivityResult(int requestCode, int resultCode, Intent data)
+   {
+       if (requestCode == REQUEST_CODE && resultCode == RESULT_OK)
+       {
+           // Populate the wordsList with the String values the recognition engine thought it heard
+           ArrayList<String> matches = data.getStringArrayListExtra(
+                   RecognizerIntent.EXTRA_RESULTS);
+           for(int i=0; i<matches.size(); i++)
+           {
+        	   System.out.println("FOUND WORD: " + matches.get(i));
+           }
+       }
+       super.onActivityResult(requestCode, resultCode, data);
+   }
+
 	
 	// Menu properties
     @Override
@@ -418,6 +458,11 @@ public class Homescreen extends Activity {
             
         case R.id.map:
         	new MapThread(context).execute();
+        
+        case R.id.realtime:
+        	
+        case R.id.speech:
+        	startVoiceRecognitionActivity();
         	
         
         // Add other menu items

@@ -142,7 +142,8 @@ public class BusTUCApp extends MapActivity
         p = new GeoPoint(
                 (int) (Homescreen.currentlocation.getLatitude() * 1E6), 
                 (int) (Homescreen.currentlocation.getLongitude() * 1E6));
-
+        
+        
        Helpers.addUser(p,mapOverlay, getResources().getDrawable(R.drawable.pp));
        System.out.println("My loc: " + Homescreen.currentlocation.getLatitude() *1E6 + "  " + Homescreen.currentlocation.getLongitude() *1E6);
         showOverlay();

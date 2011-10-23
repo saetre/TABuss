@@ -1,11 +1,22 @@
 package test.BusTUC.Main;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import test.BusTUC.Calc.Calculate;
 import test.BusTUC.Calc.Sort;
@@ -27,6 +38,43 @@ import com.google.android.maps.OverlayItem;
  */
 public class Helpers 
 {
+	
+	public static String translateRequest(String from) throws Exception
+	{
+		String to = "";
+		BufferedReader in = null;
+		StringBuffer sb = new StringBuffer("");
+        try {
+            HttpClient client = new DefaultHttpClient();
+            String url = URLEncoder.encode("http://translate.google.com/#no|en|"+from);
+            HttpGet request = new HttpGet(url);
+        //    request.setURI(new URI("http://translate.google.com/%23no%7Cen%7C"+from));
+            //request = 
+            HttpResponse response = client.execute(request);
+            in = new BufferedReader
+            (new InputStreamReader(response.getEntity().getContent()));
+            
+            String line = "";
+            String NL = System.getProperty("line.separator");
+            while ((line = in.readLine()) != null) {
+                sb.append(line + NL);
+            }
+            in.close();
+            String page = sb.toString();
+            System.out.println(page);
+            } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                    } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+            System.out.println("STRINGBUILDER " + sb);
+		return sb.toString();
+
+	}
 	// Add dictionary to app. If not stored in SD-card previously, do so
 	public static ArrayList <String> createDictionary(String[][] gpsCords)
 	{
