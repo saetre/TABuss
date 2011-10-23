@@ -11,5 +11,9 @@
     <item android:id="@+id/realtime"
           android:icon="@drawable/busicon"
           android:title="@string/real_time" />
+          
+    <item android:id="@+id/speech"
+          android:icon="@drawable/paste"
+          android:title="@string/t_speech" />
 
 </menu>

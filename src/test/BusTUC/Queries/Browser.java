@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import java.text.DecimalFormat;
@@ -29,6 +31,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -54,14 +57,84 @@ import android.widget.Toast;
 public class Browser 
 {
 	WebView web;
-	HttpClient m_client; 
-	HttpFormat httpF; 
+	static HttpClient m_client; 
+	static HttpFormat httpF; 
 	public Browser()
 	{
 		m_client = new DefaultHttpClient();
 		httpF = new HttpFormat(); 
 		
 	}
+	
+	public static String[] testRequest(String start, String stop, Boolean formated)
+	{		
+		String[] html_string = null; 
+		DecimalFormat decifo = new DecimalFormat("###");
+		String start2 = "(";
+		
+        	// Walking distance in minutes
+     	   start2 = start2 + start+""+"+"+2; 
+     	   System.out.println("START TO SATT: " + start2);
+     	
+        
+    	start2 = start2 + ")";
+		String wanted_string = start2 + " til " + stop; 
+		Log.v("BUSTUCSTR", "wanted_string:"+wanted_string);
+	    HttpPost m_post= new HttpPost("http://www.idi.ntnu.no/~tagore/cgi-bin/busstuc/busq.cgi");
+		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
+		Long time = System.nanoTime();
+		try {
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);  
+	        nameValuePairs.add(new BasicNameValuePair("lang", "eng"));  
+	        nameValuePairs.add(new BasicNameValuePair("quest", wanted_string)); 
+	        UrlEncodedFormEntity url = new UrlEncodedFormEntity(nameValuePairs);	        
+	        //  System.out.println("URLENC: " + url.toString());
+	        m_post.setEntity(url);  
+	        String responseBody = EntityUtils.toString(m_post.getEntity());       
+	       // Execute. Will not crash if route info is not found(which is not cool)
+			HttpResponse m_response = m_client.execute(m_post);
+		
+			//Log.v("m_response", inputStreamToString(m_response.getEntity().getContent()));
+			System.out.println("Wanted String: " + wanted_string);
+			// Request
+			html_string = httpF.request(m_response);
+			if(html_string[0].equalsIgnoreCase("error"))
+			{
+				System.out.println("STOP NOT WORKING: " +start2 );
+			}
+			
+			// Will fail if server is busy or down
+		//Log.v("html_string", "Returned html: " + html_string);
+			//Long newTime = System.nanoTime() - time;
+			//System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +  newTime/1000000000.0);
+		} catch (ClientProtocolException e) {
+			Log.v("CLIENTPROTOCOL EX", "e:"+e.toString());
+		} catch (IOException e) {
+			Log.v("IO EX", "e:"+e.toString()); 
+			
+		}
+		catch(NullPointerException e)
+		{
+			 Log.v("NULL", "NullPointer");
+		}
+		catch(StringIndexOutOfBoundsException e)
+		{
+			 Log.v("StringIndexOutOfBounds", "Exception");
+		}
+		catch(Exception e)
+		{
+			 Log.v("FUCKINGTOLARGE", "Exception");
+		}
+		
+	/*	for(int i =0; i< html_string.length;i++)
+		{
+			Log.v("HTMLFOO", html_string[i]);
+		}*/
+		
+		return html_string; 
+	}
+	
+	
 
 
 	public String[] getRequest(HashMap<Integer,Location> startMap, String stop, Boolean formated)

@@ -30,7 +30,7 @@ public class HttpFormat {
           while((line = reader.readLine()) != null)
           {
         	  System.out.println("LINE " + line);
-        	  if(line.contains("Beklager"))
+        	  if(line.contains("Beklager") || line.contains("Vennligst") || line.contains("Uforståelig"))
         	  {
         		  result = "Error";
         		  contentArray = new String[5];

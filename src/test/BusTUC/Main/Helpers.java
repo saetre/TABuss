@@ -364,6 +364,42 @@ public class Helpers
 	        return newMap; 
 	    	
 	    }
+	    
+	    public static HashMap<Integer,Location> testLocations(String[][] k_gpsCords, String provider, Location currentLocation)
+	    {
+	    	String tempCords[][] = k_gpsCords; 
+	        int clength = tempCords.length; 
+	        Log.v("CORDL", "C:"+clength); 
+	        
+	        HashMap<Integer,HashMap<Integer,Location>> newMap = new HashMap<Integer,HashMap<Integer,Location>>();
+	        Location closestLocation[] = new Location[clength]; 
+	        HashMap<Integer,Integer> counter = new HashMap<Integer,Integer>();
+	     	HashMap<Integer, Location> hMap = new HashMap<Integer,Location>(); 
+
+	        for(int i = 0;i<clength;i++)
+	        {
+	     	   closestLocation[i] = new Location(provider);
+	     	   closestLocation[i].setProvider(tempCords[i][1]); // Bus stop name
+	     	   closestLocation[i].setLatitude(Double.parseDouble(tempCords[i][3])); // 1 i gps2.xml
+	     	   closestLocation[i].setLongitude(Double.parseDouble(tempCords[i][2])); // 2 i gps2.xml
+	     	   int alt = Integer.parseInt(tempCords[i][0]);
+	     	   closestLocation[i].setAltitude(alt); // Add bus stop ID as altitude
+	     	   int distance = (int)closestLocation[i].distanceTo(currentLocation);
+	     	   hMap.put(distance, closestLocation[i]);
+	     	   String busStopId = tempCords[i][0]; // 0 i gps2.xml
+	     	 //  int newID = Integer.parseInt(busStopId.substring(busStopId.length()-3));
+	   //  	   Log.v("newId","newID:"+newID);    	   
+	     	   /*if(counter.containsKey(newID))
+	     	   {
+	     		   counter.put(newID, counter.get(newID)+1);
+	     		   Log.v("SAME","SAMEID:"+newID);
+	     	   }else { counter.put(newID,1); }*/
+	     	   
+	             
+	        } 
+	        return hMap; 
+	    }
+	    
 
 	
 	   // Creates the HashMap for the locations. 

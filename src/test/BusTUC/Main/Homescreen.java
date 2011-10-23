@@ -250,6 +250,15 @@ public class Homescreen extends Activity {
                  
         		// creates a HashMap containing all the location objects
                 locationsArray = Helpers.getLocations(gpsCords,provider, currentlocation);
+                //TEST/////////////////////////////
+               /* HashMap<Integer,Location> testMap = Helpers.testLocations(gpsCords, provider, currentlocation);
+                Object[] keys2 = testMap.keySet().toArray();
+                for(int i=0; i<keys2.length; i++)
+                {
+                	Browser.testRequest(testMap.get(keys2[i]).getProvider(), "Gløshaugen", true);
+                }*/
+                
+                // END TEST///////////////
                 long s = System.nanoTime() - f;
               //  System.out.println("TIME SPENT FINDING LOCATION: " + s /(1000000000.0));
                 //System.out.println("REALTIMEX: " + realTimeCodes.size());
