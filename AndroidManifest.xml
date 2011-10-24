@@ -4,10 +4,10 @@
       android:versionCode="1"
       android:versionName="1.0.0">
       
-    <application android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@style/Theme.Background">
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
  
     <uses-library android:name="com.google.android.maps" />  
- 		 <activity android:name=".Main.Homescreen" 
+ 		 <activity android:name=".Main.Homescreen"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,13 +16,12 @@
         </activity>
         <activity android:name=".Main.BusTUCApp"/>
         <activity android:name=".Main.RealTimeList"/>  
-        <activity android:name=".Favourites.SDCard"/>
+        <activity android:name = ".Main.RealTimeListFromMenu"/>
+        <activity android:name=".Favourites.Favourite_Act"/>
 		<activity android:name=".Main.Answer" />
-		
     </application>
  
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>

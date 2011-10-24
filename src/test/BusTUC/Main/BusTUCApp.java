@@ -134,6 +134,7 @@ public class BusTUCApp extends MapActivity
         initialize();
         for(int i=0; i<Homescreen.cl.length; i++)
         {
+        	System.out.println("ADDING STOP TO MAP: " + Homescreen.cl[i].getStopName());
         	Helpers.addStops(Homescreen.cl[i],getResources().getDrawable(R.drawable.s_busstop2),mapOverlay);
         }
         
@@ -196,7 +197,7 @@ public class BusTUCApp extends MapActivity
 	        urlString.append( Double.toString((double)dest[0]/1.0E6 ));
 	        urlString.append(",");
 	        urlString.append( Double.toString((double)dest[1]/1.0E6 ));
-	        urlString.append("&ie=UTF8&0&om=0&output=kml");
+	        urlString.append("&dirflg=w&hl=en&ie=UTF8&z=14&output=kml");
 
 	        try{
 	            // setup the url

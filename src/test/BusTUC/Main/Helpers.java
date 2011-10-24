@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-
+import java.lang.Thread;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -24,8 +24,12 @@ import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.Queries.Browser;
 import test.BusTUC.Stops.BusStops;
 import test.BusTUC.Stops.ClosestHolder;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -305,7 +309,10 @@ public class Helpers
 		         finalRoutes = calculator.suggestRoutes(routes);
 		          calculator.printOutRoutes("AFTER",finalRoutes, false);
 		          // Compute real time
+		          long first = System.nanoTime();
 		        ArrayList <Route> returnRoutes =  computeRealTime(finalRoutes, routes, tSetExclude, realTimeCodes, k_browser);
+		        long second = System.nanoTime() - first;
+		        System.out.println("TIME SPENT COMPUTING REAL TIME " + second / 1000000000.0);
 		
 		          return returnRoutes;
 		         }
@@ -538,10 +545,11 @@ public class Helpers
      * Change return to void.
      * Change list usage to finalRoutes
      */
-    public static Route[] setTimeForRoutes(Route[]finalRoutes, HashMap realTimeCodes, Browser k_browser, Calculate calculator)
+    public static Route[] setTimeForRoutes(Route[]finalRoutes, HashMap realTimeCodes, Browser k_browser, final Calculate calculator)
     {
     	// Copy of input routes
-    	Route [] tempRoutes = new Route[finalRoutes.length];
+    	final Route [] tempRoutes = new Route[finalRoutes.length];
+    	final Browser tempBrowser = k_browser;
     	for (int i = 0; i < tempRoutes.length; i++) 
     	{
     		tempRoutes[i] = finalRoutes[i];
@@ -551,21 +559,52 @@ public class Helpers
     	Route [] retRoutes = new Route[tempRoutes.length];
     	
     	// Iterate through received routes
+    	long first = System.nanoTime();
+      	//BusStops nextBus = new BusStops();
+    	  ArrayList <Thread> threadList = new ArrayList();
     	for(int i = 0;i<tempRoutes.length;i++)
         {
       	 // System.out.println("FANT BUSSTOPP: " +finalRoutes[i].getBusStopNumber());
     	 // System.out.println("Realtimecodes: " + realTimeCodes.size());
       	  int tempId = Integer.parseInt(realTimeCodes.get(tempRoutes[i].getBusStopNumber()).toString());
       	  int wantedLine = tempRoutes[i].getBusNumber();
+      	  final int tId = tempId;
+      	  final int wLine = wantedLine;
       	  System.out.println("WantedLine: " + wantedLine);
       	  System.out.println("TMPID: " + tempId);
-      	  BusStops nextBus = k_browser.specificRequest(tempId,wantedLine);      
-      	  System.out.println("Nextbus: " + nextBus);
-      	  tempRoutes[i].setArrivalTime(nextBus.getArrivalTime().getHours()+""+String.format("%02d",nextBus.getArrivalTime().getMinutes())+"");
-      	  int k_totalTime = calculator.calculateTotalTime(tempRoutes[i].getArrivalTime(), tempRoutes[i].getTravelTime());
-      	  tempRoutes[i].setTotalTime(k_totalTime); 
+      	  final int j = i;
+      	  
+      	  // Create new threads for sending queries to the real-time system.
+      	Thread thread =   new Thread(new Runnable() {
+      	    public void run() {
+      	    	
+      	    	final BusStops tempNextBus = tempBrowser.specificRequest(tId,wLine);     
+      	  //  	System.out.println("Nextbus: " + nextBus);
+            	  tempRoutes[j].setArrivalTime(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())+"");
+            	  int k_totalTime = calculator.calculateTotalTime(tempRoutes[j].getArrivalTime(), tempRoutes[j].getTravelTime());
+            	  tempRoutes[j].setTotalTime(k_totalTime);             	 
+      	    }    	    
+      	    
+      	  });
+      	  thread.start();      	  
+      	  threadList.add(thread);
+      	  
+          	  
         }
     	
+    	System.out.println("NUM THREADS: " + threadList.size());
+
+		for (Thread t : threadList) {
+		  try {
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
+
+    	long second = System.nanoTime() - first;
+    	System.out.println("TIME RETRIEVING REAL-TIME: " +second/1000000000.0);
     	// Remove suggestions where buses passing same stops have huge total time difference
     	// Has not been tested yet
    
@@ -660,7 +699,6 @@ public class Helpers
     	 }
     	return false;
     }
-    
     
     
     

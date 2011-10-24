@@ -31,6 +31,7 @@ public class Sort
     			{
     				minValues.add(currentValue);    		   
      			   finalMap.put(currentValue, newMap.get(keys[y]).get(currentValue));
+     			//   System.out.println("Added: " + newMap.get(keys[y]).get(currentValue).getProvider());
     			}
     			else
     			{
@@ -57,8 +58,11 @@ public class Sort
     		{
     			if(showOnMap)
     			{
+    				//System.out.println("TRYING VALUE: " + currentValue + "   " + newMap.get(keys[y]).get(currentValue));
     				minValues.add(currentValue);     			
      				finalMap.put(currentValue, newMap.get(keys[y]).get(currentValue));
+      			//   System.out.println("Added: " + currentValue + "    "  + newMap.get(keys[y]).get(currentValue).getProvider() );
+
     			}
     			else
     			{
@@ -92,6 +96,8 @@ public class Sort
  	    				finalMap.remove(minValues.last());
  	    				minValues.add(currentValue); 
  	    				finalMap.put(currentValue, newMap.get(keys[y]).get(currentValue));
+ 	     		  // System.out.println("Added: " + newMap.get(keys[y]).get(currentValue).getProvider());
+
         			}
     				else
     				{
@@ -119,19 +125,42 @@ public class Sort
     		}
 
     	
-    	if(i != 0 && m != 0)
+    	/*if(i != 0 && m != 0)
     	{
     		Object[] newkeys = finalMap.keySet().toArray();
     		Arrays.sort(newkeys);
+    		
+    		for(int fu = 0; fu<finalMap.size(); fu++)
+    		{
+    			System.out.println("Sorted: " + newkeys[fu] + "   " +finalMap.get(newkeys[fu]).getProvider() );
+    		}
     		for(int k = finalMap.size()-1;k>=i;k--)
     		{
+    			//System.out.println("Removed: " +finalMap.get(newkeys[k]).getProvider());
     			finalMap.remove(newkeys[k]);
+
+
     		}
-    	}
+    	}*/
     	
     	}
+    	
+    	Object[] newkeys = finalMap.keySet().toArray();
+		Arrays.sort(newkeys);
+		
+		for(int k=m; k<finalMap.size(); k++)
+		{
+			finalMap.remove(newkeys[k]);
+		}
+		
+		for(int j =0; j<finalMap.size(); j++)
+		{
+			System.out.println("Elementer i lista: " + newkeys[j] + "  "  +finalMap.get(newkeys[j]).getProvider());
+		}
     	return finalMap; 
     }
+    
+    
 }
     
   

@@ -20,7 +20,7 @@ public class Splash extends Activity {
 	public void onCreate(Bundle savedInstanceState)
 	{
 	    super.onCreate(savedInstanceState);	    
-	    setContentView(R.layout.splash);
+	    //setContentView(R.layout.splash);
 
 	    new HomeThread().execute();
 	}
@@ -29,6 +29,7 @@ public class Splash extends Activity {
  private class HomeThread extends AsyncTask<Void, Void, Void>
     {
         Intent intent;
+		ProgressDialog myDialog = null;
         public HomeThread()
         {
         	
@@ -46,13 +47,15 @@ public class Splash extends Activity {
         @Override
         protected void onPreExecute()
         {
-        	
+			myDialog = ProgressDialog.show(Splash.this, "Loading", "Vent nu!");
+
         }
 
         @Override
        protected void onPostExecute(Void unused)
         {
         	startActivity(intent);
+        	myDialog = null;
         	finish();
         }
     }  

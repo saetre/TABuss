@@ -67,7 +67,7 @@ public class Homescreen extends Activity {
 	public static Browser k_browser; // Object doing communation with bussTUC and Real-Time system
 	public static HashMap <Integer,Location> tSetAllStops;
 	public static ClosestHolder [] cl; // Object containing geopoint of closest stops. 
-
+	public static 	HashMap realTimeCodes; 
 	// End of global variables
 	AutoCompleteTextView textView;
 	MapController mc; // Controller for the map
@@ -81,7 +81,7 @@ public class Homescreen extends Activity {
 	String provider; // Provider 
 	LocationListener locationListener;
 
-	HashMap realTimeCodes; 
+
 	String[] busStop = new String[numButtons];
 	ArrayList <String> favorites;
 	// adds edittext box
@@ -186,17 +186,9 @@ public class Homescreen extends Activity {
 		// Bind listeners to favourites
 		updateButtons(busStop,buttons);      
 
-
-		// Creates a locationManager. 
-		// If no connection, quit
-		createLocationManager();       
-
-		// Creates a locationListener
-		System.out.println("Setting up locationListener!!");  
-		createLocationListener();   
-
-		// Only request updates if > 500 ms and 10 m
-		locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
+		// Create locationmanager/listener, and retrieve real-time codes
+		new StartUpThread(context).execute();
+		
 		/*  try {
 			System.out.println("OVERSATT: " +Helpers.translateRequest("skole"));
 		} catch (Exception e) {
@@ -254,8 +246,10 @@ public class Homescreen extends Activity {
 								{
 									updateButtons(busStop, buttons);
 								}
+								break;
 							case DialogInterface.BUTTON_NEGATIVE:
 								// Do nothing
+								break;
 
 							}
 
@@ -280,8 +274,8 @@ public class Homescreen extends Activity {
 			public void onLocationChanged(Location location) {
 				System.out.println("LOCATIONLISTENER");
 				currentlocation = location; 
-				// currentlocation.setLatitude(63.430487);
-				// currentlocation.setLongitude(10.395061);
+				//currentlocation.setLatitude(63.430487);
+				//currentlocation.setLongitude(10.395061);
 				Log.v("currentLoc","PROV:LOC=" + currentlocation.getLatitude()+":"+currentlocation.getLongitude());
 
 				long f = System.nanoTime();              
@@ -308,7 +302,7 @@ public class Homescreen extends Activity {
 				long first = System.nanoTime();
 				tSetExclude = sort.m_partialSort(locationsArray,5,500,false, false);
 				// All stops. Necessary for usage with map
-				tSetAllStops = sort.m_partialSort(locationsArray,10,1000,false, true); 
+				tSetAllStops = sort.m_partialSort(locationsArray,5,500,false, true); 
 				long second = System.nanoTime() - first;
 				System.out.println("TIME SPENT SORTING SHIT: " + second /(1000000000.0));
 				int numberofStops = tSetAllStops.size();
@@ -387,7 +381,7 @@ public class Homescreen extends Activity {
 		}
 	}
 
-	private void startVoiceRecognitionActivity()
+/*	private void startVoiceRecognitionActivity()
 	{
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -395,7 +389,7 @@ public class Homescreen extends Activity {
 		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Voice recognition Demo...");
 		startActivityForResult(intent, REQUEST_CODE);
 	}
-
+*/
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
@@ -464,11 +458,26 @@ public class Homescreen extends Activity {
 
 		case R.id.map:
 			new MapThread(context).execute();
+			return true;
 
 		case R.id.realtime:
+			long time = System.nanoTime(); 
+			ArrayList <ClosestHolder> holder = new ArrayList<ClosestHolder>();
+			for(int i=0; i<cl.length; i++)
+			{
+				holder.add(cl[i]);
+			}
+    		Intent intent = new Intent(context, RealTimeList.class);
+    		intent.putParcelableArrayListExtra("test", holder); 
+    		context.startActivity(intent);
+        	Long newTime = System.nanoTime() - time;
+     		System.out.println("TIME LOOKUP: " +  newTime/1000000000.0);
+
+			return false;
 
 		case R.id.speech:
-			startVoiceRecognitionActivity();
+			return false;
+		//	startVoiceRecognitionActivity();
 
 
 			// Add other menu items
@@ -476,6 +485,8 @@ public class Homescreen extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
+	
+
 
 	// Thread classes //
 	// Thread starting the oracle queries
@@ -570,6 +581,47 @@ public class Homescreen extends Activity {
 
 		}
 	}  
+	
+	
+	class StartUpThread extends AsyncTask<Void, Void, Void>
+	{
+		private Context context;    
+		Intent intent;
+		ProgressDialog myDialog = null;
+		public StartUpThread(Context context)
+		{
+
+			this.context = context;
+		}
+
+		@Override
+		protected Void doInBackground(Void... params)
+		{
+			createLocationManager();
+			return null;
+		}
+
+		@Override
+		protected void onPreExecute()
+		{
+
+			myDialog = ProgressDialog.show(context, "Loading!", "Laster holdeplasser");
+			createLocationListener();			
+
+		}
+
+		@Override
+		protected void onPostExecute(Void unused)
+		{
+			// Only request updates if > 500 ms and 10 m
+			locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
+			myDialog.dismiss();
+
+		}
+	}  
+	
+	
+
 
 	@Override
 	public void onBackPressed()
@@ -586,7 +638,7 @@ public class Homescreen extends Activity {
 		textView.setEnabled(true);
 		goButton.setEnabled(true);
 		// Sets the restrictions on the location update. 
-		locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 100, 1, locationListener);
+		//locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 100, 1, locationListener);
 
 	}
 

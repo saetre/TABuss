@@ -102,6 +102,7 @@ public class Answer extends  ListActivity{
 	{
 		super.onListItemClick(l, v, position, id);
 		o = this.getListAdapter().getItem(position);
+		System.out.println("TRYKKET PÅ POSISJON: " + position);
 		positionInTable = position;
 	    new MapThread(context).execute();
 

@@ -45,10 +45,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import test.BusTUC.Main.BusTUCApp;
 import test.BusTUC.Stops.BusStops;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.net.ParseException;
+import android.os.AsyncTask;
 import android.text.InputFilter.LengthFilter;
 import android.util.Log;
 import android.webkit.WebView;
@@ -556,6 +561,10 @@ public class Browser
         }
         else return t;
 	}
+	
+	
+	
+
 }
 
 
