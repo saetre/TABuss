@@ -159,6 +159,7 @@ public class BusTUCApp extends MapActivity
 			double[] dest = new double[2];
 			// Extras will now contain an ArrayList<Route>
 		   foundRoutes = extras.getParcelableArrayList("test");
+		   int position = extras.getInt("pos");
 		 //  value = extras.getString("test");
 		   // Iterate through the closest stop, and match bus stop id
 		   for(int i=0; i<Homescreen.cl.length; i++)
@@ -166,7 +167,7 @@ public class BusTUCApp extends MapActivity
 			   for(int j = 0; j<foundRoutes.size(); j++)
 			   {
 				   // If found, add to both id list, and lat/long list
-				   if(Homescreen.cl[i].getBusStopID() == foundRoutes.get(j).getBusStopNumber())
+				   if(Homescreen.cl[i].getBusStopID() == foundRoutes.get(position).getBusStopNumber())
 				   {
 					   id.add(Homescreen.cl[i].getBusStopID());
 					   dest[0] = Homescreen.cl[i].getPoint().getLatitudeE6();
@@ -241,6 +242,7 @@ public class BusTUCApp extends MapActivity
 
 	        } catch(Exception e) {
 	            Log.d("DirectionMap","Exception parsing kml.");
+	            e.printStackTrace();
 	        }
 
 	    }  

@@ -58,6 +58,7 @@ public class Answer extends  ListActivity{
 	private boolean transfer; 
 	private int walkingDistance; 
     private int totalTime; 
+    private int positionInTable;
     public Answer()
     {
    
@@ -84,7 +85,6 @@ public class Answer extends  ListActivity{
 
 		   value = extras.getParcelableArrayList("test");	
 		   ArrayList <String> text = Helpers.parseData(value);
-
 		   ad = new ArrayAdapter<String>(this, R.layout.list_item, text);
 		   setListAdapter(ad);
 		}
@@ -102,6 +102,7 @@ public class Answer extends  ListActivity{
 	{
 		super.onListItemClick(l, v, position, id);
 		o = this.getListAdapter().getItem(position);
+		positionInTable = position;
 	    new MapThread(context).execute();
 
 	}
@@ -138,6 +139,7 @@ public class Answer extends  ListActivity{
         {
         	intent = new Intent(context, BusTUCApp.class);
           	intent.putParcelableArrayListExtra("test", value);
+          	intent.putExtra("pos", positionInTable);
          // 	intent.putExtra("test", value);
         	myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
 

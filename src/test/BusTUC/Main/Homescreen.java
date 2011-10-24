@@ -159,7 +159,7 @@ public class Homescreen extends Activity {
 
 		// Gets the coordinates from the bus XML file
 		long f = System.nanoTime();              
-		String[] gpsCoordinates = getResources().getStringArray(R.array.coords2);      
+		String[] gpsCoordinates = getResources().getStringArray(R.array.coords3);      
 
 		// creates a HashMap containing all the location objects 
 
@@ -280,8 +280,8 @@ public class Homescreen extends Activity {
 			public void onLocationChanged(Location location) {
 				System.out.println("LOCATIONLISTENER");
 				currentlocation = location; 
-				currentlocation.setLatitude(63.430487);
-				currentlocation.setLongitude(10.395061);
+				// currentlocation.setLatitude(63.430487);
+				// currentlocation.setLongitude(10.395061);
 				Log.v("currentLoc","PROV:LOC=" + currentlocation.getLatitude()+":"+currentlocation.getLongitude());
 
 				long f = System.nanoTime();              
