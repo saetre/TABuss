@@ -1,0 +1,14 @@
+<sql>
+<statement>
+CREATE TABLE IF NOT EXISTS test (
+﻿  id INTEGER PRIMARY KEY,
+﻿  destination VARCHAR(50),
+﻿  date INTEGER,
+﻿  lat INTEGER,
+﻿  lon INTEGER)
+</statement>
+
+
+<statement>INSERT INTO cases VALUES(1,'Ila',1619,63,44)</statement>
+<statement>INSERT INTO cases VALUES(2,'Sentrum',1700,77, 11)</statement>
+</sql>
