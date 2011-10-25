@@ -8,7 +8,7 @@ import java.util.List;
 
 import test.BusTUC.R;
 import test.BusTUC.Queries.Browser;
-import test.BusTUC.Stops.BusStops;
+import test.BusTUC.Stops.BusDeparture;
 import test.BusTUC.Stops.ClosestHolder;
 
 
@@ -161,7 +161,7 @@ public class RealTimeList extends ListActivity
 		@Override
 		protected Void doInBackground(Void... params)
 		{
-			ArrayList <BusStops> stops = Browser.specificRequestForStop(outgoing);
+			ArrayList <BusDeparture> stops = Browser.specificRequestForStop(outgoing);
 			StringBuffer buf;
 		    String minute1;
 		    System.out.println("STOPS SIZE: " + stops.size());

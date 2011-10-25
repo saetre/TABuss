@@ -33,6 +33,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.MapView.LayoutParams;
 import com.google.android.maps.OverlayItem;
@@ -83,6 +84,7 @@ public class BusTUCApp extends MapActivity
  //   HashMap<Integer,Location> tSetAllStops; // HashMap used for finding closest locations. Adds stops from both sides of the road. For use on map w
     String provider; // Provider 
     HashMap realTimeCodes; 
+    MyLocationOverlay myLocationOverlay;
     StringBuffer presentation; // String which contain answer from bussTUC
 
     /** Called when the activity is first created. */
@@ -120,7 +122,6 @@ public class BusTUCApp extends MapActivity
     
         try
         {
-
 	        realTimeCodes = Homescreen.k_browser.realTimeData();
 	        System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
 	        Log.v("provider","provider:"+ provider);
@@ -145,7 +146,12 @@ public class BusTUCApp extends MapActivity
                 (int) (Homescreen.currentlocation.getLongitude() * 1E6));
         
         
-       Helpers.addUser(p,mapOverlay, getResources().getDrawable(R.drawable.pp));
+       //Helpers.addUser(p,mapOverlay, getResources().getDrawable(R.drawable.pp));
+       myLocationOverlay = new FixedMyLocationOverlay(this, mapView);
+           // add this overlay to the MapView and refresh it
+       mapView.getOverlays().add(myLocationOverlay);
+       //    mapView.postInvalidate();
+
        System.out.println("My loc: " + Homescreen.currentlocation.getLatitude() *1E6 + "  " + Homescreen.currentlocation.getLongitude() *1E6);
         showOverlay();
         mc.animateTo(p);
@@ -218,7 +224,7 @@ public class BusTUCApp extends MapActivity
 	            xmlreader.parse(is);
 	            // get the results - should be a fully populated RSSFeed instance, or null on error
 	            NavigationDataSet ds = navSaxHandler.getParsedData();
-
+	            Log.d("MAPAPP",urlString.toString());
 	            // draw path
 	            drawPath(ds, Color.parseColor("#add331"), mapView );
 

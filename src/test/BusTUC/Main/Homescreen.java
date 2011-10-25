@@ -4,6 +4,7 @@ package test.BusTUC.Main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import com.google.android.maps.GeoPoint;
@@ -14,6 +15,7 @@ import test.BusTUC.Favourites.Favourite;
 import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.GPS.GPS;
 import test.BusTUC.Queries.Browser;
+import test.BusTUC.Stops.BusStop;
 import test.BusTUC.Stops.ClosestHolder;
 
 import android.app.Activity;
@@ -65,7 +67,7 @@ public class Homescreen extends Activity {
 	public static Location currentlocation, busLoc; // Location objects
 	public static HashMap<Integer,HashMap<Integer,Location>> locationsArray; // GPS coordinates
 	public static Browser k_browser; // Object doing communation with bussTUC and Real-Time system
-	public static HashMap <Integer,Location> tSetAllStops;
+	//public static HashMap <Integer,Location> tSetAllStops;
 	public static ClosestHolder [] cl; // Object containing geopoint of closest stops. 
 	public static 	HashMap realTimeCodes; 
 	// End of global variables
@@ -76,11 +78,12 @@ public class Homescreen extends Activity {
 	GPS k_gps; // Object of the GetGPS class. 
 
 	// Static because of access from BusList
-	HashMap<Integer,Location> tSetExclude; // HashMap used for finding closest locations. Ignores stops at both sides of the road
+	//HashMap<Integer,Location> tSetExclude; // HashMap used for finding closest locations. Ignores stops at both sides of the road
 	LocationManager locationManager; // Location Manager
 	String provider; // Provider 
 	LocationListener locationListener;
 
+	ArrayList<BusStop> busStops, busStopsNoDuplicates;
 
 	String[] busStop = new String[numButtons];
 	ArrayList <String> favorites;
@@ -283,7 +286,7 @@ public class Homescreen extends Activity {
 				long f = System.nanoTime();              
 
 				// creates a HashMap containing all the location objects
-				locationsArray = Helpers.getLocations(gpsCords,provider, currentlocation);
+				//locationsArray = Helpers.getLocations(gpsCords,provider, currentlocation);
 				//TEST/////////////////////////////
 				/* HashMap<Integer,Location> testMap = Helpers.testLocations(gpsCords, provider, currentlocation);
                 Object[] keys2 = testMap.keySet().toArray();
@@ -294,41 +297,46 @@ public class Homescreen extends Activity {
 
 				// END TEST///////////////
 				long s = System.nanoTime() - f;
+				long first = System.nanoTime();
 				//  System.out.println("TIME SPENT FINDING LOCATION: " + s /(1000000000.0));
 				//System.out.println("REALTIMEX: " + realTimeCodes.size());
-				Log.v("sort","returnedHmap:"+locationsArray.size());	
+				//Log.v("sort","returnedHmap:"+locationsArray.size());	
 				// creates a HashMap with all the relevant bus stops
-				Sort sort = new Sort();
+				//Sort sort = new Sort();
 
+				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000, false);
+				busStops = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000, true);
+				Collections.sort(busStopsNoDuplicates);
+				Collections.sort(busStops);
+				//System.out.println("THERE ARE" + busStopsNoDuplicates.size() + " STOPS");
 				// One stop per group
-				long first = System.nanoTime();
-				tSetExclude = sort.m_partialSort(locationsArray,5,500,false, false);
-				// All stops. Necessary for usage with map
-				tSetAllStops = sort.m_partialSort(locationsArray,2,1000,false, true); 
+				
 				long second = System.nanoTime() - first;
 				System.out.println("TIME SPENT SORTING SHIT: " + second /(1000000000.0));
-				int numberofStops = tSetAllStops.size();
-				cl = new ClosestHolder[numberofStops];
+				//int numberofStops = tSetAllStops.size();
+				int numStops = busStops.size() < 10 ? busStops.size() : 10;
+				System.out.println("USING " + numStops + " STOPS");
+				cl = new ClosestHolder[numStops];
 
 				//   Log.v("sort","returnedtSet"+tSetExclude.size());	
 				// adds the closest bus stop as a GeoPoint
-				int busCounter = 0; 
-				Object[] keys = tSetAllStops.keySet().toArray();
-				Arrays.sort(keys);
-				for(int i = 0;i<numberofStops;i++)
+				//int busCounter = 0; 
+				//Object[] keys = tSetAllStops.keySet().toArray();
+				//Arrays.sort(keys);
+				for(int i = 0;i<numStops;i++)
 				{
 					cl[i] = new ClosestHolder(new GeoPoint(
-							(int)	(tSetAllStops.get(keys[i]).getLatitude() * 1E6),
-							(int)	(tSetAllStops.get(keys[i]).getLongitude() * 1E6)),
-							(int) tSetAllStops.get(keys[i]).getAltitude(),
-							tSetAllStops.get(keys[i]).getProvider());
+							(int)	(busStops.get(i).location.getLatitude()* 1E6),
+							(int)	(busStops.get(i).location.getLongitude() * 1E6)),
+							(int) busStops.get(i).stopID,
+							busStops.get(i).name);
 
-					// System.out.println("ADDING: " +(int) tSet.get(keys[i]).getAltitude());   
+					//System.out.println("ADDING: " +(int) stops.get(i).stopID + "@"+ stops.get(i).location.getLatitude() +"+"+stops.get(i).location.getLongitude());   
 
 				}
-				System.out.println("TSET SET: " + tSetExclude.size());
+				//System.out.println("TSET SET: " + tSetExclude.size());
 
-				Log.v("sort","returnedtSet"+tSetExclude.size());	
+				//og.v("sort","returnedtSet"+tSetExclude.size());	
 				// adds the closest bus stop as a GeoPoint
 
 
@@ -509,7 +517,7 @@ public class Homescreen extends Activity {
 		protected Void doInBackground(Void... params)
 		{
 			long time = System.nanoTime();
-			buf = Helpers.run(textView.getText().toString(),tSetExclude, locationsArray,k_browser, realTimeCodes);
+			buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates, locationsArray,k_browser, realTimeCodes);
 			long newTime = System.nanoTime() - time;
 			System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 			return null;

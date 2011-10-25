@@ -45,8 +45,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
+import test.BusTUC.Stops.BusDeparture;
+import test.BusTUC.Stops.BusStop;
+
 import test.BusTUC.Main.BusTUCApp;
-import test.BusTUC.Stops.BusStops;
+
+
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -216,7 +221,80 @@ public class Browser
 		
 		return html_string; 
 	}
-	
+	public String[] getRequest(ArrayList<BusStop> startMap, String stop, Boolean formated)
+	{		
+		String[] html_string = null; 
+		DecimalFormat decifo = new DecimalFormat("###");
+		String start2 = "(";
+		//Object[] keys = startMap.keySet().toArray();
+		//Arrays.sort(keys);
+		// Name of busstop
+		int hSize = startMap.size(); 
+        for(int i = 0;i<hSize;i++)
+        {
+        	// Walking distance in minutes
+        System.out.println("WALK: " + startMap.get(i).distance);
+           int output2 = (int) (Math.ceil(startMap.get(i).distance/1.7)/60);
+     	   start2 = start2 + "" + startMap.get(i).name+""+"+"+output2; 
+     	   System.out.println("START TO SATT: " + start2);
+     	   if(i+1<hSize)
+     	   {
+     		   start2 = start2 + ","; 
+     	   }
+        }
+    	start2 = start2 + ")";
+		String wanted_string = start2 + " til " + stop; 
+		String wanted_string2 = "fra gl�shaugen til nardo";
+		Log.v("BUSTUCSTR", "wanted_string:"+wanted_string);
+	    HttpPost m_post= new HttpPost("http://www.idi.ntnu.no/~tagore/cgi-bin/busstuc/busq.cgi");
+		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
+		Long time = System.nanoTime();
+		try {
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);  
+	        nameValuePairs.add(new BasicNameValuePair("lang", "eng"));  
+	        nameValuePairs.add(new BasicNameValuePair("quest", wanted_string)); 
+	        UrlEncodedFormEntity url = new UrlEncodedFormEntity(nameValuePairs);	        
+	        //  System.out.println("URLENC: " + url.toString());
+	        m_post.setEntity(url);  
+	        String responseBody = EntityUtils.toString(m_post.getEntity());       
+	       // Execute. Will not crash if route info is not found(which is not cool)
+			HttpResponse m_response = m_client.execute(m_post);
+		
+			//Log.v("m_response", inputStreamToString(m_response.getEntity().getContent()));
+			System.out.println("Wanted String: " + wanted_string);
+			// Request
+			html_string = httpF.request(m_response);
+			
+			// Will fail if server is busy or down
+		Log.v("html_string", "Returned html: " + html_string);
+			//Long newTime = System.nanoTime() - time;
+			//System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +  newTime/1000000000.0);
+		} catch (ClientProtocolException e) {
+			Log.v("CLIENTPROTOCOL EX", "e:"+e.toString());
+		} catch (IOException e) {
+			Log.v("IO EX", "e:"+e.toString()); 
+			
+		}
+		catch(NullPointerException e)
+		{
+			 Log.v("NULL", "NullPointer");
+		}
+		catch(StringIndexOutOfBoundsException e)
+		{
+			 Log.v("StringIndexOutOfBounds", "Exception");
+		}
+		catch(Exception e)
+		{
+			 Log.v("FUCKINGTOLARGE", "Exception");
+		}
+		
+	/*	for(int i =0; i< html_string.length;i++)
+		{
+			Log.v("HTMLFOO", html_string[i]);
+		}*/
+		
+		return html_string; 
+	}
 	public HashMap realTimeData()
 	{ 
 	        final StringBuffer soap = new StringBuffer();
@@ -294,7 +372,7 @@ public class Browser
 	        Log.v("string",str1);
 	        return str1; 
 	}
-	public BusStops specificRequest(int k_RealTimeId, int k_specifiedLine)
+	public BusDeparture specificRequest(int k_RealTimeId, int k_specifiedLine)
 	{
 	        int realTimeId = k_RealTimeId;   
 	        int specifiedLine = k_specifiedLine;
@@ -317,7 +395,7 @@ public class Browser
 	        String str1 = sendSoapRequest("http://195.0.188.74/InfoTransit/userservices.asmx?op=getUserRealTimeForecast", soap.toString());
 	        System.out.println("SOAP: " + soap);
 	        System.out.println("Str1:" +str1);
-	        BusStops test = null; 
+	        BusDeparture test = null; 
 	        try {
 			test = parseRealTimeData(str1,specifiedLine);
 			} catch (ParseException e) {
@@ -361,7 +439,7 @@ public class Browser
 		return realTimeNumbers; 
 	}
 	
-	public static ArrayList <BusStops> specificRequestForStop(int k_RealTimeId)
+	public static ArrayList <BusDeparture> specificRequestForStop(int k_RealTimeId)
 	{
 	        int realTimeId = k_RealTimeId;  
 	        System.out.println("REAL-TIME ID RECEIVED: " + realTimeId);
@@ -382,7 +460,7 @@ public class Browser
 	        soap.append("</soap:Envelope>");
 	        soap.append("");
 	        String str1 = sendSoapRequest("http://195.0.188.74/InfoTransit/userservices.asmx?op=getUserRealTimeForecast", soap.toString());
-	        ArrayList <BusStops> test = null; 
+	        ArrayList <BusDeparture> test = null; 
 	        try {
 	        	System.out.println("Soap: " +soap);
 	        	System.out.println("Str: " +str1);
@@ -399,9 +477,9 @@ public class Browser
 			}
 			return test; 
 	}
-	public static ArrayList <BusStops> parseRealTimeDataForStop(String data) throws JSONException, java.text.ParseException
+	public static ArrayList <BusDeparture> parseRealTimeDataForStop(String data) throws JSONException, java.text.ParseException
 	{
-		ArrayList <BusStops> buses = new ArrayList<BusStops>();
+		ArrayList <BusDeparture> buses = new ArrayList<BusDeparture>();
 		  Pattern p = Pattern.compile(
 	                "<getUserRealTimeForecastResult>(.*?)</getUserRealTimeForecastResult>",
 	                Pattern.DOTALL | Pattern.CASE_INSENSITIVE
@@ -418,7 +496,7 @@ public class Browser
 	        j_o = new JSONObject(result);
 	        j_a = new JSONArray(j_o.getString("Orari"));
 	        System.out.println("J_a length: " + j_a.length());
-	        BusStops wantedBusStop = new BusStops(); 
+	        BusDeparture wantedBusStop = new BusDeparture(); 
 	        wantedBusStop.setLine(9999);
 	        if (j_a != null){
 	        	try
@@ -426,7 +504,7 @@ public class Browser
 		            for (int i = 0; i < j_a.length(); i++)
 		            {
 		                
-		                BusStops t = new BusStops();
+		                BusDeparture t = new BusDeparture();
 		                t.line = j_a.getJSONObject(i).getInt("descrizioneLinea");
 		                SimpleDateFormat formatter = new SimpleDateFormat("d/M/y H:mm"); 
 		                Date date = (Date)formatter.parse(j_a.getJSONObject(i).getString("orario"));
@@ -471,7 +549,7 @@ public class Browser
 	        return buses;
 		}
 	
-	public BusStops parseRealTimeData(String data, int m_speciLine) {
+	public BusDeparture parseRealTimeData(String data, int m_speciLine) {
         Pattern p = Pattern.compile(
                 "<getUserRealTimeForecastResult>(.*?)</getUserRealTimeForecastResult>",
                 Pattern.DOTALL | Pattern.CASE_INSENSITIVE
@@ -499,9 +577,9 @@ public class Browser
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-        BusStops wantedBusStop = new BusStops(); 
+        BusDeparture wantedBusStop = new BusDeparture(); 
         wantedBusStop.setLine(9999);
-        BusStops t = new BusStops();
+        BusDeparture t = new BusDeparture();
         boolean foundWantedLine = false;
         if (j_a != null)
         {
@@ -510,7 +588,7 @@ public class Browser
         		//System.out.println("len p� array: " + j_a.length());
 	            for (int i = 0; i < j_a.length(); i++){
 	                //System.out.println("In for-loop j_a");
-	                t = new BusStops();
+	                t = new BusDeparture();
 	                t.line = j_a.getJSONObject(i).getInt("descrizioneLinea");
 	                SimpleDateFormat formatter = new SimpleDateFormat("d/M/y HH:mm"); 
 	                Date date = new Date();

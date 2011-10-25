@@ -16,9 +16,9 @@ import android.util.Log;
 
 public class MapService {
 
-public static final int MODE_ANY = 0;
-public static final int MODE_CAR = 1;
-public static final int MODE_WALKING = 2;
+public static final int MODE_ANY = 1;
+public static final int MODE_CAR = 2;
+public static final int MODE_WALKING = 3;
 
 
 public static String inputStreamToString (InputStream in) throws IOException {
@@ -39,12 +39,12 @@ public static NavigationDataSet calculateRoute(String startCoords, String target
     String urlPedestrianMode = "http://maps.google.com/maps?" + "saddr=" + startCoords + "&daddr="
             + targetCoords + "&sll=" + startCoords + "&dirflg=w&hl=en&ie=UTF8&z=14&output=kml";
 
-    //Log.d(myapp.APP, "urlPedestrianMode: "+urlPedestrianMode);
+    Log.d("MAPAPP","urlPedestrianMode: "+urlPedestrianMode);
 
     String urlCarMode = "http://maps.google.com/maps?" + "saddr=" + startCoords + "&daddr="
             + targetCoords + "&sll=" + startCoords + "&hl=en&ie=UTF8&z=14&output=kml";
 
-  //  Log.d(myapp.APP, "urlCarMode: "+urlCarMode);
+    Log.d("MAPAPP","urlCarMode: "+urlCarMode);
 
     NavigationDataSet navSet = null;
     // for mode_any: try pedestrian route calculation first, if it fails, fall back to car route

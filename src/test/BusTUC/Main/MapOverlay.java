@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import test.BusTUC.Queries.Browser;
-import test.BusTUC.Stops.BusStops;
+import test.BusTUC.Stops.BusDeparture;
 import test.BusTUC.Stops.ClosestHolder;
 import test.BusTUC.Main.Database;
 import test.BusTUC.Main.Homescreen.OracleThread;
@@ -32,14 +32,16 @@ import com.google.android.maps.OverlayItem;
 
 public class MapOverlay extends ItemizedOverlay
 {
-	public static ArrayList <BusStops> foundStopsList;
+
 	public static String foundBusStop;
 	private Context m_Context;
 	private List items;
 	private Drawable drawable;
 	// Change to none-static later if necessary
-	
-	int lat,longi, outgoing;	
+
+	public static ArrayList <BusDeparture> foundStopsList;
+	int lat,longi, outgoing;
+
 	HashMap realTimeCodes;
 	ClosestHolder[] cl;
 	public MapOverlay(Drawable defaultMarker) {
