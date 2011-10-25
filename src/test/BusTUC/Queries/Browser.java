@@ -159,10 +159,10 @@ public class Browser
         for(int i = 0;i<hSize;i++)
         {
         	// Walking distance in minutes
-        	System.out.println("WALK: " + Double.parseDouble(keys[i].toString()));
+        	System.out.println("WALK: "+Double.parseDouble(keys[i].toString()));
            String output2 = decifo.format(Math.ceil((Double.parseDouble(keys[i].toString())/1.7)/60));
      	   start2 = start2 + "" + startMap.get(keys[i]).getProvider()+""+"+"+output2; 
-     	   System.out.println("START TO SATT: " + start2);
+     	   System.out.println("START TO SATT: " + start2 + "  " + startMap.get(keys[i]).getProvider());
      	   if(i+1<hSize)
      	   {
      		   start2 = start2 + ","; 
@@ -236,7 +236,7 @@ public class Browser
         System.out.println("WALK: " + startMap.get(i).distance);
            int output2 = (int) (Math.ceil(startMap.get(i).distance/1.7)/60);
      	   start2 = start2 + "" + startMap.get(i).name+""+"+"+output2; 
-     	   System.out.println("START TO SATT: " + start2);
+     	   System.out.println("START TO SATT: " + start2 + "  " + startMap.get(i).distance);
      	   if(i+1<hSize)
      	   {
      		   start2 = start2 + ","; 

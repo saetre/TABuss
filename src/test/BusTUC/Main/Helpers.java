@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -119,7 +120,7 @@ public class Helpers
 		   {
 			   if(noTransfer)//(!value.get(i).isTransfer())
 			   {
-		        	text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+		        	text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nï¿½ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 		        	if(value.get(i).isTransfer())
 		        	{
 		        		noTransfer = false;
@@ -156,7 +157,7 @@ public class Helpers
 		      		  else
 		      		  {
 		      			  
-		      			  text.add((i+1)+": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+		      			  text.add((i+1)+": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nï¿½ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 		      		  }
 			   }
 		   }
@@ -197,106 +198,7 @@ public class Helpers
 	        
 	        return null;
 	    }
-	 public static ArrayList <Route> computeRealTime(Route [] foundRoutes, Route [] routes, ArrayList<BusStop> tSetExclude, HashMap realTimeCodes, Browser k_browser)
-	    {
-	    	Calculate calculator = new Calculate();
-	    	int tempId = 0; 
-	      //  Log.v("routesl","length:"+routes.length);
-	        StringBuffer presentation = new StringBuffer();        
-	        boolean noTransfer = true; 
-	        Route [] returnRoutes = new Route[foundRoutes.length];
-	        ArrayList<Route> temp = new ArrayList <Route>();
-	        ArrayList <String>ret = new ArrayList <String>();
-	        // Sets the travel and total time for each route
-	        try
-	        {
-	        	// If nullpointer:
-	            /*
-	             *Change list usage to finalRoutes
-	             */
-	        	returnRoutes = Helpers.setTimeForRoutes(foundRoutes, realTimeCodes, k_browser, calculator);
-	        	//Helpers.setTimeForRoutes(finalRoutes, realTimeCodes, k_browser, calculator);
-	        	
-	        
-	       
-	        calculator.printOutRoutes("AFTERREALTIME",foundRoutes, true);
-	        /*
-	        for(int i = 0;i<returnRoutes.length;i++)
-	        {    
-	      	 
-	      	 if(noTransfer)
-	      	 {
-	      		 	System.out.println("APPENDING IN FIRST IF");
-	    		 	System.out.println((i+1)+": Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" ("+printRoute[i].getWalkingDistance()+" meter)"+" klokken "+printRoute[i].getArrivalTime()+". Du vil nï¿½ "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
-	        	    presentation.append((i+1)+": Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" ("+printRoute[i].getWalkingDistance()+" meter)"+" klokken "+printRoute[i].getArrivalTime()+". Du vil nï¿½ "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
-	        	    ret.add((i+1)+": Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" ("+printRoute[i].getWalkingDistance()+" meter)"+" klokken "+printRoute[i].getArrivalTime()+". Du vil nï¿½ "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
-	        	    
-	        	    if(routes[i].isTransfer())
-	        	    {
-	        	    	noTransfer = false;
-	        	    }
-	      	 }
-	      	 else 
-	      	 {
-	      		  if(Integer.parseInt(printRoute[i-1].getArrivalTime()+ printRoute[i-1].getTravelTime()) > Integer.parseInt(printRoute[i].getArrivalTime()))
-	      		  {
-	      			  System.out.println("BUSSEN HAR ALLEREDE Gï¿½TT GITT!: " + printRoute[i-1].getArrivalTime() + "  " + printRoute[i].getArrivalTime() );
-	      			  // Send new query based on updated info
-	      			 /* Sort sort = new Sort();
-	      			  System.out.println("Creating: " + printRoute[i-1].getBusStopName() + "  " + Homescreen.gpsCords.length);
-	      			  HashMap<Integer,HashMap <Integer, Location>> newCoords = getLocationsBasedOnString(Homescreen.gpsCords, printRoute[i].getBusStopName());
-	      			 
-	      			  System.out.println("new coords size: " + newCoords.size());
-
-	      			  HashMap<Integer,Location> newTsetExclude = new HashMap <Integer, Location>();
-	      			  Object[] keys = newCoords.keySet().toArray();
-	      			  int currentVal = Integer.parseInt(newCoords.get(keys[0]).keySet().toArray()[0].toString());
-	      			  newTsetExclude.put(currentVal, newCoords.get(keys[0]).get(currentVal));
-	      			  System.out.println("new set size: " + newTsetExclude.size());
-	      			  
-	      			  // Idea is to set new query containing the second stop -> destination with updated times.
-	      			  // The problem is which query to send to busTUC. So for now, an error message is shown if the second bus has left before arrival to that stop
-	      			  int arrivalTime = Integer.parseInt(printRoute[i-1].getArrivalTime());
-	      			  int travelTime = Integer.parseInt(printRoute[i-1].getTravelTime());
-	      			  int sum = arrivalTime + travelTime;
-	      			  run(printRoute[i].getDestination() + " etter " + sum, newTsetExclude, newCoords, k_browser, realTimeCodes);*/
-	      		/*	  ret.set(i-1,ret.get(i-1) + "\n"+(i+1)+ ": Oh shit, bussen har alt dratt");
-	      			presentation.append((i+1)+" Har dessverre gï¿½tt fï¿½r din ankomst");
-	      			//  presentation.append((i+1)+": OVERGANGFIXX: Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" klokken "+printRoute[i].getArrivalTime()+". Du vil nï¿½ "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
-
-	      		  }
-	      		  else
-	      		  {
-	      			  
-	      			  presentation.append((i+1)+": OVERGANG: Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" klokken "+printRoute[i].getArrivalTime()+". Du vil nï¿½ "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
-	      			 ret.add((i+1)+": OVERGANG: Ta Buss "+printRoute[i].getBusNumber()+" fra "+printRoute[i].getBusStopName()+" klokken "+printRoute[i].getArrivalTime()+". Du vil nï¿½ "+printRoute[i].getDestination()+" ca "+printRoute[i].getTravelTime()+ " minutter senere.\n");
-	      		  }
-	      	 }
-	         
-	        }
-	        Object[] keys = tSetExclude.keySet().toArray();
-	        for(Object key : keys)
-	        {
-	        	Log.v("Keys","Key:"+Double.parseDouble(key.toString()));
-	        	Log.v("Value","Value:"+tSetExclude.get(key).getProvider());
-	        }*/
-	        Route[] printRoute = calculator.sortByTotalTime(returnRoutes);
-	        for(int i=0; i<printRoute.length; i++)
-	        {
-	        	temp.add(printRoute[i]);
-	        }
-	        System.out.println("SIZE OF ARRAYLIST : " + temp.size());
-			return temp;
-	        
-	        } catch(Exception e)
-	        {
-	        	e.printStackTrace();
-	        	//Toast.makeText(this, "Real-time fail", Toast.LENGTH_LONG).show();
-	        }
-	        
-	        return null;
-	    }
-	 
+	
 	 public static Route[] createJSON(String jsonSubString, Calculate calculator)
 	 {
 		 Route[]routes = calculator.createRoutes(jsonSubString);
@@ -304,62 +206,7 @@ public class Helpers
 	 }
 	    
 
-	    public static ArrayList <Route> run(String input, HashMap<Integer, Location> tSetExclude,  HashMap<Integer,HashMap<Integer,Location>> locationsArray, Browser k_browser, HashMap realTimeCodes)
-	    {
-	    	Route[] finalRoutes;
-	    	// Perform action on clicks
-	    	if(!tSetExclude.isEmpty())
-	  	     {
-	    		try
-	    		{
-		    	 // System.out.println("K-browserobj " + k_browser.toString() + "realtimelength: " + realTimeCodes.size()); 
-	    			
-	    		  long time = System.nanoTime();
-		          String[] html_page = k_browser.getRequest(tSetExclude,input,false);   
-		          //tSetExclude
-		          long newTime = System.nanoTime() - time;
-					System.out.println("TIME ORACLEREQUEST: " +  newTime/1000000000.0);
-		          //System.out.println("TEKST: " + editTe.getText().toString() );
-		          //System.out.println("HTML LENGTH: " + html_page.length); 
-		          StringBuilder str = new StringBuilder(); 
-		          // Parses the returned html
-		         if(!Helpers.parseHtml(html_page, str)) return null;
-		         else
-		         {	          
-		          int indexOf = str.lastIndexOf("}");
-		          String jsonSubString = str.substring(0, indexOf+1); 
-		          jsonSubString = jsonSubString.replaceAll("\\}", "},");
-		          jsonSubString = jsonSubString.substring(0, jsonSubString.length()-1);
-		          Log.v("manipulatedString","New JSON:"+jsonSubString);
-		          int wantedBusStop = 0;  
-		          Calculate calculator = new Calculate();           
-		          
-		          // Create routes based on jsonSubString
-		         Route[] routes = createJSON(jsonSubString, calculator);
-		          // Set walking dist
-		          //Helpers.setWalkingDistance(routes, locationsArray);
-		          calculator.printOutRoutes("BEFORE",routes, false);
-		         finalRoutes = calculator.suggestRoutes(routes);
-		          calculator.printOutRoutes("AFTER",finalRoutes, false);
-		          // Compute real time
-		          long first = System.nanoTime();
-		        ArrayList <Route> returnRoutes =  computeRealTime(finalRoutes, routes, realTimeCodes, k_browser);
-		        long second = System.nanoTime() - first;
-		        System.out.println("TIME SPENT COMPUTING REAL TIME " + second / 1000000000.0);
-		
-		          return returnRoutes;
-		         }
-	    		}
-	    		catch(Exception e)
-	    		{
-	    			e.printStackTrace();
-	    			return null;
-	    		}
-	  	     }
-	    	System.out.println("HER SKAL VI IKKE HAVNE");
-	        return null;
-
-	    }
+	   
 	    public static ArrayList <Route> run(String input, ArrayList<BusStop> tSetExclude,  HashMap<Integer,HashMap<Integer,Location>> locationsArray, Browser k_browser, HashMap realTimeCodes)
 	    {
 	    	Route[] finalRoutes;
@@ -415,49 +262,7 @@ public class Helpers
 	    }
 	  
 	
-	    public static HashMap<Integer,HashMap<Integer,Location>> getLocationsBasedOnString(String[][] k_gpsCords, String provider)
-	    {
-	    	String tempCords[][] = k_gpsCords; 
-	        int clength = tempCords.length; 
-	        Log.v("CORDL", "C:"+clength); 
-	        
-	        HashMap<Integer,HashMap<Integer,Location>> newMap = new HashMap<Integer,HashMap<Integer,Location>>();
-	        Location closestLocation[] = new Location[clength]; 
-	        HashMap<Integer,Integer> counter = new HashMap<Integer,Integer>();
-	        for(int i = 0;i<clength;i++)
-	        {
-	           if(tempCords[i][1].equals(provider))
-	           {
-		        	System.out.println("Comaring " + tempCords[i][1] + " and: " + provider);
-
-		     	   closestLocation[i] = new Location(provider);
-		     	   closestLocation[i].setProvider(tempCords[i][1]); // Bus stop name
-		     	   closestLocation[i].setLatitude(Double.parseDouble(tempCords[i][3])); // 1 i gps2.xml
-		     	   closestLocation[i].setLongitude(Double.parseDouble(tempCords[i][2])); // 2 i gps2.xml
-		     	   int alt = Integer.parseInt(tempCords[i][0]);
-		     	   closestLocation[i].setAltitude(alt); // Add bus stop ID as altitude
-		     	   // Assume we are already at the stop
-		     	   int distance = 0;
-		     	   HashMap<Integer, Location> hMap = new HashMap<Integer,Location>(); 
-		     	   hMap.put(distance, closestLocation[i]);
-		     	   String busStopId = tempCords[i][0]; // 0 i gps2.xml
-		     	 //  int newID = Integer.parseInt(busStopId.substring(busStopId.length()-3));
-		   //  	   Log.v("newId","newID:"+newID);    	   
-		     	   /*if(counter.containsKey(newID))
-		     	   {
-		     		   counter.put(newID, counter.get(newID)+1);
-		     		   Log.v("SAME","SAMEID:"+newID);
-		     	   }else { counter.put(newID,1); }*/
-		     	   
-		     	   newMap.put(Integer.parseInt(busStopId), hMap);
-		     	   break;
-	           }
-	             
-	        } 
-	        return newMap; 
-	    	
-	    }
-	    
+	 
 	    public static HashMap<Integer,Location> testLocations(String[][] k_gpsCords, String provider, Location currentLocation)
 	    {
 	    	String tempCords[][] = k_gpsCords; 
@@ -480,14 +285,7 @@ public class Helpers
 	     	   int distance = (int)closestLocation[i].distanceTo(currentLocation);
 	     	   hMap.put(distance, closestLocation[i]);
 	     	   String busStopId = tempCords[i][0]; // 0 i gps2.xml
-	     	 //  int newID = Integer.parseInt(busStopId.substring(busStopId.length()-3));
-	   //  	   Log.v("newId","newID:"+newID);    	   
-	     	   /*if(counter.containsKey(newID))
-	     	   {
-	     		   counter.put(newID, counter.get(newID)+1);
-	     		   Log.v("SAME","SAMEID:"+newID);
-	     	   }else { counter.put(newID,1); }*/
-	     	   
+
 	             
 	        } 
 	        return hMap; 
@@ -498,7 +296,7 @@ public class Helpers
 	   // Creates the HashMap for the locations. 
 	    // Outer key is bus stop ID
 	    // Inner key is distance to stop
-	public static ArrayList<BusStop> getLocationsArray(String[][] k_gpsCords, String provider, Location currentLocation, int maxDistance, boolean duplicates){
+	public static ArrayList<BusStop> getLocationsArray(String[][] k_gpsCords, String provider, Location currentLocation, int maxDistance,int numStops, boolean duplicates){
 		ArrayList<BusStop> busStops = new ArrayList<BusStop>();
 		String previousAdded = "";
 		for(int i=0;i<k_gpsCords.length;i++){
@@ -513,7 +311,13 @@ public class Helpers
 			}
 			previousAdded = k_gpsCords[i][1];
 		}
-		return busStops;
+		Collections.sort(busStops);
+		ArrayList <BusStop> retList = new ArrayList <BusStop>();
+		for(int i=0; i<numStops; i++)
+		{
+			retList.add(busStops.get(i));
+		}
+		return retList;
 	}
 	
 	public static boolean isInArrayList(String stopname, ArrayList<BusStop> stops){
@@ -523,40 +327,7 @@ public class Helpers
 		return false;
 		
 	}
-    public static HashMap<Integer,HashMap<Integer,Location>> getLocations(String[][] k_gpsCords, String provider, Location currentLocation)
-    {
-    	String tempCords[][] = k_gpsCords; 
-        int clength = tempCords.length; 
-        Log.v("CORDL", "C:"+clength); 
-        
-        HashMap<Integer,HashMap<Integer,Location>> newMap = new HashMap<Integer,HashMap<Integer,Location>>();
-        Location closestLocation[] = new Location[clength]; 
-        HashMap<Integer,Integer> counter = new HashMap<Integer,Integer>();
-        for(int i = 0;i<clength;i++)
-        {
-     	   closestLocation[i] = new Location(provider);
-     	   closestLocation[i].setProvider(tempCords[i][1]); // Bus stop name
-     	   closestLocation[i].setLatitude(Double.parseDouble(tempCords[i][3])); // 1 i gps2.xml
-     	   closestLocation[i].setLongitude(Double.parseDouble(tempCords[i][2])); // 2 i gps2.xml
-     	   int alt = Integer.parseInt(tempCords[i][0]);
-     	   closestLocation[i].setAltitude(alt); // Add bus stop ID as altitude
-     	   int distance = (int)closestLocation[i].distanceTo(currentLocation);
-     	   HashMap<Integer, Location> hMap = new HashMap<Integer,Location>(); 
-     	   hMap.put(distance, closestLocation[i]);
-     	   String busStopId = tempCords[i][0]; // 0 i gps2.xml
-     	 //  int newID = Integer.parseInt(busStopId.substring(busStopId.length()-3));
-   //  	   Log.v("newId","newID:"+newID);    	   
-     	   /*if(counter.containsKey(newID))
-     	   {
-     		   counter.put(newID, counter.get(newID)+1);
-     		   Log.v("SAME","SAMEID:"+newID);
-     	   }else { counter.put(newID,1); }*/
-     	   
-     	   newMap.put(Integer.parseInt(busStopId), hMap);
-             
-        } 
-        return newMap; 
-    }
+ 
     
     
     // Method used to find the coordinates to the current location
@@ -635,11 +406,14 @@ public class Helpers
 
        	 	for(BusStop s: locationsArray)
        	 	{
-       	 		if(s.stopID == intBusStopNumber || (s.stopID+1000) == intBusStopNumber || (s.stopID-1000) == intBusStopNumber)
+       	 		String stopID = String.valueOf(s.stopID);
+       	 		String stopID2 = String.valueOf(routes[i].getBusStopNumber());
+
+       	 		if(Integer.parseInt(stopID.substring(stopID.length()-2, stopID.length())) == Integer.parseInt(stopID2.substring(stopID2.length()-2,stopID2.length())))
        	 		{
        	 			routes[i].setWalkingDistance((int)s.distance);
        	 		}else{         		 
-       	 			routes[i].setWalkingDistance(-1); 
+       	 			//routes[i].setWalkingDistance(-1); 
        	 		}
        	 	}
         }

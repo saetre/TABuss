@@ -279,8 +279,7 @@ public class Homescreen extends Activity {
 				currentlocation = location; 
 				// currentlocation.setLatitude(63.430487);
 				//currentlocation.setLongitude(10.395061);
-				currentlocation.setLatitude(63.429258);
-				currentlocation.setLongitude(10.367680);
+		
 				Log.v("currentLoc","PROV:LOC=" + currentlocation.getLatitude()+":"+currentlocation.getLongitude());
 
 				long f = System.nanoTime();              
@@ -296,7 +295,7 @@ public class Homescreen extends Activity {
                 }*/
 
 				// END TEST///////////////
-				long s = System.nanoTime() - f;
+			//	long s = System.nanoTime() - f;
 				long first = System.nanoTime();
 				//  System.out.println("TIME SPENT FINDING LOCATION: " + s /(1000000000.0));
 				//System.out.println("REALTIMEX: " + realTimeCodes.size());
@@ -304,17 +303,13 @@ public class Homescreen extends Activity {
 				// creates a HashMap with all the relevant bus stops
 				//Sort sort = new Sort();
 
-				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000, false);
-				busStops = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000, true);
-				Collections.sort(busStopsNoDuplicates);
-				Collections.sort(busStops);
-				//System.out.println("THERE ARE" + busStopsNoDuplicates.size() + " STOPS");
-				// One stop per group
+				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,5,false);
+				busStops = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,10, true);
+		
 				
 				long second = System.nanoTime() - first;
 				System.out.println("TIME SPENT SORTING SHIT: " + second /(1000000000.0));
-				//int numberofStops = tSetAllStops.size();
-				int numStops = busStops.size() < 10 ? busStops.size() : 10;
+				int numStops = busStops.size();
 				System.out.println("USING " + numStops + " STOPS");
 				cl = new ClosestHolder[numStops];
 
@@ -517,9 +512,17 @@ public class Homescreen extends Activity {
 		protected Void doInBackground(Void... params)
 		{
 			long time = System.nanoTime();
-			buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates, locationsArray,k_browser, realTimeCodes);
-			long newTime = System.nanoTime() - time;
-			System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
+			try
+			{
+				buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates, locationsArray,k_browser, realTimeCodes);
+				long newTime = System.nanoTime() - time;
+				System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
+			}
+			catch(Exception e)
+			{
+				myDialog.dismiss();
+				e.printStackTrace();
+			}
 			return null;
 		}
 
