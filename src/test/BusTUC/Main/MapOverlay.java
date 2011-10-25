@@ -102,7 +102,7 @@ public class MapOverlay extends ItemizedOverlay
 				if(Integer.parseInt((tmp.substring(4,5))) == 1)
 				{
 					tmp = "til byen";
-				} else tmp = "fra byen";
+				} else if(Integer.parseInt((tmp.substring(4,5))) == 0)tmp = "fra byen";
 				// If user clicks yes, run thread
 				builder.setMessage(cl[i].getStopName() + " " + tmp +"\nVise realtime?").setPositiveButton("Ja", new DialogInterface.OnClickListener()
 				{

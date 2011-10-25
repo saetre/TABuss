@@ -155,7 +155,7 @@ public class Sort
 		
 		for(int j =0; j<finalMap.size(); j++)
 		{
-			System.out.println("Elementer i lista: " + newkeys[j] + "  "  +finalMap.get(newkeys[j]).getProvider());
+			//System.out.println("Elementer i lista: " + keys[j] + "  "  +finalMap.get(eys[j]).getProvider());
 		}
     	return finalMap; 
     }

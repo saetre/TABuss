@@ -124,7 +124,7 @@ public class RealTimeList extends ListActivity
 			if(Integer.parseInt((tmp.substring(4,5))) == 1)
 			{
 				tmp = "til byen";
-			} else tmp = "fra byen";
+			} else if(Integer.parseInt((tmp.substring(4,5))) == 0) tmp = "fra byen";
 			holder.get(i).setStopName(holder.get(i).getStopName() + " " + tmp);
 			stopNames[i] = holder.get(i).getStopName();
 		}

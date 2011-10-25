@@ -84,6 +84,7 @@ public class Answer extends  ListActivity{
 		{
 
 		   value = extras.getParcelableArrayList("test");	
+		   // Parse extracted into answer
 		   ArrayList <String> text = Helpers.parseData(value);
 		   ad = new ArrayAdapter<String>(this, R.layout.list_item, text);
 		   setListAdapter(ad);

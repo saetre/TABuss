@@ -274,8 +274,10 @@ public class Homescreen extends Activity {
 			public void onLocationChanged(Location location) {
 				System.out.println("LOCATIONLISTENER");
 				currentlocation = location; 
-				//currentlocation.setLatitude(63.430487);
+				// currentlocation.setLatitude(63.430487);
 				//currentlocation.setLongitude(10.395061);
+				currentlocation.setLatitude(63.429258);
+				currentlocation.setLongitude(10.367680);
 				Log.v("currentLoc","PROV:LOC=" + currentlocation.getLatitude()+":"+currentlocation.getLongitude());
 
 				long f = System.nanoTime();              
@@ -302,7 +304,7 @@ public class Homescreen extends Activity {
 				long first = System.nanoTime();
 				tSetExclude = sort.m_partialSort(locationsArray,5,500,false, false);
 				// All stops. Necessary for usage with map
-				tSetAllStops = sort.m_partialSort(locationsArray,5,500,false, true); 
+				tSetAllStops = sort.m_partialSort(locationsArray,2,1000,false, true); 
 				long second = System.nanoTime() - first;
 				System.out.println("TIME SPENT SORTING SHIT: " + second /(1000000000.0));
 				int numberofStops = tSetAllStops.size();
