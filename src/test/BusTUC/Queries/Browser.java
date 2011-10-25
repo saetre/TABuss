@@ -431,6 +431,7 @@ public class Browser
 		                SimpleDateFormat formatter = new SimpleDateFormat("d/M/y H:mm"); 
 		                Date date = (Date)formatter.parse(j_a.getJSONObject(i).getString("orario"));
 		                t.arrivalTime = date;
+		                System.out.println("FOUND HOURS: " + t.arrivalTime.getHours());
 		                t.dest = j_a.getJSONObject(i).getString("capDest");
 		                String prev = j_a.getJSONObject(i).getString("statoPrevisione");
 		                

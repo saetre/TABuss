@@ -11,7 +11,7 @@ import com.google.android.maps.GeoPoint;
  * This to avoid doing huge lookup regarding lat/long
  * foooo
  */
-public class ClosestHolder implements Parcelable
+public class ClosestHolder implements Comparable <ClosestHolder>, Parcelable
 {
 	private GeoPoint point;
 	private int busStopID;
@@ -65,6 +65,11 @@ public class ClosestHolder implements Parcelable
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	 @Override
+	public int compareTo( ClosestHolder otherHolder ) {
+	   return this.getStopName().compareTo(otherHolder.getStopName());
+	  }
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {

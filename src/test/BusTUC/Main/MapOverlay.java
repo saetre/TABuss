@@ -32,13 +32,14 @@ import com.google.android.maps.OverlayItem;
 
 public class MapOverlay extends ItemizedOverlay
 {
+	public static ArrayList <BusStops> foundStopsList;
+	public static String foundBusStop;
 	private Context m_Context;
 	private List items;
 	private Drawable drawable;
 	// Change to none-static later if necessary
-	public static ArrayList <BusStops> foundStopsList;
-	int lat,longi, outgoing;
-	public static String foundBusStop;
+	
+	int lat,longi, outgoing;	
 	HashMap realTimeCodes;
 	ClosestHolder[] cl;
 	public MapOverlay(Drawable defaultMarker) {
@@ -96,8 +97,14 @@ public class MapOverlay extends ItemizedOverlay
 			if(cl[i].getPoint().getLongitudeE6() == (longi) && cl[i].getPoint().getLatitudeE6() == (lat))
 			{
 				AlertDialog.Builder builder = new AlertDialog.Builder(m_Context);
+				String tmp = "" + cl[i].getBusStopID();
+				// Check which direction buses passing this stop are going
+				if(Integer.parseInt((tmp.substring(4,5))) == 1)
+				{
+					tmp = "til byen";
+				} else tmp = "fra byen";
 				// If user clicks yes, run thread
-				builder.setMessage(cl[i].getStopName() + "\nVise realtime?").setPositiveButton("Ja", new DialogInterface.OnClickListener()
+				builder.setMessage(cl[i].getStopName() + " " + tmp +"\nVise realtime?").setPositiveButton("Ja", new DialogInterface.OnClickListener()
 				{
 
 					@Override

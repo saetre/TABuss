@@ -1,12 +1,20 @@
 package test.BusTUC.Stops;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+
+import test.BusTUC.Main.Route;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 
 /*
  * General class representing a bus stop, for use with the oracle
  */
-public class BusStops {
+public class BusStops
+{
 	public int line; 
 	public Date arrivalTime; 
 	public boolean realTime; 
@@ -15,6 +23,7 @@ public class BusStops {
 	{
 		
 	}
+
 	
 	public String getDest()
 	{
@@ -43,4 +52,10 @@ public class BusStops {
 	public void setRealTime(boolean realTime) {
 		this.realTime = realTime;
 	}
+	
+	
+	
+
+
+
 }

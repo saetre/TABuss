@@ -57,9 +57,12 @@ public class RealTimeList extends ListActivity
 	  extras = getIntent().getExtras();
 	  if(extras == null)
 	  {
+		  
 		  text.setText(MapOverlay.foundBusStop +"\n");
 		  lv.addHeaderView(text);
 		  lv.setTextFilterEnabled(true);
+		  // No extras, which means access from map
+		  // Use static list from MapOverlay foundStopsList
 		  setFromMap();
 		  
 	  }
@@ -113,15 +116,15 @@ public class RealTimeList extends ListActivity
 	{
 		holder = extras.getParcelableArrayList("test");
 	    stopNames = new String[holder.size()];
-	    
-	    
+	    Collections.sort(holder);
 		for(int i=0; i<holder.size(); i++)
 		{
+			
 			String tmp = ""+holder.get(i).getBusStopID();		
 			if(Integer.parseInt((tmp.substring(4,5))) == 1)
 			{
-				tmp = "Til byen";
-			} else tmp = "Fra byen";
+				tmp = "til byen";
+			} else tmp = "fra byen";
 			holder.get(i).setStopName(holder.get(i).getStopName() + " " + tmp);
 			stopNames[i] = holder.get(i).getStopName();
 		}
