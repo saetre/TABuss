@@ -84,7 +84,7 @@ public class BusTUCApp extends MapActivity
  //   HashMap<Integer,Location> tSetAllStops; // HashMap used for finding closest locations. Adds stops from both sides of the road. For use on map w
     String provider; // Provider 
     HashMap realTimeCodes; 
-    MyLocationOverlay myLocationOverlay;
+    MyLocationOverlay myLocation;
     StringBuffer presentation; // String which contain answer from bussTUC
 
     /** Called when the activity is first created. */
@@ -147,15 +147,20 @@ public class BusTUCApp extends MapActivity
         
         
        //Helpers.addUser(p,mapOverlay, getResources().getDrawable(R.drawable.pp));
-       myLocationOverlay = new FixedMyLocationOverlay(this, mapView);
+       //myLocationOverlay = new FixedMyLocationOverlay(this, mapView);
            // add this overlay to the MapView and refresh it
-       mapView.getOverlays().add(myLocationOverlay);
-       //    mapView.postInvalidate();
-
+       myLocation=new MyLocationOverlay(this, mapView);
+       if(!myLocation.isMyLocationEnabled()) System.out.println("LOCATION NOT ENABLED");
+       if(!myLocation.enableMyLocation()) System.out.println("COULD NOT ENABLE LOCATION");
+       if(!myLocation.isMyLocationEnabled()) System.out.println("LOCATION STILL NOT ENABLED");
+       mapView.getOverlays().add(myLocation);
+       myLocation.enableCompass();
+       //mapView.postInvalidate();
+       showOverlay();
+       mc.animateTo(p);
+       mc.setZoom(16);
        System.out.println("My loc: " + Homescreen.currentlocation.getLatitude() *1E6 + "  " + Homescreen.currentlocation.getLongitude() *1E6);
-        showOverlay();
-        mc.animateTo(p);
-        mc.setZoom(16);
+
         Bundle extras = getIntent().getExtras();
 
 		if(extras !=null) 
@@ -357,10 +362,17 @@ public class BusTUCApp extends MapActivity
     	
     	finish();
     }
+    @Override
+    protected void onPause(){
+    	super.onPause();
+    	myLocation.disableCompass();
+    }
+    
     @SuppressWarnings("static-access")
   	@Override
   	protected void onResume() {
   		super.onResume();
+  		myLocation.enableCompass();
   	    // Sets the restrictions on the location update. 
   		//locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 100, 1, locationListener);
 

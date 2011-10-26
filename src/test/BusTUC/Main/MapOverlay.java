@@ -11,7 +11,7 @@ import java.util.Map;
 import test.BusTUC.Queries.Browser;
 import test.BusTUC.Stops.BusDeparture;
 import test.BusTUC.Stops.ClosestHolder;
-import test.BusTUC.Main.Database;
+import test.BusTUC.Database.Database;
 import test.BusTUC.Main.Homescreen.OracleThread;
 
 import android.app.AlertDialog;

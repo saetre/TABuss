@@ -11,6 +11,8 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import test.BusTUC.R;
 import test.BusTUC.Calc.Sort;
+import test.BusTUC.Database.Database;
+import test.BusTUC.Database.DatabaseAdapter;
 import test.BusTUC.Favourites.Favourite;
 import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.GPS.GPS;
@@ -25,6 +27,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Criteria;
@@ -60,7 +63,7 @@ public class Homescreen extends Activity {
 	private Button[] buttons;
 	private Button goButton; 
 	//private EditText editText;
-
+	private DatabaseAdapter database;
 	// Global variables that need to be accessed from other contexts
 	// No prob to let them stay public static, as they anyway are accessed by the same process
 	public static String[][] gpsCords;  // Array containing bus stops
@@ -151,7 +154,12 @@ public class Homescreen extends Activity {
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-
+		database = new DatabaseAdapter(this);
+		database.open();
+		long rowid = database.createQuery("FJAS", "BAJS", 1337);
+		Cursor c = database.fetchQuery(rowid);
+		
+		System.out.println("ROWS IN DB: " + c.toString());
 		context = this;
 		this.setRequestedOrientation(
 				ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -224,6 +232,7 @@ public class Homescreen extends Activity {
 				@Override
 				public void onClick(View v) 
 				{
+					database.createQuery(cl[0].getStopName(), shortcutButtons.getText().toString(), 1337);
 					textView.setText(shortcutButtons.getText());
 					new OracleThread(context).execute();
 
