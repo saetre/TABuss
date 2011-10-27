@@ -95,6 +95,7 @@ public class BusTUCApp extends MapActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         mapView = (MapView) findViewById(R.id.mapView); 
+        mapView.setStreetView(true);
         LinearLayout zoomLayout = (LinearLayout)findViewById(R.id.zoom);  
         // Gets the coordinates from the bus XML file
         

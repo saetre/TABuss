@@ -144,7 +144,6 @@ public class Browser
 		return html_string; 
 	}
 	
-	
 
 
 	public String[] getRequest(HashMap<Integer,Location> startMap, String stop, Boolean formated)
@@ -221,6 +220,45 @@ public class Browser
 		
 		return html_string; 
 	}
+	
+	public String getRequestServer(ArrayList<BusStop> startMap, String stop, Boolean formated, Location location)
+	{
+		String html_string = null; 
+	    HttpGet m_get = new HttpGet();	    
+		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
+		try {
+			m_get.setURI(new URI("http://furu.idi.ntnu.no:1337/MultiBRISserver/MBServlet?dest="+stop+"&type=json&lat="+location.getLatitude()+"&long="+location.getLongitude()));
+			//http://furu.idi.ntnu.no:1337/MultiBRISserver/MBServlet?dest=Ila&type=json&lat=63.4169548&long=10.40284478 nå
+				// 			m_get.setURI(new URI("http://ec2-79-125-87-39.eu-west-1.compute.amazonaws.com:8080/MultiBRISserver/MBServlet?dest="+stop+"&type=json&lat="+location.getLatitude()+"&long="+location.getLongitude()));
+
+			HttpResponse m_response = m_client.execute(m_get);
+			// Request
+			html_string = httpF.requestServer(m_response);			
+			// Will fail if server is busy or down
+			Log.v("html_string", "Returned html: " + html_string);
+			//Long newTime = System.nanoTime() - time;
+			//System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +  newTime/1000000000.0);
+		} catch (ClientProtocolException e) {
+			Log.v("CLIENTPROTOCOL EX", "e:"+e.toString());
+		} catch (IOException e) {
+			Log.v("IO EX", "e:"+e.toString()); 
+			
+		}
+		catch(NullPointerException e)
+		{
+			 Log.v("NULL", "NullPointer");
+		}
+		catch(StringIndexOutOfBoundsException e)
+		{
+			 Log.v("StringIndexOutOfBounds", "Exception");
+		}
+		catch(Exception e)
+		{
+			 Log.v("FUCKINGTOLARGE", "Exception");
+		}
+
+		return html_string; 
+	}
 	public String[] getRequest(ArrayList<BusStop> startMap, String stop, Boolean formated)
 	{		
 		String[] html_string = null; 
@@ -244,6 +282,83 @@ public class Browser
         }
     	start2 = start2 + ")";
 		String wanted_string = start2 + " til " + stop; 
+		String wanted_string2 = "fra glï¿½shaugen til nardo";
+		Log.v("BUSTUCSTR", "wanted_string:"+wanted_string);
+	    HttpPost m_post= new HttpPost("http://www.idi.ntnu.no/~tagore/cgi-bin/busstuc/busq.cgi");
+	
+	    
+		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
+		Long time = System.nanoTime();
+		try {
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);  
+	        nameValuePairs.add(new BasicNameValuePair("lang", "eng"));  
+	        nameValuePairs.add(new BasicNameValuePair("quest", wanted_string)); 
+	        UrlEncodedFormEntity url = new UrlEncodedFormEntity(nameValuePairs);	        
+	        //  System.out.println("URLENC: " + url.toString());
+	        m_post.setEntity(url);  
+	        String responseBody = EntityUtils.toString(m_post.getEntity());       
+	       // Execute. Will not crash if route info is not found(which is not cool)
+			//HttpResponse m_response = m_client.execute(m_post);
+	        HttpResponse m_response = m_client.execute(m_post);
+			//Log.v("m_response", inputStreamToString(m_response.getEntity().getContent()));
+			System.out.println("Wanted String: " + wanted_string);
+			// Request
+			html_string = httpF.request(m_response);
+			
+			// Will fail if server is busy or down
+		Log.v("html_string", "Returned html: " + html_string);
+			//Long newTime = System.nanoTime() - time;
+			//System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +  newTime/1000000000.0);
+		} catch (ClientProtocolException e) {
+			Log.v("CLIENTPROTOCOL EX", "e:"+e.toString());
+		} catch (IOException e) {
+			Log.v("IO EX", "e:"+e.toString()); 
+			
+		}
+		catch(NullPointerException e)
+		{
+			 Log.v("NULL", "NullPointer");
+		}
+		catch(StringIndexOutOfBoundsException e)
+		{
+			 Log.v("StringIndexOutOfBounds", "Exception");
+		}
+		catch(Exception e)
+		{
+			 Log.v("FUCKINGTOLARGE", "Exception");
+		}
+		
+	/*	for(int i =0; i< html_string.length;i++)
+		{
+			Log.v("HTMLFOO", html_string[i]);
+		}*/
+		
+		return html_string; 
+	}
+	
+	public String[] getRequestString(ArrayList<BusStop> startMap, String stop, Boolean formated, String additional)
+	{		
+		String[] html_string = null; 
+		DecimalFormat decifo = new DecimalFormat("###");
+		String start2 = "(";
+		//Object[] keys = startMap.keySet().toArray();
+		//Arrays.sort(keys);
+		// Name of busstop
+		int hSize = startMap.size(); 
+        for(int i = 0;i<hSize;i++)
+        {
+        	// Walking distance in minutes
+        System.out.println("WALK: " + startMap.get(i).distance);
+           int output2 = (int) (Math.ceil(startMap.get(i).distance/1.7)/60);
+     	   start2 = start2 + "" + startMap.get(i).name+""+"+"+output2; 
+     	   System.out.println("START TO SATT: " + start2 + "  " + startMap.get(i).distance);
+     	   if(i+1<hSize)
+     	   {
+     		   start2 = start2 + ","; 
+     	   }
+        }
+    	start2 = start2 + ")";
+		String wanted_string = start2 + additional +  " til " + stop; 
 		String wanted_string2 = "fra glï¿½shaugen til nardo";
 		Log.v("BUSTUCSTR", "wanted_string:"+wanted_string);
 	    HttpPost m_post= new HttpPost("http://www.idi.ntnu.no/~tagore/cgi-bin/busstuc/busq.cgi");

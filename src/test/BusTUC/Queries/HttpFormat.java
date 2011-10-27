@@ -3,7 +3,7 @@ package test.BusTUC.Queries;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
+import com.google.gson.Gson;
 import org.apache.http.HttpResponse;
 
 import android.widget.Toast;
@@ -14,6 +14,45 @@ public class HttpFormat {
     {
     	
     }
+    
+    public String requestServer(HttpResponse response)
+    {
+        String result = "";
+        String[] contentArray = null;
+        
+        try{
+        	//System.out.println("FIRST");
+            InputStream in = response.getEntity().getContent();
+            // System.out.println("SECOND");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "ISO-8859-1"));
+            StringBuilder str = new StringBuilder();
+            StringBuilder content = new StringBuilder(); 
+            String line = null;
+            //  System.out.println("IN HTTPFORMAT");
+            
+          while((line = reader.readLine()) != null)
+          {	
+        	  str.append(line);
+          }
+            in.close();
+            reader.close();
+            result = str.toString();
+            // Have now the reponse as a string;
+            System.out.println("RESULT: " + result + "  " +result.length());
+        
+        }
+
+        
+        catch(Exception ex){
+            result = "Error";
+            System.out.println("ERROR IN HTTPFORMAT!!!!!!!!!!!!!!");
+            ex.printStackTrace();
+        }
+    
+        return result;
+    }
+    	
+    
     public String[] request(HttpResponse response){
         String result = "";
         String[] contentArray = null;

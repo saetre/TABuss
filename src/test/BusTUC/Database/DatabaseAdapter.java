@@ -11,7 +11,7 @@ public class DatabaseAdapter {
 	public static final String KEY_ORIGIN = "origin";
 	public static final String KEY_DESTINATION = "destination";
 	public static final String KEY_TIME = "time";
-	private static final String DATABASE_TABLE = "dass";
+	private static final String DATABASE_TABLE = "query";
 	private Context context;
 	private SQLiteDatabase database;
 	private Database dbHelper;

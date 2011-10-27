@@ -7,6 +7,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.security.auth.SubjectDomainCombiner;
+
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import test.BusTUC.R;
@@ -67,12 +70,14 @@ public class Homescreen extends Activity {
 	// Global variables that need to be accessed from other contexts
 	// No prob to let them stay public static, as they anyway are accessed by the same process
 	public static String[][] gpsCords;  // Array containing bus stops
+	public static String[][] gpsCords2;
 	public static Location currentlocation, busLoc; // Location objects
-	public static HashMap<Integer,HashMap<Integer,Location>> locationsArray; // GPS coordinates
+	//public static HashMap<Integer,HashMap<Integer,Location>> locationsArray; // GPS coordinates
 	public static Browser k_browser; // Object doing communation with bussTUC and Real-Time system
 	//public static HashMap <Integer,Location> tSetAllStops;
 	public static ClosestHolder [] cl; // Object containing geopoint of closest stops. 
 	public static 	HashMap realTimeCodes; 
+	ArrayList <String> trainingSet;
 	// End of global variables
 	AutoCompleteTextView textView;
 	MapController mc; // Controller for the map
@@ -158,7 +163,7 @@ public class Homescreen extends Activity {
 		database.open();
 		long rowid = database.createQuery("FJAS", "BAJS", 1337);
 		Cursor c = database.fetchQuery(rowid);
-		
+
 		System.out.println("ROWS IN DB: " + c.toString());
 		context = this;
 		this.setRequestedOrientation(
@@ -170,7 +175,8 @@ public class Homescreen extends Activity {
 
 		// Gets the coordinates from the bus XML file
 		long f = System.nanoTime();              
-		String[] gpsCoordinates = getResources().getStringArray(R.array.coords3);      
+		String[] gpsCoordinates = getResources().getStringArray(R.array.coords3);    
+		String[] gpsCoordinates2 = getResources().getStringArray(R.array.coords2);
 
 		// creates a HashMap containing all the location objects 
 
@@ -179,6 +185,7 @@ public class Homescreen extends Activity {
 		// 2 - lat
 		// 3 - long
 		gpsCords = GPS.formatCoordinates(gpsCoordinates);
+		gpsCords2 = GPS.formatCoordinates(gpsCoordinates2);
 		long s = System.nanoTime() - f;
 		System.out.println("TIME SPENT FINDING LOCATION: " + s /(1000000000.0));
 		// Autocompletion
@@ -186,7 +193,7 @@ public class Homescreen extends Activity {
 		textView = (AutoCompleteTextView) findViewById(R.id.autocomplete);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, dictionary);
 		textView.setAdapter(adapter);
-
+		trainingSet = Helpers.getTrainingSet();
 		ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(this);
 		line = (LinearLayout)this.findViewById(R.id.homelayout);
 		line.setOnTouchListener(activitySwipeDetector);
@@ -196,10 +203,11 @@ public class Homescreen extends Activity {
 		// Can have 6 favourites
 		// Bind listeners to favourites
 		updateButtons(busStop,buttons);      
+		createLocationListener();			
 
 		// Create locationmanager/listener, and retrieve real-time codes
 		new StartUpThread(context).execute();
-		
+
 		/*  try {
 			System.out.println("OVERSATT: " +Helpers.translateRequest("skole"));
 		} catch (Exception e) {
@@ -238,7 +246,7 @@ public class Homescreen extends Activity {
 
 				}
 			});
-			
+
 			// If long click, delete item
 			shortcutButtons.setOnLongClickListener(new OnLongClickListener()
 			{
@@ -288,7 +296,7 @@ public class Homescreen extends Activity {
 				currentlocation = location; 
 				// currentlocation.setLatitude(63.430487);
 				//currentlocation.setLongitude(10.395061);
-		
+
 				Log.v("currentLoc","PROV:LOC=" + currentlocation.getLatitude()+":"+currentlocation.getLongitude());
 
 				long f = System.nanoTime();              
@@ -304,7 +312,7 @@ public class Homescreen extends Activity {
                 }*/
 
 				// END TEST///////////////
-			//	long s = System.nanoTime() - f;
+				//	long s = System.nanoTime() - f;
 				long first = System.nanoTime();
 				//  System.out.println("TIME SPENT FINDING LOCATION: " + s /(1000000000.0));
 				//System.out.println("REALTIMEX: " + realTimeCodes.size());
@@ -312,10 +320,10 @@ public class Homescreen extends Activity {
 				// creates a HashMap with all the relevant bus stops
 				//Sort sort = new Sort();
 
-				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,5,false);
+				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords2, provider, currentlocation, 1000,5,false);
 				busStops = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,10, true);
-		
-				
+
+
 				long second = System.nanoTime() - first;
 				System.out.println("TIME SPENT SORTING SHIT: " + second /(1000000000.0));
 				int numStops = busStops.size();
@@ -395,27 +403,100 @@ public class Homescreen extends Activity {
 		}
 	}
 
-/*	private void startVoiceRecognitionActivity()
+	private void startVoiceRecognitionActivity()
 	{
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-				RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+				RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Voice recognition Demo...");
 		startActivityForResult(intent, REQUEST_CODE);
 	}
-*/
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		String foundWord = "";
+		
 		if (requestCode == REQUEST_CODE && resultCode == RESULT_OK)
 		{
 			// Populate the wordsList with the String values the recognition engine thought it heard
-			ArrayList<String> matches = data.getStringArrayListExtra(
+			final ArrayList <String >matches = data.getStringArrayListExtra(
 					RecognizerIntent.EXTRA_RESULTS);
-			for(int i=0; i<matches.size(); i++)
-			{
-				System.out.println("FOUND WORD: " + matches.get(i));
-			}
+
+			
+				if(trainingSet.size() != 0 )
+				{
+					for(int i=0; i<matches.size(); i++)
+					{
+					for(int j=0; j<trainingSet.size(); j++)
+					{
+						if(matches.get(i).equals(trainingSet.get(j)))
+						{
+							textView.setText(trainingSet.get(0));
+							System.out.println("Found word: " + trainingSet.get(0));
+						}
+						else
+						{
+						
+							// Prompt user regarding destination
+							AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+							final Favourite fav = new Favourite();
+							// First input dialog 
+							alert.setTitle("Fant ikke ord");
+							alert.setMessage("Skriv inn hva det skulle være");        	
+							final EditText input = new EditText(this);
+							alert.setView(input);
+							alert.setPositiveButton("Lagre", new DialogInterface.OnClickListener() 
+							{
+								@Override
+								public void onClick(DialogInterface dialog, int whichButton) 
+								{
+
+									String value = input.getText().toString();
+									matches.add(0, value);					
+								}
+							});
+							alert.show();
+						}
+						
+						break;
+						
+					}
+				}
+					String delimiter = "/";
+					matches.add(delimiter);
+					Helpers.addToTrainingSet(matches, trainingSet);
+				}
+					
+				
+				else
+				{
+					// Prompt user regarding destination
+					AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+					// First input dialog 
+					alert.setTitle("Fant ikke ord");
+					alert.setMessage("Skriv inn hva det skulle være");        	
+					final EditText input = new EditText(this);
+					alert.setView(input);
+					alert.setPositiveButton("Lagre", new DialogInterface.OnClickListener() 
+					{
+						@Override
+						public void onClick(DialogInterface dialog, int whichButton) 
+						{
+
+							String value = input.getText().toString();
+							matches.add(0, value);			
+							
+						}
+					});
+					alert.show();
+				}
+			
+			String delimiter = "/";
+			matches.add(delimiter);
+			Helpers.addToTrainingSet(matches, trainingSet);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -481,17 +562,18 @@ public class Homescreen extends Activity {
 			{
 				holder.add(cl[i]);
 			}
-    		Intent intent = new Intent(context, RealTimeList.class);
-    		intent.putParcelableArrayListExtra("test", holder); 
-    		context.startActivity(intent);
-        	Long newTime = System.nanoTime() - time;
-     		System.out.println("TIME LOOKUP: " +  newTime/1000000000.0);
+			Intent intent = new Intent(context, RealTimeList.class);
+			intent.putParcelableArrayListExtra("test", holder); 
+			context.startActivity(intent);
+			Long newTime = System.nanoTime() - time;
+			System.out.println("TIME LOOKUP: " +  newTime/1000000000.0);
 
 			return false;
 
 		case R.id.speech:
+			//	return false;
+			//startVoiceRecognitionActivity();
 			return false;
-		//	startVoiceRecognitionActivity();
 
 
 			// Add other menu items
@@ -499,7 +581,7 @@ public class Homescreen extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 
 
 	// Thread classes //
@@ -523,7 +605,7 @@ public class Homescreen extends Activity {
 			long time = System.nanoTime();
 			try
 			{
-				buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates, locationsArray,k_browser, realTimeCodes);
+				buf = Helpers.runServer(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes, currentlocation);
 				long newTime = System.nanoTime() - time;
 				System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 			}
@@ -548,7 +630,7 @@ public class Homescreen extends Activity {
 		@Override
 		protected void onPostExecute(Void unused)
 		{
-			myDialog.dismiss();
+
 
 			if(buf != null)
 			{
@@ -557,10 +639,10 @@ public class Homescreen extends Activity {
 				intent.putParcelableArrayListExtra("test", buf);
 
 				//intent.putExtra("test", buf);
+
 				context.startActivity(intent);
-
 			}
-
+			myDialog.dismiss();
 
 			textView.setEnabled(true);
 			goButton.setEnabled(true);
@@ -603,8 +685,8 @@ public class Homescreen extends Activity {
 
 		}
 	}  
-	
-	
+
+
 	class StartUpThread extends AsyncTask<Void, Void, Void>
 	{
 		private Context context;    
@@ -619,6 +701,7 @@ public class Homescreen extends Activity {
 		@Override
 		protected Void doInBackground(Void... params)
 		{
+
 			createLocationManager();
 			return null;
 		}
@@ -628,7 +711,6 @@ public class Homescreen extends Activity {
 		{
 
 			myDialog = ProgressDialog.show(context, "Loading!", "Laster holdeplasser");
-			createLocationListener();			
 
 		}
 
@@ -641,8 +723,8 @@ public class Homescreen extends Activity {
 
 		}
 	}  
-	
-	
+
+
 
 
 	@Override
@@ -714,20 +796,20 @@ public class Homescreen extends Activity {
 				float deltaY = downY - upY;
 
 				// swipe horizontal?
-						if(Math.abs(deltaX) > MIN_DISTANCE){
-							// left or right
-							if(deltaX < 0) { this.onLeftToRightSwipe(); return true; }
-							if(deltaX > 0) { this.onRightToLeftSwipe(); return true; }
-						} else { Log.i(logTag, "Swipe was only " + Math.abs(deltaX) + " long, need at least " + MIN_DISTANCE); }
+				if(Math.abs(deltaX) > MIN_DISTANCE){
+					// left or right
+					if(deltaX < 0) { this.onLeftToRightSwipe(); return true; }
+					if(deltaX > 0) { this.onRightToLeftSwipe(); return true; }
+				} else { Log.i(logTag, "Swipe was only " + Math.abs(deltaX) + " long, need at least " + MIN_DISTANCE); }
 
-						// swipe vertical?
-						if(Math.abs(deltaY) > MIN_DISTANCE){
-							// top or down
-							if(deltaY < 0) { this.onTopToBottomSwipe(); return true; }
-							if(deltaY > 0) { this.onBottomToTopSwipe(); return true; }
-						} else { Log.i(logTag, "Swipe was only " + Math.abs(deltaX) + " long, need at least " + MIN_DISTANCE); }
+				// swipe vertical?
+				if(Math.abs(deltaY) > MIN_DISTANCE){
+					// top or down
+					if(deltaY < 0) { this.onTopToBottomSwipe(); return true; }
+					if(deltaY > 0) { this.onBottomToTopSwipe(); return true; }
+				} else { Log.i(logTag, "Swipe was only " + Math.abs(deltaX) + " long, need at least " + MIN_DISTANCE); }
 
-						return true;
+				return true;
 			}
 			}
 			return false;

@@ -22,6 +22,42 @@ public class Calculate {
 	 public Calculate()
 	 {
 	 }
+	 
+	 public Route[] createRoutesServer(String jsonString, String dest)
+	 {
+			Route[] routeSuggestions = null; 
+			try {
+				json_obj = new JSONObject(jsonString);
+				json_arr = new JSONArray(json_obj.getString("alts"));
+				System.out.println("arrayLength: " + json_arr.length());
+			if(json_arr != null)
+			{
+			int ArrayLength = json_arr.length(); 
+			Log.v("arraylength","ar:"+ArrayLength);
+			routeSuggestions = new Route[ArrayLength];
+			for(int i = 0;i<ArrayLength;i++)
+			{
+				routeSuggestions[i] = new Route();
+				routeSuggestions[i].setTransfer(Boolean.parseBoolean(json_arr.getJSONObject(i).getString("transfer")));
+				routeSuggestions[i].setBusStopNumber(Integer.parseInt(json_arr.getJSONObject(i).getString("busStopNumber")));
+				routeSuggestions[i].setArrivalTime(json_arr.getJSONObject(i).getString("arrivalTime"));
+				routeSuggestions[i].setBusStopName(json_arr.getJSONObject(i).getString("busStopName"));
+				routeSuggestions[i].setDestination(dest);
+				routeSuggestions[i].setTravelTime(json_arr.getJSONObject(i).getString("travelTime"));
+				routeSuggestions[i].setBusNumber(Integer.parseInt(json_arr.getJSONObject(i).getString("busNumber")));
+			}
+			}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				Log.v("jsonError","e:"+e.toString());
+				//e.printStackTrace();
+			}
+			catch(NullPointerException ex)
+			{
+				System.out.println("NULL I Calculate.createRouteServer()");
+			}
+			return routeSuggestions;
+	 }
 	 public Route[] createRoutes(String jsonString)
 	 {
 		Route[] routeSuggestions = null; 
@@ -71,18 +107,21 @@ public class Calculate {
 				 {
 					 temp.put(i, wD);
 					 distanceSort.put(bussNr, temp);
+					 System.out.println("Added 1: " + bussNr + temp);
 				 }
 			 }
 			 else
 			 {
 				 temp.put(i, wD);
 				 distanceSort.put(bussNr, temp);
+				 System.out.println("Added 2: " + bussNr + temp);
+
 			 }
 			
 		 }
 		 Route[] after = new Route[distanceSort.size()];
 		 Object[] newkeys = distanceSort.keySet().toArray();
-		 Arrays.sort(newkeys);
+	     Arrays.sort(newkeys);
 		 for(int i = 0;i<after.length;i++)
 		 {
 			 after[i] = new Route();

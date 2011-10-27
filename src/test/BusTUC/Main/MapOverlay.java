@@ -33,13 +33,14 @@ import com.google.android.maps.OverlayItem;
 public class MapOverlay extends ItemizedOverlay
 {
 
-	public static String foundBusStop;
 	private Context m_Context;
 	private List items;
 	private Drawable drawable;
-	// Change to none-static later if necessary
-
+	// Change to none-static later if necessary. Problem with parcelable in this case,
+	// is  the Date object
 	public static ArrayList <BusDeparture> foundStopsList;
+	public String foundBusStop;
+
 	int lat,longi, outgoing;
 
 	HashMap realTimeCodes;
@@ -95,7 +96,6 @@ public class MapOverlay extends ItemizedOverlay
 			foundBusStop = cl[i].getStopName();
 			int line = cl[i].getBusStopID();
 			outgoing = Integer.parseInt(realTimeCodes.get(line).toString());
-			//System.out.println("FOOO" + BusTUCApp.cl[i].getPoint().getLatitudeE6() + "   " + lat);
 			if(cl[i].getPoint().getLongitudeE6() == (longi) && cl[i].getPoint().getLatitudeE6() == (lat))
 			{
 				AlertDialog.Builder builder = new AlertDialog.Builder(m_Context);
@@ -129,10 +129,7 @@ public class MapOverlay extends ItemizedOverlay
 				break;
 			}
 			
-		}
-		
-		
-
+		}		
 
 		return true;
 
@@ -175,6 +172,7 @@ public class MapOverlay extends ItemizedOverlay
 			long time = System.nanoTime();
 			foundStopsList = Browser.specificRequestForStop(outgoing);       
 			Intent intent = new Intent(m_Context, RealTimeList.class);
+			intent.putExtra("tag", foundBusStop);
 			m_Context.startActivity(intent);
 			Long newTime = System.nanoTime() - time;
 			System.out.println("TIME LOOKUP: " +  newTime/1000000000.0);
