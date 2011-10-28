@@ -321,24 +321,21 @@ public class Helpers
 	     * Runs query against Retro's server
 	     * According methods such as createJSONServer are modified versions of the existing
 	     */
-	    public static ArrayList <Route> runServer(String input, ArrayList<BusStop> tSetExclude, Browser k_browser, HashMap realTimeCodes, Location location)
+	    public static ArrayList <Route> runServer(String input, Browser k_browser, HashMap realTimeCodes, Location location)
 	    {
 	    	Route[] finalRoutes;
 	    	// Perform action on clicks
-	    	if(!tSetExclude.isEmpty())
-	  	     {
+	    	
 	    		try
 	    		{
 	    		  long time = System.nanoTime();
-		          String html_page = k_browser.getRequestServer(tSetExclude,input,false, location);   
+		          String html_page = k_browser.getRequestServer(input,false, location);   
 		          long newTime = System.nanoTime() - time;
 		          System.out.println("TIME ORACLEREQUEST: " +  newTime/1000000000.0);	
 		          Calculate calculator = new Calculate();          
 		          
 		          // Create routes based on jsonSubString
 		         Route[] routes = createJSONServer(html_page.toString(), calculator, input);	       
-		          // Set walking dist
-		          Helpers.setWalkingDistance(routes, tSetExclude);		    
 		          calculator.printOutRoutes("BEFORE",routes, false);
 		         finalRoutes = calculator.suggestRoutes(routes);
 		          calculator.printOutRoutes("AFTER",finalRoutes, false);
@@ -355,10 +352,6 @@ public class Helpers
 	    			e.printStackTrace();
 	    			return null;
 	    		}
-	  	     }
-	    	else System.out.println("EMPTY LIST");
-	    	System.out.println("HER SKAL VI IKKE HAVNE");
-	        return null;
 
 	    }
 	    
@@ -461,9 +454,7 @@ public class Helpers
 	    
 
 	
-	   // Creates the HashMap for the locations. 
-	    // Outer key is bus stop ID
-	    // Inner key is distance to stop
+
 	public static ArrayList<BusStop> getLocationsArray(String[][] k_gpsCords, String provider, Location currentLocation, int maxDistance,int numStops, boolean duplicates){
 		ArrayList<BusStop> busStops = new ArrayList<BusStop>();
 		String previousAdded = "";
@@ -544,7 +535,10 @@ public class Helpers
     }
     
     
-    // Method which parses the return message from BussTUC
+    /*
+     *  Method which parses the return message from BussTUC
+     *  Not used with retros server
+     */
     public static boolean parseHtml(String[]html_page, StringBuilder str)
     {
     	 for(int i = 0;i<html_page.length;i++) 

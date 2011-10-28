@@ -189,7 +189,12 @@ public class BusTUCApp extends MapActivity
 				   }
 				   else
 				   {
-					   System.out.println("DID not find ID: " +foundRoutes.get(j).getBusStopNumber());
+					   System.out.println("DID not find ID: " +foundRoutes.get(j).getBusStopNumber() + "  " + foundRoutes.get(j).getBusStopName());
+					   if(foundRoutes.get(j).isTransfer() && foundRoutes.get(j).getDestination().equals(foundRoutes.get(j).getBusStopName()))
+					   {
+						   ClosestHolder transferStop = new ClosestHolder(foundRoutes.get(j).getLocation(),foundRoutes.get(j).getBusNumber(), foundRoutes.get(j).getBusStopName());
+						   Helpers.addStops(transferStop, getResources().getDrawable(R.drawable.icon),mapOverlay);
+					   }
 				   }
 			   }
 		   }  

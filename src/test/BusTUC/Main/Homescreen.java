@@ -57,6 +57,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class Homescreen extends Activity {
 	private String [] bgColors = {"#3C434A","#A3AB19","#F66F89","#D9F970"};
@@ -203,7 +204,6 @@ public class Homescreen extends Activity {
 		// Can have 6 favourites
 		// Bind listeners to favourites
 		updateButtons(busStop,buttons);      
-		createLocationListener();			
 
 		// Create locationmanager/listener, and retrieve real-time codes
 		new StartUpThread(context).execute();
@@ -240,7 +240,7 @@ public class Homescreen extends Activity {
 				@Override
 				public void onClick(View v) 
 				{
-					database.createQuery(cl[0].getStopName(), shortcutButtons.getText().toString(), 1337);
+					//database.createQuery(cl[0].getStopName(), shortcutButtons.getText().toString(), 1337);
 					textView.setText(shortcutButtons.getText());
 					new OracleThread(context).execute();
 
@@ -320,7 +320,7 @@ public class Homescreen extends Activity {
 				// creates a HashMap with all the relevant bus stops
 				//Sort sort = new Sort();
 
-				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords2, provider, currentlocation, 1000,5,false);
+				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords2, provider, currentlocation, 1000,1,false);
 				busStops = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,10, true);
 
 
@@ -562,12 +562,18 @@ public class Homescreen extends Activity {
 			{
 				holder.add(cl[i]);
 			}
-			Intent intent = new Intent(context, RealTimeList.class);
-			intent.putParcelableArrayListExtra("test", holder); 
-			context.startActivity(intent);
-			Long newTime = System.nanoTime() - time;
-			System.out.println("TIME LOOKUP: " +  newTime/1000000000.0);
-
+			try
+			{
+				Intent intent = new Intent(context, RealTimeList.class);
+				intent.putParcelableArrayListExtra("test", holder); 
+				context.startActivity(intent);
+				Long newTime = System.nanoTime() - time;
+				System.out.println("TIME LOOKUP: " +  newTime/1000000000.0);
+			}
+			catch(Exception e)
+			{
+				Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+			}
 			return false;
 
 		case R.id.speech:
@@ -605,7 +611,8 @@ public class Homescreen extends Activity {
 			long time = System.nanoTime();
 			try
 			{
-				buf = Helpers.runServer(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes, currentlocation);
+				buf = Helpers.runServer(textView.getText().toString(),k_browser, realTimeCodes, currentlocation);
+			//	buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
 				long newTime = System.nanoTime() - time;
 				System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 			}
@@ -665,9 +672,17 @@ public class Homescreen extends Activity {
 		@Override
 		protected Void doInBackground(Void... params)
 		{
-			intent = new Intent(getApplicationContext(), BusTUCApp.class);
-			context.startActivity(intent);
-			return null;
+			try
+			{
+				intent = new Intent(getApplicationContext(), BusTUCApp.class);
+				context.startActivity(intent);
+			}
+			catch(Exception e)
+			{
+				myDialog.dismiss();
+				Toast.makeText(context, "Something went wrong", Toast.LENGTH_LONG).show();
+			}
+				return null;
 		}
 
 		@Override
@@ -703,6 +718,8 @@ public class Homescreen extends Activity {
 		{
 
 			createLocationManager();
+			createLocationListener();			
+
 			return null;
 		}
 
@@ -711,6 +728,8 @@ public class Homescreen extends Activity {
 		{
 
 			myDialog = ProgressDialog.show(context, "Loading!", "Laster holdeplasser");
+
+
 
 		}
 
@@ -730,8 +749,32 @@ public class Homescreen extends Activity {
 	@Override
 	public void onBackPressed()
 	{
-		this.finish();
-		System.exit(0);
+		
+		DialogInterface.OnClickListener dc = new DialogInterface.OnClickListener() 
+		{
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) 
+			{
+				switch(which)
+				{
+				case DialogInterface.BUTTON_POSITIVE:
+					((Activity) context).finish();
+					System.exit(0);
+					break;
+				case DialogInterface.BUTTON_NEGATIVE:
+					// Do nothing
+					break;
+
+				}
+
+			}
+
+		};	
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		builder.setMessage("Avslutte?").setPositiveButton("Ja", dc)
+		.setNegativeButton("Nei", dc).show();	
+		
 	}
 	@SuppressWarnings("static-access")
 	@Override

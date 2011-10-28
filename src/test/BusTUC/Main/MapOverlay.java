@@ -92,12 +92,13 @@ public class MapOverlay extends ItemizedOverlay
 		outgoing = 0;
 		for(int i=0; i<cl.length; i++) 
 		{
-			System.out.println("FOUND PRESSED STOP! " +cl[i].getBusStopID());
-			foundBusStop = cl[i].getStopName();
-			int line = cl[i].getBusStopID();
-			outgoing = Integer.parseInt(realTimeCodes.get(line).toString());
+		
 			if(cl[i].getPoint().getLongitudeE6() == (longi) && cl[i].getPoint().getLatitudeE6() == (lat))
 			{
+				System.out.println("FOUND PRESSED STOP! " +cl[i].getBusStopID());
+				foundBusStop = cl[i].getStopName();
+				int line = cl[i].getBusStopID();
+				outgoing = Integer.parseInt(realTimeCodes.get(line).toString());
 				AlertDialog.Builder builder = new AlertDialog.Builder(m_Context);
 				String tmp = "" + cl[i].getBusStopID();
 				// Check which direction buses passing this stop are going

@@ -1,7 +1,11 @@
 package test.BusTUC.Main;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
+import com.google.android.maps.GeoPoint;
+
+import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -11,7 +15,7 @@ import test.BusTUC.R;
 // other activities. Can be seen as marshalling
 public class Route implements Comparable<Route>, Parcelable
 {
-     
+
 	private String arrivalTime; 
 	private String busStopName; 
 	private int busStopNumber; 
@@ -20,27 +24,35 @@ public class Route implements Comparable<Route>, Parcelable
 	private String destination; 
 	private boolean transfer; 
 	private int walkingDistance; 
-    private int totalTime; 
-	public Route(String k_a, String k_be, int k_br, String k_tt, String k_d)
+	private int totalTime; 
+	private GeoPoint location;
+	public Route(String k_a, String k_be, int k_br, String k_tt, String k_d, GeoPoint location)
 	{
 		arrivalTime = k_a; 
 		busStopName = k_be; 
 		busStopNumber = k_br;
 		travelTime = k_tt; 
 		destination = k_d; 
+		this.location = location;
 	}
 	public Route(Parcel in)
 	{
 		readFromParcel(in);
 	}	
-	
+
 	public Route()
 	{
-		
+
 	}
 
-	 
-	
+	public GeoPoint getLocation() {
+		return location;
+	}
+
+	public void setLocation(GeoPoint location) {
+		this.location = location;
+	}
+
 	public String getArrivalTime() {
 		return arrivalTime;
 	}
@@ -95,20 +107,20 @@ public class Route implements Comparable<Route>, Parcelable
 	public void setDestination(String destination) {
 		this.destination = destination;
 	}
-	
-	 @Override
+
+	@Override
 	public int compareTo( Route otherRoute ) {
-	    final int BEFORE = -1;
-	    final int EQUAL = 0;
-	    final int AFTER = 1;
+		final int BEFORE = -1;
+		final int EQUAL = 0;
+		final int AFTER = 1;
 
-	    if ( this == otherRoute ) return EQUAL;
+		if ( this == otherRoute ) return EQUAL;
 
-	    if (this.totalTime < otherRoute.totalTime) return BEFORE;
-	    if (this.totalTime > otherRoute.totalTime) return AFTER;
+		if (this.totalTime < otherRoute.totalTime) return BEFORE;
+		if (this.totalTime > otherRoute.totalTime) return AFTER;
 
-	    return EQUAL;
-	  }
+		return EQUAL;
+	}
 	@Override
 	public int describeContents() {
 		// TODO Auto-generated method stub
@@ -116,7 +128,7 @@ public class Route implements Comparable<Route>, Parcelable
 	}
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		
+
 		dest.writeString(arrivalTime);
 		dest.writeString(busStopName);
 		dest.writeInt(busStopNumber);
@@ -126,32 +138,32 @@ public class Route implements Comparable<Route>, Parcelable
 		dest.writeString(String.valueOf(transfer));
 		dest.writeInt(walkingDistance);
 		dest.writeInt(totalTime);
-		
+
 	}
-	
+
 	private void readFromParcel(Parcel source) {
-		 
+
 		arrivalTime = source.readString();
-    	busStopName = source.readString();
-    	busStopNumber = source.readInt(); 
-    	busNumber = source.readInt();
-    	travelTime = source.readString();
-    	destination = source.readString(); 
-    	transfer = Boolean.parseBoolean(source.readString()); 
-    	walkingDistance = source.readInt(); 
-    	totalTime = source.readInt(); 
+		busStopName = source.readString();
+		busStopNumber = source.readInt(); 
+		busNumber = source.readInt();
+		travelTime = source.readString();
+		destination = source.readString(); 
+		transfer = Boolean.parseBoolean(source.readString()); 
+		walkingDistance = source.readInt(); 
+		totalTime = source.readInt(); 
 	}
 
 	public static final Parcelable.Creator CREATOR =
-    	new Parcelable.Creator() {
-            public Route createFromParcel(Parcel in) {
-                return new Route(in);
-            }
- 
-            public Route[] newArray(int size) {
-                return new Route[size];
-            }
-        };
+			new Parcelable.Creator() {
+		public Route createFromParcel(Parcel in) {
+			return new Route(in);
+		}
+
+		public Route[] newArray(int size) {
+			return new Route[size];
+		}
+	};
 
 
 
