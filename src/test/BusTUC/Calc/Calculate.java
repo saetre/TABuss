@@ -9,9 +9,13 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.google.android.maps.GeoPoint;
+
 import test.BusTUC.R;
 import test.BusTUC.Main.Route;
 
+import android.location.Location;
 import android.util.Log;
 
 public class Calculate {
@@ -35,8 +39,10 @@ public class Calculate {
 			int ArrayLength = json_arr.length(); 
 			Log.v("arraylength","ar:"+ArrayLength);
 			routeSuggestions = new Route[ArrayLength];
+			GeoPoint location;
 			for(int i = 0;i<ArrayLength;i++)
 			{
+				
 				routeSuggestions[i] = new Route();
 				routeSuggestions[i].setTransfer(Boolean.parseBoolean(json_arr.getJSONObject(i).getString("transfer")));
 				routeSuggestions[i].setBusStopNumber(Integer.parseInt(json_arr.getJSONObject(i).getString("busStopNumber")));
@@ -45,6 +51,14 @@ public class Calculate {
 				routeSuggestions[i].setDestination(dest);
 				routeSuggestions[i].setTravelTime(json_arr.getJSONObject(i).getString("travelTime"));
 				routeSuggestions[i].setBusNumber(Integer.parseInt(json_arr.getJSONObject(i).getString("busNumber")));
+				routeSuggestions[i].setWalkingDistance(Integer.parseInt(json_arr.getJSONObject(i).getString("walkingDistance")));
+				if(routeSuggestions[i].isTransfer())
+				{
+					double lat = Double.parseDouble(json_arr.getJSONObject(i).getString("depLatitude")); 
+					double lon = Double.parseDouble(json_arr.getJSONObject(i).getString("depLongitude"));
+					location = new GeoPoint((int) lat,(int) lon);
+					routeSuggestions[i].setLocation(location);
+				}
 			}
 			}
 			} catch (JSONException e) {
