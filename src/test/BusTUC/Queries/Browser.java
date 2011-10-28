@@ -221,7 +221,7 @@ public class Browser
 		return html_string; 
 	}
 	
-	public String getRequestServer(ArrayList<BusStop> startMap, String stop, Boolean formated, Location location)
+	public String getRequestServer(String stop, Boolean formated, Location location)
 	{
 		String html_string = null; 
 	    HttpGet m_get = new HttpGet();	    
