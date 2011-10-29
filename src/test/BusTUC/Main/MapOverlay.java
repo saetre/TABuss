@@ -24,6 +24,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
@@ -92,7 +93,7 @@ public class MapOverlay extends ItemizedOverlay
 		outgoing = 0;
 		for(int i=0; i<cl.length; i++) 
 		{
-		
+
 			if(cl[i].getPoint().getLongitudeE6() == (longi) && cl[i].getPoint().getLatitudeE6() == (lat))
 			{
 				System.out.println("FOUND PRESSED STOP! " +cl[i].getBusStopID());
@@ -113,23 +114,23 @@ public class MapOverlay extends ItemizedOverlay
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						new RealTimeThread(m_Context).execute();
-						
+
 					}
-					
+
 				})
 				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-					
+
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// DO nothing, as user canceled
-						
+
 					}
 				}).show();	
-				
+
 				// System.out.println("FOUND REALTIMECODE: " +gpsCords[i][0]);
 				break;
 			}
-			
+
 		}		
 
 		return true;
@@ -170,14 +171,21 @@ public class MapOverlay extends ItemizedOverlay
 		@Override
 		protected Void doInBackground(Void... params)
 		{
-			long time = System.nanoTime();
-			foundStopsList = Browser.specificRequestForStop(outgoing);       
-			Intent intent = new Intent(m_Context, RealTimeList.class);
-			intent.putExtra("tag", foundBusStop);
-			m_Context.startActivity(intent);
-			Long newTime = System.nanoTime() - time;
-			System.out.println("TIME LOOKUP: " +  newTime/1000000000.0);
-
+			try
+			{
+				long time = System.nanoTime();
+				foundStopsList = Browser.specificRequestForStop(outgoing);       
+				Intent intent = new Intent(m_Context, RealTimeList.class);
+				intent.putExtra("tag", foundBusStop);
+				m_Context.startActivity(intent);
+				Long newTime = System.nanoTime() - time;
+				System.out.println("TIME LOOKUP: " +  newTime/1000000000.0);
+			}
+			catch(Exception e)
+			{
+				myDialog.dismiss();
+				Toast.makeText(context, "Something bad happened.." , Toast.LENGTH_LONG).show();
+			}
 			return null;
 		}
 

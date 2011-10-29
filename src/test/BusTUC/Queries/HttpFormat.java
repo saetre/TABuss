@@ -3,7 +3,7 @@ package test.BusTUC.Queries;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 import org.apache.http.HttpResponse;
 
 import android.widget.Toast;

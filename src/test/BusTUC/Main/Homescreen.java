@@ -416,18 +416,18 @@ public class Homescreen extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		String foundWord = "";
-		
+
 		if (requestCode == REQUEST_CODE && resultCode == RESULT_OK)
 		{
 			// Populate the wordsList with the String values the recognition engine thought it heard
 			final ArrayList <String >matches = data.getStringArrayListExtra(
 					RecognizerIntent.EXTRA_RESULTS);
 
-			
-				if(trainingSet.size() != 0 )
+
+			if(trainingSet.size() != 0 )
+			{
+				for(int i=0; i<matches.size(); i++)
 				{
-					for(int i=0; i<matches.size(); i++)
-					{
 					for(int j=0; j<trainingSet.size(); j++)
 					{
 						if(matches.get(i).equals(trainingSet.get(j)))
@@ -437,14 +437,14 @@ public class Homescreen extends Activity {
 						}
 						else
 						{
-						
+
 							// Prompt user regarding destination
 							AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
 							final Favourite fav = new Favourite();
 							// First input dialog 
 							alert.setTitle("Fant ikke ord");
-							alert.setMessage("Skriv inn hva det skulle være");        	
+							alert.setMessage("Skriv inn hva det skulle vï¿½re");        	
 							final EditText input = new EditText(this);
 							alert.setView(input);
 							alert.setPositiveButton("Lagre", new DialogInterface.OnClickListener() 
@@ -459,41 +459,41 @@ public class Homescreen extends Activity {
 							});
 							alert.show();
 						}
-						
+
 						break;
-						
+
 					}
 				}
-					String delimiter = "/";
-					matches.add(delimiter);
-					Helpers.addToTrainingSet(matches, trainingSet);
-				}
-					
-				
-				else
+				String delimiter = "/";
+				matches.add(delimiter);
+				Helpers.addToTrainingSet(matches, trainingSet);
+			}
+
+
+			else
+			{
+				// Prompt user regarding destination
+				AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+				// First input dialog 
+				alert.setTitle("Fant ikke ord");
+				alert.setMessage("Skriv inn hva det skulle vï¿½re");        	
+				final EditText input = new EditText(this);
+				alert.setView(input);
+				alert.setPositiveButton("Lagre", new DialogInterface.OnClickListener() 
 				{
-					// Prompt user regarding destination
-					AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-					// First input dialog 
-					alert.setTitle("Fant ikke ord");
-					alert.setMessage("Skriv inn hva det skulle være");        	
-					final EditText input = new EditText(this);
-					alert.setView(input);
-					alert.setPositiveButton("Lagre", new DialogInterface.OnClickListener() 
+					@Override
+					public void onClick(DialogInterface dialog, int whichButton) 
 					{
-						@Override
-						public void onClick(DialogInterface dialog, int whichButton) 
-						{
 
-							String value = input.getText().toString();
-							matches.add(0, value);			
-							
-						}
-					});
-					alert.show();
-				}
-			
+						String value = input.getText().toString();
+						matches.add(0, value);			
+
+					}
+				});
+				alert.show();
+			}
+
 			String delimiter = "/";
 			matches.add(delimiter);
 			Helpers.addToTrainingSet(matches, trainingSet);
@@ -611,8 +611,8 @@ public class Homescreen extends Activity {
 			long time = System.nanoTime();
 			try
 			{
-				buf = Helpers.runServer(textView.getText().toString(),k_browser, realTimeCodes, currentlocation);
-			//	buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
+				//	buf = Helpers.runServer(textView.getText().toString(),k_browser, realTimeCodes, currentlocation);
+				buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
 				long newTime = System.nanoTime() - time;
 				System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 			}
@@ -682,7 +682,7 @@ public class Homescreen extends Activity {
 				myDialog.dismiss();
 				Toast.makeText(context, "Something went wrong", Toast.LENGTH_LONG).show();
 			}
-				return null;
+			return null;
 		}
 
 		@Override
@@ -717,8 +717,16 @@ public class Homescreen extends Activity {
 		protected Void doInBackground(Void... params)
 		{
 
-			createLocationManager();
-			createLocationListener();			
+			try
+			{
+				createLocationManager();
+				createLocationListener();
+			}
+			catch(Exception e)
+			{
+				myDialog.dismiss();
+				System.exit(0);
+			}
 
 			return null;
 		}
@@ -749,7 +757,7 @@ public class Homescreen extends Activity {
 	@Override
 	public void onBackPressed()
 	{
-		
+
 		DialogInterface.OnClickListener dc = new DialogInterface.OnClickListener() 
 		{
 
@@ -774,7 +782,7 @@ public class Homescreen extends Activity {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage("Avslutte?").setPositiveButton("Ja", dc)
 		.setNegativeButton("Nei", dc).show();	
-		
+
 	}
 	@SuppressWarnings("static-access")
 	@Override

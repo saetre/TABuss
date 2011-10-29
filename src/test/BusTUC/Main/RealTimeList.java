@@ -51,6 +51,9 @@ public class RealTimeList extends ListActivity
 	TextView text;
 	ArrayList <ClosestHolder> holder;
 	String [] stopNames;
+	// Needed as this activity can be accessed from two places
+	// Not not want to register list item clicks if accessed from map
+	boolean fromMenu = false;
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{
@@ -71,7 +74,8 @@ public class RealTimeList extends ListActivity
 		}
 		else 
 		{
-			text.setText("Busstopper nær deg"+"\n");
+			fromMenu = true;
+			text.setText("Busstopper nÃ¦r deg"+"\n");
 			lv.setTextFilterEnabled(true);
 			lv.addHeaderView(text);
 			setFromExtras();
@@ -118,7 +122,7 @@ public class RealTimeList extends ListActivity
 				{
 					diffMinutes = Math.abs( minutes- MapOverlay.foundStopsList.get(i).arrivalTime.getMinutes() );
 				}
-				String atm = "nå";
+				String atm = "nÃ¥";
 				String nAtm = "om ca " + diffMinutes+ " min";
 				String nAtm2 =MapOverlay.foundStopsList.get(i).arrivalTime.getHours() + ":" +buf;
 				if(diffHour != 0) text = nAtm2;
@@ -126,8 +130,8 @@ public class RealTimeList extends ListActivity
 				else text = nAtm;
 
 				// Append to string array
-				neededStopsOutgoing[i]= "Buss " + MapOverlay.foundStopsList.get(i).getLine() + " går " + text + " til " +MapOverlay.foundStopsList.get(i).getDest() ;
-				//System.out.println("Buss " + MapOverlay.foundStopsList.get(i).getLine() + " går " +MapOverlay.foundStopsList.get(i).arrivalTime.getHours() + ":" +buf + " til " +MapOverlay.foundStopsList.get(i).getDest() );
+				neededStopsOutgoing[i]= "Buss " + MapOverlay.foundStopsList.get(i).getLine() + " gÃ¥r " + text + " til " +MapOverlay.foundStopsList.get(i).getDest() ;
+				//System.out.println("Buss " + MapOverlay.foundStopsList.get(i).getLine() + " gï¿½r " +MapOverlay.foundStopsList.get(i).arrivalTime.getHours() + ":" +buf + " til " +MapOverlay.foundStopsList.get(i).getDest() );
 			}
 			// Show in list
 			setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, neededStopsOutgoing));
@@ -163,7 +167,11 @@ public class RealTimeList extends ListActivity
 	protected void onListItemClick(ListView l, View v, int position, long id) 
 	{
 		super.onListItemClick(l, v, position, id);
-		new LoadThread(this, position).execute();
+		// Check from where this activity is started from
+		if(fromMenu)
+		{
+			new LoadThread(this, position).execute();
+		}
 
 	}
 
@@ -221,14 +229,14 @@ public class RealTimeList extends ListActivity
 				{
 					diffMinutes = Math.abs( minutes- stops.get(i).arrivalTime.getMinutes() );
 				}
-				String atm = "nå";
+				String atm = "nÃ¥";
 				String nAtm = "om ca " + diffMinutes+ " min";
 				String nAtm2 = stops.get(i).arrivalTime.getHours() + ":" +buf;
 				if(diffHour != 0) text = nAtm2;
 				else if(diffMinutes == 0) text = atm;
 				else text = nAtm;
 				// Append to string array
-				neededStopsOutgoing[i]= "Buss " +stops.get(i).getLine() + " går " +text+ " til " +stops.get(i).getDest();
+				neededStopsOutgoing[i]= "Buss " +stops.get(i).getLine() + " gÃ¥r " +text+ " til " +stops.get(i).getDest();
 			}
 			return null;
 		}
@@ -236,12 +244,25 @@ public class RealTimeList extends ListActivity
 		@Override
 		protected void onPreExecute()
 		{
-			pressedStop = holder.get(position-1);
-			//text.setText(pressedStop.getStopName()+"\n");
-			outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(pressedStop.getBusStopID()).toString());
-			myDialog = ProgressDialog.show(context, "Loading!", "Laster sanntid");
 
-			System.out.println("navn satt: " + pressedStop.getStopName());
+			try
+			{
+				pressedStop = holder.get(position-1);
+				if(pressedStop != null)
+				{
+					//text.setText(pressedStop.getStopName()+"\n");
+					outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(pressedStop.getBusStopID()).toString());
+					myDialog = ProgressDialog.show(context, "Loading!", "Laster sanntid");
+
+					System.out.println("navn satt: " + pressedStop.getStopName());
+				}
+			}
+			catch(NullPointerException e)
+			{
+				myDialog.dismiss();
+				e.printStackTrace();
+			}
+
 		}
 
 		@Override

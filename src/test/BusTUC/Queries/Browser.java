@@ -168,9 +168,9 @@ public class Browser
      	   }
         }
     	start2 = start2 + ")";
-		String wanted_string = start2 + " til " + stop; 
+		String wanted_string = start2 + " til " + stop ; 
 		String wanted_string2 = "fra glï¿½shaugen til nardo";
-		Log.v("BUSTUCSTR", "wanted_string:"+wanted_string);
+		Log.v("BUSTUCSTR", "wanted_string :"+wanted_string);
 	    HttpPost m_post= new HttpPost("http://www.idi.ntnu.no/~tagore/cgi-bin/busstuc/busq.cgi");
 		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
 		Long time = System.nanoTime();
@@ -228,7 +228,7 @@ public class Browser
 		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
 		try {
 			m_get.setURI(new URI("http://furu.idi.ntnu.no:1337/MultiBRISserver/MBServlet?dest="+stop+"&type=json&lat="+location.getLatitude()+"&long="+location.getLongitude()));
-			//http://furu.idi.ntnu.no:1337/MultiBRISserver/MBServlet?dest=Ila&type=json&lat=63.4169548&long=10.40284478 nå
+			//http://furu.idi.ntnu.no:1337/MultiBRISserver/MBServlet?dest=Ila&type=json&lat=63.4169548&long=10.40284478 nï¿½
 				// 			m_get.setURI(new URI("http://ec2-79-125-87-39.eu-west-1.compute.amazonaws.com:8080/MultiBRISserver/MBServlet?dest="+stop+"&type=json&lat="+location.getLatitude()+"&long="+location.getLongitude()));
 
 			HttpResponse m_response = m_client.execute(m_get);
@@ -281,7 +281,7 @@ public class Browser
      	   }
         }
     	start2 = start2 + ")";
-		String wanted_string = start2 + " til " + stop; 
+		String wanted_string = start2 + " til " + stop + " i morra"; 
 		String wanted_string2 = "fra glï¿½shaugen til nardo";
 		Log.v("BUSTUCSTR", "wanted_string:"+wanted_string);
 	    HttpPost m_post= new HttpPost("http://www.idi.ntnu.no/~tagore/cgi-bin/busstuc/busq.cgi");
@@ -621,7 +621,7 @@ public class Browser
 		                
 		                BusDeparture t = new BusDeparture();
 		                t.line = j_a.getJSONObject(i).getInt("descrizioneLinea");
-		                SimpleDateFormat formatter = new SimpleDateFormat("d/M/y H:mm"); 
+		                SimpleDateFormat formatter = new SimpleDateFormat("d/M/y HH:mm"); 
 		                Date date = (Date)formatter.parse(j_a.getJSONObject(i).getString("orario"));
 		                t.arrivalTime = date;
 		                System.out.println("FOUND HOURS: " + t.arrivalTime.getHours());
