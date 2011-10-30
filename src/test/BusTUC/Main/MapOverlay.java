@@ -42,7 +42,7 @@ public class MapOverlay extends ItemizedOverlay
 	public static ArrayList <BusDeparture> foundStopsList;
 	public String foundBusStop;
 	public int foundBusStopNr;
-	int lat,longi, outgoing;
+	int lat,longi, outgoing, line;
 
 	HashMap realTimeCodes;
 	ClosestStopOnMap[] cl;
@@ -91,6 +91,7 @@ public class MapOverlay extends ItemizedOverlay
 		lat =  (item.getPoint().getLatitudeE6()); 
 		longi = (item.getPoint().getLongitudeE6());
 		outgoing = 0;
+		line = 0;
 		for(int i=0; i<cl.length; i++) 
 		{
 
@@ -99,7 +100,7 @@ public class MapOverlay extends ItemizedOverlay
 				System.out.println("FOUND PRESSED STOP! " +cl[i].getBusStopID());
 				foundBusStop = cl[i].getStopName();
 				foundBusStopNr = cl[i].getBusStopID();
-				int line = cl[i].getBusStopID();
+				line = cl[i].getBusStopID();
 				outgoing = Integer.parseInt(realTimeCodes.get(line).toString());
 				AlertDialog.Builder builder = new AlertDialog.Builder(m_Context);
 				String tmp = "" + cl[i].getBusStopID();
@@ -175,7 +176,8 @@ public class MapOverlay extends ItemizedOverlay
 			try
 			{
 				long time = System.nanoTime();
-				foundStopsList = Browser.specificRequestForStop(outgoing);       
+				// foundStopsList = Browser.specificRequestForStop(outgoing);       
+				foundStopsList = Browser.specificRequestForStopServer(line);
 				Intent intent = new Intent(m_Context, RealTimeList.class);
 				intent.putExtra("tag", foundBusStop);
 				intent.putExtra("nr", foundBusStopNr);

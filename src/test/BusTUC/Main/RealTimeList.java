@@ -183,7 +183,10 @@ public class RealTimeList extends ListActivity
 		ProgressDialog myDialog = null;
 		ClosestStopOnMap pressedStop;
 		private int position;
+		// Used without server. Holds real-time code corresponding to stop nr
 		int outgoing;
+		// Used with server. Holds bus stop nr
+		int line;
 		String [] neededStopsOutgoing;
 		String pressedStopName;
 		public LoadThread(Context context, int position)
@@ -196,7 +199,8 @@ public class RealTimeList extends ListActivity
 		@Override
 		protected Void doInBackground(Void... params)
 		{
-			ArrayList <BusDeparture> stops = Browser.specificRequestForStop(outgoing);
+			//ArrayList <BusDeparture> stops = Browser.specificRequestForStop(outgoing);
+			ArrayList <BusDeparture> stops = Browser.specificRequestForStopServer(line);
 			StringBuffer buf;
 			String minute1;
 			System.out.println("STOPS SIZE: " + stops.size());
@@ -252,8 +256,9 @@ public class RealTimeList extends ListActivity
 				{
 					//text.setText(pressedStop.getStopName()+"\n");
 					outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(pressedStop.getBusStopID()).toString());
+					line = pressedStop.getBusStopID();
 					myDialog = ProgressDialog.show(context, "Loading!", "Laster sanntid");
-
+					
 					System.out.println("navn satt: " + pressedStop.getStopName());
 				}
 			}
