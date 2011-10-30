@@ -10,7 +10,7 @@ import java.util.Map;
 
 import test.BusTUC.Queries.Browser;
 import test.BusTUC.Stops.BusDeparture;
-import test.BusTUC.Stops.ClosestHolder;
+import test.BusTUC.Stops.ClosestStopOnMap;
 import test.BusTUC.Database.Database;
 import test.BusTUC.Main.Homescreen.OracleThread;
 
@@ -41,11 +41,11 @@ public class MapOverlay extends ItemizedOverlay
 	// is  the Date object
 	public static ArrayList <BusDeparture> foundStopsList;
 	public String foundBusStop;
-
+	public int foundBusStopNr;
 	int lat,longi, outgoing;
 
 	HashMap realTimeCodes;
-	ClosestHolder[] cl;
+	ClosestStopOnMap[] cl;
 	public MapOverlay(Drawable defaultMarker) {
 		super(defaultMarker);
 		drawable = defaultMarker;
@@ -53,7 +53,7 @@ public class MapOverlay extends ItemizedOverlay
 		// TODO Auto-generated constructor stub
 	}
 
-	public MapOverlay(Drawable defaultMarker, Context context, HashMap realTimeCodes, ClosestHolder[] cl) {
+	public MapOverlay(Drawable defaultMarker, Context context, HashMap realTimeCodes, ClosestStopOnMap[] cl) {
 		super(boundCenterBottom(defaultMarker));
 
 		//super(defaultMarker);
@@ -98,6 +98,7 @@ public class MapOverlay extends ItemizedOverlay
 			{
 				System.out.println("FOUND PRESSED STOP! " +cl[i].getBusStopID());
 				foundBusStop = cl[i].getStopName();
+				foundBusStopNr = cl[i].getBusStopID();
 				int line = cl[i].getBusStopID();
 				outgoing = Integer.parseInt(realTimeCodes.get(line).toString());
 				AlertDialog.Builder builder = new AlertDialog.Builder(m_Context);
@@ -177,6 +178,7 @@ public class MapOverlay extends ItemizedOverlay
 				foundStopsList = Browser.specificRequestForStop(outgoing);       
 				Intent intent = new Intent(m_Context, RealTimeList.class);
 				intent.putExtra("tag", foundBusStop);
+				intent.putExtra("nr", foundBusStopNr);
 				m_Context.startActivity(intent);
 				Long newTime = System.nanoTime() - time;
 				System.out.println("TIME LOOKUP: " +  newTime/1000000000.0);

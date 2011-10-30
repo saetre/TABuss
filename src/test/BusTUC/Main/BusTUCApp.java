@@ -27,7 +27,7 @@ import test.BusTUC.Path.NavigationSaxHandler;
 import test.BusTUC.Path.RouteOverlay;
 import test.BusTUC.Queries.Browser;
 
-import test.BusTUC.Stops.ClosestHolder;
+import test.BusTUC.Stops.ClosestStopOnMap;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -180,19 +180,20 @@ public class BusTUCApp extends MapActivity
 			   for(int j = 0; j<foundRoutes.size(); j++)
 			   {
 				   // If found, add to both id list, and lat/long list
+				   // No check whether or not BusTUC actually returns the correct bus stop number
 				   if(Homescreen.cl[i].getBusStopID() == foundRoutes.get(position).getBusStopNumber())
 				   {
 					   id.add(Homescreen.cl[i].getBusStopID());
 					   dest[0] = Homescreen.cl[i].getPoint().getLatitudeE6();
 					   dest[1] = Homescreen.cl[i].getPoint().getLongitudeE6();
-					   System.out.println("FOUND ID: " + Homescreen.cl[i].getBusStopID() + Homescreen.cl[i].getStopName());
+					   System.out.println("FOUND ID: " + Homescreen.cl[i].getBusStopID() +"  " + Homescreen.cl[i].getStopName());
 				   }
 				   else
 				   {
 					   System.out.println("DID not find ID: " +foundRoutes.get(j).getBusStopNumber() + "  " + foundRoutes.get(j).getBusStopName());
 					   if(foundRoutes.get(j).isTransfer() && foundRoutes.get(j).getDestination().equals(foundRoutes.get(j).getBusStopName()))
 					   {
-						   ClosestHolder transferStop = new ClosestHolder(foundRoutes.get(j).getLocation(),foundRoutes.get(j).getBusNumber(), foundRoutes.get(j).getBusStopName());
+						   ClosestStopOnMap transferStop = new ClosestStopOnMap(foundRoutes.get(j).getLocation(),foundRoutes.get(j).getBusNumber(), foundRoutes.get(j).getBusStopName());
 						   Helpers.addStops(transferStop, getResources().getDrawable(R.drawable.icon),mapOverlay);
 					   }
 				   }
@@ -343,12 +344,12 @@ public class BusTUCApp extends MapActivity
 
     public void drawPath(ArrayList<Integer> id){
     	ArrayList <GeoPoint> busStop = findStopInCl(id,Homescreen.cl);
-    	System.out.println("Found point: " + busStop);
+    //	System.out.println("Found point: " + busStop);
     	if(p!=null && Homescreen.cl!=null)mapView.getOverlays().add(new DirectionPathOverlay(p, busStop));
         else System.out.println("INGEN PUNKTER MOTHERFUCKER");
     }
     
-    public ArrayList <GeoPoint> findStopInCl(ArrayList <Integer> id, ClosestHolder[] cl){
+    public ArrayList <GeoPoint> findStopInCl(ArrayList <Integer> id, ClosestStopOnMap[] cl){
     	ArrayList <GeoPoint> retList = new ArrayList<GeoPoint>();
     	for(int i=0; i<cl.length; i++)
     	{
@@ -357,6 +358,7 @@ public class BusTUCApp extends MapActivity
     			if(cl[i].getBusStopID() == id.get(j))
     			{
     				retList.add(cl[i].getPoint());
+    				System.out.println("POINT ADDED TO LIST: " + cl[i].getBusStopID());
     			}
     		}
     	}

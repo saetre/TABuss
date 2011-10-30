@@ -21,7 +21,7 @@ import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.GPS.GPS;
 import test.BusTUC.Queries.Browser;
 import test.BusTUC.Stops.BusStop;
-import test.BusTUC.Stops.ClosestHolder;
+import test.BusTUC.Stops.ClosestStopOnMap;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -76,7 +76,7 @@ public class Homescreen extends Activity {
 	//public static HashMap<Integer,HashMap<Integer,Location>> locationsArray; // GPS coordinates
 	public static Browser k_browser; // Object doing communation with bussTUC and Real-Time system
 	//public static HashMap <Integer,Location> tSetAllStops;
-	public static ClosestHolder [] cl; // Object containing geopoint of closest stops. 
+	public static ClosestStopOnMap [] cl; // Object containing geopoint of closest stops. 
 	public static 	HashMap realTimeCodes; 
 	ArrayList <String> trainingSet;
 	// End of global variables
@@ -297,6 +297,7 @@ public class Homescreen extends Activity {
 				// currentlocation.setLatitude(63.430487);
 				//currentlocation.setLongitude(10.395061);
 
+
 				Log.v("currentLoc","PROV:LOC=" + currentlocation.getLatitude()+":"+currentlocation.getLongitude());
 
 				long f = System.nanoTime();              
@@ -328,7 +329,7 @@ public class Homescreen extends Activity {
 				System.out.println("TIME SPENT SORTING SHIT: " + second /(1000000000.0));
 				int numStops = busStops.size();
 				System.out.println("USING " + numStops + " STOPS");
-				cl = new ClosestHolder[numStops];
+				cl = new ClosestStopOnMap[numStops];
 
 				//   Log.v("sort","returnedtSet"+tSetExclude.size());	
 				// adds the closest bus stop as a GeoPoint
@@ -337,7 +338,7 @@ public class Homescreen extends Activity {
 				//Arrays.sort(keys);
 				for(int i = 0;i<numStops;i++)
 				{
-					cl[i] = new ClosestHolder(new GeoPoint(
+					cl[i] = new ClosestStopOnMap(new GeoPoint(
 							(int)	(busStops.get(i).location.getLatitude()* 1E6),
 							(int)	(busStops.get(i).location.getLongitude() * 1E6)),
 							(int) busStops.get(i).stopID,
@@ -557,7 +558,7 @@ public class Homescreen extends Activity {
 
 		case R.id.realtime:
 			long time = System.nanoTime(); 
-			ArrayList <ClosestHolder> holder = new ArrayList<ClosestHolder>();
+			ArrayList <ClosestStopOnMap> holder = new ArrayList<ClosestStopOnMap>();
 			for(int i=0; i<cl.length; i++)
 			{
 				holder.add(cl[i]);
@@ -612,7 +613,7 @@ public class Homescreen extends Activity {
 			try
 			{
 				//	buf = Helpers.runServer(textView.getText().toString(),k_browser, realTimeCodes, currentlocation);
-				buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
+					buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
 				long newTime = System.nanoTime() - time;
 				System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 			}
@@ -719,8 +720,8 @@ public class Homescreen extends Activity {
 
 			try
 			{
-				createLocationManager();
 				createLocationListener();
+				createLocationManager();
 			}
 			catch(Exception e)
 			{

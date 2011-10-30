@@ -227,10 +227,9 @@ public class Browser
 	    HttpGet m_get = new HttpGet();	    
 		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
 		try {
-			m_get.setURI(new URI("http://furu.idi.ntnu.no:1337/MultiBRISserver/MBServlet?dest="+stop+"&type=json&lat="+location.getLatitude()+"&long="+location.getLongitude()));
+			m_get.setURI(new URI("http://furu.idi.ntnu.no:1337/MultiBRISserver/MBServlet?dest="+stop+"&type=json&lat="+location.getLatitude()+"&long="+location.getLongitude() + "&"+3));
 			//http://furu.idi.ntnu.no:1337/MultiBRISserver/MBServlet?dest=Ila&type=json&lat=63.4169548&long=10.40284478 n�
 				// 			m_get.setURI(new URI("http://ec2-79-125-87-39.eu-west-1.compute.amazonaws.com:8080/MultiBRISserver/MBServlet?dest="+stop+"&type=json&lat="+location.getLatitude()+"&long="+location.getLongitude()));
-
 			HttpResponse m_response = m_client.execute(m_get);
 			// Request
 			html_string = httpF.requestServer(m_response);			
@@ -281,7 +280,7 @@ public class Browser
      	   }
         }
     	start2 = start2 + ")";
-		String wanted_string = start2 + " til " + stop + " i morra"; 
+		String wanted_string = start2 + " til " + stop ; 
 		String wanted_string2 = "fra gl�shaugen til nardo";
 		Log.v("BUSTUCSTR", "wanted_string:"+wanted_string);
 	    HttpPost m_post= new HttpPost("http://www.idi.ntnu.no/~tagore/cgi-bin/busstuc/busq.cgi");
@@ -592,6 +591,133 @@ public class Browser
 			}
 			return test; 
 	}
+	
+	public static ArrayList <BusDeparture> specificRequestForStopServer(int k_RealTimeId)
+	{
+	        int realTimeId = k_RealTimeId;  
+	        
+	        
+	        String html_string = null; 
+		    HttpGet m_get = new HttpGet();	    
+			//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
+			try {
+				m_get.setURI(new URI("http://furu.idi.ntnu.no:1337/MultiBRISserver/RealTime?bID=" + realTimeId));
+				//http://furu.idi.ntnu.no:1337/MultiBRISserver/MBServlet?dest=Ila&type=json&lat=63.4169548&long=10.40284478 n�
+					// 			m_get.setURI(new URI("http://ec2-79-125-87-39.eu-west-1.compute.amazonaws.com:8080/MultiBRISserver/MBServlet?dest="+stop+"&type=json&lat="+location.getLatitude()+"&long="+location.getLongitude()));
+				HttpResponse m_response = m_client.execute(m_get);
+				// Request
+				html_string = httpF.requestServer(m_response);			
+				// Will fail if server is busy or down
+				Log.v("html_string", "Returned html: " + html_string);
+				//Long newTime = System.nanoTime() - time;
+				//System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +  newTime/1000000000.0);
+			} catch (ClientProtocolException e) {
+				Log.v("CLIENTPROTOCOL EX", "e:"+e.toString());
+			} catch (IOException e) {
+				Log.v("IO EX", "e:"+e.toString()); 
+				
+			}
+			catch(NullPointerException e)
+			{
+				 Log.v("NULL", "NullPointer");
+			}
+			catch(StringIndexOutOfBoundsException e)
+			{
+				 Log.v("StringIndexOutOfBounds", "Exception");
+			}
+			catch(Exception e)
+			{
+				 Log.v("FUCKINGTOLARGE", "Exception");
+			}
+
+	        ArrayList <BusDeparture> test = null; 
+	        try {
+
+			test = parseRealTimeDataForStopServer(html_string);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (java.text.ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return test; 
+	}
+	public static ArrayList <BusDeparture> parseRealTimeDataForStopServer(String data) throws JSONException, java.text.ParseException
+	{
+		ArrayList <BusDeparture> buses = new ArrayList<BusDeparture>();
+		  Pattern p = Pattern.compile(
+	                "<getUserRealTimeForecastResult>(.*?)</getUserRealTimeForecastResult>",
+	                Pattern.DOTALL | Pattern.CASE_INSENSITIVE
+	            );
+	        Matcher matcher = p.matcher(data);
+	        String result = null;
+	        while(matcher.find()){
+	                result = (matcher.group(1));
+	                System.out.println("Result from soap: " + result);
+	        }
+	        JSONObject j_o = null; 
+	        JSONArray j_a = null;
+	        
+	        j_o = new JSONObject(result);
+	        j_a = new JSONArray(j_o.getString("Orari"));
+	        System.out.println("J_a length: " + j_a.length());
+	        BusDeparture wantedBusStop = new BusDeparture(); 
+	        wantedBusStop.setLine(9999);
+	        if (j_a != null){
+	        	try
+	        	{
+		            for (int i = 0; i < j_a.length(); i++)
+		            {
+		                
+		                BusDeparture t = new BusDeparture();
+		                t.line = j_a.getJSONObject(i).getInt("descrizioneLinea");
+		                SimpleDateFormat formatter = new SimpleDateFormat("d/M/y HH:mm"); 
+		                Date date = (Date)formatter.parse(j_a.getJSONObject(i).getString("orario"));
+		                t.arrivalTime = date;
+		                System.out.println("FOUND HOURS: " + t.arrivalTime.getHours());
+		                t.dest = j_a.getJSONObject(i).getString("capDest");
+		                String prev = j_a.getJSONObject(i).getString("statoPrevisione");
+		                
+		                if (prev.equals("Prev") || prev.equals("prev"))
+		                {
+		                    t.realTime = true;
+		                }
+		                else if (prev.equals("sched"))
+		                {
+		                    t.realTime = false;
+		                }
+		                
+		         //       Log.d("line",String.valueOf(t.line));
+		         //       Log.d("arrivalTime",String.valueOf(t.arrivalTime));
+		         //       Log.d("ATB", t.toString());
+		              //  if(wantedBusStop.getLine() == 9999)
+		                //{
+		                  	wantedBusStop = t;
+		                //}
+		                buses.add(t);
+		            }
+	        	}
+	            catch(JSONException e)
+	            {
+	            	System.out.println("FAAAAAAAAAAAIL");
+	            	e.printStackTrace();
+	            }
+	        
+	            
+	        }
+	        
+	        else
+	        {
+	        	System.out.println("Could not find property in Browser");
+	        }
+	       
+	        return buses;
+		}
+	
 	public static ArrayList <BusDeparture> parseRealTimeDataForStop(String data) throws JSONException, java.text.ParseException
 	{
 		ArrayList <BusDeparture> buses = new ArrayList<BusDeparture>();

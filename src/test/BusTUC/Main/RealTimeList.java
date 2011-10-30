@@ -12,7 +12,7 @@ import java.util.List;
 import test.BusTUC.R;
 import test.BusTUC.Queries.Browser;
 import test.BusTUC.Stops.BusDeparture;
-import test.BusTUC.Stops.ClosestHolder;
+import test.BusTUC.Stops.ClosestStopOnMap;
 
 
 import com.google.android.maps.GeoPoint;
@@ -49,7 +49,7 @@ public class RealTimeList extends ListActivity
 	public static String ID;
 	Bundle extras;
 	TextView text;
-	ArrayList <ClosestHolder> holder;
+	ArrayList <ClosestStopOnMap> holder;
 	String [] stopNames;
 	// Needed as this activity can be accessed from two places
 	// Not not want to register list item clicks if accessed from map
@@ -64,7 +64,7 @@ public class RealTimeList extends ListActivity
 		if(extras.getString("tag") != null)
 		{
 
-			text.setText(extras.getString("tag") +"\n");
+			text.setText(extras.getString("tag") + " " + extras.getInt("nr") +"\n");
 			lv.addHeaderView(text);
 			lv.setTextFilterEnabled(true);
 			// No extras, which means access from map
@@ -181,7 +181,7 @@ public class RealTimeList extends ListActivity
 		private Context context;    
 		Intent intent;
 		ProgressDialog myDialog = null;
-		ClosestHolder pressedStop;
+		ClosestStopOnMap pressedStop;
 		private int position;
 		int outgoing;
 		String [] neededStopsOutgoing;
