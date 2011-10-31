@@ -134,6 +134,10 @@ public class Calculate {
 					{
 						fixed.add(routelist[i]);
 					}
+					else
+					{
+						fixed.add(temp);
+					}
 				}
 
 				temp = routelist[i];
