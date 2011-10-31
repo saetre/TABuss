@@ -153,7 +153,6 @@ public class Calculate {
 		{
 			retArray[i] = fixed.get(i);
 		}
-		Arrays.sort(retArray);
 		System.out.println("RETARRAY: " + retArray.length);
 		return retArray;
 	}
