@@ -112,25 +112,30 @@ public class Calculate {
 	public Route[]suggestRoutes(Route [] routelist)
 	{
 		ArrayList<Route> fixed = new ArrayList <Route>();
-
+		System.out.println("RECEIVED SUGGESTROUTES: " + routelist.length);
 		Route temp = null;
 		for(int i=0; i<routelist.length; i++)
 		{
 			if(routelist[i].isTransfer()) return routelist;
+			if(routelist.length == 1)return routelist;
 			else
 			{
+				
 				if(i==0)
 				{
 					temp = routelist[i];
+					
+				
 				}
 				else
 				{
 					System.out.println("COMPARING: " + temp.getBusNumber() + " and: " + routelist[i].getBusNumber());
 					System.out.println("WALK: " + temp.getWalkingDistance() + " and " + routelist[i].getWalkingDistance());
+					if(temp.getWalkingDistance() == 0) fixed.add(temp);
 					if(temp.getBusNumber() == routelist[i].getBusNumber())
 					{
-						if(temp.getWalkingDistance() > routelist[i].getWalkingDistance())fixed.add(temp);
-						else if(temp.getWalkingDistance() < routelist[i].getWalkingDistance()) fixed.add(routelist[i]);
+						if(temp.getWalkingDistance() > routelist[i].getWalkingDistance() && !fixed.contains(routelist[i]))fixed.add(routelist[i]);
+						else if(temp.getWalkingDistance() < routelist[i].getWalkingDistance() && !fixed.contains(temp)) fixed.add(temp);
 					}
 				
 					else
@@ -148,6 +153,7 @@ public class Calculate {
 		{
 			retArray[i] = fixed.get(i);
 		}
+		Arrays.sort(retArray);
 		System.out.println("RETARRAY: " + retArray.length);
 		return retArray;
 	}
