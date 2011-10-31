@@ -332,7 +332,7 @@ public class Homescreen extends Activity {
 				// creates a HashMap with all the relevant bus stops
 				//Sort sort = new Sort();
 
-				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,1,false);
+				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,3,false);
 				busStops = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,10, true);
 		
 				

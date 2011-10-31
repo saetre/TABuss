@@ -176,6 +176,7 @@ public class Helpers
 		boolean noTransfer = true;
 		for(int i=0; i<value.size(); i++)
 		{
+			System.out.println("FU: " + value.get(i).getBusStopName());
 			if(noTransfer)//(!value.get(i).isTransfer())
 			{
 				if(value.get(i).getWalkingDistance() != 0)
@@ -640,6 +641,7 @@ public class Helpers
 						}
 
 						// If search is performed as a stage in transfer finding, do not let real-time data adjust to an earlier route
+						// as this could make the second answer invalid with regards to the first 
 						else
 						{
 							if(!a_transfer)
