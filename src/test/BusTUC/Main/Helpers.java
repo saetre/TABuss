@@ -643,24 +643,13 @@ public class Helpers
 					// If route object contains same bus stop nr as data received from real time
 					if(tempNextBus.getLine() == tempRoutes[j].getBusNumber())
 					{
+						int tempBusArrival = Integer.parseInt(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes()));
+						int tempRouteArrival= Integer.parseInt(tempRoutes[j].getArrivalTime());
 						// If real-time data leads to delayed route, update
-						if(Integer.parseInt(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())) > Integer.parseInt(tempRoutes[j].getArrivalTime()))
+						if(tempBusArrival > tempRouteArrival || !a_transfer)
 						{
 							tempRoutes[j].setArrivalTime(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())+"");
 							System.out.println("Arrival Time: " + tempRoutes[j].getArrivalTime());
-
-						}
-
-						// If search is performed as a stage in transfer finding, do not let real-time data adjust to an earlier route
-						// as this could make the second answer invalid with regards to the first.
-						// No problem if only single trip
-						else
-						{
-							if(!a_transfer)
-							{
-								tempRoutes[j].setArrivalTime(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())+"");
-								System.out.println("Arrival Time: " + tempRoutes[j].getArrivalTime());
-							}
 
 						}
 
