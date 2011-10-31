@@ -181,12 +181,12 @@ public class Helpers
 			{
 				if(value.get(i).getWalkingDistance() != 0)
 				{
-					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 
 				else
 				{
-					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 
 				}
 				if(value.get(i).isTransfer())
@@ -200,8 +200,8 @@ public class Helpers
 				//   System.out.println("Sammenligner verdier: " + (Integer.parseInt(value.get(i-1).getArrivalTime())+ Integer.parseInt(value.get(i-1).getTravelTime()))+ " og "+ Integer.parseInt(value.get(i).getArrivalTime()));
 				if((Integer.parseInt(value.get(i-1).getArrivalTime())+ Integer.parseInt(value.get(i-1).getTravelTime()))>= Integer.parseInt(value.get(i).getArrivalTime()))
 				{
-					System.out.println("Prøver å finne ny");
-					text.set(i-1,text.get(i-1) + "\n"+(i+1)+ ": Oh shit, bussen har alt dratt, vi prøver igjen");		      		
+					System.out.println("PrÃ¸ver Ã¥ finne ny");
+					text.set(i-1,text.get(i-1) + "\n"+(i+1)+ ": Oh shit, bussen har alt dratt, vi prÃ¸ver igjen");		      		
 					int hours = Integer.parseInt(value.get(i).getArrivalTime().substring(0,2));
 					int minutes =Integer.parseInt(value.get(i).getArrivalTime().substring(2,4)) + (hours *60);
 					// Time it takes from first to second stop +1 + the travel time to third destination
@@ -221,7 +221,7 @@ public class Helpers
 					for(int j=0; j<routes.size(); j++)
 					{
 					
-						text.set(i-1,text.get(i-1) + "\n"+((i+1) + ": Vi fant pokker meg en buss! " + "Ta buss: " + routes.get(j).getBusNumber()+" fra "+routes.get(j).getBusStopName()+" klokken "+routes.get(j).getArrivalTime()+". Du vil nå "+routes.get(j).getDestination()+" ca "+routes.get(j).getTravelTime()+ " minutter senere.\n"));
+						text.set(i-1,text.get(i-1) + "\n"+((i+1) + ": Vi fant pokker meg en buss! " + "Ta buss: " + routes.get(j).getBusNumber()+" fra "+routes.get(j).getBusStopName()+" klokken "+routes.get(j).getArrivalTime()+". Du vil nÃ¥ "+routes.get(j).getDestination()+" ca "+routes.get(j).getTravelTime()+ " minutter senere.\n"));
 					}
 						System.out.println("RETURN TRANSF");
 					return text;
@@ -230,7 +230,7 @@ public class Helpers
 				else
 				{
 
-					text.set(i-1, text.get(i-1)+ "\n" +(i+1)+": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+ " klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.set(i-1, text.get(i-1)+ "\n" +(i+1)+": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+ " klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 			}
 		}
@@ -592,7 +592,9 @@ public class Helpers
 	}
 
 
+
 	public static Route[] setTimeForRoutes(Route[]finalRoutes, HashMap realTimeCodes, Browser k_browser, final Calculate calculator, boolean afterTransfer)
+
 	{
 		// Copy of input routes
 		final Route [] tempRoutes = new Route[finalRoutes.length];
@@ -632,7 +634,7 @@ public class Helpers
 					if(tempNextBus.getLine() == tempRoutes[j].getBusNumber())
 					{
 						// Check if real-time data leads to delayed route. No point in updating with real-time data, if the bus arrives early.
-						// May also lead to an earlier bus being chosen
+						// This may also lead to an earlier bus being chosen
 						if(Integer.parseInt(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())) > Integer.parseInt(tempRoutes[j].getArrivalTime()))
 						{
 							tempRoutes[j].setArrivalTime(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())+"");

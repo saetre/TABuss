@@ -75,7 +75,7 @@ public class RealTimeList extends ListActivity
 		else 
 		{
 			fromMenu = true;
-			text.setText("Busstopper nær deg"+"\n");
+			text.setText("Busstopper nÃ¦r deg"+"\n");
 			lv.setTextFilterEnabled(true);
 			lv.addHeaderView(text);
 			setFromExtras();
@@ -122,7 +122,7 @@ public class RealTimeList extends ListActivity
 				{
 					diffMinutes = Math.abs( minutes- MapOverlay.foundStopsList.get(i).arrivalTime.getMinutes() );
 				}
-				String atm = "nå";
+				String atm = "nÃ¥";
 				String nAtm = "om ca " + diffMinutes+ " min";
 				String nAtm2 =MapOverlay.foundStopsList.get(i).arrivalTime.getHours() + ":" +buf;
 				if(diffHour != 0) text = nAtm2;
@@ -130,7 +130,7 @@ public class RealTimeList extends ListActivity
 				else text = nAtm;
 
 				// Append to string array
-				neededStopsOutgoing[i]= "Buss " + MapOverlay.foundStopsList.get(i).getLine() + " går " + text + " til " +MapOverlay.foundStopsList.get(i).getDest() ;
+				neededStopsOutgoing[i]= "Buss " + MapOverlay.foundStopsList.get(i).getLine() + " gÃ¥r " + text + " til " +MapOverlay.foundStopsList.get(i).getDest() ;
 				//System.out.println("Buss " + MapOverlay.foundStopsList.get(i).getLine() + " gï¿½r " +MapOverlay.foundStopsList.get(i).arrivalTime.getHours() + ":" +buf + " til " +MapOverlay.foundStopsList.get(i).getDest() );
 			}
 			// Show in list
@@ -139,7 +139,7 @@ public class RealTimeList extends ListActivity
 		catch(Exception e)
 		{
 			System.out.println("No routes found");
-			Toast.makeText(this, "No routes found", Toast.LENGTH_SHORT);
+			Toast.makeText(this, "No connection", Toast.LENGTH_SHORT);
 		}
 	}
 
@@ -243,14 +243,14 @@ public class RealTimeList extends ListActivity
 					{
 						diffMinutes = Math.abs( minutes- stops.get(i).arrivalTime.getMinutes() );
 					}
-					String atm = "nå";
+					String atm = "nÃ¥";
 					String nAtm = "om ca " + diffMinutes+ " min";
 					String nAtm2 = stops.get(i).arrivalTime.getHours() + ":" +buf;
 					if(diffHour != 0) text = nAtm2;
 					else if(diffMinutes == 0) text = atm;
 					else text = nAtm;
 					// Append to string array
-					neededStopsOutgoing[i]= "Buss " +stops.get(i).getLine() + " går " +text+ " til " +stops.get(i).getDest();
+					neededStopsOutgoing[i]= "Buss " +stops.get(i).getLine() + " gÃ¥r " +text+ " til " +stops.get(i).getDest();
 				}
 			}
 			catch(Exception e)

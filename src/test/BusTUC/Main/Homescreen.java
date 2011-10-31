@@ -169,7 +169,7 @@ public class Homescreen extends Activity {
 		context = this;
 		dbHelper=new DatabaseHelper(context);
 		int c= dbHelper.getQueryCount();
-		this.setTitle("MapApp - "+c+" søk gjort");
+		this.setTitle("MapApp - "+c+" sÃ¸k gjort");
 		this.setRequestedOrientation(
 				ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.homescreen);
@@ -607,6 +607,11 @@ public class Homescreen extends Activity {
 				context.startActivity(intent);
 
 			}
+			else
+			{
+				myDialog.dismiss();
+				Toast.makeText(context, "No connection", Toast.LENGTH_LONG).show();
+			}
 
 
 			textView.setEnabled(true);
@@ -695,8 +700,32 @@ public class Homescreen extends Activity {
 	@Override
 	public void onBackPressed()
 	{
-		this.finish();
-		System.exit(0);
+
+		DialogInterface.OnClickListener dc = new DialogInterface.OnClickListener() 
+		{
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) 
+			{
+				switch(which)
+				{
+				case DialogInterface.BUTTON_POSITIVE:
+					((Activity) context).finish();
+					System.exit(0);
+					break;
+				case DialogInterface.BUTTON_NEGATIVE:
+					// Do nothing
+					break;
+
+				}
+
+			}
+
+		};	
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		builder.setMessage("Avslutte?").setPositiveButton("Ja", dc)
+		.setNegativeButton("Nei", dc).show();	
+
 	}
 	@Override
 	protected void onStart()
@@ -709,7 +738,7 @@ public class Homescreen extends Activity {
 	protected void onResume() 
 	{
 		int c= dbHelper.getQueryCount();
-		this.setTitle("MapApp - "+c+" s¿k gjort");
+		this.setTitle("MapApp - "+c+" sï¿½k gjort");
 		super.onResume();
 		//	editText.setEnabled(true);
 		textView.setEnabled(true);
