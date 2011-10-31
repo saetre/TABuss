@@ -333,7 +333,8 @@ public class Helpers
 					calculator.printOutRoutes("AFTER",finalRoutes, false);
 					// Compute real time
 					returnRoutes =  computeRealTime(finalRoutes, routes,  realTimeCodes, k_browser);
-					
+					return returnRoutes;
+
 				}
 			}
 			//}
@@ -344,9 +345,8 @@ public class Helpers
 			}
 		}
 		else System.out.println("EMPTY LIST");
-		System.out.println("HER SKAL VI IKKE HAVNE");
-		return returnRoutes;
-
+		//System.out.println("HER SKAL VI IKKE HAVNE");
+		return null;
 	}
 
 	/*
