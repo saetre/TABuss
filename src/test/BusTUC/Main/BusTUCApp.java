@@ -446,7 +446,7 @@ public class BusTUCApp extends MapActivity
     	            projection.toPixels(gp1, point);
     	            paint.setColor(Color.BLUE);
     	            Point []point2 = new Point[gp2.size()];
-    	            System.out.println("Size of point: " + point2.length);
+    	            //System.out.println("Size of point: " + point2.length);
     	            for(int i=0; i<point2.length; i++)
     	            {
     	            	point2[i] = new Point();

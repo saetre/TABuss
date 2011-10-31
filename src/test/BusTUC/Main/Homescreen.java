@@ -332,7 +332,7 @@ public class Homescreen extends Activity {
 				// creates a HashMap with all the relevant bus stops
 				//Sort sort = new Sort();
 
-				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,3,false);
+				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,1,false);
 				busStops = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,10, true);
 		
 				
@@ -570,7 +570,7 @@ public class Homescreen extends Activity {
 				
 				
 				buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
-			//	buf = Helpers.runServer(textView.getText().toString(), k_browser, realTimeCodes, currentlocation);
+			  //buf = Helpers.runServer(textView.getText().toString(), k_browser, realTimeCodes, currentlocation);
 				long newTime = System.nanoTime() - time;
 				System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 			}

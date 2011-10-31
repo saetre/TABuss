@@ -72,11 +72,11 @@ public class Helpers
 		SimpleDateFormat format = new SimpleDateFormat("HH:ss");
 		return format.format(cal.getTime());
 	}
-	
+
 	public static int minutesFromDate(Date date){
 		return date.getHours()*60+date.getMinutes();
 	}
-	
+
 	public static String translateRequest(String from) throws Exception
 	{
 		String to = "";
@@ -90,7 +90,7 @@ public class Helpers
 			//request = 
 			HttpResponse response = client.execute(request);
 			in = new BufferedReader
-			(new InputStreamReader(response.getEntity().getContent()));
+					(new InputStreamReader(response.getEntity().getContent()));
 
 			String line = "";
 			String NL = System.getProperty("line.separator");
@@ -217,8 +217,12 @@ public class Helpers
 					newList.add(stop);
 					// Run new query
 					ArrayList <Route> routes = Helpers.runString(destination, newList, Homescreen.k_browser, Homescreen.realTimeCodes, query);
-					text.set(i-1,text.get(i-1) + "\n"+((i+1) + ": Vi fant pokker meg en buss! " + "Ta buss: " + routes.get(0).getBusNumber()+" fra "+routes.get(0).getBusStopName()+" klokken "+routes.get(0).getArrivalTime()+". Du vil nå "+routes.get(0).getDestination()+" ca "+routes.get(0).getTravelTime()+ " minutter senere.\n"));
-					System.out.println("RETURN TRANSF");
+					for(int j=0; j<routes.size(); j++)
+					{
+					
+						text.set(i-1,text.get(i-1) + "\n"+((i+1) + ": Vi fant pokker meg en buss! " + "Ta buss: " + routes.get(j).getBusNumber()+" fra "+routes.get(j).getBusStopName()+" klokken "+routes.get(j).getArrivalTime()+". Du vil nå "+routes.get(j).getDestination()+" ca "+routes.get(j).getTravelTime()+ " minutter senere.\n"));
+					}
+						System.out.println("RETURN TRANSF");
 					return text;
 
 				}
@@ -235,10 +239,10 @@ public class Helpers
 	}	
 
 
-/*
- * Compute real-time, based on input routes
- */
-	public static ArrayList <Route> computeRealTime(Route [] foundRoutes, Route [] routes, HashMap realTimeCodes, Browser k_browser)
+	/*
+	 * Compute real-time, based on input routes
+	 */
+	public static ArrayList <Route> computeRealTime(Route [] foundRoutes, Route [] routes, HashMap realTimeCodes, Browser k_browser, boolean afterTransfer)
 	{
 		Calculate calculator = new Calculate();
 		Route [] returnRoutes = new Route[foundRoutes.length];
@@ -246,7 +250,7 @@ public class Helpers
 		// Sets the travel and total time for each route
 		try
 		{
-			returnRoutes = Helpers.setTimeForRoutes(foundRoutes, realTimeCodes, k_browser, calculator);
+			returnRoutes = Helpers.setTimeForRoutes(foundRoutes, realTimeCodes, k_browser, calculator, afterTransfer);
 			calculator.printOutRoutes("AFTERREALTIME",foundRoutes, true);
 
 			Route[] printRoute = calculator.sortByTotalTime(returnRoutes);
@@ -328,11 +332,11 @@ public class Helpers
 					Helpers.setWalkingDistance(routes, tSetExclude);
 
 					calculator.printOutRoutes("BEFORE",routes, false);
-				
+
 					finalRoutes = calculator.suggestRoutes(routes);
 					calculator.printOutRoutes("AFTER",finalRoutes, false);
 					// Compute real time
-					returnRoutes =  computeRealTime(finalRoutes, routes,  realTimeCodes, k_browser);
+					returnRoutes =  computeRealTime(finalRoutes, routes,  realTimeCodes, k_browser, false);
 					return returnRoutes;
 
 				}
@@ -436,7 +440,7 @@ public class Helpers
 					}
 					calculator.printOutRoutes("AFTER",finalRoutes, false);
 					// Compute real time
-					ArrayList <Route> returnRoutes =  computeRealTime(finalRoutes, routes,  realTimeCodes, k_browser);
+					ArrayList <Route> returnRoutes =  computeRealTime(finalRoutes, routes,  realTimeCodes, k_browser, true);
 					/*     ArrayList <Route> returnRoutes = new ArrayList <Route>();
 		         for (int i = 0; i < finalRoutes.length; i++) {
 					returnRoutes.add(finalRoutes[i]);
@@ -587,11 +591,12 @@ public class Helpers
 	}
 
 
-	public static Route[] setTimeForRoutes(Route[]finalRoutes, HashMap realTimeCodes, Browser k_browser, final Calculate calculator)
+	public static Route[] setTimeForRoutes(Route[]finalRoutes, HashMap realTimeCodes, Browser k_browser, final Calculate calculator, boolean afterTransfer)
 	{
 		// Copy of input routes
 		final Route [] tempRoutes = new Route[finalRoutes.length];
 		final Browser tempBrowser = k_browser;
+		final boolean a_transfer = afterTransfer;
 		for (int i = 0; i < tempRoutes.length; i++) 
 		{
 			tempRoutes[i] = finalRoutes[i];
@@ -621,29 +626,40 @@ public class Helpers
 
 					final BusDeparture tempNextBus = tempBrowser.specificRequest(tId,wLine);     
 					//  	System.out.println("Nextbus: " + nextBus);
-					
+
 					// If route object contains same bus stop nr as data received from real time
 					if(tempNextBus.getLine() == tempRoutes[j].getBusNumber())
 					{
 						// Check if real-time data leads to delayed route. No point in updating with real-time data, if the bus arrives early.
 						// May also lead to an earlier bus being chosen
-						if(Integer.parseInt(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())) > Integer.parseInt(tempRoutes[j].getArrivalTime()))// || tempRoutes[j].isTransfer())
+						if(Integer.parseInt(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())) > Integer.parseInt(tempRoutes[j].getArrivalTime()))
 						{
 							tempRoutes[j].setArrivalTime(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())+"");
 							System.out.println("Arrival Time: " + tempRoutes[j].getArrivalTime());
-							            	 
+
 						}
-						// Set total time for routes
-						int k_totalTime = calculator.calculateTotalTime(tempRoutes[j].getArrivalTime(), tempRoutes[j].getTravelTime());
-						tempRoutes[j].setTotalTime(k_totalTime); 
+
+						// If search is performed as a stage in transfer finding, do not let real-time data adjust to an earlier route
+						else
+						{
+							if(!a_transfer)
+							{
+								tempRoutes[j].setArrivalTime(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())+"");
+								System.out.println("Arrival Time: " + tempRoutes[j].getArrivalTime());
+							}
+
+						}
+
 					}
-					
+
 					// Else use oracle answer, if line is not found
 					else
 					{
 						System.out.println("NOT FOUND REAL TIME " + tempRoutes[j].getBusNumber() + "  " + tempRoutes[j].getArrivalTime() );
 					}
-					// No walking distance set if bus stop is not within the X closest stops list
+					// Set total time for routes
+					int k_totalTime = calculator.calculateTotalTime(tempRoutes[j].getArrivalTime(), tempRoutes[j].getTravelTime());
+					tempRoutes[j].setTotalTime(k_totalTime); 
 				}    	    
 
 			});
@@ -667,7 +683,7 @@ public class Helpers
 		// Remove suggestions where buses passing same stops have huge total time difference
 		// Has not been tested yet
 
-	
+
 		ArrayList <Route> list = removeStupid(tempRoutes);
 		retRoutes = list.toArray(new Route[list.size()]);
 		System.out.println("Final size: " + retRoutes.length);
