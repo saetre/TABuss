@@ -116,16 +116,13 @@ public class Calculate {
 		Route temp = null;
 		for(int i=0; i<routelist.length; i++)
 		{
-			if(routelist[i].isTransfer()) return routelist;
-			if(routelist.length == 1)return routelist;
+			if(routelist[i].isTransfer() || routelist.length == 1) return routelist;
 			else
 			{
 				
 				if(i==0)
 				{
-					temp = routelist[i];
-					
-				
+					temp = routelist[i];				
 				}
 				else
 				{
