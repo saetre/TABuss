@@ -641,6 +641,9 @@ public class Browser
 		} catch (java.text.ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}catch(NullPointerException e)
+		{
+			e.printStackTrace();
 		}
 		return test; 
 	}
