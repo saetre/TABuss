@@ -653,7 +653,7 @@ public class Homescreen extends Activity {
 			else
 			{
 				Toast.makeText(context, "Har du ikke råd til nett?", Toast.LENGTH_LONG).show();
-
+				textView.setText("");
 			}
 			myDialog.dismiss();
 
