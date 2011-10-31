@@ -125,18 +125,18 @@ public class Calculate {
 				}
 				else
 				{
-					if(temp.getBusNumber() == routelist[i].getBusNumber() && temp.getWalkingDistance() < routelist[i].getWalkingDistance())
+					System.out.println("COMPARING: " + temp.getBusNumber() + " and: " + routelist[i].getBusNumber());
+					System.out.println("WALK: " + temp.getWalkingDistance() + " and " + routelist[i].getWalkingDistance());
+					if(temp.getBusNumber() == routelist[i].getBusNumber())
 					{
-						fixed.add(temp);
+						if(temp.getWalkingDistance() > routelist[i].getWalkingDistance())fixed.add(temp);
+						else if(temp.getWalkingDistance() < routelist[i].getWalkingDistance()) fixed.add(routelist[i]);
 					}
-					else if(temp.getBusNumber() == routelist[i].getBusNumber() && temp.getWalkingDistance() > routelist[i].getWalkingDistance())
-
-					{
-						fixed.add(routelist[i]);
-					}
+				
 					else
 					{
-						fixed.add(temp);
+						System.out.println("ADDED IN ELSE");
+						fixed.add(routelist[i]);
 					}
 				}
 
