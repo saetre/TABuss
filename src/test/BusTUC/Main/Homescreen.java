@@ -619,7 +619,6 @@ public class Homescreen extends Activity {
 			}
 			catch(Exception e)
 			{
-				Toast.makeText(context, "Har du ikke råd til nett?", Toast.LENGTH_LONG).show();
 				myDialog.dismiss();
 				e.printStackTrace();
 			}
@@ -650,6 +649,11 @@ public class Homescreen extends Activity {
 				//intent.putExtra("test", buf);
 
 				context.startActivity(intent);
+			}
+			else
+			{
+				Toast.makeText(context, "Har du ikke råd til nett?", Toast.LENGTH_LONG).show();
+
 			}
 			myDialog.dismiss();
 
