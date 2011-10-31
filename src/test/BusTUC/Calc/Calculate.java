@@ -122,10 +122,11 @@ public class Calculate {
 				if(i==0)
 				{
 					temp = routelist[i];
-					fixed.add(temp);
+					//fixed.add(temp);
 				}
 				else
 				{
+					System.out.println("Walking dist: " +  temp.getWalkingDistance()  + "   " + routelist[i].getWalkingDistance());
 					if(temp.getBusNumber() == routelist[i].getBusNumber() && temp.getWalkingDistance() < routelist[i].getWalkingDistance())
 					{
 						fixed.add(temp);
