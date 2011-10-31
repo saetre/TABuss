@@ -255,7 +255,7 @@ public class RealTimeList extends ListActivity
 			}
 			catch(Exception e)
 			{
-
+				e.printStackTrace();
 			}
 			return null;
 		}
