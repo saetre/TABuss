@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent" android:weightSum="1">
+    <TextView android:layout_width="match_parent" 
+    android:textAppearance="?android:attr/textAppearanceLarge" 
+    android:layout_height="wrap_content"
+    android:gravity="center" 
+    android:maxLines="10"    
+    android:text="FUiROUS" 
+    android:id="@+id/textView1">
+    </TextView>
+    <TextView android:layout_width="match_parent" 
+    android:textAppearance="?android:attr/textAppearanceMedium" 
+    android:layout_height="wrap_content"
+    android:gravity="center" 
+    android:maxLines="10"    
+    android:text="The Intelligent Bus App" 
+    android:id="@+id/textView1"
+    android:layout_marginBottom="20px">
+    </TextView>
+    <TextView android:textAppearance="?android:attr/textAppearanceSmall" 
+    android:text="BusTUC is a natural language bus route system for Trondheim. It gives information about scheduled bus route passings, but has no information about the real passing times. This is about to change, because Atb has installed GPS tracking of the buses, giving access to real passing times and delays. Besides, with new smart phones arriving rapidly on the market, there are possibilities for GPS localisations and connections to maps. The project shall take a broad view, and consider all possible advanced concepts, resulting in advanced smart phone applications." 
+    android:id="@+id/textView3"
+    android:layout_height="wrap_content" 
+    android:layout_width="match_parent" 
+    android:layout_below="@id/textView1">
+    </TextView>
+    <QuickContactBadge android:id="@+id/quickContactBadge2" 
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content"></QuickContactBadge>
+    <QuickContactBadge android:layout_height="wrap_content" android:id="@+id/quickContactBadge1" 
+    android:layout_width="wrap_content" android:src="@drawable/lars"></QuickContactBadge>
+    <TextView android:layout_width="match_parent" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:text="\u00A9 2010 Team LaKris" android:id="@+id/textView2" android:layout_gravity="bottom"></TextView>
+    
+</LinearLayout>

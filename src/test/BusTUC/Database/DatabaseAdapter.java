@@ -14,7 +14,7 @@ public class DatabaseAdapter {
 	private static final String DATABASE_TABLE = "query";
 	private Context context;
 	private SQLiteDatabase database;
-	private Database dbHelper;
+	private Database dbHelper = null;
 
 	public DatabaseAdapter(Context context) {
 		this.context = context;
@@ -22,6 +22,8 @@ public class DatabaseAdapter {
 
 	public DatabaseAdapter open() throws SQLException {
 		dbHelper = new Database(context);
+		database = dbHelper.getReadableDatabase();
+		database.close();
 		database = dbHelper.getWritableDatabase();
 		return this;
 	}

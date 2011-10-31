@@ -6,11 +6,15 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
+
+import java.text.DecimalFormat;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,6 +29,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import test.BusTUC.Calc.Calculate;
 import test.BusTUC.Calc.Sort;
+import test.BusTUC.Database.Query;
 import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.Queries.Browser;
 import test.BusTUC.Stops.BusDeparture;
@@ -49,6 +54,29 @@ import com.google.android.maps.OverlayItem;
 public class Helpers 
 {
 
+
+	public static HashMap<String,Integer> getMostFrequentDestination(ArrayList<String> destination){
+		System.out.println("ARRAYLIST INPUT! : "+destination.size());
+		HashMap<String,Integer> temp = new HashMap<String,Integer>();
+		for(String d: destination){
+			if(temp.containsKey(d)){			
+				temp.put(d, temp.get(d)+1);
+			}else{
+				temp.put(d, 1);
+			}
+		}
+		return temp;
+	}
+	public static String getTimeNow(){
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat format = new SimpleDateFormat("HH:ss");
+		return format.format(cal.getTime());
+	}
+	
+	public static int minutesFromDate(Date date){
+		return date.getHours()*60+date.getMinutes();
+	}
+	
 	public static String translateRequest(String from) throws Exception
 	{
 		String to = "";

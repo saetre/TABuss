@@ -16,9 +16,11 @@
         </activity>
         <activity android:name=".Main.BusTUCApp"/>
         <activity android:name=".Main.RealTimeList"/>  
-        <activity android:name = ".Main.RealTimeListFromMenu"/>
+        <activity android:name =".Main.RealTimeListFromMenu"/>
         <activity android:name=".Favourites.Favourite_Act"/>
 		<activity android:name=".Main.Answer" />
+		<activity android:name=".Main.History"/>
+		<activity android:name=".Main.About"/>
     </application>
  
     <uses-permission android:name="android.permission.INTERNET" />

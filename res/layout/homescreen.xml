@@ -20,9 +20,22 @@
 	android:textSize="8pt"
 	android:textColor="#ffffff" 
 	android:layout_marginRight="15dp"
-	android:layout_marginLeft="5dp"
+	android:layout_marginLeft="2dp"
 	android:layout_alignParentTop="true" 
 	android:layout_alignParentRight="true">
+	</Button>
+	
+	<Button android:layout_height="wrap_content" 
+	android:layout_width="wrap_content" 
+	android:background="@drawable/go_button" 
+	android:id="@+id/amazebutton" 
+	android:text="..." 
+	android:textSize="8pt"
+	android:textColor="#ffffff" 
+	android:layout_toLeftOf="@id/goButton"
+	android:layout_marginRight="2dp"
+	android:layout_marginLeft="10dp"
+	android:layout_alignParentTop="true" >
 	</Button>
 	
 
@@ -38,11 +51,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
        	android:maxLines="1" 
-       	android:layout_toRightOf="@+id/editButton"
+       	android:layout_toLeftOf="@id/amazebutton"
        	android:hint="Hvor vil du dra?" 
        	android:layout_alignParentTop="true" 
 		android:layout_alignParentLeft="true"
-		android:layout_toLeftOf="@+id/goButton"
         android:layout_marginLeft="15dp"/>
 	
 	

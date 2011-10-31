@@ -15,5 +15,13 @@
     <item android:id="@+id/speech"
           android:icon="@drawable/paste"
           android:title="@string/t_speech" />
+    
+    <item android:id="@+id/history"
+          android:icon="@drawable/paste"
+          android:title="@string/history" />
+    
+    <item android:id="@+id/about"
+          android:icon="@drawable/paste"
+          android:title="@string/about" />
 
 </menu>

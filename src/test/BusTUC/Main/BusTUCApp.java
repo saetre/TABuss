@@ -117,7 +117,7 @@ public class BusTUCApp extends MapActivity
         mapView.displayZoomControls(true);
         
         mc = mapView.getController();
-        System.out.println("Sjekker lengde: " +Homescreen.gpsCords.length);
+        System.out.println("Sjeker lengde: " +Homescreen.gpsCords.length);
         System.out.println("Sjekker browser: " +Homescreen.k_browser.toString());
 
     

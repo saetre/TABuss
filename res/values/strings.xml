@@ -6,7 +6,9 @@
     <string name = "add_new">Legg til ny</string>
     <string name = "map_press">Gå til kart</string>
     <string name = "real_time">Real-time</string>
+    <string name ="about">Om denne appen</string>
      <string name = "t_speech">speech</string>
+     <string name= "history">Logg</string>
     <string name="splash_screen">SplashScreen</string>
     <style name="ButtonText">
     <item name="android:layout_width">fill_parent</item>

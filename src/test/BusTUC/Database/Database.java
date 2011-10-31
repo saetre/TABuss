@@ -26,7 +26,7 @@ public class Database extends SQLiteOpenHelper
 
 	// Database creation sql statement
 	private static final String DATABASE_CREATE = "create table query (_id integer primary key autoincrement, "
-	+ "origin text not null, destination text not null, time real not null);";
+			+ "origin text not null, destination text not null, time real not null);";
 
 	public Database(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -37,6 +37,7 @@ public class Database extends SQLiteOpenHelper
 	public void onCreate(SQLiteDatabase database) {
 		database.execSQL(DATABASE_CREATE);
 	}
+
 
 	// Method is called during an upgrade of the database, e.g. if you increase
 	// the database version
