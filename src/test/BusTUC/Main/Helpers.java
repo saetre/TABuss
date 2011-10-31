@@ -218,10 +218,20 @@ public class Helpers
 					newList.add(stop);
 					// Run new query
 					ArrayList <Route> routes = Helpers.runString(destination, newList, Homescreen.k_browser, Homescreen.realTimeCodes, query);
-					for(int j=0; j<routes.size(); j++)
+					ArrayList <Route> finalRoutes = new ArrayList <Route>();
+					// Assure that no routes leave before we arrive at the stop
+					for(int j =0; j<routes.size(); j++)
+					{
+						if(Integer.parseInt(value.get(i-1).getArrivalTime()) < Integer.parseInt(routes.get(j).getArrivalTime()))
+						{
+							// Add to final list
+							finalRoutes.add(routes.get(j));
+						}
+					}
+					for(int j=0; j<finalRoutes.size(); j++)
 					{
 					
-						text.set(i-1,text.get(i-1) + "\n"+((i+1) + ": Vi fant pokker meg en buss! " + "Ta buss: " + routes.get(j).getBusNumber()+" fra "+routes.get(j).getBusStopName()+" klokken "+routes.get(j).getArrivalTime()+". Du vil nå "+routes.get(j).getDestination()+" ca "+routes.get(j).getTravelTime()+ " minutter senere.\n"));
+						text.set(i-1,text.get(i-1) + "\n"+((i+1) + ": Vi fant pokker meg en buss! " + "Ta buss: " + finalRoutes.get(j).getBusNumber()+" fra "+finalRoutes.get(j).getBusStopName()+" klokken "+finalRoutes.get(j).getArrivalTime()+". Du vil nå "+finalRoutes.get(j).getDestination()+" ca "+finalRoutes.get(j).getTravelTime()+ " minutter senere.\n"));
 					}
 						System.out.println("RETURN TRANSF");
 					return text;
