@@ -612,13 +612,14 @@ public class Homescreen extends Activity {
 			long time = System.nanoTime();
 			try
 			{
-				//	buf = Helpers.runServer(textView.getText().toString(),k_browser, realTimeCodes, currentlocation);
-					buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
+				//buf = Helpers.runServer(textView.getText().toString(),k_browser, realTimeCodes, currentlocation);
+				buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
 				long newTime = System.nanoTime() - time;
 				System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 			}
 			catch(Exception e)
 			{
+				Toast.makeText(context, "Har du ikke råd til nett?", Toast.LENGTH_LONG).show();
 				myDialog.dismiss();
 				e.printStackTrace();
 			}

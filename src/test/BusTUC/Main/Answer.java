@@ -89,6 +89,12 @@ public class Answer extends  ListActivity{
 			ad = new ArrayAdapter<String>(this, R.layout.list_item, text);
 			setListAdapter(ad);
 		}
+		else
+		{
+			ArrayList<String> transf = new ArrayList <String>();
+			transf.add("Du vil ikke rekke overgangen. Søker etter ny...");
+			ad = new ArrayAdapter<String>(this,R.layout.list_item, transf);
+		}
 
 
 		//lv1.setAdapter(new ArrayAdapter<String>(this,R.layout.row, R.id.label,lv_arr));

@@ -190,6 +190,7 @@ public class Helpers
 					// Run new query
 					ArrayList <Route> routes = Helpers.runString(destination, newList, Homescreen.k_browser, Homescreen.realTimeCodes, query);
 					text.set(i-1,text.get(i-1) + "\n"+((i+1) + ": Vi fant pokker meg en buss! " + "Ta buss: " + routes.get(0).getBusNumber()+" fra "+routes.get(0).getBusStopName()+" klokken "+routes.get(0).getArrivalTime()+". Du vil nå "+routes.get(0).getDestination()+" ca "+routes.get(0).getTravelTime()+ " minutter senere.\n"));
+					System.out.println("RETURN TRANSF");
 					return text;
 
 				}
@@ -200,6 +201,7 @@ public class Helpers
 				}
 			}
 		}
+		System.out.println("RETURN END");
 		return text;
 
 	}	
@@ -262,6 +264,7 @@ public class Helpers
 	public static ArrayList <Route> run(String input, ArrayList<BusStop> tSetExclude, Browser k_browser, HashMap realTimeCodes)
 	{
 		Route[] finalRoutes;
+		ArrayList <Route> returnRoutes = new ArrayList<Route>();
 		// Perform action on clicks
 		if(!tSetExclude.isEmpty())
 		{
@@ -301,11 +304,8 @@ public class Helpers
 					finalRoutes = calculator.suggestRoutes(routes);
 					calculator.printOutRoutes("AFTER",finalRoutes, false);
 					// Compute real time
-					ArrayList <Route> returnRoutes =  computeRealTime(finalRoutes, routes,  realTimeCodes, k_browser);
+					returnRoutes =  computeRealTime(finalRoutes, routes,  realTimeCodes, k_browser);
 					
-					System.out.println("RETURNING run()");
-
-					return returnRoutes;
 				}
 			}
 			//}
@@ -317,7 +317,7 @@ public class Helpers
 		}
 		else System.out.println("EMPTY LIST");
 		System.out.println("HER SKAL VI IKKE HAVNE");
-		return null;
+		return returnRoutes;
 
 	}
 
@@ -413,7 +413,6 @@ public class Helpers
 		         for (int i = 0; i < finalRoutes.length; i++) {
 					returnRoutes.add(finalRoutes[i]);
 				}*/
-					System.out.println("Return runString()");
 					return returnRoutes;
 				}
 			}
@@ -464,8 +463,6 @@ public class Helpers
 		return false;
 
 	}
-
-
 
 	// Method used to find the coordinates to the current location
 	public static String[] showLocation(Location location) {
@@ -651,6 +648,9 @@ public class Helpers
 
 	}
 
+	/*
+	 * Remove stupid suggestions
+	 */
 	public static ArrayList <Route> removeStupid(Route [] tempRoutes)
 	{
 		ArrayList<Route> list = new ArrayList<Route>(Arrays.asList(tempRoutes));
