@@ -129,8 +129,8 @@ public class BusTUCApp extends MapActivity
         }
         catch(Exception e)
         {
-        	//Toast.makeText(this, "No connection", Toast.LENGTH_LONG).show();
-            System.exit(0);
+        	Toast.makeText(this, "No connection", Toast.LENGTH_LONG).show();
+          this.finish();
         	
         }       
         initialize();

@@ -145,22 +145,30 @@ public class RealTimeList extends ListActivity
 
 	public void setFromExtras()
 	{
-		holder = extras.getParcelableArrayList("test");
-		stopNames = new String[holder.size()];
-		Collections.sort(holder);
-		for(int i=0; i<holder.size(); i++)
+		try
 		{
-
-			String tmp = ""+holder.get(i).getBusStopID();		
-			if(Integer.parseInt((tmp.substring(4,5))) == 1)
+			holder = extras.getParcelableArrayList("test");
+			stopNames = new String[holder.size()];
+			Collections.sort(holder);
+			for(int i=0; i<holder.size(); i++)
 			{
-				tmp = "til byen";
-			} else if(Integer.parseInt((tmp.substring(4,5))) == 0) tmp = "fra byen";
-			holder.get(i).setStopName(holder.get(i).getStopName() + " " + tmp);
-			stopNames[i] = holder.get(i).getStopName();
-		}
 
-		setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, stopNames));
+				String tmp = ""+holder.get(i).getBusStopID();		
+				if(Integer.parseInt((tmp.substring(4,5))) == 1)
+				{
+					tmp = "til byen";
+				} else if(Integer.parseInt((tmp.substring(4,5))) == 0) tmp = "fra byen";
+				holder.get(i).setStopName(holder.get(i).getStopName() + " " + tmp);
+				stopNames[i] = holder.get(i).getStopName();
+			}
+
+			setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, stopNames));
+		}
+		catch(Exception e)
+		{
+			Toast.makeText(this, "No connection", Toast.LENGTH_LONG).show();
+			this.finish();
+		}
 	}
 
 	@Override
@@ -200,47 +208,54 @@ public class RealTimeList extends ListActivity
 		protected Void doInBackground(Void... params)
 		{
 			//ArrayList <BusDeparture> stops = Browser.specificRequestForStop(outgoing);
-			ArrayList <BusDeparture> stops = Browser.specificRequestForStopServer(line);
-			StringBuffer buf;
-			String minute1;
-			System.out.println("STOPS SIZE: " + stops.size());
-			neededStopsOutgoing = new String[stops.size()];
-			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			Date date = new Date();
-			dateFormat.format(date);
-			int hour = date.getHours();
-			int minutes = date.getMinutes();
-			int diffHour = 0;
-			int diffMinutes = 0;
-			String text = "";
-
-			for(int i=0; i<stops.size(); i++)
+			try
 			{
-				minute1 = "" +stops.get(i).arrivalTime.getMinutes();
-				buf = new StringBuffer("" + minute1);
+				ArrayList <BusDeparture> stops = Browser.specificRequestForStopServer(line);
+				StringBuffer buf;
+				String minute1;
+				System.out.println("STOPS SIZE: " + stops.size());
+				neededStopsOutgoing = new String[stops.size()];
+				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+				Date date = new Date();
+				dateFormat.format(date);
+				int hour = date.getHours();
+				int minutes = date.getMinutes();
+				int diffHour = 0;
+				int diffMinutes = 0;
+				String text = "";
+
+				for(int i=0; i<stops.size(); i++)
+				{
+					minute1 = "" +stops.get(i).arrivalTime.getMinutes();
+					buf = new StringBuffer("" + minute1);
 
 
-				if(buf.length() == 1)
-				{
-					buf.insert(0, "0");
-				}
-				if(stops.get(i).arrivalTime.getHours() != hour)
-				{
-					diffHour = Math.abs(stops.get(i).arrivalTime.getHours() - hour);
-				}
+					if(buf.length() == 1)
+					{
+						buf.insert(0, "0");
+					}
+					if(stops.get(i).arrivalTime.getHours() != hour)
+					{
+						diffHour = Math.abs(stops.get(i).arrivalTime.getHours() - hour);
+					}
 
-				if(stops.get(i).arrivalTime.getMinutes() != minutes)
-				{
-					diffMinutes = Math.abs( minutes- stops.get(i).arrivalTime.getMinutes() );
+					if(stops.get(i).arrivalTime.getMinutes() != minutes)
+					{
+						diffMinutes = Math.abs( minutes- stops.get(i).arrivalTime.getMinutes() );
+					}
+					String atm = "nå";
+					String nAtm = "om ca " + diffMinutes+ " min";
+					String nAtm2 = stops.get(i).arrivalTime.getHours() + ":" +buf;
+					if(diffHour != 0) text = nAtm2;
+					else if(diffMinutes == 0) text = atm;
+					else text = nAtm;
+					// Append to string array
+					neededStopsOutgoing[i]= "Buss " +stops.get(i).getLine() + " går " +text+ " til " +stops.get(i).getDest();
 				}
-				String atm = "nå";
-				String nAtm = "om ca " + diffMinutes+ " min";
-				String nAtm2 = stops.get(i).arrivalTime.getHours() + ":" +buf;
-				if(diffHour != 0) text = nAtm2;
-				else if(diffMinutes == 0) text = atm;
-				else text = nAtm;
-				// Append to string array
-				neededStopsOutgoing[i]= "Buss " +stops.get(i).getLine() + " går " +text+ " til " +stops.get(i).getDest();
+			}
+			catch(Exception e)
+			{
+
 			}
 			return null;
 		}
@@ -258,7 +273,7 @@ public class RealTimeList extends ListActivity
 					outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(pressedStop.getBusStopID()).toString());
 					line = pressedStop.getBusStopID();
 					myDialog = ProgressDialog.show(context, "Loading!", "Laster sanntid");
-					
+
 					System.out.println("navn satt: " + pressedStop.getStopName());
 				}
 			}
@@ -273,16 +288,25 @@ public class RealTimeList extends ListActivity
 		@Override
 		protected void onPostExecute(Void unused)
 		{
-			intent = new Intent(context, RealTimeListFromMenu.class);
-			ArrayList <String> retList = new ArrayList <String>();
 
-			for(int i=0; i<neededStopsOutgoing.length; i++)
+			intent = new Intent(context, RealTimeListFromMenu.class);
+			try
 			{
-				retList.add(neededStopsOutgoing[i]);
+				ArrayList <String> retList = new ArrayList <String>();
+
+				for(int i=0; i<neededStopsOutgoing.length; i++)
+				{
+					retList.add(neededStopsOutgoing[i]);
+				}
+				intent.putExtra("tag", pressedStop.getStopName());
+				intent.putExtra("test", retList);
+				context.startActivity(intent);
 			}
-			intent.putExtra("tag", pressedStop.getStopName());
-			intent.putExtra("test", retList);
-			context.startActivity(intent);
+			catch(Exception e)
+			{
+				Toast.makeText(context, "No connection", Toast.LENGTH_LONG).show();
+				finish();
+			}
 			myDialog.dismiss();
 
 		}
