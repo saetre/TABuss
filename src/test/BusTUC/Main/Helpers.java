@@ -643,8 +643,7 @@ public class Helpers
 					// If route object contains same bus stop nr as data received from real time
 					if(tempNextBus.getLine() == tempRoutes[j].getBusNumber())
 					{
-						// Check if real-time data leads to delayed route. No point in updating with real-time data, if the bus arrives early.
-						// This may also lead to an earlier bus being chosen
+						// If real-time data leads to delayed route, update
 						if(Integer.parseInt(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())) > Integer.parseInt(tempRoutes[j].getArrivalTime()))
 						{
 							tempRoutes[j].setArrivalTime(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())+"");
@@ -653,7 +652,8 @@ public class Helpers
 						}
 
 						// If search is performed as a stage in transfer finding, do not let real-time data adjust to an earlier route
-						// as this could make the second answer invalid with regards to the first 
+						// as this could make the second answer invalid with regards to the first.
+						// No problem if only single trip
 						else
 						{
 							if(!a_transfer)

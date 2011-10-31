@@ -738,7 +738,7 @@ public class Homescreen extends Activity {
 	protected void onResume() 
 	{
 		int c= dbHelper.getQueryCount();
-		this.setTitle("MapApp - "+c+" s�k gjort");
+		this.setTitle("MapApp - "+c+" søk gjort");
 		super.onResume();
 		//	editText.setEnabled(true);
 		textView.setEnabled(true);
