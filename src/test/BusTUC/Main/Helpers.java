@@ -217,24 +217,34 @@ public class Helpers
 					ArrayList <BusStop> newList = new ArrayList <BusStop>();
 					newList.add(stop);
 					// Run new query
-					ArrayList <Route> routes = Helpers.runString(destination, newList, Homescreen.k_browser, Homescreen.realTimeCodes, query);
-					ArrayList <Route> finalRoutes = new ArrayList <Route>();
-					// Assure that no routes leave before we arrive at the stop
-					for(int j =0; j<routes.size(); j++)
+					try
 					{
-						if(Integer.parseInt(value.get(i-1).getArrivalTime()) < Integer.parseInt(routes.get(j).getArrivalTime()))
+						ArrayList <Route> routes = Helpers.runString(destination, newList, Homescreen.k_browser, Homescreen.realTimeCodes, query);
+						ArrayList <Route> finalRoutes = new ArrayList <Route>();
+						// Assure that no routes leave before we arrive at the stop
+						for(int j =0; j<routes.size(); j++)
 						{
-							// Add to final list
-							finalRoutes.add(routes.get(j));
+							if(Integer.parseInt(value.get(i-1).getArrivalTime()) < Integer.parseInt(routes.get(j).getArrivalTime()))
+							{
+								// Add to final list
+								finalRoutes.add(routes.get(j));
+							}
 						}
-					}
-					for(int j=0; j<finalRoutes.size(); j++)
-					{
-					
-						text.set(i-1,text.get(i-1) + "\n"+((i+1) + ": Vi fant pokker meg en buss! " + "Ta buss: " + finalRoutes.get(j).getBusNumber()+" fra "+finalRoutes.get(j).getBusStopName()+" klokken "+finalRoutes.get(j).getArrivalTime()+". Du vil nå "+finalRoutes.get(j).getDestination()+" ca "+finalRoutes.get(j).getTravelTime()+ " minutter senere.\n"));
-					}
+						for(int j=0; j<finalRoutes.size(); j++)
+						{
+
+							text.set(i-1,text.get(i-1) + "\n"+((i+1) + ": Vi fant pokker meg en buss! " + "Ta buss: " + finalRoutes.get(j).getBusNumber()+" fra "+finalRoutes.get(j).getBusStopName()+" klokken "+finalRoutes.get(j).getArrivalTime()+". Du vil nå "+finalRoutes.get(j).getDestination()+" ca "+finalRoutes.get(j).getTravelTime()+ " minutter senere.\n"));
+						}
 						System.out.println("RETURN TRANSF");
-					return text;
+						return text;
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
+						ArrayList <String> err = new ArrayList <String>();
+						err.add(e.toString());
+						SDCard.generateNoteOnSD("errorParseDataTransf", err, "errors");
+					}
 
 				}
 				else
@@ -276,6 +286,9 @@ public class Helpers
 		{
 			e.printStackTrace();
 			//Toast.makeText(this, "Real-time fail", Toast.LENGTH_LONG).show();
+			ArrayList <String> err = new ArrayList <String>();
+			err.add(e.toString());
+			SDCard.generateNoteOnSD("errorRealTime", err, "errors");
 		}
 
 		return null;
@@ -356,6 +369,9 @@ public class Helpers
 			catch(Exception e)
 			{
 				e.printStackTrace();
+				ArrayList <String> err = new ArrayList <String>();
+				err.add(e.toString());
+				SDCard.generateNoteOnSD("errorHelpers::Run", err, "errors");
 				return null;
 			}
 		}
@@ -462,6 +478,9 @@ public class Helpers
 			catch(Exception e)
 			{
 				e.printStackTrace();
+				ArrayList <String> err = new ArrayList <String>();
+				err.add(e.toString());
+				SDCard.generateNoteOnSD("errorRunString", err, "errors");
 				return null;
 			}
 		}
@@ -639,7 +658,7 @@ public class Helpers
 
 					final BusDeparture tempNextBus = tempBrowser.specificRequest(tId,wLine);     
 					//  	System.out.println("Nextbus: " + nextBus);
-				
+
 					// If route object contains same bus stop nr as data received from real time
 					if(tempNextBus.getLine() == tempRoutes[j].getBusNumber())
 					{

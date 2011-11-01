@@ -130,6 +130,9 @@ public class BusTUCApp extends MapActivity
         catch(Exception e)
         {
         	Toast.makeText(this, "No connection", Toast.LENGTH_LONG).show();
+        	ArrayList <String> err = new ArrayList <String>();
+			err.add(e.toString());
+			SDCard.generateNoteOnSD("errorBusTUCAPPREALTIME", err, "errors");
           this.finish();
         	
         }       

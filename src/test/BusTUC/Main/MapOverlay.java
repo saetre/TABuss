@@ -12,6 +12,7 @@ import test.BusTUC.Queries.Browser;
 import test.BusTUC.Stops.BusDeparture;
 import test.BusTUC.Stops.ClosestStopOnMap;
 import test.BusTUC.Database.Database;
+import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.Main.Homescreen.OracleThread;
 
 import android.app.AlertDialog;
@@ -189,6 +190,9 @@ public class MapOverlay extends ItemizedOverlay
 			{
 				myDialog.dismiss();
 				Toast.makeText(context, "Something bad happened.." , Toast.LENGTH_LONG).show();
+				ArrayList <String> err = new ArrayList <String>();
+				err.add(e.toString());
+				SDCard.generateNoteOnSD("errorMapOverlay::RealtimeThread", err, "errors");
 			}
 			return null;
 		}

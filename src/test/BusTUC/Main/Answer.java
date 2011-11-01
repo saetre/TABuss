@@ -85,15 +85,24 @@ public class Answer extends  ListActivity{
 
 			value = extras.getParcelableArrayList("test");	
 			// Parse extracted into answer
+			try
+			{
 			ArrayList <String> text = Helpers.parseData(value);
 			ad = new ArrayAdapter<String>(this, R.layout.list_item, text);
 			setListAdapter(ad);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				ArrayList <String> err = new ArrayList <String>();
+				err.add(e.toString());
+				SDCard.generateNoteOnSD("errorAnswerParseData", err, "errors");
+			}
+			
 		}
 		else
 		{
-			ArrayList<String> transf = new ArrayList <String>();
-			transf.add("Du vil ikke rekke overgangen. Søker etter ny...");
-			ad = new ArrayAdapter<String>(this,R.layout.list_item, transf);
+			this.finish();
 		}
 
 
@@ -143,8 +152,11 @@ public class Answer extends  ListActivity{
 			catch(Exception e)
 			{
 				myDialog.dismiss();
-
+				ArrayList <String> err = new ArrayList <String>();
+				err.add(e.toString());
+				SDCard.generateNoteOnSD("errorMapThreadFromAnswer", err, "errors");
 				Toast.makeText(context, "Something shitty happened", Toast.LENGTH_LONG).show();
+				
 			}
 			return null;
 		}

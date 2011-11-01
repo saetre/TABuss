@@ -74,7 +74,7 @@ public class Homescreen extends Activity {
 	//private EditText editText;
 	// Global variables that need to be accessed from other contexts
 	// No prob to let them stay public static, as they anyway are accessed by the same process
-	public static String[][] gpsCords;  // Array containing bus stops
+	public static String[][] gpsCords, gpsCords2;  // Array containing bus stops
 	public static Location currentlocation, busLoc; // Location objects
 	public static HashMap<Integer,HashMap<Integer,Location>> locationsArray; // GPS coordinates
 	public static Browser k_browser; // Object doing communation with bussTUC and Real-Time system
@@ -180,7 +180,8 @@ public class Homescreen extends Activity {
 
 		// Gets the coordinates from the bus XML file
 		long f = System.nanoTime();              
-		String[] gpsCoordinates = getResources().getStringArray(R.array.coords3);      
+		String[] gpsCoordinates = getResources().getStringArray(R.array.coords3);    
+		String [] gpsCoordinates2 = getResources().getStringArray(R.array.coords2);
 
 		// creates a HashMap containing all the location objects 
 
@@ -189,6 +190,7 @@ public class Homescreen extends Activity {
 		// 2 - lat
 		// 3 - long
 		gpsCords = GPS.formatCoordinates(gpsCoordinates);
+		gpsCords2 = GPS.formatCoordinates(gpsCoordinates2);
 		long s = System.nanoTime() - f;
 		System.out.println("TIME SPENT FINDING LOCATION: " + s /(1000000000.0));
 		// Autocompletion
@@ -332,7 +334,7 @@ public class Homescreen extends Activity {
 				// creates a HashMap with all the relevant bus stops
 				//Sort sort = new Sort();
 
-				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,3,false);
+				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords2, provider, currentlocation, 1000,3,false);
 				busStops = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,10, true);
 
 
@@ -578,6 +580,9 @@ public class Homescreen extends Activity {
 			{
 				myDialog.dismiss();
 				e.printStackTrace();
+				ArrayList <String> err = new ArrayList <String>();
+				err.add(e.toString());
+				SDCard.generateNoteOnSD("errorHomeScreen::ORACLETHREAD", err, "errors");
 			}
 			return null;
 		}
@@ -611,6 +616,7 @@ public class Homescreen extends Activity {
 			{
 				myDialog.dismiss();
 				Toast.makeText(context, "No connection", Toast.LENGTH_LONG).show();
+				
 			}
 
 
@@ -635,8 +641,18 @@ public class Homescreen extends Activity {
 		@Override
 		protected Void doInBackground(Void... params)
 		{
+			try
+			{
 			intent = new Intent(getApplicationContext(), BusTUCApp.class);
 			context.startActivity(intent);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				ArrayList <String> err = new ArrayList <String>();
+				err.add(e.toString());
+				SDCard.generateNoteOnSD("errorHomeScreen:MapTHREAD", err, "errors");
+			}
 			return null;
 		}
 
@@ -695,6 +711,7 @@ public class Homescreen extends Activity {
 			}
 			catch(Exception e)
 			{
+				e.printStackTrace();
 				myDialog.dismiss();
 
 			}
@@ -704,8 +721,7 @@ public class Homescreen extends Activity {
 		@Override
 		protected void onPostExecute(Void unused)
 		{
-			locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
-
+			if(locationManager != null)locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
 			myDialog.dismiss();
 
 		}
