@@ -119,7 +119,7 @@ public class Calculate {
 			if(routelist[i].isTransfer() || routelist.length == 1) return routelist;
 			else
 			{
-				
+
 				if(i==0)
 				{
 					temp = routelist[i];				
@@ -134,11 +134,14 @@ public class Calculate {
 						if(temp.getWalkingDistance() > routelist[i].getWalkingDistance() && !fixed.contains(routelist[i]))fixed.add(routelist[i]);
 						else if(temp.getWalkingDistance() < routelist[i].getWalkingDistance() && !fixed.contains(temp)) fixed.add(temp);
 					}
-				
+
 					else
 					{
-						System.out.println("ADDED IN ELSE");
-						fixed.add(routelist[i]);
+						if(!fixed.contains(temp))
+						{
+							System.out.println("ADDED IN ELSE " + temp.getBusStopName());
+							fixed.add(temp);
+						}
 					}
 				}
 
@@ -207,7 +210,7 @@ public class Calculate {
 	{
 
 		Route[] rs = routeSuggestion; 
-		
+
 		for(int i=0; i<rs.length; i++)
 		{
 			System.out.println("Before: " + rs[i].getTotalTime());
