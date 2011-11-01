@@ -639,7 +639,7 @@ public class Helpers
 
 					final BusDeparture tempNextBus = tempBrowser.specificRequest(tId,wLine);     
 					//  	System.out.println("Nextbus: " + nextBus);
-
+				
 					// If route object contains same bus stop nr as data received from real time
 					if(tempNextBus.getLine() == tempRoutes[j].getBusNumber())
 					{

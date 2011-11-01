@@ -81,7 +81,7 @@ public class Homescreen extends Activity {
 	//public static HashMap <Integer,Location> tSetAllStops;
 	public static ClosestStopOnMap [] cl; // Object containing geopoint of closest stops. 
 	public static 	HashMap realTimeCodes; 
-	
+
 	DatabaseHelper dbHelper;
 	// End of global variables
 	AutoCompleteTextView textView;
@@ -164,8 +164,8 @@ public class Homescreen extends Activity {
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		
-		
+
+
 		context = this;
 		dbHelper=new DatabaseHelper(context);
 		int c= dbHelper.getQueryCount();
@@ -209,7 +209,7 @@ public class Homescreen extends Activity {
 
 		// Create locationmanager/listener, and retrieve real-time codes
 		new StartUpThread(context).execute();
-		
+
 		/*  try {
 			System.out.println("OVERSATT: " +Helpers.translateRequest("skole"));
 		} catch (Exception e) {
@@ -236,7 +236,7 @@ public class Homescreen extends Activity {
 		});
 
 		createButtonListeners();
-		
+
 
 
 	}
@@ -257,7 +257,7 @@ public class Homescreen extends Activity {
 
 				}
 			});
-			
+
 			// If long click, delete item
 			shortcutButtons.setOnLongClickListener(new OnLongClickListener()
 			{
@@ -308,7 +308,7 @@ public class Homescreen extends Activity {
 				// currentlocation.setLatitude(63.430487);
 				//currentlocation.setLongitude(10.395061);
 				//getSuggestionBasedOnPosition();
-				
+
 				Log.v("currentLoc","PROV:LOC=" + currentlocation.getLatitude()+":"+currentlocation.getLongitude());
 
 				long f = System.nanoTime();              
@@ -324,7 +324,7 @@ public class Homescreen extends Activity {
                 }*/
 
 				// END TEST///////////////
-			//	long s = System.nanoTime() - f;
+				//	long s = System.nanoTime() - f;
 				long first = System.nanoTime();
 				//  System.out.println("TIME SPENT FINDING LOCATION: " + s /(1000000000.0));
 				//System.out.println("REALTIMEX: " + realTimeCodes.size());
@@ -334,8 +334,8 @@ public class Homescreen extends Activity {
 
 				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,3,false);
 				busStops = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,10, true);
-		
-				
+
+
 				long second = System.nanoTime() - first;
 				System.out.println("TIME SPENT SORTING SHIT: " + second /(1000000000.0));
 				int numStops = busStops.size();
@@ -415,7 +415,7 @@ public class Homescreen extends Activity {
 		}
 	}
 
-/*	private void startVoiceRecognitionActivity()
+	/*	private void startVoiceRecognitionActivity()
 	{
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -423,7 +423,7 @@ public class Homescreen extends Activity {
 		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Voice recognition Demo...");
 		startActivityForResult(intent, REQUEST_CODE);
 	}
-*/
+	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
@@ -501,23 +501,23 @@ public class Homescreen extends Activity {
 			{
 				holder.add(cl[i]);
 			}
-    		Intent intent = new Intent(context, RealTimeList.class);
-    		intent.putParcelableArrayListExtra("test", holder); 
-    		context.startActivity(intent);
-        	Long newTime = System.nanoTime() - time;
-     		System.out.println("TIME LOOKUP: " +  newTime/1000000000.0);
+			Intent intent = new Intent(context, RealTimeList.class);
+			intent.putParcelableArrayListExtra("test", holder); 
+			context.startActivity(intent);
+			Long newTime = System.nanoTime() - time;
+			System.out.println("TIME LOOKUP: " +  newTime/1000000000.0);
 
 			return false;
-			
-			
+
+
 		case R.id.history:
-    		Intent history = new Intent(context, History.class);
-    		context.startActivity(history);
+			Intent history = new Intent(context, History.class);
+			context.startActivity(history);
 			return false;
 
 		case R.id.speech:
 			return false;
-		//	startVoiceRecognitionActivity();
+			//	startVoiceRecognitionActivity();
 
 		case R.id.about:
 			Intent about = new Intent(context, About.class);
@@ -528,7 +528,7 @@ public class Homescreen extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 
 
 	// Thread classes //
@@ -552,7 +552,7 @@ public class Homescreen extends Activity {
 			long time = System.nanoTime();
 			try
 			{
-				
+
 				double lat = currentlocation.getLatitude();
 				double lon = currentlocation.getLongitude();
 				Cursor areas = dbHelper.getAreaId(lat, lon);
@@ -567,10 +567,10 @@ public class Homescreen extends Activity {
 				a.moveToFirst();
 				System.out.println(a.getDouble(1)+ "-" + a.getDouble(2));
 				dbHelper.AddQuery(new Query(area ,textView.getText().toString(), Helpers.minutesFromDate(new Date()), new Date().getDay()));
-				
-				
+
+
 				buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
-			  //buf = Helpers.runServer(textView.getText().toString(), k_browser, realTimeCodes, currentlocation);
+				//buf = Helpers.runServer(textView.getText().toString(), k_browser, realTimeCodes, currentlocation);
 				long newTime = System.nanoTime() - time;
 				System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 			}
@@ -655,8 +655,8 @@ public class Homescreen extends Activity {
 
 		}
 	}  
-	
-	
+
+
 	class StartUpThread extends AsyncTask<Void, Void, Void>
 	{
 		private Context context;    
@@ -671,7 +671,15 @@ public class Homescreen extends Activity {
 		@Override
 		protected Void doInBackground(Void... params)
 		{
-			createLocationManager();
+			try
+			{
+				createLocationManager();
+
+			}
+			catch(Exception e)
+			{
+				myDialog.dismiss();
+			}
 			return null;
 		}
 
@@ -679,22 +687,31 @@ public class Homescreen extends Activity {
 		protected void onPreExecute()
 		{
 
-			myDialog = ProgressDialog.show(context, "Loading!", "Laster holdeplasser");
-			createLocationListener();			
+			try
+			{
+				myDialog = ProgressDialog.show(context, "Loading!", "Laster holdeplasser");
+				createLocationListener();		
+				// Only request updates if > 500 ms and 10 m
+			}
+			catch(Exception e)
+			{
+				myDialog.dismiss();
+
+			}
 
 		}
 
 		@Override
 		protected void onPostExecute(Void unused)
 		{
-			// Only request updates if > 500 ms and 10 m
 			locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
+
 			myDialog.dismiss();
 
 		}
 	}  
-	
-	
+
+
 
 
 	@Override
@@ -731,7 +748,7 @@ public class Homescreen extends Activity {
 	protected void onStart()
 	{
 		super.onStart();
-		
+
 	}
 	@SuppressWarnings("static-access")
 	@Override
@@ -743,7 +760,7 @@ public class Homescreen extends Activity {
 		//	editText.setEnabled(true);
 		textView.setEnabled(true);
 		goButton.setEnabled(true);
-		
+
 		// Sets the restrictions on the location update. 
 		//locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 100, 1, locationListener);
 
@@ -756,11 +773,11 @@ public class Homescreen extends Activity {
 		int time = Helpers.minutesFromDate(new Date());
 		int day = new Date().getDay();
 		Cursor areas = dbHelper.getQueryFromArea(lat, lon, time+120, time-120);
-		
+
 		System.out.println("FOUND "+areas.getCount()+" AREAS COVERING" + lat + " - " +lon);
 		String whereTo = "";
 		ArrayList<Query> destinations = new ArrayList<Query>();
-		
+
 		if(areas.getCount()>0){
 			areas.moveToFirst();
 			while(!areas.isLast()){
@@ -777,7 +794,7 @@ public class Homescreen extends Activity {
 			q.setEuclideanDistance(time, day);
 		}
 		Collections.sort(destinations);
-		
+
 		for(Query q : destinations){
 			System.out.println(q.toString());
 		}
@@ -787,7 +804,7 @@ public class Homescreen extends Activity {
 		//{ 
 		//	System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue()); 
 		//}
-		
+
 		Toast.makeText(context, "Jeg tror du vil til: " + whereTo, Toast.LENGTH_LONG).show();
 	}
 
@@ -842,20 +859,20 @@ public class Homescreen extends Activity {
 				float deltaY = downY - upY;
 
 				// swipe horizontal?
-						if(Math.abs(deltaX) > MIN_DISTANCE){
-							// left or right
-							if(deltaX < 0) { this.onLeftToRightSwipe(); return true; }
-							if(deltaX > 0) { this.onRightToLeftSwipe(); return true; }
-						} else { Log.i(logTag, "Swipe was only " + Math.abs(deltaX) + " long, need at least " + MIN_DISTANCE); }
+				if(Math.abs(deltaX) > MIN_DISTANCE){
+					// left or right
+					if(deltaX < 0) { this.onLeftToRightSwipe(); return true; }
+					if(deltaX > 0) { this.onRightToLeftSwipe(); return true; }
+				} else { Log.i(logTag, "Swipe was only " + Math.abs(deltaX) + " long, need at least " + MIN_DISTANCE); }
 
-						// swipe vertical?
-						if(Math.abs(deltaY) > MIN_DISTANCE){
-							// top or down
-							if(deltaY < 0) { this.onTopToBottomSwipe(); return true; }
-							if(deltaY > 0) { this.onBottomToTopSwipe(); return true; }
-						} else { Log.i(logTag, "Swipe was only " + Math.abs(deltaX) + " long, need at least " + MIN_DISTANCE); }
+				// swipe vertical?
+				if(Math.abs(deltaY) > MIN_DISTANCE){
+					// top or down
+					if(deltaY < 0) { this.onTopToBottomSwipe(); return true; }
+					if(deltaY > 0) { this.onBottomToTopSwipe(); return true; }
+				} else { Log.i(logTag, "Swipe was only " + Math.abs(deltaX) + " long, need at least " + MIN_DISTANCE); }
 
-						return true;
+				return true;
 			}
 			}
 			return false;
