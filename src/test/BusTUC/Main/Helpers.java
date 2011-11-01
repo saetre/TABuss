@@ -305,7 +305,7 @@ public class Helpers
 					int arrivalTimeHours = Integer.parseInt(value.get(i-1).getArrivalTime().substring(0, 2));
 					int arrivalTimeMinutes = Integer.parseInt(value.get(i-1).getArrivalTime().substring(2,4))+ (arrivalTimeHours * 60);
 					int newHours = (arrivalTimeMinutes / 60);
-					int newMinutes = (arrivalTimeMinutes) %60;
+					int newMinutes = ((arrivalTimeMinutes) %60) + Integer.parseInt(value.get(i-1).getTravelTime());
 					StringBuffer buf = new StringBuffer("" + newMinutes);
 					if(buf.length() == 1) buf.insert(0, "0");
 					String newTime = String.valueOf(newHours) + String.valueOf(buf.toString());
