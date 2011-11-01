@@ -357,7 +357,7 @@ public class Browser
 			}
 		}
 		start2 = start2 + ")";
-		String wanted_string = start2 + additional +  " til " + stop; 
+		String wanted_string = start2 + additional ; 
 		String wanted_string2 = "fra gl�shaugen til nardo";
 		Log.v("BUSTUCSTR", "wanted_string:"+wanted_string);
 		HttpPost m_post= new HttpPost("http://www.idi.ntnu.no/~tagore/cgi-bin/busstuc/busq.cgi");
@@ -838,6 +838,7 @@ public class Browser
 						//System.out.println("IF Wanted line: " +wantedLine + " t.line: " + t.line);
 						foundWantedLine = true;
 						wantedBusStop = t;
+						System.out.println("FOUND WANTED LINE: " + t.line);
 					}
 
 				}
