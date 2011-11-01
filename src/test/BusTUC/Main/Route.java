@@ -110,9 +110,9 @@ public class Route implements Comparable<Route>, Parcelable
 
 	@Override
 	public int compareTo( Route otherRoute ) {
-		final int BEFORE = 1;
+		final int BEFORE = -1;
 		final int EQUAL = 0;
-		final int AFTER = -1;
+		final int AFTER = 1;
 
 		if ( this == otherRoute ) return EQUAL;
 

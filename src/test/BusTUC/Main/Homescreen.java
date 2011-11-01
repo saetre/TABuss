@@ -309,34 +309,17 @@ public class Homescreen extends Activity {
 				currentlocation = location; 
 				// currentlocation.setLatitude(63.430487);
 				//currentlocation.setLongitude(10.395061);
+			//	10.394555,63.43109
 				//getSuggestionBasedOnPosition();
 
 				Log.v("currentLoc","PROV:LOC=" + currentlocation.getLatitude()+":"+currentlocation.getLongitude());
 
-				long f = System.nanoTime();              
-
-				// creates a HashMap containing all the location objects
-				//locationsArray = Helpers.getLocations(gpsCords,provider, currentlocation);
-				//TEST/////////////////////////////
-				/* HashMap<Integer,Location> testMap = Helpers.testLocations(gpsCords, provider, currentlocation);
-                Object[] keys2 = testMap.keySet().toArray();
-                for(int i=0; i<keys2.length; i++)
-                {
-                	Browser.testRequest(testMap.get(keys2[i]).getProvider(), "Gløshaugen", true);
-                }*/
-
-				// END TEST///////////////
-				//	long s = System.nanoTime() - f;
 				long first = System.nanoTime();
-				//  System.out.println("TIME SPENT FINDING LOCATION: " + s /(1000000000.0));
-				//System.out.println("REALTIMEX: " + realTimeCodes.size());
-				//Log.v("sort","returnedHmap:"+locationsArray.size());	
-				// creates a HashMap with all the relevant bus stops
-				//Sort sort = new Sort();
-
+				
+				// For use with the oracle and the gps2 file
 				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords2, provider, currentlocation, 1000,3,false);
+				// For use with the map, and real-time functionality only
 				busStops = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,10, true);
-
 
 				long second = System.nanoTime() - first;
 				System.out.println("TIME SPENT SORTING SHIT: " + second /(1000000000.0));
@@ -344,11 +327,6 @@ public class Homescreen extends Activity {
 				System.out.println("USING " + numStops + " STOPS");
 				cl = new ClosestStopOnMap[numStops];
 
-				//   Log.v("sort","returnedtSet"+tSetExclude.size());	
-				// adds the closest bus stop as a GeoPoint
-				//int busCounter = 0; 
-				//Object[] keys = tSetAllStops.keySet().toArray();
-				//Arrays.sort(keys);
 				for(int i = 0;i<numStops;i++)
 				{
 					cl[i] = new ClosestStopOnMap(new GeoPoint(
@@ -357,13 +335,7 @@ public class Homescreen extends Activity {
 							(int) busStops.get(i).stopID,
 							busStops.get(i).name);
 
-					//System.out.println("ADDING: " +(int) stops.get(i).stopID + "@"+ stops.get(i).location.getLatitude() +"+"+stops.get(i).location.getLongitude());   
-
 				}
-				//System.out.println("TSET SET: " + tSetExclude.size());
-
-				//og.v("sort","returnedtSet"+tSetExclude.size());	
-				// adds the closest bus stop as a GeoPoint
 
 
 			}
@@ -392,7 +364,8 @@ public class Homescreen extends Activity {
 		};
 	}
 
-	private void createLocationManager() {
+	private void createLocationManager() 
+	{
 		try
 		{
 			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);

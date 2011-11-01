@@ -168,16 +168,13 @@ public class Helpers
 		return updatedList;
 
 	}
-
-	// Will parse the route list received, and return text list
 	public static ArrayList <String> parseData(ArrayList <Route> value)
 	{
 		ArrayList <String> text = new ArrayList <String>();
-		boolean noTransfer = true;
+		System.out.println("VALUE SIZE: " + value.size());
 		for(int i=0; i<value.size(); i++)
 		{
-			System.out.println("FU: " + value.get(i).getBusStopName());
-			if(noTransfer)//(!value.get(i).isTransfer())
+			if(!value.get(i).isTransfer())
 			{
 				if(value.get(i).getWalkingDistance() != 0)
 				{
@@ -187,77 +184,21 @@ public class Helpers
 				else
 				{
 					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+				}
 
-				}
-				if(value.get(i).isTransfer())
-				{
-					noTransfer = false;
-				}
 			}
 			else
-			{
-				System.out.println("Reisetid fra " + value.get(i-1).getBusStopName() +": " + value.get(i-1).getArrivalTime() + " Reisetid: "+ value.get(i-1).getTravelTime() + " og Avgang " + value.get(i).getBusStopName() + " er: "+ value.get(i).getArrivalTime());
-				//   System.out.println("Sammenligner verdier: " + (Integer.parseInt(value.get(i-1).getArrivalTime())+ Integer.parseInt(value.get(i-1).getTravelTime()))+ " og "+ Integer.parseInt(value.get(i).getArrivalTime()));
-				if((Integer.parseInt(value.get(i-1).getArrivalTime())+ Integer.parseInt(value.get(i-1).getTravelTime()))>= Integer.parseInt(value.get(i).getArrivalTime()))
-				{
-					System.out.println("Prøver å finne ny");
-					text.set(i-1,text.get(i-1) + "\n"+(i+1)+ ": Oh shit, bussen har alt dratt, vi prøver igjen");		      		
-					int hours = Integer.parseInt(value.get(i).getArrivalTime().substring(0,2));
-					int minutes =Integer.parseInt(value.get(i).getArrivalTime().substring(2,4)) + (hours *60);
-					// Time it takes from first to second stop +1 + the travel time to third destination
-					int minutesPlusPrev = Integer.parseInt(value.get(i-1).getTravelTime())+1 + Integer.parseInt(value.get(i).getTravelTime());		      			  
-					int newHours = (minutes + minutesPlusPrev) /60;
-					int newMinutes = (minutes + minutesPlusPrev) %60;
-					StringBuffer buf = new StringBuffer("" + newMinutes);
-					if(buf.length() == 1) buf.insert(0, "0");
-					String newTime = String.valueOf(newHours) + String.valueOf(buf.toString());
-					String query = "etter " + newTime;
-					String destination = value.get(i).getDestination();
-					BusStop stop = new BusStop(null, 0, value.get(i).getBusStopNumber(), value.get(i).getBusStopName());
-					ArrayList <BusStop> newList = new ArrayList <BusStop>();
-					newList.add(stop);
-					// Run new query
-					try
-					{
-						ArrayList <Route> routes = Helpers.runString(destination, newList, Homescreen.k_browser, Homescreen.realTimeCodes, query);
-						ArrayList <Route> finalRoutes = new ArrayList <Route>();
-						// Assure that no routes leave before we arrive at the stop
-						for(int j =0; j<routes.size(); j++)
-						{
-							if(Integer.parseInt(value.get(i-1).getArrivalTime()) < Integer.parseInt(routes.get(j).getArrivalTime()))
-							{
-								// Add to final list
-								finalRoutes.add(routes.get(j));
-							}
-						}
-						for(int j=0; j<finalRoutes.size(); j++)
-						{
+			{			
 
-							text.set(i-1,text.get(i-1) + "\n"+((i+1) + ": Vi fant pokker meg en buss! " + "Ta buss: " + finalRoutes.get(j).getBusNumber()+" fra "+finalRoutes.get(j).getBusStopName()+" klokken "+finalRoutes.get(j).getArrivalTime()+". Du vil nå "+finalRoutes.get(j).getDestination()+" ca "+finalRoutes.get(j).getTravelTime()+ " minutter senere.\n"));
-						}
-						System.out.println("RETURN TRANSF");
-						return text;
-					}
-					catch(Exception e)
-					{
-						e.printStackTrace();
-						ArrayList <String> err = new ArrayList <String>();
-						err.add(e.toString());
-						SDCard.generateNoteOnSD("errorParseDataTransf", err, "errors");
-					}
+				text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+ " klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 
-				}
-				else
-				{
-
-					text.set(i-1, text.get(i-1)+ "\n" +(i+1)+": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+ " klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
-				}
 			}
 		}
 		System.out.println("RETURN END");
 		return text;
 
-	}	
+	}
+
 
 
 	/*
@@ -312,6 +253,77 @@ public class Helpers
 		return routes;
 	}
 
+	public static ArrayList <Route> handleMissedTransfer(ArrayList <Route> value)
+	{
+		ArrayList <Route> finalRoutes = new ArrayList <Route>();
+		boolean noTransfer = true;
+		for(int i=0; i<value.size(); i++)
+		{
+			if(noTransfer)
+			{
+				if(value.get(i).isTransfer())
+				{
+					noTransfer = false;
+				}
+				else return value;
+			}
+			else
+			{
+				System.out.println("Reisetid fra " + value.get(i-1).getBusStopName() +": " + value.get(i-1).getArrivalTime() + " Reisetid: "+ value.get(i-1).getTravelTime() + " og Avgang " + value.get(i).getBusStopName() + " er: "+ value.get(i).getArrivalTime());
+				//   System.out.println("Sammenligner verdier: " + (Integer.parseInt(value.get(i-1).getArrivalTime())+ Integer.parseInt(value.get(i-1).getTravelTime()))+ " og "+ Integer.parseInt(value.get(i).getArrivalTime()));
+				if((Integer.parseInt(value.get(i-1).getArrivalTime())+ Integer.parseInt(value.get(i-1).getTravelTime()))>= Integer.parseInt(value.get(i).getArrivalTime()))
+				{
+					System.out.println("PR�VER � FINNE NY");
+					int arrivalTime = Integer.parseInt(value.get(i-1).getArrivalTime()) + Integer.parseInt(value.get(i-1).getTravelTime());
+					String departureStop = value.get(i).getBusStopName();
+					String destination = value.get(i).getDestination();
+					String query ="fra "+ departureStop+","+  "til "+ destination + " etter " + arrivalTime;
+
+					BusStop stop = new BusStop(null, 0, value.get(i).getBusStopNumber(), value.get(i).getBusStopName());
+					ArrayList <BusStop> newList = new ArrayList <BusStop>();
+					newList.add(stop);
+					// Run new query
+					try
+					{
+						// Remove route we won't catch anyway
+						value.remove(value.get(i));
+						ArrayList <Route> routes = Helpers.runString(destination, newList, Homescreen.k_browser, Homescreen.realTimeCodes, query);						
+						finalRoutes = new ArrayList <Route>();
+						// Assure that no routes leave before we arrive at the stop
+						for(int j =0; j<routes.size(); j++)
+						{
+							// Add to final list
+							finalRoutes.add(routes.get(j));
+
+						}
+						System.out.println("FINAL ROUTES SIZE: " + finalRoutes.size());
+						for(int j=0; j<finalRoutes.size(); j++)
+						{
+							System.out.println("FINAL ROUTES: " + finalRoutes.get(j).getBusNumber());
+						}
+						value.addAll(finalRoutes);
+						for(int j=0; j<value.size(); j++)
+						{
+							System.out.println("RETURN ROUTES: " + value.get(j).getBusNumber());
+						}
+						return value;
+
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
+						ArrayList <String> err = new ArrayList <String>();
+						err.add(e.toString());
+						SDCard.generateNoteOnSD("errorParseDataTransf", err, "errors");
+					}
+
+				}
+
+			}
+		}
+		return value;
+	}
+
 
 	/*
 	 * Will run a query directly towards BussTUC
@@ -347,25 +359,21 @@ public class Helpers
 					Log.v("manipulatedString","New JSON:"+jsonSubString);
 					int wantedBusStop = 0;  
 					Calculate calculator = new Calculate();           
-
 					// Create routes based on jsonSubString
 					Route[] routes = createJSON(jsonSubString, calculator);
-
 					System.out.println("SETTING WALKING DIST");
 					// Set walking dist
 					Helpers.setWalkingDistance(routes, tSetExclude);
-
 					calculator.printOutRoutes("BEFORE",routes, false);
-
 					finalRoutes = calculator.suggestRoutes(routes);
 					calculator.printOutRoutes("AFTER",finalRoutes, false);
 					// Compute real time
 					returnRoutes =  computeRealTime(finalRoutes, routes,  realTimeCodes, k_browser, false);
-					return returnRoutes;
+					ArrayList <Route> fixedRealTime = handleMissedTransfer(returnRoutes);
+					return fixedRealTime;
 
 				}
 			}
-			//}
 			catch(Exception e)
 			{
 				e.printStackTrace();
@@ -658,26 +666,14 @@ public class Helpers
 
 					final BusDeparture tempNextBus = tempBrowser.specificRequest(tId,wLine);     
 					//  	System.out.println("Nextbus: " + nextBus);
+					int tempBusArrival = Integer.parseInt(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes()));
+					int tempRouteArrival= Integer.parseInt(tempRoutes[j].getArrivalTime());
 
-					// If route object contains same bus stop nr as data received from real time
-					if(tempNextBus.getLine() == tempRoutes[j].getBusNumber())
+					// If not part of a transfer query, i.e new query based on not reaching or bus
+					if(!a_transfer)
 					{
-						int tempBusArrival = Integer.parseInt(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes()));
-						int tempRouteArrival= Integer.parseInt(tempRoutes[j].getArrivalTime());
-						// If real-time data leads to delayed route, update
-						if(tempBusArrival > tempRouteArrival || !a_transfer)
-						{
-							tempRoutes[j].setArrivalTime(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())+"");
-							System.out.println("Arrival Time: " + tempRoutes[j].getArrivalTime());
-
-						}
-
-					}
-
-					// Else use oracle answer, if line is not found
-					else
-					{
-						System.out.println("NOT FOUND REAL TIME " + tempRoutes[j].getBusNumber() + "  " + tempRoutes[j].getArrivalTime() );
+						tempRoutes[j].setArrivalTime(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())+"");
+						System.out.println("Arrival Time: " + tempRoutes[j].getArrivalTime());
 					}
 					// Set total time for routes
 					int k_totalTime = calculator.calculateTotalTime(tempRoutes[j].getArrivalTime(), tempRoutes[j].getTravelTime());
