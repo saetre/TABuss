@@ -481,7 +481,7 @@ public class Browser
 
 		httpclient.getConnectionManager().shutdown(); //shut down the connection
 		//  return result;
-		Log.v("lengt","l:"+result.length);
+		//Log.v("lengt","l:"+result.length);
 		String str1 = new String(result);
 		Log.v("string",str1);
 		return str1; 
@@ -724,7 +724,7 @@ public class Browser
 
 					BusDeparture t = new BusDeparture();
 					t.line = j_a.getJSONObject(i).getInt("descrizioneLinea");
-					SimpleDateFormat formatter = new SimpleDateFormat("d/M/y HH:mm"); 
+					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm"); 
 					Date date = (Date)formatter.parse(j_a.getJSONObject(i).getString("orario"));
 					t.arrivalTime = date;
 					System.out.println("FOUND HOURS: " + t.arrivalTime.getHours());
@@ -808,7 +808,7 @@ public class Browser
 					//System.out.println("In for-loop j_a");
 					t = new BusDeparture();
 					t.line = j_a.getJSONObject(i).getInt("descrizioneLinea");
-					SimpleDateFormat formatter = new SimpleDateFormat("d/M/y HH:mm"); 
+					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm"); 
 					Date date = new Date();
 					try {
 						date = (Date)formatter.parse(j_a.getJSONObject(i).getString("orario"));

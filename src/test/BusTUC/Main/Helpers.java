@@ -172,11 +172,18 @@ public class Helpers
 	{
 		ArrayList <String> text = new ArrayList <String>();
 		System.out.println("VALUE SIZE: " + value.size());
+		boolean isTransfer = false;
 		for(int i=0; i<value.size(); i++)
 		{
 			if(!value.get(i).isTransfer())
 			{
-				if(value.get(i).getWalkingDistance() != 0)
+				if(isTransfer)
+				{
+					System.out.println("I " + i);
+					text.add((i+1) + ": " +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+
+				}
+				else if(value.get(i).getWalkingDistance() != 0)
 				{
 					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
@@ -188,9 +195,16 @@ public class Helpers
 
 			}
 			else
-			{			
-
-				text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+ " klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+			{		
+				if(!isTransfer)
+				{
+					text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+ " klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+				}
+				else
+				{
+					text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+				}
+				isTransfer = true;
 
 			}
 		}
@@ -213,7 +227,7 @@ public class Helpers
 		try
 		{
 			returnRoutes = Helpers.setTimeForRoutes(foundRoutes, realTimeCodes, k_browser, calculator, afterTransfer);
-
+			if(returnRoutes == null) return null;
 			calculator.printOutRoutes("AFTERREALTIME",foundRoutes, true);
 			if(foundRoutes[0].isTransfer())
 			{
@@ -288,7 +302,14 @@ public class Helpers
 				if((Integer.parseInt(value.get(i-1).getArrivalTime())+ Integer.parseInt(value.get(i-1).getTravelTime()))>= Integer.parseInt(value.get(i).getArrivalTime()))
 				{
 					System.out.println("PR�VER � FINNE NY");
-					int arrivalTime = Integer.parseInt(value.get(i-1).getArrivalTime()) + Integer.parseInt(value.get(i-1).getTravelTime());
+					int arrivalTimeHours = Integer.parseInt(value.get(i-1).getArrivalTime().substring(0, 2));
+					int arrivalTimeMinutes = Integer.parseInt(value.get(i-1).getArrivalTime().substring(2,4))+ (arrivalTimeHours * 60);
+					int newHours = (arrivalTimeMinutes / 60);
+					int newMinutes = (arrivalTimeMinutes) %60;
+					StringBuffer buf = new StringBuffer("" + newMinutes);
+					if(buf.length() == 1) buf.insert(0, "0");
+					String newTime = String.valueOf(newHours) + String.valueOf(buf.toString());
+					String arrivalTime = newTime;
 					String departureStop = value.get(i).getBusStopName();
 					String destination = value.get(i).getDestination();
 					String query ="fra "+ departureStop+","+  "til "+ destination + " etter " + arrivalTime;
@@ -663,40 +684,49 @@ public class Helpers
 		long first = System.nanoTime();
 		//BusStops nextBus = new BusStops();
 		ArrayList <Thread> threadList = new ArrayList();
-		for(int i = 0;i<tempRoutes.length;i++)
+		try
 		{
-			int tempId = Integer.parseInt(realTimeCodes.get(tempRoutes[i].getBusStopNumber()).toString());
-			int wantedLine = tempRoutes[i].getBusNumber();
-			final int tId = tempId;
-			final int wLine = wantedLine;
-			System.out.println("WantedLine: " + wantedLine);
-			System.out.println("TMPID: " + tempId);
+			for(int i = 0;i<tempRoutes.length;i++)
+			{
+				int tempId = Integer.parseInt(realTimeCodes.get(tempRoutes[i].getBusStopNumber()).toString());
+				int wantedLine = tempRoutes[i].getBusNumber();
+				final int tId = tempId;
+				final int wLine = wantedLine;
+				System.out.println("WantedLine: " + wantedLine);
+				System.out.println("TMPID: " + tempId);
 
-			final int j = i;
+				final int j = i;
 
-			// Create new threads for sending queries to the real-time system.
-			Thread thread =   new Thread(new Runnable() {
-				public void run() {
+				// Create new threads for sending queries to the real-time system.
 
-					final BusDeparture tempNextBus = tempBrowser.specificRequest(tId,wLine);     
-					//  	System.out.println("Nextbus: " + nextBus);
-					int tempBusArrival = Integer.parseInt(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes()));
-					int tempRouteArrival= Integer.parseInt(tempRoutes[j].getArrivalTime());
 
-					// If not part of a transfer query, i.e new query based on not reaching or bus
-					if(!a_transfer)
-					{
-						tempRoutes[j].setArrivalTime(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())+"");
-						System.out.println("Arrival Time: " + tempRoutes[j].getArrivalTime());
-					}
-					// Set total time for routes
-					int k_totalTime = calculator.calculateTotalTime(tempRoutes[j].getArrivalTime(), tempRoutes[j].getTravelTime());
-					tempRoutes[j].setTotalTime(k_totalTime); 
-				}    	    
+				Thread thread =   new Thread(new Runnable() {
+					public void run() {
 
-			});
-			thread.start();      	  
-			threadList.add(thread);
+						final BusDeparture tempNextBus = tempBrowser.specificRequest(tId,wLine);     
+						//  	System.out.println("Nextbus: " + nextBus);
+						int tempBusArrival = Integer.parseInt(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes()));
+						int tempRouteArrival= Integer.parseInt(tempRoutes[j].getArrivalTime());
+
+						// If not part of a transfer query, i.e new query based on not reaching or bus
+						if(!a_transfer)
+						{
+							tempRoutes[j].setArrivalTime(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())+"");
+							System.out.println("Arrival Time: " + tempRoutes[j].getArrivalTime());
+						}
+						// Set total time for routes
+						int k_totalTime = calculator.calculateTotalTime(tempRoutes[j].getArrivalTime(), tempRoutes[j].getTravelTime());
+						tempRoutes[j].setTotalTime(k_totalTime); 
+					}    	    
+
+				});
+				thread.start();      	  
+				threadList.add(thread);
+			}
+		}
+		catch(Exception e)
+		{
+			return finalRoutes;
 		}
 
 		System.out.println("NUM THREADS: " + threadList.size());

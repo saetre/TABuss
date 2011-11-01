@@ -95,8 +95,16 @@ public class Calculate {
 					routeSuggestions[i].setDestination(json_arr.getJSONObject(i).getString("destination"));
 					routeSuggestions[i].setTravelTime(json_arr.getJSONObject(i).getString("duration"));
 					routeSuggestions[i].setBusNumber(Integer.parseInt(json_arr.getJSONObject(i).getString("busnumber")));
+					// Fix arrival time, if before 10 am
+					if(routeSuggestions[i].getArrivalTime().length() == 3)
+					{
+						routeSuggestions[i].setArrivalTime("0"+routeSuggestions[i].getArrivalTime());
+					}
+
 				}
 			}
+			
+			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			Log.v("jsonError","e:"+e.toString());
@@ -179,6 +187,8 @@ public class Calculate {
 		int tt = 0; 
 		int k_tt = Integer.parseInt(totalTime);
 		Date now = new Date(); 
+		if(arrival.length() == 3) arrival = "0" + arrival;
+		System.out.println("ARRIVAL: " + arrival);
 		String hours = arrival.substring(0, 2);
 		//	 Log.v("HOURS","hours:"+hours);
 		String minutes = arrival.substring(2, 4);
