@@ -90,7 +90,7 @@ public class Helpers
 			//request = 
 			HttpResponse response = client.execute(request);
 			in = new BufferedReader
-					(new InputStreamReader(response.getEntity().getContent()));
+			(new InputStreamReader(response.getEntity().getContent()));
 
 			String line = "";
 			String NL = System.getProperty("line.separator");
@@ -213,15 +213,29 @@ public class Helpers
 		try
 		{
 			returnRoutes = Helpers.setTimeForRoutes(foundRoutes, realTimeCodes, k_browser, calculator, afterTransfer);
-			calculator.printOutRoutes("AFTERREALTIME",foundRoutes, true);
 
-			Route[] printRoute = calculator.sortByTotalTime(returnRoutes);
-			for(int i=0; i<printRoute.length; i++)
+			calculator.printOutRoutes("AFTERREALTIME",foundRoutes, true);
+			if(foundRoutes[0].isTransfer())
 			{
-				temp.add(printRoute[i]);
+				Route[] printRoute = calculator.sortByTotalTime(returnRoutes);
+				for(int i=0; i<printRoute.length; i++)
+				{
+					temp.add(printRoute[i]);
+				}
+				System.out.println("SIZE OF ARRAYLIST : " + temp.size());
+				return temp;
 			}
-			System.out.println("SIZE OF ARRAYLIST : " + temp.size());
-			return temp;
+			else
+			{
+				for(int i=0; i<foundRoutes.length; i++)
+				{
+					temp.add(foundRoutes[i]);
+				}
+				System.out.println("SIZE OF ARRAYLIST : " + temp.size());
+				return temp;
+			}
+
+
 
 		} catch(Exception e)
 		{
@@ -273,7 +287,7 @@ public class Helpers
 				//   System.out.println("Sammenligner verdier: " + (Integer.parseInt(value.get(i-1).getArrivalTime())+ Integer.parseInt(value.get(i-1).getTravelTime()))+ " og "+ Integer.parseInt(value.get(i).getArrivalTime()));
 				if((Integer.parseInt(value.get(i-1).getArrivalTime())+ Integer.parseInt(value.get(i-1).getTravelTime()))>= Integer.parseInt(value.get(i).getArrivalTime()))
 				{
-					System.out.println("PRØVER Å FINNE NY");
+					System.out.println("PRï¿½VER ï¿½ FINNE NY");
 					int arrivalTime = Integer.parseInt(value.get(i-1).getArrivalTime()) + Integer.parseInt(value.get(i-1).getTravelTime());
 					String departureStop = value.get(i).getBusStopName();
 					String destination = value.get(i).getDestination();
