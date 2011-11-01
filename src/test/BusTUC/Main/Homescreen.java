@@ -180,8 +180,8 @@ public class Homescreen extends Activity {
 
 		// Gets the coordinates from the bus XML file
 		long f = System.nanoTime();              
-		String[] gpsCoordinates = getResources().getStringArray(R.array.coords3);    
-		String [] gpsCoordinates2 = getResources().getStringArray(R.array.coords2);
+		String[] gpsCoordinates = getResources().getStringArray(R.array.coords4);    
+		String [] gpsCoordinates2 = getResources().getStringArray(R.array.coords3);
 
 		// creates a HashMap containing all the location objects 
 
@@ -317,9 +317,9 @@ public class Homescreen extends Activity {
 				long first = System.nanoTime();
 				
 				// For use with the oracle and the gps2 file
-				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords2, provider, currentlocation, 1000,3,false);
+				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,3,false);
 				// For use with the map, and real-time functionality only
-				busStops = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,10, true);
+				busStops = Helpers.getLocationsArray(gpsCords2, provider, currentlocation, 1000,10, true);
 
 				long second = System.nanoTime() - first;
 				System.out.println("TIME SPENT SORTING SHIT: " + second /(1000000000.0));
