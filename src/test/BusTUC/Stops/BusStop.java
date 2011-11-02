@@ -15,6 +15,11 @@ public class BusStop implements Comparable<BusStop>{
 		this.stopID = stopID;
 		this.name = name;
 	}
+	
+	public BusStop()
+	{
+		
+	}
 	public int compareTo(BusStop otherBusStop)
 	{
 		if(this.distance < otherBusStop.distance) return -1;

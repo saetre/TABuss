@@ -76,75 +76,7 @@ public class Browser
 
 	}
 
-	public static String[] testRequest(String start, String stop, Boolean formated)
-	{		
-		String[] html_string = null; 
-		DecimalFormat decifo = new DecimalFormat("###");
-		String start2 = "(";
-
-		// Walking distance in minutes
-		start2 = start2 + start+""+"+"+2; 
-		System.out.println("START TO SATT: " + start2);
-
-
-		start2 = start2 + ")";
-		String wanted_string = start2 + " til " + stop; 
-		Log.v("BUSTUCSTR", "wanted_string:"+wanted_string);
-		HttpPost m_post= new HttpPost("http://www.idi.ntnu.no/~tagore/cgi-bin/busstuc/busq.cgi");
-		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
-		Long time = System.nanoTime();
-		try {
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);  
-			nameValuePairs.add(new BasicNameValuePair("lang", "eng"));  
-			nameValuePairs.add(new BasicNameValuePair("quest", wanted_string)); 
-			UrlEncodedFormEntity url = new UrlEncodedFormEntity(nameValuePairs);	        
-			//  System.out.println("URLENC: " + url.toString());
-			m_post.setEntity(url);  
-			String responseBody = EntityUtils.toString(m_post.getEntity());       
-			// Execute. Will not crash if route info is not found(which is not cool)
-			HttpResponse m_response = m_client.execute(m_post);
-
-			//Log.v("m_response", inputStreamToString(m_response.getEntity().getContent()));
-			System.out.println("Wanted String: " + wanted_string);
-			// Request
-			html_string = httpF.request(m_response);
-			if(html_string[0].equalsIgnoreCase("error"))
-			{
-				System.out.println("STOP NOT WORKING: " +start2 );
-			}
-
-			// Will fail if server is busy or down
-			//Log.v("html_string", "Returned html: " + html_string);
-			//Long newTime = System.nanoTime() - time;
-			//System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +  newTime/1000000000.0);
-		} catch (ClientProtocolException e) {
-			Log.v("CLIENTPROTOCOL EX", "e:"+e.toString());
-		} catch (IOException e) {
-			Log.v("IO EX", "e:"+e.toString()); 
-
-		}
-		catch(NullPointerException e)
-		{
-			Log.v("NULL", "NullPointer");
-		}
-		catch(StringIndexOutOfBoundsException e)
-		{
-			Log.v("StringIndexOutOfBounds", "Exception");
-		}
-		catch(Exception e)
-		{
-			Log.v("FUCKINGTOLARGE", "Exception");
-		}
-
-		/*	for(int i =0; i< html_string.length;i++)
-		{
-			Log.v("HTMLFOO", html_string[i]);
-		}*/
-
-		return html_string; 
-	}
-
-
+	
 
 	public String[] getRequest(HashMap<Integer,Location> startMap, String stop, Boolean formated)
 	{		
@@ -783,6 +715,7 @@ public class Browser
 		JSONObject j_o = null;
 		JSONArray j_a = null;
 
+
 		try {
 			j_o = new JSONObject(result);
 		} catch (JSONException e1) {
@@ -803,12 +736,14 @@ public class Browser
 		{
 			try
 			{
+				
 				//System.out.println("len p� array: " + j_a.length());
 				for (int i = 0; i < j_a.length(); i++){
 					//System.out.println("In for-loop j_a");
 					t = new BusDeparture();
+				
 					t.line = j_a.getJSONObject(i).getInt("descrizioneLinea");
-					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm"); 
+					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm"); 
 					Date date = new Date();
 					try {
 						date = (Date)formatter.parse(j_a.getJSONObject(i).getString("orario"));
@@ -819,7 +754,7 @@ public class Browser
 					t.arrivalTime = date;
 					// System.out.println("Date: " + t.arrivalTime.toString() + " line: " + t.line);
 					String prev = j_a.getJSONObject(i).getString("statoPrevisione");
-
+				
 					if (prev.equalsIgnoreCase("prev")){
 						t.realTime = true;
 					}

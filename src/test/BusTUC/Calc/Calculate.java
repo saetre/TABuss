@@ -184,11 +184,11 @@ public class Calculate {
 	}
 	public int calculateTotalTime(String arrival, String totalTime)
 	{
+
 		int tt = 0; 
 		int k_tt = Integer.parseInt(totalTime);
 		Date now = new Date(); 
 		if(arrival.length() == 3) arrival = "0" + arrival;
-		System.out.println("ARRIVAL: " + arrival);
 		String hours = arrival.substring(0, 2);
 		//	 Log.v("HOURS","hours:"+hours);
 		String minutes = arrival.substring(2, 4);

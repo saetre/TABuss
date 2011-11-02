@@ -116,7 +116,7 @@ public class Helpers
 	// Add dictionary to app. If not stored in SD-card previously, do so
 	public static ArrayList <String> createDictionary(String[][] gpsCords)
 	{
-		ArrayList <String> dictionary = SDCard.getFilesFromSD("dictionary_test");
+		ArrayList <String> dictionary = SDCard.getFilesFromSD("dictionary_finalv2");
 
 		if(dictionary.size() == 0)
 		{
@@ -135,7 +135,7 @@ public class Helpers
 			{
 				//	System.out.println("SECOND: " + dictionary.get(i));
 			}
-			SDCard.generateNoteOnSD("dictionary_test", dictionary, "dictionary"); 
+			SDCard.generateNoteOnSD("dictionary_finalv2", dictionary, "dictionary"); 
 		}
 		return dictionary;
 	}
@@ -180,17 +180,17 @@ public class Helpers
 				if(isTransfer)
 				{
 					System.out.println("I " + i);
-					text.add((i+1)  +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1)  +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 
 				}
 				else if(value.get(i).getWalkingDistance() != 0)
 				{
-					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 
 				else
 				{
-					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 
 			}
@@ -198,11 +198,11 @@ public class Helpers
 			{		
 				if(!isTransfer)
 				{
-					text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+ " klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+ " klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 				else
 				{
-					text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 				isTransfer = true;
 
@@ -297,11 +297,15 @@ public class Helpers
 			}
 			else
 			{
+				Route transfer = value.get(i);
+				Route firstDest = value.get(i-1);
+				int walk = 2;
 				System.out.println("Reisetid fra " + value.get(i-1).getBusStopName() +": " + value.get(i-1).getArrivalTime() + " Reisetid: "+ value.get(i-1).getTravelTime() + " og Avgang " + value.get(i).getBusStopName() + " er: "+ value.get(i).getArrivalTime());
-				//   System.out.println("Sammenligner verdier: " + (Integer.parseInt(value.get(i-1).getArrivalTime())+ Integer.parseInt(value.get(i-1).getTravelTime()))+ " og "+ Integer.parseInt(value.get(i).getArrivalTime()));
-				if((Integer.parseInt(value.get(i-1).getArrivalTime())+ Integer.parseInt(value.get(i-1).getTravelTime()))>= Integer.parseInt(value.get(i).getArrivalTime()))
+				 System.out.println("Sammenligner verdier: " + (Integer.parseInt(value.get(i-1).getArrivalTime())+ Integer.parseInt(value.get(i-1).getTravelTime()) +walk)+ " og "+ (Integer.parseInt(value.get(i).getArrivalTime())));
+			// Assume we neeed minimum two minutes to get to the next bus stop
+				 if((Integer.parseInt(firstDest.getArrivalTime())+ Integer.parseInt(firstDest.getTravelTime()) +walk)>= ( Integer.parseInt(transfer.getArrivalTime())))
 				{
-					System.out.println("PRï¿½VER ï¿½ FINNE NY");
+					System.out.println("PRØVER Å FINNE NY");
 					int arrivalTimeHours = Integer.parseInt(value.get(i-1).getArrivalTime().substring(0, 2));
 					int arrivalTimeMinutes = Integer.parseInt(value.get(i-1).getArrivalTime().substring(2,4))+ (arrivalTimeHours * 60);
 					int newHours = (arrivalTimeMinutes / 60);
@@ -309,7 +313,7 @@ public class Helpers
 					StringBuffer buf = new StringBuffer("" + newMinutes);
 					if(buf.length() == 1) buf.insert(0, "0");
 					String newTime = String.valueOf(newHours) + String.valueOf(buf.toString());
-					String arrivalTime = newTime;
+					int arrivalTime = Integer.parseInt(newTime)+ walk;
 					String departureStop = value.get(i).getBusStopName();
 					String destination = value.get(i).getDestination();
 					String query ="fra "+ departureStop+","+  "til "+ destination + " etter " + arrivalTime;
@@ -560,6 +564,24 @@ public class Helpers
 		}
 		return retList;
 	}
+	
+	/*
+	 * Get all locations parsed into BusStop objects. Used when calculating distance between transfer stops
+	 */
+	public static ArrayList <BusStop> getAllLocations(String[][] k_gpsCords, String provider)
+	{
+		ArrayList <BusStop>busStops = new ArrayList <BusStop>();
+		
+		for(int i=0; i<k_gpsCords.length; i++)
+		{
+			Location tempLocation = new Location(provider);
+			tempLocation.setLatitude(Double.parseDouble(k_gpsCords[i][3]));
+			tempLocation.setLongitude(Double.parseDouble(k_gpsCords[i][2]));
+			busStops.add(new BusStop(tempLocation,0,Integer.parseInt(k_gpsCords[i][0]), k_gpsCords[i][1]));
+
+		}
+		return busStops;
+	}
 
 	public static boolean isInArrayList(String stopname, ArrayList<BusStop> stops){
 		for(BusStop s:stops){
@@ -692,8 +714,6 @@ public class Helpers
 				int wantedLine = tempRoutes[i].getBusNumber();
 				final int tId = tempId;
 				final int wLine = wantedLine;
-				System.out.println("WantedLine: " + wantedLine);
-				System.out.println("TMPID: " + tempId);
 
 				final int j = i;
 
@@ -704,19 +724,16 @@ public class Helpers
 					public void run() {
 
 						final BusDeparture tempNextBus = tempBrowser.specificRequest(tId,wLine);     
-						//  	System.out.println("Nextbus: " + nextBus);
-						int tempBusArrival = Integer.parseInt(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes()));
-						int tempRouteArrival= Integer.parseInt(tempRoutes[j].getArrivalTime());
 
 						// If not part of a transfer query, i.e new query based on not reaching or bus
 						if(!a_transfer)
 						{
 							tempRoutes[j].setArrivalTime(tempNextBus.getArrivalTime().getHours()+""+String.format("%02d",tempNextBus.getArrivalTime().getMinutes())+"");
-							System.out.println("Arrival Time: " + tempRoutes[j].getArrivalTime());
+							int k_totalTime = calculator.calculateTotalTime(tempRoutes[j].getArrivalTime(), tempRoutes[j].getTravelTime());
+							tempRoutes[j].setTotalTime(k_totalTime); 
 						}
 						// Set total time for routes
-						int k_totalTime = calculator.calculateTotalTime(tempRoutes[j].getArrivalTime(), tempRoutes[j].getTravelTime());
-						tempRoutes[j].setTotalTime(k_totalTime); 
+						
 					}    	    
 
 				});

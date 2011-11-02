@@ -75,12 +75,14 @@ public class Homescreen extends Activity {
 	// Global variables that need to be accessed from other contexts
 	// No prob to let them stay public static, as they anyway are accessed by the same process
 	public static String[][] gpsCords, gpsCords2;  // Array containing bus stops
-	public static Location currentlocation, busLoc; // Location objects
-	public static HashMap<Integer,HashMap<Integer,Location>> locationsArray; // GPS coordinates
+	public static Location currentlocation; // Location objects
+	//public static HashMap<Integer,HashMap<Integer,Location>> locationsArray; // GPS coordinates
 	public static Browser k_browser; // Object doing communation with bussTUC and Real-Time system
 	//public static HashMap <Integer,Location> tSetAllStops;
 	public static ClosestStopOnMap [] cl; // Object containing geopoint of closest stops. 
 	public static 	HashMap realTimeCodes; 
+	public static ArrayList <BusStop> allStops;
+	ArrayList<BusStop> busStops, busStopsNoDuplicates;
 
 	DatabaseHelper dbHelper;
 	// End of global variables
@@ -96,7 +98,6 @@ public class Homescreen extends Activity {
 	String provider; // Provider 
 	LocationListener locationListener;
 
-	ArrayList<BusStop> busStops, busStopsNoDuplicates;
 
 	String[] busStop = new String[numButtons];
 	ArrayList <String> favorites;
@@ -169,7 +170,7 @@ public class Homescreen extends Activity {
 		context = this;
 		dbHelper=new DatabaseHelper(context);
 		int c= dbHelper.getQueryCount();
-		this.setTitle("MapApp - "+c+" sÃ¸k gjort");
+		this.setTitle("MapApp - "+c+" Søk gjort");
 		this.setRequestedOrientation(
 				ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.homescreen);
@@ -319,8 +320,9 @@ public class Homescreen extends Activity {
 				// For use with the oracle and the gps2 file
 				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,3,false);
 				// For use with the map, and real-time functionality only
-				busStops = Helpers.getLocationsArray(gpsCords2, provider, currentlocation, 1000,10, true);
-
+				busStops = Helpers.getLocationsArray(gpsCords2, provider, currentlocation, 1000,10, true);				
+				// All stops
+				allStops = Helpers.getAllLocations(gpsCords2, provider);
 				long second = System.nanoTime() - first;
 				System.out.println("TIME SPENT SORTING SHIT: " + second /(1000000000.0));
 				int numStops = busStops.size();
@@ -588,7 +590,7 @@ public class Homescreen extends Activity {
 			else
 			{
 				myDialog.dismiss();
-				Toast.makeText(context, "No connection", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Fant ingen ruter", Toast.LENGTH_LONG).show();
 				
 			}
 
@@ -709,7 +711,6 @@ public class Homescreen extends Activity {
 
 		DialogInterface.OnClickListener dc = new DialogInterface.OnClickListener() 
 		{
-
 			@Override
 			public void onClick(DialogInterface dialog, int which) 
 			{
@@ -744,7 +745,7 @@ public class Homescreen extends Activity {
 	protected void onResume() 
 	{
 		int c= dbHelper.getQueryCount();
-		this.setTitle("MapApp - "+c+" sÃ¸k gjort");
+		this.setTitle("MapApp - "+c+" Søk gjort");
 		super.onResume();
 		//	editText.setEnabled(true);
 		textView.setEnabled(true);

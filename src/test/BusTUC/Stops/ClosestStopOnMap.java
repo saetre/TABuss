@@ -29,6 +29,10 @@ public class ClosestStopOnMap implements Comparable <ClosestStopOnMap>, Parcelab
 		readFromParcel(source);
 
 	}
+	public ClosestStopOnMap()
+	{
+		
+	}
 	
 	public String getStopName()
 	{
