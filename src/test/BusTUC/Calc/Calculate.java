@@ -103,8 +103,8 @@ public class Calculate {
 
 				}
 			}
-			
-			
+
+
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			Log.v("jsonError","e:"+e.toString());
@@ -122,6 +122,7 @@ public class Calculate {
 		ArrayList<Route> fixed = new ArrayList <Route>();
 		System.out.println("RECEIVED SUGGESTROUTES: " + routelist.length);
 		Route temp = null;
+		ArrayList <Route> tempList = new ArrayList <Route>();
 		for(int i=0; i<routelist.length; i++)
 		{
 			if(routelist[i].isTransfer() || routelist.length == 1) return routelist;
@@ -139,23 +140,65 @@ public class Calculate {
 					if(temp.getWalkingDistance() == 0) fixed.add(temp);
 					if(temp.getBusNumber() == routelist[i].getBusNumber())
 					{
-						if(temp.getWalkingDistance() > routelist[i].getWalkingDistance() && !fixed.contains(routelist[i]))fixed.add(routelist[i]);
-						else if(temp.getWalkingDistance() < routelist[i].getWalkingDistance() && !fixed.contains(temp)) fixed.add(temp);
+						if(temp.getWalkingDistance() > routelist[i].getWalkingDistance() && !fixed.contains(routelist[i]))
+						{
+							fixed.add(routelist[i]);
+							
+							System.out.println("Added first if: " + routelist[i].getBusStopName());
+						}
+						else if(temp.getWalkingDistance() < routelist[i].getWalkingDistance() && !fixed.contains(temp))
+						{
+							fixed.add(temp);
+							System.out.println("Added second if: " + temp.getBusStopName());
+						}
 					}
 
 					else
 					{
-						if(!fixed.contains(temp))
+
+						if(i == 1)
 						{
-							System.out.println("ADDED IN ELSE " + temp.getBusStopName());
-							fixed.add(temp);
+							if(!fixed.contains(temp))
+							{
+
+								System.out.println("ADDED IN ELSE " + temp.getBusStopName());
+								fixed.add(temp);
+							}
 						}
-					}
+						else
+						{
+							System.out.println("ELSEFO");
+							for(int j = 0; j< fixed.size(); j++)
+							{
+								System.out.println("Entered loop");
+								if(fixed.get(j).getBusNumber() == routelist[i].getBusNumber())
+								{
+									System.out.println("FIRST IF IN ELSE " + routelist[i]);
+									if(fixed.get(j).getWalkingDistance() > routelist[i].getWalkingDistance() && !fixed.contains(routelist[i]))
+									{
+										fixed.remove(fixed.get(j));
+										fixed.trimToSize();
+										fixed.add(routelist[i]);										
+										System.out.println("Added first if: " + routelist[i].getBusStopName());
+									}
+									
+								}
+								else
+								{
+									
+									fixed.add(routelist[i]);
+									System.out.println("ELSEELSE " + routelist[i].getBusNumber());
+								}
+							}
+						}
+						
 				}
 
 				temp = routelist[i];
 			}
 		}
+		}
+
 		Route[] retArray = new Route[fixed.size()];
 		for(int i=0; i<fixed.size(); i++)
 		{
@@ -220,7 +263,7 @@ public class Calculate {
 	{
 
 		Route[] rs = routeSuggestion; 
-
+		System.out.println("GO SORT");
 		for(int i=0; i<rs.length; i++)
 		{
 			System.out.println("Before: " + rs[i].getTotalTime());

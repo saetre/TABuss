@@ -229,7 +229,7 @@ public class Helpers
 			returnRoutes = Helpers.setTimeForRoutes(foundRoutes, realTimeCodes, k_browser, calculator, afterTransfer);
 			if(returnRoutes == null) return null;
 			calculator.printOutRoutes("AFTERREALTIME",foundRoutes, true);
-			if(foundRoutes[0].isTransfer())
+			if(!foundRoutes[0].isTransfer())
 			{
 				Route[] printRoute = calculator.sortByTotalTime(returnRoutes);
 				for(int i=0; i<printRoute.length; i++)
