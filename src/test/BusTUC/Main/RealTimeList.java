@@ -210,6 +210,7 @@ public class RealTimeList extends ListActivity
 			//ArrayList <BusDeparture> stops = Browser.specificRequestForStop(outgoing);
 			try
 			{
+				System.out.println("OUTGOING: " + outgoing);
 				ArrayList <BusDeparture> stops = Browser.specificRequestForStop(outgoing);
 			//	ArrayList <BusDeparture> stops = Browser.specificRequestForStopServer(line);
 				StringBuffer buf;

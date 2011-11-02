@@ -305,7 +305,8 @@ public class Homescreen extends Activity {
 
 			// This method runs whenever the criteria for change is met. 
 			@Override
-			public void onLocationChanged(Location location) {
+			public void onLocationChanged(Location location) 
+			{
 				System.out.println("LOCATIONLISTENER");
 				currentlocation = location; 
 				// currentlocation.setLatitude(63.430487);
