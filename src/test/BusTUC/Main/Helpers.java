@@ -180,7 +180,7 @@ public class Helpers
 				if(isTransfer)
 				{
 					System.out.println("I " + i);
-					text.add((i+1)  +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1)  +": OVERGANGSFORSLAG " + (i) + ": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 
 				}
 				else if(value.get(i).getWalkingDistance() != 0)
@@ -313,6 +313,7 @@ public class Helpers
 					// Check if hour is past 23. If so, adjust
 					if(newHours > 23) newHours = newHours - 24;
 					int newMinutes = ((arrivalTimeMinutes) %60) + Integer.parseInt(value.get(i-1).getTravelTime());
+					// If minutes have a zero, which is not received, append
 					StringBuffer buf = new StringBuffer("" + newMinutes);
 					if(buf.length() == 1) buf.insert(0, "0");
 					String newTime = String.valueOf(newHours) + String.valueOf(buf.toString());

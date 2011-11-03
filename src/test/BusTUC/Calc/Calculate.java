@@ -123,6 +123,7 @@ public class Calculate {
 		ArrayList<Route> fixed = new ArrayList <Route>();
 		System.out.println("RECEIVED SUGGESTROUTES: " + routelist.length);
 		Route temp = null;
+		boolean check = false;
 		ArrayList <Route> tempList = new ArrayList <Route>();
 		for(int i=0; i<routelist.length; i++)
 		{
@@ -168,27 +169,22 @@ public class Calculate {
 						}
 						else
 						{
-							System.out.println("ELSEFO");
 							for(int j = 0; j< fixed.size(); j++)
 							{
-								System.out.println("Entered loop");
 								if(fixed.get(j).getBusNumber() == routelist[i].getBusNumber())
 								{
-									System.out.println("FIRST IF IN ELSE " + routelist[i]);
 									if(fixed.get(j).getWalkingDistance() > routelist[i].getWalkingDistance() && !fixed.contains(routelist[i]))
 									{
 										fixed.remove(fixed.get(j));
 										fixed.trimToSize();
 										fixed.add(routelist[i]);										
-										System.out.println("Added first if: " + routelist[i].getBusStopName());
 									}
+									else continue;
 
 								}
 								else
 								{
-
-									fixed.add(routelist[i]);
-									System.out.println("ELSEELSE " + routelist[i].getBusNumber());
+									if(!fixed.contains(routelist[i]))fixed.add(routelist[i]);
 								}
 							}
 						}

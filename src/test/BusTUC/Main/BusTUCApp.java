@@ -401,13 +401,13 @@ public class BusTUCApp extends MapActivity
 		}
 
 		//	mapView.getOverlays().clear();
-		Drawable tmp = getResources().getDrawable(R.drawable.s_busstop2);
+		Drawable tmp = getResources().getDrawable(R.drawable.bus);
 		mapOverlay = new MapOverlay(tmp, this,realTimeCodes, Homescreen.cl);        
 
 		for(int i=0; i<Homescreen.cl.length; i++)
 		{
 			System.out.println("ADDING STOP TO MAP: " + Homescreen.cl[i].getStopName());
-			Helpers.addStops(Homescreen.cl[i],getResources().getDrawable(R.drawable.s_busstop2),mapOverlay);
+			Helpers.addStops(Homescreen.cl[i],getResources().getDrawable(R.drawable.bus),mapOverlay);
 		}
 		//temp.clear();
 

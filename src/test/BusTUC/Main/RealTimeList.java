@@ -51,7 +51,7 @@ public class RealTimeList extends ListActivity
 		text.setTextSize(30);
 		text.setTextColor(Color.parseColor("#A3AB19"));
 		text.setTypeface(null,Typeface.BOLD);
-		text.setText("Busstopp n¾r deg");
+		text.setText("Busstopp nær deg");
 		lv.addHeaderView(text);
 		setFromExtras();
 
