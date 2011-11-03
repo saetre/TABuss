@@ -168,6 +168,8 @@ public class Homescreen extends Activity {
 
 
 		context = this;
+		new StartUpThread(context).execute();
+
 		dbHelper=new DatabaseHelper(context);
 		int c= dbHelper.getQueryCount();
 		this.setTitle("MapApp - "+c+" Søk gjort");
@@ -190,6 +192,7 @@ public class Homescreen extends Activity {
 		// 1 - navn
 		// 2 - lat
 		// 3 - long
+		// Create locationmanager/listener, and retrieve real-time codes
 		gpsCords = GPS.formatCoordinates(gpsCoordinates);
 		gpsCords2 = GPS.formatCoordinates(gpsCoordinates2);
 		long s = System.nanoTime() - f;
@@ -210,8 +213,7 @@ public class Homescreen extends Activity {
 		// Bind listeners to favourites
 		updateButtons(busStop,buttons);      
 
-		// Create locationmanager/listener, and retrieve real-time codes
-		new StartUpThread(context).execute();
+	
 
 		/*  try {
 			System.out.println("OVERSATT: " +Helpers.translateRequest("skole"));
@@ -366,7 +368,7 @@ public class Homescreen extends Activity {
 
 
 		};
-	}
+ 	}
 
 	private void createLocationManager() 
 	{
@@ -547,7 +549,7 @@ public class Homescreen extends Activity {
 				System.out.println(a.getDouble(1)+ "-" + a.getDouble(2));
 				dbHelper.AddQuery(new Query(area ,textView.getText().toString(), Helpers.minutesFromDate(new Date()), new Date().getDay()));
 
-
+				System.out.println("Objects hopefully init: " + busStopsNoDuplicates.size() + "  " + k_browser.toString() + "  " + realTimeCodes.size());
 				buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
 				//buf = Helpers.runServer(textView.getText().toString(), k_browser, realTimeCodes, currentlocation);
 				long newTime = System.nanoTime() - time;
@@ -664,15 +666,17 @@ public class Homescreen extends Activity {
 		@Override
 		protected Void doInBackground(Void... params)
 		{
+			
 			try
 			{
 				createLocationManager();
-
+			
 			}
 			catch(Exception e)
 			{
 				myDialog.dismiss();
 			}
+			
 			return null;
 		}
 
@@ -684,6 +688,7 @@ public class Homescreen extends Activity {
 			{
 				myDialog = ProgressDialog.show(context, "Loading!", "Laster holdeplasser");
 				createLocationListener();		
+
 				// Only request updates if > 500 ms and 10 m
 			}
 			catch(Exception e)
