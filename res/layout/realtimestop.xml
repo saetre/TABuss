@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="60sp"
+  android:background="#FFFFFF">
+
+    <TextView
+    	android:background="#FFFFFF" 
+        android:id="@+id/stopName" 
+        android:text="Professor Brochs gate" 
+        android:layout_width="220sp" 
+        android:textColor="#3C434A"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_margin="2sp"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        />
+        
+    <TextView
+    	android:background="#FFFFFF" 
+        android:id= "@+id/toFrom" 
+        android:text="mot sentrum" 
+        android:layout_width="fill_parent" 
+        android:gravity="right"
+        android:textColor="#A3AB19"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_margin="2sp"
+        android:textSize="14sp"
+        />
+</LinearLayout>

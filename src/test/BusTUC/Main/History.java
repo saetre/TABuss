@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -51,6 +52,8 @@ public class History extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstance) {
     	super.onCreate(savedInstance);
+    	  getListView().setBackgroundColor(Color.parseColor("#3C434A"));
+    	  getListView().setBackgroundColor(Color.parseColor("#3C434A"));
           setContentView(R.layout.list);
           deletebutton = (Button)findViewById(R.id.deleteHistory);
           // some code

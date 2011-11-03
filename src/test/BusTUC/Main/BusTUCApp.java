@@ -1,16 +1,11 @@
 package test.BusTUC.Main;
 
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -18,15 +13,11 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import test.BusTUC.R;
-import test.BusTUC.Calc.Calculate;
-import test.BusTUC.Calc.Sort;
 import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.GPS.GPS;
 import test.BusTUC.Path.NavigationDataSet;
 import test.BusTUC.Path.NavigationSaxHandler;
 import test.BusTUC.Path.RouteOverlay;
-import test.BusTUC.Queries.Browser;
-
 import test.BusTUC.Stops.ClosestStopOnMap;
 
 import com.google.android.maps.GeoPoint;
@@ -39,38 +30,17 @@ import com.google.android.maps.MapView.LayoutParams;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class BusTUCApp extends MapActivity 
@@ -90,6 +60,7 @@ public class BusTUCApp extends MapActivity
 	Context context;
 	/** Called when the activity is first created. */
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -141,7 +112,6 @@ public class BusTUCApp extends MapActivity
 		p = new GeoPoint(
 				(int) (Homescreen.currentlocation.getLatitude() * 1E6), 
 				(int) (Homescreen.currentlocation.getLongitude() * 1E6));
-
 
 
 
@@ -470,7 +440,9 @@ public class BusTUCApp extends MapActivity
 	}
 
 
+
 	public class DirectionPathOverlay extends Overlay {
+
 
 		private GeoPoint gp1;
 		private ArrayList <GeoPoint> gp2;

@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/addnew"
-          android:icon="@drawable/options"
           android:title="@string/add_new" />
           
     <item android:id="@+id/map"
-          android:icon="@drawable/paste"
           android:title="@string/map_press" />
           
     <item android:id="@+id/realtime"
-          android:icon="@drawable/busicon"
           android:title="@string/real_time" />
           
     <item android:id="@+id/speech"
-          android:icon="@drawable/paste"
           android:title="@string/t_speech" />
     
     <item android:id="@+id/history"
-          android:icon="@drawable/paste"
           android:title="@string/history" />
     
     <item android:id="@+id/about"
-          android:icon="@drawable/paste"
           android:title="@string/about" />
 
 </menu>

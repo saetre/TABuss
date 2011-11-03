@@ -102,6 +102,7 @@ public class MapOverlay extends ItemizedOverlay
 				foundBusStop = cl[i].getStopName();
 				foundBusStopNr = cl[i].getBusStopID();
 				line = cl[i].getBusStopID();
+				
 				outgoing = Integer.parseInt(realTimeCodes.get(line).toString());
 				AlertDialog.Builder builder = new AlertDialog.Builder(m_Context);
 				String tmp = "" + cl[i].getBusStopID();
@@ -116,7 +117,14 @@ public class MapOverlay extends ItemizedOverlay
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						new RealTimeThread(m_Context).execute();
+						Intent intent = new Intent(m_Context,RealTimeListFromMenu.class);
+						
+						outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(foundBusStopNr).toString());
+						
+						intent.putExtra("stopId", outgoing);
+						intent.putExtra("stopName", foundBusStop);
+						
+						m_Context.startActivity(intent);
 
 					}
 

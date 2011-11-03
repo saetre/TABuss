@@ -632,7 +632,7 @@ public class Helpers
 	// Add bus stop icons to map
 	public static void addStops(ClosestStopOnMap loc, Drawable icon, MapOverlay mapOverlay) 
 	{
-		icon.setBounds(0,0, 15, 15);
+		icon.setBounds(0,0,20,20);
 		OverlayItem item = new OverlayItem(loc.getPoint(), "", null);	
 
 		item.setMarker(icon);

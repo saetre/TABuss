@@ -15,7 +15,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Main.BusTUCApp"/>
-        <activity android:name=".Main.RealTimeList"/>  
+        <activity android:name=".Main.RealTimeList" android:configChanges="keyboardHidden|orientation"/>  
         <activity android:name =".Main.RealTimeListFromMenu"/>
         <activity android:name=".Favourites.Favourite_Act"/>
 		<activity android:name=".Main.Answer" />
