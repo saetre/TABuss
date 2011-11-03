@@ -309,6 +309,9 @@ public class Helpers
 					int arrivalTimeHours = Integer.parseInt(value.get(i-1).getArrivalTime().substring(0, 2));
 					int arrivalTimeMinutes = Integer.parseInt(value.get(i-1).getArrivalTime().substring(2,4))+ (arrivalTimeHours * 60);
 					int newHours = (arrivalTimeMinutes / 60);
+					System.out.println("New hours: " + newHours);
+					// Check if hour is past 23. If so, adjust
+					if(newHours > 23) newHours = newHours - 24;
 					int newMinutes = ((arrivalTimeMinutes) %60) + Integer.parseInt(value.get(i-1).getTravelTime());
 					StringBuffer buf = new StringBuffer("" + newMinutes);
 					if(buf.length() == 1) buf.insert(0, "0");
