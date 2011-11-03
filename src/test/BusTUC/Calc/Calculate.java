@@ -34,10 +34,12 @@ public class Calculate {
 			json_obj = new JSONObject(jsonString);
 			json_arr = new JSONArray(json_obj.getString("alts"));
 			System.out.println("arrayLength: " + json_arr.length());
+
 			if(json_arr != null)
 			{
 				int ArrayLength = json_arr.length(); 
 				Log.v("arraylength","ar:"+ArrayLength);
+				if(ArrayLength == 0) return null;
 				routeSuggestions = new Route[ArrayLength];
 				GeoPoint location;
 				for(int i = 0;i<ArrayLength;i++)
@@ -48,17 +50,16 @@ public class Calculate {
 					routeSuggestions[i].setBusStopNumber(Integer.parseInt(json_arr.getJSONObject(i).getString("busStopNumber")));
 					routeSuggestions[i].setArrivalTime(json_arr.getJSONObject(i).getString("arrivalTime"));
 					routeSuggestions[i].setBusStopName(json_arr.getJSONObject(i).getString("busStopName"));
-					routeSuggestions[i].setDestination(dest);
+					if(routeSuggestions[i].isTransfer() && i<ArrayLength-1)
+					{
+						System.out.println("Found transfer: " + routeSuggestions[i].getBusStopName() + " dest: " + json_arr.getJSONObject(i+1).getString("busStopName"));
+						routeSuggestions[i].setDestination(json_arr.getJSONObject(i+1).getString("busStopName"));
+					}
+					else routeSuggestions[i].setDestination(dest);
 					routeSuggestions[i].setTravelTime(json_arr.getJSONObject(i).getString("travelTime"));
 					routeSuggestions[i].setBusNumber(Integer.parseInt(json_arr.getJSONObject(i).getString("busNumber")));
 					routeSuggestions[i].setWalkingDistance(Integer.parseInt(json_arr.getJSONObject(i).getString("walkingDistance")));
-					if(routeSuggestions[i].isTransfer())
-					{
-						double lat = Double.parseDouble(json_arr.getJSONObject(i).getString("depLatitude")); 
-						double lon = Double.parseDouble(json_arr.getJSONObject(i).getString("depLongitude"));
-						location = new GeoPoint((int) lat,(int) lon);
-						routeSuggestions[i].setLocation(location);
-					}
+				
 				}
 			}
 		} catch (JSONException e) {
@@ -143,7 +144,7 @@ public class Calculate {
 						if(temp.getWalkingDistance() > routelist[i].getWalkingDistance() && !fixed.contains(routelist[i]))
 						{
 							fixed.add(routelist[i]);
-							
+
 							System.out.println("Added first if: " + routelist[i].getBusStopName());
 						}
 						else if(temp.getWalkingDistance() < routelist[i].getWalkingDistance() && !fixed.contains(temp))
@@ -181,22 +182,22 @@ public class Calculate {
 										fixed.add(routelist[i]);										
 										System.out.println("Added first if: " + routelist[i].getBusStopName());
 									}
-									
+
 								}
 								else
 								{
-									
+
 									fixed.add(routelist[i]);
 									System.out.println("ELSEELSE " + routelist[i].getBusNumber());
 								}
 							}
 						}
-						
-				}
 
-				temp = routelist[i];
+					}
+
+					temp = routelist[i];
+				}
 			}
-		}
 		}
 
 		Route[] retArray = new Route[fixed.size()];
@@ -210,20 +211,24 @@ public class Calculate {
 
 	public void printOutRoutes(String FLAG, Route[] finalRoutes, boolean totaltimeDone)
 	{
-		for(int i = 0;i<finalRoutes.length;i++)
+		if(finalRoutes != null)
 		{
-			Log.v(FLAG+" "+i,"Line:"+finalRoutes[i].getBusNumber());
-			Log.v(FLAG+" "+i,"ArrivalTime:"+finalRoutes[i].getArrivalTime());
-			Log.v(FLAG+" "+i,"BusStopName:"+finalRoutes[i].getBusStopName());
-			Log.v(FLAG+" "+i,"BusStopNumber:"+finalRoutes[i].getBusStopNumber());
-			Log.v(FLAG+" "+i,"Destination:"+finalRoutes[i].getDestination());
-			Log.v(FLAG+" "+i,"TravelTime:"+finalRoutes[i].getTravelTime());
-			Log.v(FLAG+" "+i,"WalkingDistance:"+finalRoutes[i].getWalkingDistance());
-			if(totaltimeDone)
+			for(int i = 0;i<finalRoutes.length;i++)
 			{
-				Log.v(FLAG+" "+i,"TotalTime:"+finalRoutes[i].getTotalTime());
+				Log.v(FLAG+" "+i,"Line:"+finalRoutes[i].getBusNumber());
+				Log.v(FLAG+" "+i,"ArrivalTime:"+finalRoutes[i].getArrivalTime());
+				Log.v(FLAG+" "+i,"BusStopName:"+finalRoutes[i].getBusStopName());
+				Log.v(FLAG+" "+i,"BusStopNumber:"+finalRoutes[i].getBusStopNumber());
+				Log.v(FLAG+" "+i,"Destination:"+finalRoutes[i].getDestination());
+				Log.v(FLAG+" "+i,"TravelTime:"+finalRoutes[i].getTravelTime());
+				Log.v(FLAG+" "+i,"WalkingDistance:"+finalRoutes[i].getWalkingDistance());
+				if(totaltimeDone)
+				{
+					Log.v(FLAG+" "+i,"TotalTime:"+finalRoutes[i].getTotalTime());
+				}
 			}
 		}
+
 	}
 	public int calculateTotalTime(String arrival, String totalTime)
 	{
