@@ -202,7 +202,7 @@ public class Helpers
 				}
 				else
 				{
-					text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 				isTransfer = true;
 
@@ -336,6 +336,10 @@ public class Helpers
 					{
 						// Remove route we won't catch anyway
 						value.remove(value.get(i));
+						
+						// Update list
+						value.trimToSize();
+						
 						ArrayList <Route> routes = Helpers.runString(destination, newList, Homescreen.k_browser, Homescreen.realTimeCodes, query);						
 						finalRoutes = new ArrayList <Route>();
 						// Assure that no routes leave before we arrive at the stop
@@ -350,6 +354,7 @@ public class Helpers
 						{
 							System.out.println("FINAL ROUTES: " + finalRoutes.get(j).getBusNumber());
 						}
+						// Add final routes to original list
 						value.addAll(finalRoutes);
 						for(int j=0; j<value.size(); j++)
 						{
