@@ -322,7 +322,7 @@ public class Homescreen extends Activity {
 				long first = System.nanoTime();
 				
 				// For use with the oracle and the gps2 file
-				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,3,false);
+				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,1,false);
 				// For use with the map, and real-time functionality only
 				busStops = Helpers.getLocationsArray(gpsCords2, provider, currentlocation, 1000,10, true);				
 				// All stops

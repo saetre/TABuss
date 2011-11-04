@@ -305,9 +305,14 @@ public class Helpers
 				// Assume we neeed minimum two minutes to get to the next bus stop
 				if((Integer.parseInt(firstDest.getArrivalTime())+ Integer.parseInt(firstDest.getTravelTime()) +walk)>= ( Integer.parseInt(transfer.getArrivalTime())))
 				{
+					String beforeTwelve = "0";
 					System.out.println("PRØVER Å FINNE NY");
-					int arrivalTimeHours = Integer.parseInt(value.get(i-1).getArrivalTime().substring(0, 2));
-					int arrivalTimeMinutes = Integer.parseInt(value.get(i-1).getArrivalTime().substring(2,4))+ (arrivalTimeHours * 60);
+					if(value.get(i-1).getArrivalTime().length() == 3)
+					{
+						beforeTwelve = beforeTwelve+value.get(i-1).getArrivalTime();
+					}
+					int arrivalTimeHours = Integer.parseInt(beforeTwelve.substring(0, 2));
+					int arrivalTimeMinutes = Integer.parseInt(beforeTwelve.substring(2,4))+ (arrivalTimeHours * 60);
 					int newHours = (arrivalTimeMinutes / 60);
 					System.out.println("New hours: " + newHours);
 					// Check if hour is past 23. If so, adjust

@@ -224,7 +224,7 @@ public class BusTUCApp extends MapActivity
 			for(int i=0; i<temp.size(); i++)
 			{
 				System.out.println("ADDING STOP TO MAP: " + temp.get(i).getStopName());
-				Helpers.addStops(temp.get(i),getResources().getDrawable(R.drawable.s_busstop2),mapOverlay);
+				Helpers.addStops(temp.get(i),getResources().getDrawable(R.drawable.bus),mapOverlay);
 			}
 		}  
 		// Else only started as a standard map activity
@@ -429,12 +429,12 @@ public class BusTUCApp extends MapActivity
 		}
 
 		//	mapView.getOverlays().clear();
-		Drawable tmp = getResources().getDrawable(R.drawable.s_busstop2);
+		Drawable tmp = getResources().getDrawable(R.drawable.bus);
 		ClosestStopOnMap [] ret = new ClosestStopOnMap[1];
 		ret[0] = buf;
 		//temp.clear();
 		mapOverlay = new MapOverlay(tmp, this,realTimeCodes, ret);        
-		Helpers.addStops(buf, getResources().getDrawable(R.drawable.s_busstop2), mapOverlay);
+		Helpers.addStops(buf, getResources().getDrawable(R.drawable.bus), mapOverlay);
 
 
 	}
