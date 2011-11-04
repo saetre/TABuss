@@ -198,7 +198,7 @@ public class Helpers
 			{		
 				if(!isTransfer)
 				{
-					text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+ " klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1) +": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+ " klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 				else
 				{
@@ -311,6 +311,7 @@ public class Helpers
 					{
 						beforeTwelve = beforeTwelve+value.get(i-1).getArrivalTime();
 					}
+					else beforeTwelve = value.get(i-1).getArrivalTime();
 					int arrivalTimeHours = Integer.parseInt(beforeTwelve.substring(0, 2));
 					int arrivalTimeMinutes = Integer.parseInt(beforeTwelve.substring(2,4))+ (arrivalTimeHours * 60);
 					int newHours = (arrivalTimeMinutes / 60);
