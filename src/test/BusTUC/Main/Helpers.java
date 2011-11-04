@@ -314,7 +314,7 @@ public class Helpers
 					else beforeTwelve = value.get(i-1).getArrivalTime();
 					int arrivalTimeHours = Integer.parseInt(beforeTwelve.substring(0, 2));
 					int arrivalTimeMinutes = Integer.parseInt(beforeTwelve.substring(2,4))+ (arrivalTimeHours * 60);
-					int newHours = (arrivalTimeMinutes / 60);
+					int newHours = (int) Math.ceil((arrivalTimeMinutes / 60));
 					System.out.println("New hours: " + newHours);
 					// Check if hour is past 23. If so, adjust
 					if(newHours > 23) newHours = newHours - 24;
