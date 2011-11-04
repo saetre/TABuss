@@ -62,7 +62,7 @@ public class RealTimeListFromMenu extends ListActivity
 	  Bundle extras = getIntent().getExtras();
 	  String stopName = extras.getString("stopName");
 	  int stopId = extras.getInt("stopId");
-	
+	  outgoing = extras.getInt("key");
 	  lv = getListView();
 	  lv.setBackgroundColor(Color.parseColor("#3C434A"));
 	  lv.setCacheColorHint(Color.parseColor("#3C434A"));
@@ -83,8 +83,8 @@ public class RealTimeListFromMenu extends ListActivity
 				
 				text.setText(stopName);
 
-				stops = Browser.specificRequestForStop(stopId);
-
+				//stops = Browser.specificRequestForStop(stopId);
+				stops = Browser.specificRequestForStopServer(outgoing);
 				long currenttimeInMillis = date.getTime();
 				long arrivaltimeInMillis, diff;
 

@@ -51,7 +51,7 @@ public class RealTimeList extends ListActivity
 		text.setTextSize(30);
 		text.setTextColor(Color.parseColor("#A3AB19"));
 		text.setTypeface(null,Typeface.BOLD);
-		text.setText("Busstopp nær deg");
+		text.setText("Busstopp nÃ¦r deg");
 		lv.addHeaderView(text);
 		setFromExtras();
 
@@ -72,6 +72,7 @@ public class RealTimeList extends ListActivity
 			outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(pressedStop.getBusStopID()).toString());
 			
 			intent.putExtra("stopId", outgoing);
+			intent.putExtra("key", pressedStop.getBusStopID());
 			intent.putExtra("stopName", pressedStop.getStopName());
 			
 			startActivity(intent);

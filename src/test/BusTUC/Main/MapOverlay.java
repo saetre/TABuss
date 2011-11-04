@@ -123,7 +123,7 @@ public class MapOverlay extends ItemizedOverlay
 						
 						intent.putExtra("stopId", outgoing);
 						intent.putExtra("stopName", foundBusStop);
-						
+						intent.putExtra("key", line);
 						m_Context.startActivity(intent);
 
 					}
@@ -185,8 +185,8 @@ public class MapOverlay extends ItemizedOverlay
 			try
 			{
 				long time = System.nanoTime();
-				 foundStopsList = Browser.specificRequestForStop(outgoing);       
-				//foundStopsList = Browser.specificRequestForStopServer(line);
+				 //foundStopsList = Browser.specificRequestForStop(outgoing);       
+				foundStopsList = Browser.specificRequestForStopServer(line);
 				Intent intent = new Intent(m_Context, RealTimeList.class);
 				intent.putExtra("tag", foundBusStop);
 				intent.putExtra("nr", foundBusStopNr);

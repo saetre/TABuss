@@ -172,7 +172,7 @@ public class Homescreen extends Activity {
 
 		dbHelper=new DatabaseHelper(context);
 		int c= dbHelper.getQueryCount();
-		this.setTitle("MapApp - "+c+" Søk gjort");
+		this.setTitle("MapApp - "+c+" SÃ¸k gjort");
 		this.setRequestedOrientation(
 				ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.homescreen);
@@ -322,7 +322,7 @@ public class Homescreen extends Activity {
 				long first = System.nanoTime();
 				
 				// For use with the oracle and the gps2 file
-				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,1,false);
+				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,3,false);
 				// For use with the map, and real-time functionality only
 				busStops = Helpers.getLocationsArray(gpsCords2, provider, currentlocation, 1000,10, true);				
 				// All stops
@@ -550,8 +550,8 @@ public class Homescreen extends Activity {
 				dbHelper.AddQuery(new Query(area ,textView.getText().toString(), Helpers.minutesFromDate(new Date()), new Date().getDay()));
 
 				System.out.println("Objects hopefully init: " + busStopsNoDuplicates.size() + "  " + k_browser.toString() + "  " + realTimeCodes.size());
-				buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
-				//buf = Helpers.runServer(textView.getText().toString(), k_browser, realTimeCodes, currentlocation);
+				//buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
+				buf = Helpers.runServer(textView.getText().toString(), k_browser, realTimeCodes, currentlocation);
 				long newTime = System.nanoTime() - time;
 				System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 			}
@@ -752,7 +752,7 @@ public class Homescreen extends Activity {
 	protected void onResume() 
 	{
 		int c= dbHelper.getQueryCount();
-		this.setTitle("MapApp - "+c+" Søk gjort");
+		this.setTitle("MapApp - "+c+" SÃ¸k gjort");
 		super.onResume();
 		//	editText.setEnabled(true);
 		textView.setEnabled(true);
