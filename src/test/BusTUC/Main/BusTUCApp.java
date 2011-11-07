@@ -18,6 +18,7 @@ import test.BusTUC.GPS.GPS;
 import test.BusTUC.Path.NavigationDataSet;
 import test.BusTUC.Path.NavigationSaxHandler;
 import test.BusTUC.Path.RouteOverlay;
+import test.BusTUC.Stops.BusStop;
 import test.BusTUC.Stops.ClosestStopOnMap;
 
 import com.google.android.maps.GeoPoint;
@@ -61,6 +62,7 @@ public class BusTUCApp extends MapActivity
 	HashMap <Integer, Integer> realTimeCodes; 
 	MyLocationOverlay myLocation;
 	Context context;
+	boolean fromExtras = false;
 	/** Called when the activity is first created. */
 
 	@SuppressWarnings("deprecation")
@@ -101,7 +103,15 @@ public class BusTUCApp extends MapActivity
 
 		}       
 
-		myLocation=new MyLocationOverlay(this, mapView);
+		myLocation=new MyLocationOverlay(context, mapView)
+		{
+			@Override
+			public void onLocationChanged(Location loc)
+			{
+				System.out.println("LOCATIONCHANGE IN MAP");
+			  new UpdateMapThread(context);
+			}
+		};
 		if(!myLocation.isMyLocationEnabled()) System.out.println("LOCATION NOT ENABLED");
 		if(!myLocation.enableMyLocation()) System.out.println("COULD NOT ENABLE LOCATION");
 		if(!myLocation.isMyLocationEnabled()) System.out.println("LOCATION STILL NOT ENABLED");
@@ -124,6 +134,7 @@ public class BusTUCApp extends MapActivity
 		{
 			temp = new ArrayList <ClosestStopOnMap>();
 			id = new ArrayList <Integer>();
+			fromExtras = true;
 			ArrayList <Route> foundRoutes = new ArrayList <Route>();
 			String value = "";
 			double[] dest = new double[2];
@@ -242,7 +253,7 @@ public class BusTUCApp extends MapActivity
 		if(myLocation.getMyLocation() != null)
 		{
 			System.out.println("MYLOC ER IKKE NULL: " + myLocation.getMyLocation() + "  " + myLocation.getLastFix() + "  " + myLocation);
-			Toast.makeText(context, "NÅ BEVEGDE DU DEG DIN LURING", Toast.LENGTH_LONG).show();
+			Toast.makeText(context, "NÃ… BEVEGDE DU DEG DIN LURING", Toast.LENGTH_LONG).show();
 			//p = myLocation.getMyLocation();
 			//mc.animateTo(p);
 			//mc.setZoom(16);
@@ -377,6 +388,8 @@ public class BusTUCApp extends MapActivity
 	protected boolean isRouteDisplayed() {
 		return false;
 	}   
+	
+	
 	protected void showOverlay() 
 	{
 
@@ -388,7 +401,7 @@ public class BusTUCApp extends MapActivity
 	}
 
 
-	public void initializeMap()
+	public  void initializeMap()
 	{
 		List<Overlay> overlays = mapView.getOverlays();
 
@@ -490,6 +503,61 @@ public class BusTUCApp extends MapActivity
 
 	}
 	
+	class UpdateMapThread extends AsyncTask<Void, Void, Void>
+	{
+		private Context context;    
+		Intent intent;
+		ProgressDialog myDialog = null;
+		public UpdateMapThread(Context context)
+		{
+
+			this.context = context;
+		}
+
+		@Override
+		protected Void doInBackground(Void... params)
+		{
+
+			try
+			{
+				initializeMap();
+
+			}
+			catch(Exception e)
+			{
+				Toast.makeText(context, "Klarte ikke oppdatere kart",Toast.LENGTH_LONG).show();
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		@Override
+		protected void onPreExecute()
+		{
+
+			try
+			{
+				myDialog = ProgressDialog.show(context, "Loading!", "Laster nye holdeplasser");
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+
+			}
+
+		}
+
+		@Override
+		protected void onPostExecute(Void unused)
+		{
+			Toast.makeText(context, "Lokasjon satt!", Toast.LENGTH_LONG).show();
+			showOverlay();
+			myDialog.dismiss();
+
+		}
+	}  
+	
 	/*
 	 * Display message continuosly if location has not been set to map
 	 */
@@ -534,7 +602,7 @@ public class BusTUCApp extends MapActivity
 
 			try
 			{
-				if(myLocation.getMyLocation() == null)	Toast.makeText(context, "Venter på lokasjon på kart", Toast.LENGTH_LONG).show();
+				if(myLocation.getMyLocation() == null)	Toast.makeText(context, "Venter pÃ¥ lokasjon pÃ¥ kart", Toast.LENGTH_LONG).show();
 			}
 			catch(Exception e)
 			{

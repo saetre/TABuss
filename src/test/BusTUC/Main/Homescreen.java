@@ -173,7 +173,7 @@ public class Homescreen extends Activity {
 
 		dbHelper=new DatabaseHelper(context);
 		int c= dbHelper.getQueryCount();
-		this.setTitle("AndroidAmble - "+c+" Søk gjort");
+		this.setTitle("AndroidAmble - "+c+" SÃ¸k gjort");
 		this.setRequestedOrientation(
 				ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.homescreen);
@@ -544,7 +544,7 @@ public class Homescreen extends Activity {
 		//  ArrayList <String> buf = new ArrayList <String>();
 		ProgressDialog myDialog = null;
 		String noLoc = "Ingen lokasjon tilgjengelig. Sjekk dine innstillinger";
-		String noRoutes = "Fant ingen ruter for søkekriterie";
+		String noRoutes = "Fant ingen ruter for sï¿½kekriterie";
 		boolean noLocCheck = false;
 		public OracleThread(Context context)
 		{
@@ -866,7 +866,7 @@ public class Homescreen extends Activity {
 	protected void onResume() 
 	{
 		int c= dbHelper.getQueryCount();
-		this.setTitle("AndroidAmble - "+c+" Søk gjort");
+		this.setTitle("AndroidAmble - "+c+" SÃ¸k gjort");
 		super.onResume();
 		//	editText.setEnabled(true);
 		textView.setEnabled(true);
