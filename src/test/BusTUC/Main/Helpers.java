@@ -126,7 +126,7 @@ public class Helpers
 			}
 
 			// Remove duplicates
-			HashSet set = new HashSet();
+			HashSet<String> set = new HashSet<String>();
 			set.addAll(dictionary);
 			// Clear and add back to ArrayList 
 			dictionary.clear();
@@ -180,17 +180,17 @@ public class Helpers
 				if(isTransfer)
 				{
 					System.out.println("I " + i);
-					text.add((i+1)  +": OVERGANGSFORSLAG " + (i) + ": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1)  +": OVERGANGSFORSLAG " + (i) + ": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 
 				}
 				else if(value.get(i).getWalkingDistance() != 0)
 				{
-					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 
 				else
 				{
-					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 
 			}
@@ -198,11 +198,11 @@ public class Helpers
 			{		
 				if(!isTransfer)
 				{
-					text.add((i+1) +": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+ " klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1) +": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+ " klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 				else
 				{
-					text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 				isTransfer = true;
 
@@ -218,7 +218,7 @@ public class Helpers
 	/*
 	 * Compute real-time, based on input routes
 	 */
-	public static ArrayList <Route> computeRealTime(Route [] foundRoutes, Route [] routes, HashMap realTimeCodes, Browser k_browser, boolean afterTransfer)
+	public static ArrayList <Route> computeRealTime(Route [] foundRoutes, Route [] routes, HashMap <Integer, Integer>realTimeCodes, Browser k_browser, boolean afterTransfer)
 	{
 		Calculate calculator = new Calculate();
 		Route [] returnRoutes = new Route[foundRoutes.length];
@@ -383,7 +383,7 @@ public class Helpers
 	 * Will run a query directly towards BussTUC
 	 * 
 	 */
-	public static ArrayList <Route> run(String input, ArrayList<BusStop> tSetExclude, Browser k_browser, HashMap realTimeCodes)
+	public static ArrayList <Route> run(String input, ArrayList<BusStop> tSetExclude, Browser k_browser, HashMap <Integer, Integer> realTimeCodes)
 	{
 		Route[] finalRoutes;
 		ArrayList <Route> returnRoutes = new ArrayList<Route>();
@@ -446,7 +446,7 @@ public class Helpers
 	 * Runs query against Retro's server
 	 * According methods such as createJSONServer are modified versions of the existing
 	 */
-	public static ArrayList <Route> runServer(String input, Browser k_browser, HashMap realTimeCodes, Location location)
+	public static ArrayList <Route> runServer(String input, Browser k_browser, Location location)
 	{
 		Route[] finalRoutes;
 		// Perform action on clicks
@@ -485,7 +485,7 @@ public class Helpers
 	/*
 	 * Will run a query with an additional String
 	 */
-	public static ArrayList <Route> runString(String input, ArrayList<BusStop> tSetExclude, Browser k_browser, HashMap realTimeCodes, String additional)
+	public static ArrayList <Route> runString(String input, ArrayList<BusStop> tSetExclude, Browser k_browser, HashMap <Integer, Integer> realTimeCodes, String additional)
 	{
 		Route[] finalRoutes;
 		// Perform action on clicks
@@ -705,7 +705,7 @@ public class Helpers
 
 
 	@SuppressWarnings("unchecked")
-	public static Route[] setTimeForRoutes(Route[]finalRoutes, HashMap realTimeCodes, Browser k_browser, final Calculate calculator, boolean afterTransfer)
+	public static Route[] setTimeForRoutes(Route[]finalRoutes, HashMap <Integer, Integer> realTimeCodes, Browser k_browser, final Calculate calculator, boolean afterTransfer)
 
 	{
 		// Copy of input routes
@@ -723,7 +723,7 @@ public class Helpers
 		// Iterate through received routes
 		long first = System.nanoTime();
 		//BusStops nextBus = new BusStops();
-		ArrayList <Thread> threadList = new ArrayList();
+		ArrayList <Thread> threadList = new ArrayList <Thread>();
 		try
 		{
 			for(int i = 0;i<tempRoutes.length;i++)

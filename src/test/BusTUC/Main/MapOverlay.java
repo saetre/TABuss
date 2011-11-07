@@ -32,11 +32,11 @@ import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
-public class MapOverlay extends ItemizedOverlay
+public class MapOverlay extends ItemizedOverlay<OverlayItem>
 {
 
 	private Context m_Context;
-	private List items;
+	private List <OverlayItem>items;
 	private Drawable drawable;
 	// Change to none-static later if necessary. Problem with parcelable in this case,
 	// is  the Date object
@@ -45,16 +45,16 @@ public class MapOverlay extends ItemizedOverlay
 	public int foundBusStopNr;
 	int lat,longi, outgoing, line;
 
-	HashMap realTimeCodes;
+	HashMap <Integer, Integer> realTimeCodes;
 	ClosestStopOnMap[] cl;
 	public MapOverlay(Drawable defaultMarker) {
 		super(defaultMarker);
 		drawable = defaultMarker;
-		items = new ArrayList();
+		items = new ArrayList <OverlayItem>();
 		// TODO Auto-generated constructor stub
 	}
 
-	public MapOverlay(Drawable defaultMarker, Context context, HashMap realTimeCodes, ClosestStopOnMap[] cl) {
+	public MapOverlay(Drawable defaultMarker, Context context, HashMap <Integer, Integer> realTimeCodes, ClosestStopOnMap[] cl) {
 		super(boundCenterBottom(defaultMarker));
 
 		//super(defaultMarker);
@@ -62,7 +62,7 @@ public class MapOverlay extends ItemizedOverlay
 		m_Context = context;
 		this.realTimeCodes = realTimeCodes;
 		this.cl = cl;
-		items = new ArrayList();
+		items = new ArrayList<OverlayItem>();
 
 
 		// TODO Auto-generated constructor stub

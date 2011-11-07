@@ -80,7 +80,8 @@ public class Homescreen extends Activity {
 	public static Browser k_browser; // Object doing communation with bussTUC and Real-Time system
 	//public static HashMap <Integer,Location> tSetAllStops;
 	public static ClosestStopOnMap [] cl; // Object containing geopoint of closest stops. 
-	public static 	HashMap realTimeCodes; 
+	// Changed to avoid raw type
+	public static 	HashMap <Integer, Integer>realTimeCodes; 
 	public static ArrayList <BusStop> allStops;
 	ArrayList<BusStop> busStops, busStopsNoDuplicates;
 
@@ -172,7 +173,7 @@ public class Homescreen extends Activity {
 
 		dbHelper=new DatabaseHelper(context);
 		int c= dbHelper.getQueryCount();
-		this.setTitle("MapApp - "+c+" SÃ¸k gjort");
+		this.setTitle("AndroidAmble - "+c+" Søk gjort");
 		this.setRequestedOrientation(
 				ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.homescreen);
@@ -516,8 +517,8 @@ public class Homescreen extends Activity {
 		case R.id.about:
 			try
 			{
-			Intent about = new Intent(context, About.class);
-			context.startActivity(about);
+				Intent about = new Intent(context, About.class);
+				context.startActivity(about);
 			}
 			catch(Exception e)
 			{
@@ -542,6 +543,9 @@ public class Homescreen extends Activity {
 		//    StringBuffer buf = new StringBuffer();
 		//  ArrayList <String> buf = new ArrayList <String>();
 		ProgressDialog myDialog = null;
+		String noLoc = "Ingen lokasjon tilgjengelig. Sjekk dine innstillinger";
+		String noRoutes = "Fant ingen ruter for søkekriterie";
+		boolean noLocCheck = false;
 		public OracleThread(Context context)
 		{
 
@@ -552,37 +556,49 @@ public class Homescreen extends Activity {
 		protected Void doInBackground(Void... params)
 		{
 			long time = System.nanoTime();
-			try
+			if(currentlocation == null)
 			{
-
-				double lat = currentlocation.getLatitude();
-				double lon = currentlocation.getLongitude();
-				Cursor areas = dbHelper.getAreaId(lat, lon);
-				int area = 0;
-				if(areas.getCount()==0){
-					area = dbHelper.AddArea(lat+0.01, lat-0.01, lon+0.01, lon-0.01);
-				}else{
-					areas.moveToFirst();
-					area = areas.getInt(0);
-				}
-				Cursor a = dbHelper.getArea(area);
-				a.moveToFirst();
-				System.out.println(a.getDouble(1)+ "-" + a.getDouble(2));
-				dbHelper.AddQuery(new Query(area ,textView.getText().toString(), Helpers.minutesFromDate(new Date()), new Date().getDay()));
-
-				System.out.println("Objects hopefully init: " + busStopsNoDuplicates.size() + "  " + k_browser.toString() + "  " + realTimeCodes.size());
-				buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
-				//buf = Helpers.runServer(textView.getText().toString(), k_browser, realTimeCodes, currentlocation);
-				long newTime = System.nanoTime() - time;
-				System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
-			}
-			catch(Exception e)
-			{
+				noLocCheck = true;
 				myDialog.dismiss();
-				e.printStackTrace();
-				ArrayList <String> err = new ArrayList <String>();
-				err.add(e.toString());
-				SDCard.generateNoteOnSD("errorHomeScreen::ORACLETHREAD", err, "errors");
+			}
+
+			else
+			{
+				try
+				{
+
+					double lat = currentlocation.getLatitude();
+					double lon = currentlocation.getLongitude();
+
+					Cursor areas = dbHelper.getAreaId(lat, lon);
+					int area = 0;
+					if(areas.getCount()==0){
+						area = dbHelper.AddArea(lat+0.01, lat-0.01, lon+0.01, lon-0.01);
+					}else{
+						areas.moveToFirst();
+						area = areas.getInt(0);
+					}
+					Cursor a = dbHelper.getArea(area);
+					a.moveToFirst();
+					System.out.println(a.getDouble(1)+ "-" + a.getDouble(2));
+					dbHelper.AddQuery(new Query(area ,textView.getText().toString(), Helpers.minutesFromDate(new Date()), new Date().getDay()));
+
+					System.out.println("Objects hopefully init: " + busStopsNoDuplicates.size() + "  " + k_browser.toString() + "  " + realTimeCodes.size());
+					buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
+
+					//buf = Helpers.runServer(textView.getText().toString(), k_browser, currentlocation);
+					long newTime = System.nanoTime() - time;
+					System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
+
+				}
+				catch(Exception e)
+				{
+					myDialog.dismiss();
+					e.printStackTrace();
+					ArrayList <String> err = new ArrayList <String>();
+					err.add(e.toString());
+					SDCard.generateNoteOnSD("errorHomeScreen::ORACLETHREAD", err, "errors");
+				}
 			}
 			return null;
 		}
@@ -593,6 +609,7 @@ public class Homescreen extends Activity {
 			InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); 
 			imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
 			myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
+	
 			textView.setEnabled(false);
 			goButton.setEnabled(false);
 		}
@@ -615,7 +632,15 @@ public class Homescreen extends Activity {
 			else
 			{
 				myDialog.dismiss();
-				Toast.makeText(context, "Fant ingen ruter", Toast.LENGTH_LONG).show();
+				if(noLocCheck)
+				{
+					Toast.makeText(context, noLoc, Toast.LENGTH_LONG).show();
+
+				}
+				else
+				{
+					Toast.makeText(context, noRoutes, Toast.LENGTH_LONG).show();
+				}
 
 			}
 
@@ -661,7 +686,7 @@ public class Homescreen extends Activity {
 		{
 
 			myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
-
+		
 		}
 
 		@Override
@@ -724,8 +749,77 @@ public class Homescreen extends Activity {
 		@Override
 		protected void onPostExecute(Void unused)
 		{
-			if(locationManager != null)locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
+
 			myDialog.dismiss();
+			locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
+			new LocationListenerThread(context).execute();
+
+		}
+	}  
+
+	/*
+	 * Make sure we get location before we can continue. Is in separate thread to ensure
+	 * all necessary objects are created on forehand. If not, we can end up in an eternal loop.
+	 */
+	class LocationListenerThread extends AsyncTask<Void, Void, Void>
+	{
+		private Context context;    
+		Intent intent;
+		ProgressDialog myDialog = null;
+		public LocationListenerThread(Context context)
+		{
+
+			this.context = context;
+		}
+
+		@Override
+		protected Void doInBackground(Void... params)
+		{
+
+			try
+			{
+				boolean locCheck = false;
+				while(!locCheck)
+				{
+					if(currentlocation != null)
+					{
+						locCheck = true;
+					}
+				}
+
+			}
+			catch(Exception e)
+			{
+				myDialog.dismiss();
+			}
+
+			return null;
+		}
+
+		@Override
+		protected void onPreExecute()
+		{
+
+			try
+			{
+				myDialog = ProgressDialog.show(context, "Loading!", "Setter lokasjon");
+			
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				myDialog.dismiss();
+
+			}
+
+		}
+
+		@Override
+		protected void onPostExecute(Void unused)
+		{
+
+			myDialog.dismiss();
+			locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
 
 		}
 	}  
@@ -772,7 +866,7 @@ public class Homescreen extends Activity {
 	protected void onResume() 
 	{
 		int c= dbHelper.getQueryCount();
-		this.setTitle("MapApp - "+c+" SÃ¸k gjort");
+		this.setTitle("AndroidAmble - "+c+" Søk gjort");
 		super.onResume();
 		//	editText.setEnabled(true);
 		textView.setEnabled(true);

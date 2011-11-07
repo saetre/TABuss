@@ -341,7 +341,7 @@ public class Browser
 
 		return html_string; 
 	}
-	public HashMap realTimeData()
+	public HashMap <Integer,Integer> realTimeData()
 	{ 
 		final StringBuffer soap = new StringBuffer();
 		soap.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
@@ -358,7 +358,7 @@ public class Browser
 		soap.append("");
 		String str1 = sendSoapRequest("http://195.0.188.74/InfoTransit/userservices.asmx?op=GetBusStopsList",soap.toString());
 		int code = 0;  
-		HashMap realT = new HashMap();
+		HashMap <Integer,Integer> realT = new HashMap <Integer,Integer>();
 		try {
 			//	ArrayList<BusStops> test = parseRealTimeData(str1);
 			realT  = getRealTimeCode(str1);
@@ -451,10 +451,10 @@ public class Browser
 		//    System.out.println("Arrivaltime in request: " + test.getArrivalTime().getHours() + "   " + test.getArrivalTime().getMinutes());
 		return test; 
 	}
-	public HashMap getRealTimeCode(String data) throws ParseException, JSONException, java.text.ParseException
+	public HashMap<Integer, Integer> getRealTimeCode(String data) throws ParseException, JSONException, java.text.ParseException
 	{
 		int realTimeCode = 0;
-		HashMap realTimeNumbers = new HashMap();
+		HashMap<Integer, Integer> realTimeNumbers = new HashMap <Integer,Integer>();
 		Pattern p = Pattern.compile(
 				"<GetBusStopsListResult>(.*?)</GetBusStopsListResult>",
 				Pattern.DOTALL | Pattern.CASE_INSENSITIVE

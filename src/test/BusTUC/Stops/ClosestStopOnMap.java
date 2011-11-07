@@ -91,6 +91,7 @@ public class ClosestStopOnMap implements Comparable <ClosestStopOnMap>, Parcelab
     	stopName = source.readString();
 	} 
 	
+	@SuppressWarnings("rawtypes")
 	public static final Parcelable.Creator CREATOR =
 	    	new Parcelable.Creator() {
 	            public ClosestStopOnMap createFromParcel(Parcel in) {

@@ -30,13 +30,16 @@ import com.google.android.maps.MapView.LayoutParams;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -55,7 +58,7 @@ public class BusTUCApp extends MapActivity
 	GPS k_gps; // Object of the GetGPS class. 
 	//   HashMap<Integer,Location> tSetAllStops; // HashMap used for finding closest locations. Adds stops from both sides of the road. For use on map w
 	String provider; // Provider 
-	HashMap realTimeCodes; 
+	HashMap <Integer, Integer> realTimeCodes; 
 	MyLocationOverlay myLocation;
 	Context context;
 	/** Called when the activity is first created. */
@@ -85,7 +88,7 @@ public class BusTUCApp extends MapActivity
 
 		try
 		{
-			realTimeCodes = Homescreen.k_browser.realTimeData();
+			realTimeCodes = Homescreen.realTimeCodes;
 			System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
 		}
 		catch(Exception e)
@@ -157,7 +160,7 @@ public class BusTUCApp extends MapActivity
 			// Draw air dist
 			if(!id.isEmpty())
 			{
-				drawPath(id);
+			//	drawPath(id);
 			}
 			// Create driving path
 			Location lastKnownLocation = Homescreen.currentlocation;
@@ -240,12 +243,13 @@ public class BusTUCApp extends MapActivity
 		{
 			System.out.println("MYLOC ER IKKE NULL: " + myLocation.getMyLocation() + "  " + myLocation.getLastFix() + "  " + myLocation);
 			Toast.makeText(context, "NÅ BEVEGDE DU DEG DIN LURING", Toast.LENGTH_LONG).show();
-			p = myLocation.getMyLocation();
-			mc.animateTo(p);
-			mc.setZoom(16);
+			//p = myLocation.getMyLocation();
+			//mc.animateTo(p);
+			//mc.setZoom(16);
 		}
-
+		
 		System.out.println("My loc: " + Homescreen.currentlocation.getLatitude() *1E6 + "  " + Homescreen.currentlocation.getLongitude() *1E6);
+		new LocationListenerThread(this).execute();
 	}	
 
 
@@ -259,13 +263,13 @@ public class BusTUCApp extends MapActivity
 		if (color == Color.parseColor("#add331")) color = Color.parseColor("#6C8715");
 		//     Log.d(myapp.APP, "map color after: " + color);
 
-		Collection overlaysToAddAgain = new ArrayList();
-		for (Iterator iter = mMapView01.getOverlays().iterator(); iter.hasNext();) {
+		Collection <Overlay> overlaysToAddAgain = new ArrayList <Overlay>();
+		for (Iterator<Overlay> iter = mMapView01.getOverlays().iterator(); iter.hasNext();) {
 			Object o = iter.next();
 			//Log.d(myapp.APP, "overlay type: " + o.getClass().getName());
 			if (!RouteOverlay.class.getName().equals(o.getClass().getName())) {
 				// mMapView01.getOverlays().remove(o);
-				overlaysToAddAgain.add(o);
+				overlaysToAddAgain.add((Overlay)o);
 			}
 		}
 		mMapView01.getOverlays().clear();
@@ -386,13 +390,13 @@ public class BusTUCApp extends MapActivity
 
 	public void initializeMap()
 	{
-		List overlays = mapView.getOverlays();
+		List<Overlay> overlays = mapView.getOverlays();
 
 		// first remove old overlay
 		if (overlays.size() > 0)
 		{
 
-			for (Iterator iterator = overlays.iterator(); iterator.hasNext();)
+			for (Iterator <Overlay> iterator = overlays.iterator(); iterator.hasNext();)
 			{
 				iterator.next();
 				iterator.remove();
@@ -414,13 +418,13 @@ public class BusTUCApp extends MapActivity
 
 	public void initializePress(ClosestStopOnMap buf)
 	{
-		List overlays = mapView.getOverlays();
+		List <Overlay> overlays = mapView.getOverlays();
 
 		// first remove old overlay
 		if (overlays.size() > 0)
 		{
 
-			for (Iterator iterator = overlays.iterator(); iterator.hasNext();)
+			for (Iterator <Overlay> iterator = overlays.iterator(); iterator.hasNext();)
 			{
 				iterator.next();
 				iterator.remove();
@@ -485,4 +489,66 @@ public class BusTUCApp extends MapActivity
 		}
 
 	}
+	
+	/*
+	 * Display message continuosly if location has not been set to map
+	 */
+	class LocationListenerThread extends AsyncTask<Void, Void, Void>
+	{
+		private Context context;    
+		Intent intent;
+		ProgressDialog myDialog = null;
+		public LocationListenerThread(Context context)
+		{
+
+			this.context = context;
+		}
+
+		@Override
+		protected Void doInBackground(Void... params)
+		{
+
+			try
+			{
+				boolean locCheck = false;
+				while(!locCheck)
+				{
+					if(myLocation.getMyLocation() != null)
+					{
+						locCheck = true;
+					}
+				}
+
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		@Override
+		protected void onPreExecute()
+		{
+
+			try
+			{
+				if(myLocation.getMyLocation() == null)	Toast.makeText(context, "Venter på lokasjon på kart", Toast.LENGTH_LONG).show();
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+
+			}
+
+		}
+
+		@Override
+		protected void onPostExecute(Void unused)
+		{
+			Toast.makeText(context, "Lokasjon satt!", Toast.LENGTH_LONG).show();
+
+		}
+	}  
 }
