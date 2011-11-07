@@ -306,7 +306,7 @@ public class Helpers
 				if((Integer.parseInt(firstDest.getArrivalTime())+ Integer.parseInt(firstDest.getTravelTime()) +walk)>= ( Integer.parseInt(transfer.getArrivalTime())))
 				{
 					String beforeTwelve = "0";
-					System.out.println("PRï¿½VER ï¿½ FINNE NY");
+					System.out.println("PRØVER Å  FINNE NY");
 					if(value.get(i-1).getArrivalTime().length() == 3)
 					{
 						beforeTwelve = beforeTwelve+value.get(i-1).getArrivalTime();

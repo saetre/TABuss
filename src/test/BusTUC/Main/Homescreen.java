@@ -213,7 +213,7 @@ public class Homescreen extends Activity {
 		// Bind listeners to favourites
 		updateButtons(busStop,buttons);      
 
-	
+
 
 		/*  try {
 			System.out.println("OVERSATT: " +Helpers.translateRequest("skole"));
@@ -314,13 +314,13 @@ public class Homescreen extends Activity {
 				// currentlocation.setLatitude(63.429256);
 				//currentlocation.setLongitude(10.367672);
 				// ila 10.367672,63.429256
-			//	10.394555,63.43109
+				//	10.394555,63.43109
 				//getSuggestionBasedOnPosition();
 
 				Log.v("currentLoc","PROV:LOC=" + currentlocation.getLatitude()+":"+currentlocation.getLongitude());
 
 				long first = System.nanoTime();
-				
+
 				// For use with the oracle and the gps2 file
 				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,3,false);
 				// For use with the map, and real-time functionality only
@@ -368,7 +368,7 @@ public class Homescreen extends Activity {
 
 
 		};
- 	}
+	}
 
 	private void createLocationManager() 
 	{
@@ -476,24 +476,37 @@ public class Homescreen extends Activity {
 			return true;
 
 		case R.id.realtime:
-			long time = System.nanoTime(); 
-			ArrayList <ClosestStopOnMap> holder = new ArrayList<ClosestStopOnMap>();
-			for(int i=0; i<cl.length; i++)
+			try
 			{
-				holder.add(cl[i]);
+				long time = System.nanoTime(); 
+				ArrayList <ClosestStopOnMap> holder = new ArrayList<ClosestStopOnMap>();
+				for(int i=0; i<cl.length; i++)
+				{
+					holder.add(cl[i]);
+				}
+				Intent intent = new Intent(context, RealTimeList.class);
+				intent.putParcelableArrayListExtra("test", holder); 
+				context.startActivity(intent);
+				Long newTime = System.nanoTime() - time;
+				System.out.println("TIME LOOKUP: " +  newTime/1000000000.0);
 			}
-			Intent intent = new Intent(context, RealTimeList.class);
-			intent.putParcelableArrayListExtra("test", holder); 
-			context.startActivity(intent);
-			Long newTime = System.nanoTime() - time;
-			System.out.println("TIME LOOKUP: " +  newTime/1000000000.0);
-
+			catch(Exception e)
+			{
+				Toast.makeText(context, "Could not retrieve real-time", Toast.LENGTH_LONG).show();
+			}
 			return false;
 
 
 		case R.id.history:
-			Intent history = new Intent(context, History.class);
-			context.startActivity(history);
+			try
+			{
+				Intent history = new Intent(context, History.class);
+				context.startActivity(history);
+			}
+			catch(Exception e)
+			{
+				Toast.makeText(context, "Could not retrieve history", Toast.LENGTH_LONG).show();
+			}
 			return false;
 
 		case R.id.speech:
@@ -501,8 +514,16 @@ public class Homescreen extends Activity {
 			//	startVoiceRecognitionActivity();
 
 		case R.id.about:
+			try
+			{
 			Intent about = new Intent(context, About.class);
 			context.startActivity(about);
+			}
+			catch(Exception e)
+			{
+				Toast.makeText(context, "Could not start activity", Toast.LENGTH_LONG).show();
+			}
+			return false;
 
 			// Add other menu items
 		default:
@@ -595,7 +616,7 @@ public class Homescreen extends Activity {
 			{
 				myDialog.dismiss();
 				Toast.makeText(context, "Fant ingen ruter", Toast.LENGTH_LONG).show();
-				
+
 			}
 
 
@@ -622,8 +643,8 @@ public class Homescreen extends Activity {
 		{
 			try
 			{
-			intent = new Intent(getApplicationContext(), BusTUCApp.class);
-			context.startActivity(intent);
+				intent = new Intent(getApplicationContext(), BusTUCApp.class);
+				context.startActivity(intent);
 			}
 			catch(Exception e)
 			{
@@ -666,17 +687,17 @@ public class Homescreen extends Activity {
 		@Override
 		protected Void doInBackground(Void... params)
 		{
-			
+
 			try
 			{
 				createLocationManager();
-			
+
 			}
 			catch(Exception e)
 			{
 				myDialog.dismiss();
 			}
-			
+
 			return null;
 		}
 
