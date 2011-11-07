@@ -61,12 +61,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		//db.execSQL("INSERT INTO "+areaTable+" VALUES("+maxLat+", "+minLat+", "+maxLong+", "+minLong+")");
 		ContentValues cv=new ContentValues();
 
-		cv.put(this.maxLat, maxLat);
-		cv.put(this.minLat, minLat);
-		cv.put(this.maxLong, maxLong);
-		cv.put(this.minLong, minLong);
+		cv.put(DatabaseHelper.maxLat, maxLat);
+		cv.put(DatabaseHelper.minLat, minLat);
+		cv.put(DatabaseHelper.maxLong, maxLong);
+		cv.put(DatabaseHelper.minLong, minLong);
 
-		db.insert(areaTable, this.maxLat, cv);
+		db.insert(areaTable, DatabaseHelper.maxLat, cv);
 		Cursor cursor = db.rawQuery("SELECT last_insert_rowid()", null);
 		cursor.moveToFirst();
 		int id = cursor.getInt(0);

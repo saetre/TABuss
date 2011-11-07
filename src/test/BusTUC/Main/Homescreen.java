@@ -768,7 +768,6 @@ public class Homescreen extends Activity {
 		super.onStart();
 
 	}
-	@SuppressWarnings("static-access")
 	@Override
 	protected void onResume() 
 	{

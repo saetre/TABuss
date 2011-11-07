@@ -360,7 +360,6 @@ public class BusTUCApp extends MapActivity
 		myLocation.disableCompass();
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	protected void onResume() {
 		super.onResume();

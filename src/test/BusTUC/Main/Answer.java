@@ -43,6 +43,7 @@ import com.google.android.maps.OverlayItem;
 
 public class Answer extends  ListActivity{
 
+	@SuppressWarnings("rawtypes")
 	private ArrayAdapter ad;
 	private ArrayList <Route> value;
 	Object o;

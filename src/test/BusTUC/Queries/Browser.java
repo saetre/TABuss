@@ -579,6 +579,7 @@ public class Browser
 		}
 		return test; 
 	}
+	@SuppressWarnings("unused")
 	public static ArrayList <BusDeparture> parseRealTimeDataForStopServer(String data) throws JSONException, java.text.ParseException
 	{
 		ArrayList <BusDeparture> buses = new ArrayList<BusDeparture>();
@@ -627,6 +628,7 @@ public class Browser
 		return buses;
 	}
 
+	@SuppressWarnings("unused")
 	public static ArrayList <BusDeparture> parseRealTimeDataForStop(String data) throws JSONException, java.text.ParseException
 	{
 		ArrayList <BusDeparture> buses = new ArrayList<BusDeparture>();

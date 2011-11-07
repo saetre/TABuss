@@ -704,6 +704,7 @@ public class Helpers
 
 
 
+	@SuppressWarnings("unchecked")
 	public static Route[] setTimeForRoutes(Route[]finalRoutes, HashMap realTimeCodes, Browser k_browser, final Calculate calculator, boolean afterTransfer)
 
 	{
