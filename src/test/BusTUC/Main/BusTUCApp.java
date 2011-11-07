@@ -34,6 +34,7 @@ import com.google.android.maps.Projection;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -75,6 +76,8 @@ public class BusTUCApp extends MapActivity
 		mapView.setStreetView(true);
 		LinearLayout zoomLayout = (LinearLayout)findViewById(R.id.zoom);  
 		context = this;
+		this.setRequestedOrientation(
+				ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		View zoomView = mapView.getZoomControls(); 
 
 		zoomLayout.addView(zoomView, 
@@ -109,7 +112,8 @@ public class BusTUCApp extends MapActivity
 			public void onLocationChanged(Location loc)
 			{
 				System.out.println("LOCATIONCHANGE IN MAP");
-			  new UpdateMapThread(context);
+				//initializeMap(true);
+				new UpdateMapThread(context).execute();
 			}
 		};
 		if(!myLocation.isMyLocationEnabled()) System.out.println("LOCATION NOT ENABLED");
@@ -171,7 +175,7 @@ public class BusTUCApp extends MapActivity
 			// Draw air dist
 			if(!id.isEmpty())
 			{
-			//	drawPath(id);
+				//	drawPath(id);
 			}
 			// Create driving path
 			Location lastKnownLocation = Homescreen.currentlocation;
@@ -242,7 +246,7 @@ public class BusTUCApp extends MapActivity
 			}
 		}  
 		// Else only started as a standard map activity
-		else initializeMap();
+		else initializeMap(false);
 
 
 		mapView.getOverlays().add(myLocation);
@@ -258,7 +262,7 @@ public class BusTUCApp extends MapActivity
 			//mc.animateTo(p);
 			//mc.setZoom(16);
 		}
-		
+
 		System.out.println("My loc: " + Homescreen.currentlocation.getLatitude() *1E6 + "  " + Homescreen.currentlocation.getLongitude() *1E6);
 		new LocationListenerThread(this).execute();
 	}	
@@ -388,8 +392,8 @@ public class BusTUCApp extends MapActivity
 	protected boolean isRouteDisplayed() {
 		return false;
 	}   
-	
-	
+
+
 	protected void showOverlay() 
 	{
 
@@ -401,7 +405,7 @@ public class BusTUCApp extends MapActivity
 	}
 
 
-	public  void initializeMap()
+	public  void initializeMap(boolean updated)
 	{
 		List<Overlay> overlays = mapView.getOverlays();
 
@@ -418,12 +422,26 @@ public class BusTUCApp extends MapActivity
 
 		//	mapView.getOverlays().clear();
 		Drawable tmp = getResources().getDrawable(R.drawable.bus);
-		mapOverlay = new MapOverlay(tmp, this,realTimeCodes, Homescreen.cl);        
-
-		for(int i=0; i<Homescreen.cl.length; i++)
+		if(updated && myLocation.getLastFix() != null)
 		{
-			System.out.println("ADDING STOP TO MAP: " + Homescreen.cl[i].getStopName());
-			Helpers.addStops(Homescreen.cl[i],getResources().getDrawable(R.drawable.bus),mapOverlay);
+			ClosestStopOnMap []cl = Helpers.getList(Homescreen.gpsCords2, provider, 10,1000, myLocation.getLastFix());
+			mapOverlay = new MapOverlay(tmp, this,realTimeCodes, cl);        
+
+			for(int i=0; i<cl.length; i++)
+			{
+				System.out.println("ADDING STOP TO MAP IF: " + Homescreen.cl[i].getStopName());
+				Helpers.addStops(cl[i],getResources().getDrawable(R.drawable.bus),mapOverlay);
+			}
+		}
+		else
+		{
+			mapOverlay = new MapOverlay(tmp, this,realTimeCodes, Homescreen.cl);      
+
+			for(int i=0; i<Homescreen.cl.length; i++)
+			{
+				System.out.println("ADDING STOP TO MAP ELSE: " + Homescreen.cl[i].getStopName());
+				Helpers.addStops(Homescreen.cl[i],getResources().getDrawable(R.drawable.bus),mapOverlay);
+			}
 		}
 		//temp.clear();
 
@@ -502,7 +520,7 @@ public class BusTUCApp extends MapActivity
 		}
 
 	}
-	
+
 	class UpdateMapThread extends AsyncTask<Void, Void, Void>
 	{
 		private Context context;    
@@ -520,7 +538,7 @@ public class BusTUCApp extends MapActivity
 
 			try
 			{
-				initializeMap();
+				initializeMap(true);
 
 			}
 			catch(Exception e)
@@ -538,6 +556,7 @@ public class BusTUCApp extends MapActivity
 
 			try
 			{
+				System.out.println("Updating stops");
 				myDialog = ProgressDialog.show(context, "Loading!", "Laster nye holdeplasser");
 			}
 			catch(Exception e)
@@ -551,13 +570,13 @@ public class BusTUCApp extends MapActivity
 		@Override
 		protected void onPostExecute(Void unused)
 		{
-			Toast.makeText(context, "Lokasjon satt!", Toast.LENGTH_LONG).show();
+			Toast.makeText(context, "Nye holdeplasser lastet!", Toast.LENGTH_LONG).show();
 			showOverlay();
 			myDialog.dismiss();
 
 		}
 	}  
-	
+
 	/*
 	 * Display message continuosly if location has not been set to map
 	 */

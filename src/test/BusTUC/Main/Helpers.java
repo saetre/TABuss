@@ -54,6 +54,22 @@ import com.google.android.maps.OverlayItem;
 public class Helpers 
 {
 
+	public static ClosestStopOnMap[] getList(String[][]coords, String provider, int numStops,int dist, Location currentLocation)
+	{
+		ArrayList <BusStop> busStops = Helpers.getLocationsArray(coords, "", currentLocation,1000,numStops, true);
+		ClosestStopOnMap []cl = new ClosestStopOnMap[numStops];
+		for(int i = 0;i<numStops;i++)
+		{
+			cl[i] = new ClosestStopOnMap(new GeoPoint(
+					(int)	(busStops.get(i).location.getLatitude()* 1E6),
+					(int)	(busStops.get(i).location.getLongitude() * 1E6)),
+					(int) busStops.get(i).stopID,
+					busStops.get(i).name);
+
+		}
+		return cl;
+		
+	}
 
 	public static HashMap<String,Integer> getMostFrequentDestination(ArrayList<String> destination){
 		System.out.println("ARRAYLIST INPUT! : "+destination.size());
@@ -314,11 +330,14 @@ public class Helpers
 					else beforeTwelve = value.get(i-1).getArrivalTime();
 					int arrivalTimeHours = Integer.parseInt(beforeTwelve.substring(0, 2));
 					int arrivalTimeMinutes = Integer.parseInt(beforeTwelve.substring(2,4))+ (arrivalTimeHours * 60);
-					int newHours = (int) Math.ceil((arrivalTimeMinutes / 60));
+					System.out.println("Arrival minutes: "+ arrivalTimeMinutes);
+					int travelTime = Integer.parseInt(value.get(i-1).getTravelTime());
+					System.out.println("Travel time: " + travelTime);
+					int newHours = (int) Math.ceil((arrivalTimeMinutes +  travelTime)/ 60);
 					System.out.println("New hours: " + newHours);
 					// Check if hour is past 23. If so, adjust
 					if(newHours > 23) newHours = newHours - 24;
-					int newMinutes = ((arrivalTimeMinutes) %60) + Integer.parseInt(value.get(i-1).getTravelTime());
+					int newMinutes = ((arrivalTimeMinutes) %60) ;
 					// If minutes have a zero, which is not received, append
 					StringBuffer buf = new StringBuffer("" + newMinutes);
 					if(buf.length() == 1) buf.insert(0, "0");

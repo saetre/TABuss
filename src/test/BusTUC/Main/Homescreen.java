@@ -325,24 +325,16 @@ public class Homescreen extends Activity {
 				// For use with the oracle and the gps2 file
 				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, 1000,3,false);
 				// For use with the map, and real-time functionality only
-				busStops = Helpers.getLocationsArray(gpsCords2, provider, currentlocation, 1000,10, true);				
+				//busStops = Helpers.getLocationsArray(gpsCords2, provider, currentlocation, 1000,10, true);				
 				// All stops
 				allStops = Helpers.getAllLocations(gpsCords2, provider);
 				long second = System.nanoTime() - first;
 				System.out.println("TIME SPENT SORTING SHIT: " + second /(1000000000.0));
-				int numStops = busStops.size();
+				int numStops =10;// busStops.size();
+				int dist = 1000;
 				System.out.println("USING " + numStops + " STOPS");
-				cl = new ClosestStopOnMap[numStops];
-
-				for(int i = 0;i<numStops;i++)
-				{
-					cl[i] = new ClosestStopOnMap(new GeoPoint(
-							(int)	(busStops.get(i).location.getLatitude()* 1E6),
-							(int)	(busStops.get(i).location.getLongitude() * 1E6)),
-							(int) busStops.get(i).stopID,
-							busStops.get(i).name);
-
-				}
+				// For use with the map, and real-time functionality
+				cl = Helpers.getList(gpsCords2, provider, numStops,dist, currentlocation);
 
 
 			}
