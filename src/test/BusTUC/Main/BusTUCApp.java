@@ -136,6 +136,7 @@ public class BusTUCApp extends MapActivity
 					catch(Exception e)
 					{
 						Toast.makeText(context, "Klarte ikke oppdatere kart",Toast.LENGTH_LONG).show();
+					
 						e.printStackTrace();
 					}
 					//new UpdateMapThread(context, loc).execute();
@@ -215,7 +216,6 @@ public class BusTUCApp extends MapActivity
 		else initializeMap(false, currentLocation);
 
 
-		showOverlay();
 		mc.animateTo(p);
 		mc.setZoom(16);
 	
@@ -509,6 +509,7 @@ public class BusTUCApp extends MapActivity
 		//temp.clear();
 		mapOverlay = new MapOverlay(tmp, context,realTimeCodes, ret);        
 		Helpers.addStops(stop, getResources().getDrawable(R.drawable.bus), mapOverlay);
+		showOverlay();
 
 
 	}
