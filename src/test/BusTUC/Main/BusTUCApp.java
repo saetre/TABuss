@@ -18,6 +18,7 @@ import test.BusTUC.GPS.GPS;
 import test.BusTUC.Path.NavigationDataSet;
 import test.BusTUC.Path.NavigationSaxHandler;
 import test.BusTUC.Path.RouteOverlay;
+import test.BusTUC.Queries.Browser;
 import test.BusTUC.Stops.BusStop;
 import test.BusTUC.Stops.ClosestStopOnMap;
 
@@ -65,6 +66,7 @@ public class BusTUCApp extends MapActivity
 	Context context;
 	boolean fromExtras = false;
 	Location currentLocation;
+	Browser k_browser;
 	/** Called when the activity is first created. */
 
 	@SuppressWarnings("deprecation")
@@ -88,14 +90,28 @@ public class BusTUCApp extends MapActivity
 		mapView.displayZoomControls(true);
 
 		mc = mapView.getController();
-		System.out.println("Sjeker lengde: " +Homescreen.gpsCords.length);
-		System.out.println("Sjekker browser: " +Homescreen.k_browser.toString());
+	
 
 
 		try
 		{
 			realTimeCodes = Homescreen.realTimeCodes;
 			currentLocation = Homescreen.currentlocation;
+
+			if(realTimeCodes == null || currentLocation == null)
+			{
+				try
+				{
+				Toast.makeText(context, "Mangler informasjon, returnerer til hjemmeskjerm", Toast.LENGTH_LONG).show();
+				Intent intent = new Intent(context, Homescreen.class);
+				context.startActivity(intent);
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+			
 			System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
 		}
 		catch(Exception e)
@@ -174,7 +190,7 @@ public class BusTUCApp extends MapActivity
 			ClosestStopOnMap buf = new ClosestStopOnMap();
 			//  value = extras.getString("test");
 			// Iterate through the closest stop, and match bus stop id
-
+			ArrayList <BusStop> allStops = Homescreen.allStops;
 
 			for(int k=0; k<Homescreen.allStops.size(); k++)
 			{
