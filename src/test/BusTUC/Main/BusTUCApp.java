@@ -144,6 +144,7 @@ public class BusTUCApp extends MapActivity
 				else
 				{
 					mc.animateTo(myLocation.getMyLocation());
+					mapView.postInvalidate();
 
 				}
 				
