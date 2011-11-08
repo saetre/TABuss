@@ -64,6 +64,7 @@ public class BusTUCApp extends MapActivity
 	MyLocationOverlay myLocation;
 	Context context;
 	boolean fromExtras = false;
+	Location currentLocation;
 	/** Called when the activity is first created. */
 
 	@SuppressWarnings("deprecation")
@@ -94,11 +95,12 @@ public class BusTUCApp extends MapActivity
 		try
 		{
 			realTimeCodes = Homescreen.realTimeCodes;
+			currentLocation = Homescreen.currentlocation;
 			System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
 		}
 		catch(Exception e)
 		{
-			Toast.makeText(this, "No connection", Toast.LENGTH_LONG).show();
+			Toast.makeText(context, "No connection", Toast.LENGTH_LONG).show();
 			ArrayList <String> err = new ArrayList <String>();
 			err.add(e.toString());
 			SDCard.generateNoteOnSD("errorBusTUCAPPREALTIME", err, "errors");
@@ -106,31 +108,48 @@ public class BusTUCApp extends MapActivity
 
 		}       
 
+		final Bundle extras = getIntent().getExtras();
+		// add the current location as a GeoPoint
+		p = new GeoPoint(
+				(int) (currentLocation.getLatitude() * 1E6), 
+				(int) (currentLocation.getLongitude() * 1E6));
+
 		myLocation=new MyLocationOverlay(context, mapView)
 		{
 			@Override
 			public void onLocationChanged(Location loc)
 			{
+				super.onLocationChanged(loc);
+
 				System.out.println("LOCATIONCHANGE IN MAP");
-				//initializeMap(true);
-				new UpdateMapThread(context).execute();
+				// Update loc if new loc is more than 10 metres in air dist from last loc
+				System.out.println("DIFF LEN: " + loc.distanceTo(currentLocation));
+				if(extras == null && loc.distanceTo(currentLocation) > 10)
+				{
+					try
+					{
+						Toast.makeText(context, "Oppdaterer kart", Toast.LENGTH_SHORT).show();
+						initializeMap(true, loc);
+						Toast.makeText(context, "Kart oppdatert", Toast.LENGTH_SHORT).show();
+
+
+					}
+					catch(Exception e)
+					{
+						Toast.makeText(context, "Klarte ikke oppdatere kart",Toast.LENGTH_LONG).show();
+						e.printStackTrace();
+					}
+					//new UpdateMapThread(context, loc).execute();
+				}
+				currentLocation = loc;
+
 			}
 		};
+		System.out.println("Enabling location");
 		if(!myLocation.isMyLocationEnabled()) System.out.println("LOCATION NOT ENABLED");
 		if(!myLocation.enableMyLocation()) System.out.println("COULD NOT ENABLE LOCATION");
 		if(!myLocation.isMyLocationEnabled()) System.out.println("LOCATION STILL NOT ENABLED");
-		if(!myLocation.enableMyLocation()) System.out.println("COULD NO ENABLE PROVIDERS");
-		//myLocation.enableCompass();
-
-		//myLocation.enableCompass();
-
-		Bundle extras = getIntent().getExtras();
-		// add the current location as a GeoPoint
-		p = new GeoPoint(
-				(int) (Homescreen.currentlocation.getLatitude() * 1E6), 
-				(int) (Homescreen.currentlocation.getLongitude() * 1E6));
-
-
+		if(!myLocation.enableCompass()) System.out.println("COULD NO ENABLE PROVIDERS");
 
 		// If extras != null -> Activity started based on query answer.
 		// Need to extract info
@@ -244,27 +263,19 @@ public class BusTUCApp extends MapActivity
 				System.out.println("ADDING STOP TO MAP: " + temp.get(i).getStopName());
 				Helpers.addStops(temp.get(i),getResources().getDrawable(R.drawable.bus),mapOverlay);
 			}
+
 		}  
 		// Else only started as a standard map activity
-		else initializeMap(false);
+		else initializeMap(false, currentLocation);
 
 
-		mapView.getOverlays().add(myLocation);
 		showOverlay();
 		mc.animateTo(p);
 		mc.setZoom(16);
-		// Update user loc
-		if(myLocation.getMyLocation() != null)
-		{
-			System.out.println("MYLOC ER IKKE NULL: " + myLocation.getMyLocation() + "  " + myLocation.getLastFix() + "  " + myLocation);
-			Toast.makeText(context, "NÅ BEVEGDE DU DEG DIN LURING", Toast.LENGTH_LONG).show();
-			//p = myLocation.getMyLocation();
-			//mc.animateTo(p);
-			//mc.setZoom(16);
-		}
+	
 
 		System.out.println("My loc: " + Homescreen.currentlocation.getLatitude() *1E6 + "  " + Homescreen.currentlocation.getLongitude() *1E6);
-		new LocationListenerThread(this).execute();
+		new LocationListenerThread(context).execute();
 	}	
 
 
@@ -370,18 +381,24 @@ public class BusTUCApp extends MapActivity
 
 	public void onBackPressed()
 	{
-
+		myLocation.disableCompass();
+		myLocation.disableMyLocation();
+		System.out.println("Location exited");
 		finish();
 	}
 	@Override
 	protected void onPause(){
 		super.onPause();
 		myLocation.disableCompass();
+		myLocation.disableMyLocation();
+		System.out.println("Location paused");
+
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		myLocation.enableMyLocation();
 		myLocation.enableCompass();
 		// Sets the restrictions on the location update. 
 		//locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 100, 1, locationListener);
@@ -400,12 +417,16 @@ public class BusTUCApp extends MapActivity
 		List<Overlay> listOfOverlays = mapView.getOverlays();
 		//    listOfOverlays.clear();
 		listOfOverlays.add(mapOverlay);
+
+		listOfOverlays.add(myLocation);
+		System.out.println("MYLOC ADDED");
+
 		mapView.postInvalidate();
 		System.out.println("NUM OVERLAYS: " + listOfOverlays.size());
 	}
 
 
-	public  void initializeMap(boolean updated)
+	public  void initializeMap(boolean updated, Location loc)
 	{
 		List<Overlay> overlays = mapView.getOverlays();
 
@@ -422,10 +443,11 @@ public class BusTUCApp extends MapActivity
 
 		//	mapView.getOverlays().clear();
 		Drawable tmp = getResources().getDrawable(R.drawable.bus);
+		// If fix, and as a part of update mapview
 		if(updated && myLocation.getLastFix() != null)
 		{
-			ClosestStopOnMap []cl = Helpers.getList(Homescreen.gpsCords2, provider, 10,1000, myLocation.getLastFix());
-			mapOverlay = new MapOverlay(tmp, this,realTimeCodes, cl);        
+			ClosestStopOnMap []cl = Helpers.getList(Homescreen.gpsCords2, provider, 10,1000, loc);
+			mapOverlay = new MapOverlay(tmp, context,realTimeCodes, cl);        
 
 			for(int i=0; i<cl.length; i++)
 			{
@@ -433,16 +455,25 @@ public class BusTUCApp extends MapActivity
 				Helpers.addStops(cl[i],getResources().getDrawable(R.drawable.bus),mapOverlay);
 			}
 		}
+		// If no fix available, use fix from Homescreen
 		else
 		{
-			mapOverlay = new MapOverlay(tmp, this,realTimeCodes, Homescreen.cl);      
+			//mapOverlay = new MapOverlay(tmp, context,realTimeCodes, Homescreen.cl);      
+			ClosestStopOnMap []cl = Homescreen.cl;// Helpers.getList(Homescreen.gpsCords2, provider, 10,1000, loc);
+			mapOverlay = new MapOverlay(tmp, context,realTimeCodes, cl);        
 
-			for(int i=0; i<Homescreen.cl.length; i++)
+			for(int i=0; i<cl.length; i++)
 			{
-				System.out.println("ADDING STOP TO MAP ELSE: " + Homescreen.cl[i].getStopName());
-				Helpers.addStops(Homescreen.cl[i],getResources().getDrawable(R.drawable.bus),mapOverlay);
+				System.out.println("ADDING STOP TO MAP IF: " + Homescreen.cl[i].getStopName());
+				Helpers.addStops(cl[i],getResources().getDrawable(R.drawable.bus),mapOverlay);
 			}
 		}
+		System.out.println("MYLOCFOO: " + myLocation.isMyLocationEnabled() + "   " + myLocation.getMyLocation());
+		showOverlay();
+		GeoPoint navigateTo = new GeoPoint( (int)(loc.getLatitude()*1E6) , (int)(loc.getLongitude() * 1E6));
+		mc.animateTo(navigateTo);
+		mc.setZoom(16);
+
 		//temp.clear();
 
 	}
@@ -467,7 +498,7 @@ public class BusTUCApp extends MapActivity
 		ClosestStopOnMap [] ret = new ClosestStopOnMap[1];
 		ret[0] = buf;
 		//temp.clear();
-		mapOverlay = new MapOverlay(tmp, this,realTimeCodes, ret);        
+		mapOverlay = new MapOverlay(tmp, context,realTimeCodes, ret);        
 		Helpers.addStops(buf, getResources().getDrawable(R.drawable.bus), mapOverlay);
 
 
@@ -521,62 +552,7 @@ public class BusTUCApp extends MapActivity
 
 	}
 
-	class UpdateMapThread extends AsyncTask<Void, Void, Void>
-	{
-		private Context context;    
-		Intent intent;
-		ProgressDialog myDialog = null;
-		public UpdateMapThread(Context context)
-		{
-
-			this.context = context;
-		}
-
-		@Override
-		protected Void doInBackground(Void... params)
-		{
-
-			try
-			{
-				initializeMap(true);
-
-			}
-			catch(Exception e)
-			{
-				Toast.makeText(context, "Klarte ikke oppdatere kart",Toast.LENGTH_LONG).show();
-				e.printStackTrace();
-			}
-
-			return null;
-		}
-
-		@Override
-		protected void onPreExecute()
-		{
-
-			try
-			{
-				System.out.println("Updating stops");
-				myDialog = ProgressDialog.show(context, "Loading!", "Laster nye holdeplasser");
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-
-			}
-
-		}
-
-		@Override
-		protected void onPostExecute(Void unused)
-		{
-			Toast.makeText(context, "Nye holdeplasser lastet!", Toast.LENGTH_LONG).show();
-			showOverlay();
-			myDialog.dismiss();
-
-		}
-	}  
-
+	
 	/*
 	 * Display message continuosly if location has not been set to map
 	 */

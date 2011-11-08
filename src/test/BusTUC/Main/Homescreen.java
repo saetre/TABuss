@@ -34,6 +34,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -310,10 +311,10 @@ public class Homescreen extends Activity {
 			@Override
 			public void onLocationChanged(Location location) 
 			{
-				System.out.println("LOCATIONLISTENER");
+				System.out.println("LOCATIONLISTENER CALLED IN HOMESCREEN");
 				currentlocation = location; 
-				// currentlocation.setLatitude(63.429256);
-				//currentlocation.setLongitude(10.367672);
+				 //currentlocation.setLatitude(63.43602);
+				//currentlocation.setLongitude(10.400648);
 				// ila 10.367672,63.429256
 				//	10.394555,63.43109
 				//getSuggestionBasedOnPosition();
@@ -725,6 +726,16 @@ public class Homescreen extends Activity {
 			try
 			{
 				myDialog = ProgressDialog.show(context, "Loading!", "Laster holdeplasser");
+				myDialog.setCancelable(true);
+				myDialog.setOnCancelListener(new OnCancelListener() {
+					
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						finish();
+						System.exit(0);
+						
+					}
+				});
 				createLocationListener();		
 
 				// Only request updates if > 500 ms and 10 m
@@ -854,6 +865,11 @@ public class Homescreen extends Activity {
 		super.onStart();
 
 	}
+	
+	public void onDestroy() {   
+	    super.onDestroy();
+	}
+
 	@Override
 	protected void onResume() 
 	{
@@ -865,8 +881,14 @@ public class Homescreen extends Activity {
 		goButton.setEnabled(true);
 
 		// Sets the restrictions on the location update. 
-		//locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 100, 1, locationListener);
+		locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 10, 1, locationListener);
 
+	}
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		locationManager.removeUpdates(locationListener);
 	}
 
 

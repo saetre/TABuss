@@ -329,11 +329,12 @@ public class Helpers
 					}
 					else beforeTwelve = value.get(i-1).getArrivalTime();
 					int arrivalTimeHours = Integer.parseInt(beforeTwelve.substring(0, 2));
-					int arrivalTimeMinutes = Integer.parseInt(beforeTwelve.substring(2,4))+ (arrivalTimeHours * 60);
-					System.out.println("Arrival minutes: "+ arrivalTimeMinutes);
 					int travelTime = Integer.parseInt(value.get(i-1).getTravelTime());
 					System.out.println("Travel time: " + travelTime);
-					int newHours = (int) Math.ceil((arrivalTimeMinutes +  travelTime)/ 60);
+					int arrivalTimeMinutes = Integer.parseInt(beforeTwelve.substring(2,4))+ (arrivalTimeHours * 60) + travelTime;
+					System.out.println("Arrival minutes: "+ arrivalTimeMinutes);
+					
+					int newHours = (int) Math.ceil((arrivalTimeMinutes )/ 60);
 					System.out.println("New hours: " + newHours);
 					// Check if hour is past 23. If so, adjust
 					if(newHours > 23) newHours = newHours - 24;
