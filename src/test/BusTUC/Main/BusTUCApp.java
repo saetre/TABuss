@@ -131,8 +131,7 @@ public class BusTUCApp extends MapActivity
 						Toast.makeText(context, "Oppdaterer kart", Toast.LENGTH_SHORT).show();
 						initializeMap(true, loc);
 						Toast.makeText(context, "Kart oppdatert", Toast.LENGTH_SHORT).show();
-
-
+						mc.animateTo(myLocation.getMyLocation());
 					}
 					catch(Exception e)
 					{
@@ -141,6 +140,12 @@ public class BusTUCApp extends MapActivity
 					}
 					//new UpdateMapThread(context, loc).execute();
 				}
+				else
+				{
+					mc.animateTo(myLocation.getMyLocation());
+
+				}
+				
 				currentLocation = loc;
 
 			}
@@ -196,67 +201,8 @@ public class BusTUCApp extends MapActivity
 			{
 				//	drawPath(id);
 			}
-			// Create driving path
-			Location lastKnownLocation = Homescreen.currentlocation;
-			StringBuilder urlString = new StringBuilder();
-			urlString.append("http://maps.google.com/maps?f=d&hl=en");
-			urlString.append("&saddr=");//from
-			urlString.append( Double.toString(lastKnownLocation.getLatitude() ));
-			urlString.append(",");
-			urlString.append( Double.toString(lastKnownLocation.getLongitude() ));
-			urlString.append("&daddr=");//to
-			urlString.append( Double.toString((double)dest[0]/1.0E6 ));
-			urlString.append(",");
-			urlString.append( Double.toString((double)dest[1]/1.0E6 ));
-			urlString.append("&dirflg=w&hl=en&ie=UTF8&z=14&output=kml");
-
-			try{
-				// setup the url
-				URL url = new URL(urlString.toString());
-				// create the factory
-				SAXParserFactory factory = SAXParserFactory.newInstance();
-				// create a parser
-				SAXParser parser = factory.newSAXParser();
-				// create the reader (scanner)
-				XMLReader xmlreader = parser.getXMLReader();
-				// instantiate our handler
-				NavigationSaxHandler navSaxHandler = new NavigationSaxHandler();
-				// assign our handler
-				xmlreader.setContentHandler(navSaxHandler);
-				// get our data via the url class
-				InputSource is = new InputSource(url.openStream());
-				// perform the synchronous parse           
-				xmlreader.parse(is);
-				// get the results - should be a fully populated RSSFeed instance, or null on error
-				NavigationDataSet ds = navSaxHandler.getParsedData();
-				Log.d("MAPAPP",urlString.toString());
-				// draw path
-				drawPath(ds, Color.parseColor("#add331"), mapView );
-
-				// find boundary by using itemized overlay
-				GeoPoint destPoint = new GeoPoint((int)dest[0],(int)dest[1]);
-				GeoPoint currentPoint = new GeoPoint( new Double(lastKnownLocation.getLatitude()*1E6).intValue()
-						,new Double(lastKnownLocation.getLongitude()*1E6).intValue() );
-
-				Drawable dot = this.getResources().getDrawable(R.drawable.icon);
-				MapOverlay bgItemizedOverlay = new MapOverlay(dot,this);
-				OverlayItem currentPixel = new OverlayItem(destPoint, null, null );
-				OverlayItem destPixel = new OverlayItem(currentPoint, null, null );
-				bgItemizedOverlay.addItem(currentPixel);
-				bgItemizedOverlay.addItem(destPixel);
-
-				// center and zoom in the map
-				/*MapController mc = mapView.getController();
-	            mc.zoomToSpan(bgItemizedOverlay.getLatSpanE6()*2,bgItemizedOverlay.getLonSpanE6()*2);
-	            mc.animateTo(new GeoPoint(
-	                    (currentPoint.getLatitudeE6() + destPoint.getLatitudeE6()) / 2
-	                    , (currentPoint.getLongitudeE6() + destPoint.getLongitudeE6()) / 2));*/
-
-			} catch(Exception e) {
-				Log.d("DirectionMap","Exception parsing kml.");
-				e.printStackTrace();
-			}
-
+		
+			drivingPath(dest, Homescreen.currentlocation);
 
 			for(int i=0; i<temp.size(); i++)
 			{
@@ -279,7 +225,70 @@ public class BusTUCApp extends MapActivity
 	}	
 
 
+	public void drivingPath(double []dest, Location loc)
+	{
+		System.out.println("dest: " + dest[0] + "  " + dest[1]);
+		// Create driving path
+		Location lastKnownLocation = loc;
+		StringBuilder urlString = new StringBuilder();
+		urlString.append("http://maps.google.com/maps?f=d&hl=en");
+		urlString.append("&saddr=");//from
+		urlString.append( Double.toString(lastKnownLocation.getLatitude() ));
+		urlString.append(",");
+		urlString.append( Double.toString(lastKnownLocation.getLongitude() ));
+		urlString.append("&daddr=");//to
+		urlString.append( Double.toString((double)dest[0]/1.0E6 ));
+		urlString.append(",");
+		urlString.append( Double.toString((double)dest[1]/1.0E6 ));
+		urlString.append("&dirflg=w&hl=en&ie=UTF8&z=14&output=kml");
 
+		try{
+			// setup the url
+			URL url = new URL(urlString.toString());
+			// create the factory
+			SAXParserFactory factory = SAXParserFactory.newInstance();
+			// create a parser
+			SAXParser parser = factory.newSAXParser();
+			// create the reader (scanner)
+			XMLReader xmlreader = parser.getXMLReader();
+			// instantiate our handler
+			NavigationSaxHandler navSaxHandler = new NavigationSaxHandler();
+			// assign our handler
+			xmlreader.setContentHandler(navSaxHandler);
+			// get our data via the url class
+			InputSource is = new InputSource(url.openStream());
+			// perform the synchronous parse           
+			xmlreader.parse(is);
+			// get the results - should be a fully populated RSSFeed instance, or null on error
+			NavigationDataSet ds = navSaxHandler.getParsedData();
+			Log.d("MAPAPP",urlString.toString());
+			// draw path
+			drawPath(ds, Color.parseColor("#add331"), mapView );
+
+			// find boundary by using itemized overlay
+			GeoPoint destPoint = new GeoPoint((int)dest[0],(int)dest[1]);
+			GeoPoint currentPoint = new GeoPoint( new Double(lastKnownLocation.getLatitude()*1E6).intValue()
+					,new Double(lastKnownLocation.getLongitude()*1E6).intValue() );
+
+			Drawable dot = this.getResources().getDrawable(R.drawable.icon);
+			MapOverlay bgItemizedOverlay = new MapOverlay(dot,this);
+			OverlayItem currentPixel = new OverlayItem(destPoint, null, null );
+			OverlayItem destPixel = new OverlayItem(currentPoint, null, null );
+			bgItemizedOverlay.addItem(currentPixel);
+			bgItemizedOverlay.addItem(destPixel);
+
+			// center and zoom in the map
+			/*MapController mc = mapView.getController();
+            mc.zoomToSpan(bgItemizedOverlay.getLatSpanE6()*2,bgItemizedOverlay.getLonSpanE6()*2);
+            mc.animateTo(new GeoPoint(
+                    (currentPoint.getLatitudeE6() + destPoint.getLatitudeE6()) / 2
+                    , (currentPoint.getLongitudeE6() + destPoint.getLongitudeE6()) / 2));*/
+
+		} catch(Exception e) {
+			Log.d("DirectionMap","Exception parsing kml.");
+			e.printStackTrace();
+		}
+	}
 
 	public void drawPath(NavigationDataSet navSet, int color, MapView mMapView01) {
 
@@ -478,7 +487,7 @@ public class BusTUCApp extends MapActivity
 
 	}
 
-	public void initializePress(ClosestStopOnMap buf)
+	public void initializePress(ClosestStopOnMap stop)
 	{
 		List <Overlay> overlays = mapView.getOverlays();
 
@@ -496,10 +505,10 @@ public class BusTUCApp extends MapActivity
 		//	mapView.getOverlays().clear();
 		Drawable tmp = getResources().getDrawable(R.drawable.bus);
 		ClosestStopOnMap [] ret = new ClosestStopOnMap[1];
-		ret[0] = buf;
+		ret[0] = stop;
 		//temp.clear();
 		mapOverlay = new MapOverlay(tmp, context,realTimeCodes, ret);        
-		Helpers.addStops(buf, getResources().getDrawable(R.drawable.bus), mapOverlay);
+		Helpers.addStops(stop, getResources().getDrawable(R.drawable.bus), mapOverlay);
 
 
 	}

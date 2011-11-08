@@ -56,6 +56,7 @@ public class Calculate {
 						routeSuggestions[i].setDestination(json_arr.getJSONObject(i+1).getString("busStopName"));
 					}
 					else routeSuggestions[i].setDestination(dest);
+					
 					routeSuggestions[i].setTravelTime(json_arr.getJSONObject(i).getString("travelTime"));
 					routeSuggestions[i].setBusNumber(Integer.parseInt(json_arr.getJSONObject(i).getString("busNumber")));
 					routeSuggestions[i].setWalkingDistance(Integer.parseInt(json_arr.getJSONObject(i).getString("walkingDistance")));
