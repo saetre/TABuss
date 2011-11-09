@@ -64,8 +64,8 @@ public class RealTimeList extends ListActivity
 	
 	public void setFromMenu(int position)
 	{
-
-
+		try
+		{
 			Intent intent = new Intent(this,RealTimeListFromMenu.class);
 			pressedStop = holder.get(position-1);
 			
@@ -76,6 +76,12 @@ public class RealTimeList extends ListActivity
 			intent.putExtra("stopName", pressedStop.getStopName());
 			
 			startActivity(intent);
+		}
+		catch(Exception e)
+		{
+			Intent intent = new Intent(this, Homescreen.class);
+			startActivity(intent);
+		}
 			
 
 	}

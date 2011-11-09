@@ -98,6 +98,8 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 
 			if(cl[i].getPoint().getLongitudeE6() == (longi) && cl[i].getPoint().getLatitudeE6() == (lat))
 			{
+				try
+				{
 				System.out.println("FOUND PRESSED STOP! " +cl[i].getBusStopID());
 				foundBusStop = cl[i].getStopName();
 				foundBusStopNr = cl[i].getBusStopID();
@@ -140,6 +142,12 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 
 				// System.out.println("FOUND REALTIMECODE: " +gpsCords[i][0]);
 				break;
+			}
+			catch(Exception e)
+			{
+				Intent intent = new Intent(m_Context, Homescreen.class);
+				m_Context.startActivity(intent);
+			}
 			}
 
 		}		

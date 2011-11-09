@@ -90,7 +90,7 @@ public class BusTUCApp extends MapActivity
 		mapView.displayZoomControls(true);
 
 		mc = mapView.getController();
-	
+
 
 
 		try
@@ -102,16 +102,16 @@ public class BusTUCApp extends MapActivity
 			{
 				try
 				{
-				Toast.makeText(context, "Mangler informasjon, returnerer til hjemmeskjerm", Toast.LENGTH_LONG).show();
-				Intent intent = new Intent(context, Homescreen.class);
-				context.startActivity(intent);
+					Toast.makeText(context, "Mangler informasjon, returnerer til hjemmeskjerm", Toast.LENGTH_LONG).show();
+					Intent intent = new Intent(context, Homescreen.class);
+					context.startActivity(intent);
 				}
 				catch(Exception e)
 				{
 					e.printStackTrace();
 				}
 			}
-			
+
 			System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
 		}
 		catch(Exception e)
@@ -144,15 +144,15 @@ public class BusTUCApp extends MapActivity
 				{
 					try
 					{
-						Toast.makeText(context, "Oppdaterer kart", Toast.LENGTH_SHORT).show();
+						//Toast.makeText(context, "Oppdaterer kart", Toast.LENGTH_SHORT).show();
 						initializeMap(true, loc);
-						Toast.makeText(context, "Kart oppdatert", Toast.LENGTH_SHORT).show();
+						//Toast.makeText(context, "Kart oppdatert", Toast.LENGTH_SHORT).show();
 						mc.animateTo(myLocation.getMyLocation());
 					}
 					catch(Exception e)
 					{
 						Toast.makeText(context, "Klarte ikke oppdatere kart",Toast.LENGTH_LONG).show();
-					
+
 						e.printStackTrace();
 					}
 					//new UpdateMapThread(context, loc).execute();
@@ -163,7 +163,7 @@ public class BusTUCApp extends MapActivity
 					mapView.postInvalidate();
 
 				}
-				
+
 				currentLocation = loc;
 
 			}
@@ -192,41 +192,54 @@ public class BusTUCApp extends MapActivity
 			// Iterate through the closest stop, and match bus stop id
 			ArrayList <BusStop> allStops = Homescreen.allStops;
 
-			for(int k=0; k<Homescreen.allStops.size(); k++)
+			try
 			{
-				if(foundRoutes.get(position).getBusStopNumber() == Homescreen.allStops.get(k).stopID)
+				for(int k=0; k<Homescreen.allStops.size(); k++)
 				{
-					System.out.println("FOUND TRANSFER ID: " +Homescreen.allStops.get(k).stopID );
-					int latitude =  (int) (Homescreen.allStops.get(k).location.getLatitude() *1E6);
-					int longitude = (int) (Homescreen.allStops.get(k).location.getLongitude() *1E6);
-					buf = new ClosestStopOnMap(new GeoPoint(latitude,longitude), Homescreen.allStops.get(k).stopID, Homescreen.allStops.get(k).name);
-					temp.add(buf);					
+					if(foundRoutes.get(position).getBusStopNumber() == Homescreen.allStops.get(k).stopID)
+					{
+						System.out.println("FOUND TRANSFER ID: " +Homescreen.allStops.get(k).stopID );
+						int latitude =  (int) (Homescreen.allStops.get(k).location.getLatitude() *1E6);
+						int longitude = (int) (Homescreen.allStops.get(k).location.getLongitude() *1E6);
+						buf = new ClosestStopOnMap(new GeoPoint(latitude,longitude), Homescreen.allStops.get(k).stopID, Homescreen.allStops.get(k).name);
+						temp.add(buf);					
 
-					id.add(Homescreen.allStops.get(k).stopID);
-					dest[0] = Homescreen.allStops.get(k).location.getLatitude() *1E6;
-					dest[1] = Homescreen.allStops.get(k).location.getLongitude()*1E6;
-					break;
+						id.add(Homescreen.allStops.get(k).stopID);
+						dest[0] = Homescreen.allStops.get(k).location.getLatitude() *1E6;
+						dest[1] = Homescreen.allStops.get(k).location.getLongitude()*1E6;
+						break;
+					}
+
+
 				}
 
 
-			} 
 
-			// Initialise mapOverlay, and add items
-			initializePress(buf);
+				// Initialise mapOverlay, and add items
+				initializePress(buf);
 
-			// Draw air dist
-			if(!id.isEmpty())
-			{
-				//	drawPath(id);
+				// Draw air dist
+				if(!id.isEmpty())
+				{
+					//	drawPath(id);
+				}
+
+				drivingPath(dest, Homescreen.currentlocation);
+
+				for(int i=0; i<temp.size(); i++)
+				{
+					System.out.println("ADDING STOP TO MAP: " + temp.get(i).getStopName());
+					Helpers.addStops(temp.get(i),getResources().getDrawable(R.drawable.bus),mapOverlay);
+				}
+
+
 			}
-		
-			drivingPath(dest, Homescreen.currentlocation);
-
-			for(int i=0; i<temp.size(); i++)
+			catch(Exception e)
 			{
-				System.out.println("ADDING STOP TO MAP: " + temp.get(i).getStopName());
-				Helpers.addStops(temp.get(i),getResources().getDrawable(R.drawable.bus),mapOverlay);
+				Intent intent = new Intent(context, Homescreen.class);
+				context.startActivity(intent);
 			}
+
 
 		}  
 		// Else only started as a standard map activity
@@ -235,9 +248,9 @@ public class BusTUCApp extends MapActivity
 
 		mc.animateTo(p);
 		mc.setZoom(16);
-	
 
-		System.out.println("My loc: " + Homescreen.currentlocation.getLatitude() *1E6 + "  " + Homescreen.currentlocation.getLongitude() *1E6);
+
+		//System.out.println("My loc: " + Homescreen.currentlocation.getLatitude() *1E6 + "  " + Homescreen.currentlocation.getLongitude() *1E6);
 		new LocationListenerThread(context).execute();
 	}	
 
@@ -470,6 +483,8 @@ public class BusTUCApp extends MapActivity
 		//	mapView.getOverlays().clear();
 		Drawable tmp = getResources().getDrawable(R.drawable.bus);
 		// If fix, and as a part of update mapview
+		try
+		{
 		if(updated && myLocation.getLastFix() != null)
 		{
 			ClosestStopOnMap []cl = Helpers.getList(Homescreen.gpsCords2, provider, 10,1000, loc);
@@ -493,6 +508,12 @@ public class BusTUCApp extends MapActivity
 				System.out.println("ADDING STOP TO MAP IF: " + Homescreen.cl[i].getStopName());
 				Helpers.addStops(cl[i],getResources().getDrawable(R.drawable.bus),mapOverlay);
 			}
+		}
+		}
+		catch(Exception e)
+		{
+			Intent intent = new Intent(context, Homescreen.class);
+			context.startActivity(intent);
 		}
 		System.out.println("MYLOCFOO: " + myLocation.isMyLocationEnabled() + "   " + myLocation.getMyLocation());
 		showOverlay();
@@ -579,7 +600,7 @@ public class BusTUCApp extends MapActivity
 
 	}
 
-	
+
 	/*
 	 * Display message continuosly if location has not been set to map
 	 */
