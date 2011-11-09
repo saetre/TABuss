@@ -1,7 +1,5 @@
 package test.BusTUC.Database;
 
-import test.BusTUC.Stops.BusStop;
-
 public class Query implements Comparable<Query>{
 
 	private int origin;
@@ -58,6 +56,7 @@ public class Query implements Comparable<Query>{
 		return 0;		
 	}
 	
+	@Override
 	public String toString(){
 		return "Destination: " + this.destination + ", Origin: " + this.origin + ", Day: " + this.day + ", Time: " + this.time;
 	}

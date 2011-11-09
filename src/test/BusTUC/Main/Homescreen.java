@@ -4,22 +4,15 @@ package test.BusTUC.Main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
-
 import test.BusTUC.Database.DatabaseHelper;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import test.BusTUC.R;
-import test.BusTUC.Calc.Sort;
-import test.BusTUC.Database.Database;
-import test.BusTUC.Database.DatabaseAdapter;
 import test.BusTUC.Database.Query;
 import test.BusTUC.Favourites.Favourite;
 import test.BusTUC.Favourites.SDCard;
@@ -38,7 +31,6 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -55,14 +47,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Homescreen extends Activity {
@@ -116,6 +111,8 @@ public class Homescreen extends Activity {
 	private GestureDetector gestureDetector;
 	View.OnTouchListener gestureListener;
 	LinearLayout line;
+	private TextView title;
+	private ImageView icon;
 
 
 	public void updateButtons(String[] busStop, Button[]buttons)
@@ -132,7 +129,7 @@ public class Homescreen extends Activity {
 		List <String> temp = Arrays.asList(busStop);
 		int addedfavorites = 0;
 		// Set font
-		Typeface font = Typeface.createFromAsset(getAssets(), "dotmatrix.ttf");  
+		//Typeface font = Typeface.createFromAsset(getAssets(), "dotmatrix.ttf");  
 		// Iterate through stops, and add from SD-card
 		for(int i=0; i<busStop.length && i< favorites.size(); i++)
 		{
@@ -158,7 +155,7 @@ public class Homescreen extends Activity {
 		for(int i = 0; i<numButtons && i<busStop.length; i++)
 		{
 			buttons[i].setText(busStop[i]);
-			buttons[i].setTypeface(font);
+			//buttons[i].setTypeface(font);
 		}
 
 	}
@@ -170,14 +167,23 @@ public class Homescreen extends Activity {
 
 
 		context = this;
+
+        setContentView(R.layout.homescreen);
+
 		new StartUpThread(context).execute();
 
 		dbHelper=new DatabaseHelper(context);
-		int c= dbHelper.getQueryCount();
-		this.setTitle("AndroidAmble - "+c+" Søk gjort");
+
 		this.setRequestedOrientation(
 				ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		setContentView(R.layout.homescreen);
+		
+        
+        
+        //title = (TextView) findViewById(R.id.header);
+        //title.setText("BussTUC Mobile   " +c + " s¿k gjort");
+        //icon  = (ImageView) findViewById(R.id.icon);
+        //setContentView(R.layout.main);
+		
 		buttons = new Button[6];
 		goButton = (Button)this.findViewById(R.id.goButton);
 		amazeButton = (Button)this.findViewById(R.id.amazebutton);
@@ -330,12 +336,14 @@ public class Homescreen extends Activity {
 				// All stops
 				allStops = Helpers.getAllLocations(gpsCords2, provider);
 				long second = System.nanoTime() - first;
+				System.out.println("LAT:" + currentlocation.getLatitude() + "LONG:" + currentlocation.getLongitude());
 				System.out.println("TIME SPENT SORTING SHIT: " + second /(1000000000.0));
 				int numStops =10;// busStops.size();
 				int dist = 1000;
 				System.out.println("USING " + numStops + " STOPS");
 				// For use with the map, and real-time functionality
 				cl = Helpers.getList(gpsCords2, provider, numStops,dist, currentlocation);
+
 
 
 			}

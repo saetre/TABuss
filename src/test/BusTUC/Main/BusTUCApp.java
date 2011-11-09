@@ -85,8 +85,8 @@ public class BusTUCApp extends MapActivity
 
 		zoomLayout.addView(zoomView, 
 				new LinearLayout.LayoutParams(
-						LayoutParams.WRAP_CONTENT, 
-						LayoutParams.WRAP_CONTENT)); 
+						android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 
+						android.view.ViewGroup.LayoutParams.WRAP_CONTENT)); 
 		mapView.displayZoomControls(true);
 
 		mc = mapView.getController();
@@ -267,9 +267,9 @@ public class BusTUCApp extends MapActivity
 		urlString.append(",");
 		urlString.append( Double.toString(lastKnownLocation.getLongitude() ));
 		urlString.append("&daddr=");//to
-		urlString.append( Double.toString((double)dest[0]/1.0E6 ));
+		urlString.append( Double.toString(dest[0]/1.0E6 ));
 		urlString.append(",");
-		urlString.append( Double.toString((double)dest[1]/1.0E6 ));
+		urlString.append( Double.toString(dest[1]/1.0E6 ));
 		urlString.append("&dirflg=w&hl=en&ie=UTF8&z=14&output=kml");
 
 		try{
@@ -418,6 +418,7 @@ public class BusTUCApp extends MapActivity
 		return retList;
 	}
 
+	@Override
 	public void onBackPressed()
 	{
 		myLocation.disableCompass();
@@ -584,8 +585,8 @@ public class BusTUCApp extends MapActivity
 					point2[i] = new Point();
 					projection.toPixels(gp2.get(i), point2[i]);    	            
 					paint.setStrokeWidth(2);
-					canvas.drawLine((float) point.x, (float) point.y, (float) point2[i].x,
-							(float) point2[i].y, paint);
+					canvas.drawLine(point.x, point.y, point2[i].x,
+							point2[i].y, paint);
 				}
 			}
 			return super.draw(canvas, mapView, shadow, when);

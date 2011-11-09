@@ -3,19 +3,14 @@ package test.BusTUC.Calc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.android.maps.GeoPoint;
 
-import test.BusTUC.R;
 import test.BusTUC.Main.Route;
 
-import android.location.Location;
 import android.util.Log;
 
 public class Calculate {

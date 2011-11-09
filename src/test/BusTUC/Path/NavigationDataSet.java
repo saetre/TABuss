@@ -10,10 +10,11 @@ private ArrayList<Placemark> placemarks = new ArrayList<Placemark>();
 private Placemark currentPlacemark;
 private Placemark routePlacemark;
 
+@Override
 public String toString() {
     String s= "";
     for (Iterator<Placemark> iter=placemarks.iterator();iter.hasNext();) {
-        Placemark p = (Placemark)iter.next();
+        Placemark p = iter.next();
         s += p.getTitle() + "\n" + p.getDescription() + "\n\n";
     }
     return s;

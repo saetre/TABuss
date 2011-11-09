@@ -5,34 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.List;
 import java.util.ArrayList;
 
-import test.BusTUC.R;
-import test.BusTUC.R.id;
-import test.BusTUC.R.layout;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ListActivity;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
 import android.os.Environment;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemLongClickListener;
 
 public class SDCard 
 {

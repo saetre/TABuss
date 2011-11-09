@@ -1,16 +1,12 @@
 package test.BusTUC.Splash;
 
 
-import test.BusTUC.R;
-import test.BusTUC.Main.BusTUCApp;
 import test.BusTUC.Main.Homescreen;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.MotionEvent;
 
 public class Splash extends Activity {
 	

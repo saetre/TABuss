@@ -1,73 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/homelayout" xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="fill_parent"
-    android:orientation="vertical" android:background="@drawable/splashscreen">    
+<LinearLayout 
+	android:id="@+id/homelayout" 
+	xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+    android:orientation="vertical" 
+    android:background="#FFFFFF">    
 	
-	
-	
-    <RelativeLayout
-    android:gravity = "top"
-	android:id="@+id/widget61"
-	android:layout_width="fill_parent"
+	<LinearLayout 
 	android:layout_height="wrap_content"
-	android:layout_margin="15px"
-	>
-		
-	<Button android:layout_height="wrap_content" 
-	android:layout_width="wrap_content" 
-	android:background="@drawable/go_button" 
-	android:id="@+id/goButton" 
-	android:text="Gå" 
-	android:textSize="8pt"
-	android:textColor="#ffffff" 
-	android:layout_marginRight="15dp"
-	android:layout_marginLeft="2dp"
-	android:layout_alignParentTop="true" 
-	android:layout_alignParentRight="true">
-	</Button>
-	
-	<Button android:layout_height="wrap_content" 
-	android:layout_width="wrap_content" 
-	android:background="@drawable/go_button" 
-	android:id="@+id/amazebutton" 
-	android:text="..." 
-	android:textSize="8pt"
-	android:textColor="#ffffff" 
-	android:layout_toLeftOf="@id/goButton"
-	android:layout_marginRight="2dp"
-	android:layout_marginLeft="10dp"
-	android:layout_alignParentTop="true" >
-	</Button>
+	android:layout_width="fill_parent"
+	android:orientation="horizontal"
+	android:id="@+id/topview"
+	android:background="#A3AB19">
+	    
+    <AutoCompleteTextView android:id="@+id/autocomplete"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+       	android:maxLines="1" 
+       	android:hint="Hvor vil du dra?" 
+       	android:layout_gravity="left|center_vertical"
+       	android:gravity="left"
+        android:layout_margin="5sp"
+        android:layout_weight="2"/>
+        
+    <LinearLayout 
+    	android:layout_width="wrap_content" 
+    	android:layout_gravity="right" 
+    	android:id="@+id/linearLayout1"
+    	android:layout_weight="1" 
+    	android:layout_height="fill_parent"
+    	android:layout_margin="5sp">
+    	<Button android:layout_height="fill_parent" 
+			android:layout_width="50sp" 
+			android:background="#A3AB19" 
+			android:layout_weight="1" 
+			android:id="@+id/amazebutton" 
+			android:text="..."
+			android:gravity="center"
+			android:layout_marginRight="5sp" 
+			android:textSize="14sp"
+			android:textColor="#ffffff"
+			android:layout_gravity="center_vertical">
+		</Button>
+    	<Button android:layout_height="fill_parent" 
+			android:layout_width="50sp" 
+			android:background="#A3AB19" 
+			android:layout_weight="1" 
+			android:id="@+id/goButton" 
+			android:text="Gå"
+			android:textSize="16sp"
+			android:textColor="#ffffff"
+			android:gravity="center"
+			android:layout_marginRight="0sp"
+			android:layout_gravity="right|center_vertical">
+		</Button>
 	
 
-	
-	<TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLines="1"         
-		android:textSize="8pt" 
-		
-      />
-    <AutoCompleteTextView android:id="@+id/autocomplete"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-       	android:maxLines="1" 
-       	android:layout_toLeftOf="@id/amazebutton"
-       	android:hint="Hvor vil du dra?" 
-       	android:layout_alignParentTop="true" 
-		android:layout_alignParentLeft="true"
-        android:layout_marginLeft="15dp"/>
+    </LinearLayout>
+	</LinearLayout>
 	
 	
-	
-	<ScrollView android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/autocomplete">
+	<ScrollView android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/topview">
 	<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
-	<Button android:layout_margin="15dp" android:text="Button" android:id="@+id/button1" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
-   	<Button android:layout_margin="15dp" android:text="Button" android:id="@+id/button2" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
-   	<Button android:layout_margin="15dp" android:text="Button" android:id="@+id/button3" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
-   	<Button android:layout_margin="15dp" android:text="Button" android:id="@+id/button4" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
-   	<Button android:layout_margin="15dp" android:text="Button" android:id="@+id/button5" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
-   	<Button android:layout_margin="15dp" android:text="Button" android:id="@+id/button6" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
+	<Button android:layout_margin="5sp" android:gravity="left" android:text="Button" android:id="@+id/button1" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
+   	<Button android:layout_margin="5sp" android:gravity="left" android:text="Button" android:id="@+id/button2" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
+   	<Button android:layout_margin="5sp" android:gravity="left" android:text="Button" android:id="@+id/button3" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
+   	<Button android:layout_margin="5sp" android:gravity="left" android:text="Button" android:id="@+id/button4" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
+   	<Button android:layout_margin="5sp" android:gravity="left" android:text="Button" android:id="@+id/button5" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
+   	<Button android:layout_margin="5sp" android:gravity="left" android:text="Button" android:id="@+id/button6" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
    	</LinearLayout>
    	</ScrollView>
-   	</RelativeLayout>
 </LinearLayout>
