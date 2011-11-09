@@ -174,7 +174,7 @@ public class Homescreen extends Activity {
 
 		dbHelper=new DatabaseHelper(context);
 		int c= dbHelper.getQueryCount();
-		this.setTitle("AndroidAmble - "+c+" SÃ¸k gjort");
+		this.setTitle("AndroidAmble - "+c+" Søk gjort");
 		this.setRequestedOrientation(
 				ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.homescreen);
@@ -577,9 +577,9 @@ public class Homescreen extends Activity {
 					dbHelper.AddQuery(new Query(area ,textView.getText().toString(), Helpers.minutesFromDate(new Date()), new Date().getDay()));
 
 					System.out.println("Objects hopefully init: " + busStopsNoDuplicates.size() + "  " + k_browser.toString() + "  " + realTimeCodes.size());
-					buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
+					//buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
 
-					//buf = Helpers.runServer(textView.getText().toString(), k_browser, currentlocation);
+					buf = Helpers.runServer(textView.getText().toString(), k_browser, currentlocation);
 					long newTime = System.nanoTime() - time;
 					System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 
@@ -874,7 +874,7 @@ public class Homescreen extends Activity {
 	protected void onResume() 
 	{
 		int c= dbHelper.getQueryCount();
-		this.setTitle("AndroidAmble - "+c+" SÃ¸k gjort");
+		this.setTitle("AndroidAmble - "+c+" Søk gjort");
 		super.onResume();
 		//	editText.setEnabled(true);
 		textView.setEnabled(true);

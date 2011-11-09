@@ -83,8 +83,8 @@ public class RealTimeListFromMenu extends ListActivity
 				
 				text.setText(stopName);
 
-				stops = Browser.specificRequestForStop(stopId);
-				//stops = Browser.specificRequestForStopServer(outgoing);
+				//stops = Browser.specificRequestForStop(stopId);
+				stops = Browser.specificRequestForStopServer(outgoing);
 				long currenttimeInMillis = date.getTime();
 				long arrivaltimeInMillis, diff;
 

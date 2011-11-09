@@ -140,7 +140,7 @@ public class BusTUCApp extends MapActivity
 				System.out.println("LOCATIONCHANGE IN MAP");
 				// Update loc if new loc is more than 10 metres in air dist from last loc
 				System.out.println("DIFF LEN: " + loc.distanceTo(currentLocation));
-				if(extras == null && loc.distanceTo(currentLocation) > 10)
+				if(extras == null )
 				{
 					try
 					{
@@ -303,7 +303,7 @@ public class BusTUCApp extends MapActivity
 
 		} catch(Exception e) {
 			Log.d("DirectionMap","Exception parsing kml.");
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 
@@ -624,7 +624,7 @@ public class BusTUCApp extends MapActivity
 
 			try
 			{
-				if(myLocation.getMyLocation() == null)	Toast.makeText(context, "Venter pÃ¥ lokasjon pÃ¥ kart", Toast.LENGTH_LONG).show();
+				if(myLocation.getMyLocation() == null)	Toast.makeText(context, "Venter på lokasjon på kart", Toast.LENGTH_LONG).show();
 			}
 			catch(Exception e)
 			{

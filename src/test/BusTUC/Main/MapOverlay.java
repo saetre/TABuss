@@ -185,8 +185,8 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 			try
 			{
 				long time = System.nanoTime();
-				 foundStopsList = Browser.specificRequestForStop(outgoing);       
-				//foundStopsList = Browser.specificRequestForStopServer(line);
+				// foundStopsList = Browser.specificRequestForStop(outgoing);       
+				foundStopsList = Browser.specificRequestForStopServer(line);
 				Intent intent = new Intent(m_Context, RealTimeList.class);
 				intent.putExtra("tag", foundBusStop);
 				intent.putExtra("nr", foundBusStopNr);
