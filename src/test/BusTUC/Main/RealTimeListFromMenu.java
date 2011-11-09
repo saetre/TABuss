@@ -83,8 +83,8 @@ public class RealTimeListFromMenu extends ListActivity
 				
 				text.setText(stopName);
 
-				//stops = Browser.specificRequestForStop(stopId); 
-				stops = Browser.specificRequestForStopServer(outgoing);
+				stops = Browser.specificRequestForStop(stopId); 
+			//	stops = Browser.specificRequestForStopServer(outgoing);
 				long currenttimeInMillis = date.getTime();
 				long arrivaltimeInMillis, diff;
 
@@ -96,6 +96,7 @@ public class RealTimeListFromMenu extends ListActivity
 					stops.get(i).getArrivalTime().setDate(date.getDate());
 					arrivaltimeInMillis = stops.get(i).getArrivalTime().getTime();
 					diff = arrivaltimeInMillis - currenttimeInMillis;
+					//System.out.println("DIFF: " + arrivaltimeInMillis + "  " + currenttimeInMillis + "  " +diff);
 					//Date d2 = new Date(diff);
 					
 				    long hours = TimeUnit.MILLISECONDS.toHours(diff);

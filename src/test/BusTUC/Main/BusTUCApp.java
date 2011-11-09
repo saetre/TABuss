@@ -646,7 +646,7 @@ public class BusTUCApp extends MapActivity
 
 			try
 			{
-				if(myLocation.getMyLocation() == null)	Toast.makeText(context, "Venter på lokasjon på kart", Toast.LENGTH_LONG).show();
+				if(myLocation.getMyLocation() == null)	Toast.makeText(context, "Venter på lokasjon på kart", Toast.LENGTH_SHORT).show();
 			}
 			catch(Exception e)
 			{
@@ -659,7 +659,7 @@ public class BusTUCApp extends MapActivity
 		@Override
 		protected void onPostExecute(Void unused)
 		{
-			Toast.makeText(context, "Lokasjon satt!", Toast.LENGTH_LONG).show();
+			Toast.makeText(context, "Lokasjon satt!", Toast.LENGTH_SHORT).show();
 
 		}
 	}  
