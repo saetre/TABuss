@@ -31,6 +31,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.TimeUtils;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
@@ -99,8 +100,12 @@ public class RealTimeListFromMenu extends ListActivity
 					//System.out.println("DIFF: " + arrivaltimeInMillis + "  " + currenttimeInMillis + "  " +diff);
 					//Date d2 = new Date(diff);
 					
-				    long hours = TimeUnit.MILLISECONDS.toHours(diff);
-				    long minutes = TimeUnit.MILLISECONDS.toMinutes(diff)-(hours*60);
+				   // long hours =  //TimeUnit.MILLISECONDS.toHours(diff);
+					int m_minutes = (int) Math.ceil((TimeUnit.MILLISECONDS.toSeconds(diff)) / 60);
+				   int hours = m_minutes / 60;
+				   int minutes = m_minutes % 60;
+				   //int minutes = (int) TimeUnit.MILLISECONDS.toSeconds(duration)
+				    //long minutes = TimeUnit.MILLISECONDS.toMinutes(diff)-(hours*60);
 					String nAtm = "";
 					if(hours == 0){
 						nAtm = minutes + " min";
