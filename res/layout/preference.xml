@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	android:title="Settings">
+	<EditTextPreference android:title="Antall stopp"
+		android:inputType="number" android:summary="Antall stopp systemet skal bruke for å finne rute. Maks 5 stk"
+		android:key="num1" android:persistent="true" android:defaultValue="3"></EditTextPreference>
+
+	<EditTextPreference android:title="Antall stopp på kart"
+		android:inputType="number"
+		android:summary="Antall stopp rundt din lokasjon, som skal vises på kart. Maks 20 stk"
+		android:key="num2" android:persistent="true" android:defaultValue="10"></EditTextPreference>
+
+	<EditTextPreference android:title="Søkeradius"
+		android:inputType="number"
+		android:summary="Hvor stor radius søk etter nære stopp skal gjøres. Maks 10000 m"
+		android:key="num3" android:persistent="true" android:defaultValue="1000"></EditTextPreference>
+
+</PreferenceScreen>

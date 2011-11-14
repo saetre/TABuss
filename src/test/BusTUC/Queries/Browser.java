@@ -153,13 +153,13 @@ public class Browser
 		return html_string; 
 	}
 
-	public String getRequestServer(String stop, Boolean formated, Location location)
+	public String getRequestServer(String stop, Boolean formated, Location location, int numStops)
 	{
 		String html_string = null; 
 		HttpGet m_get = new HttpGet();	    
 		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
 		try {
-			m_get.setURI(new URI("http://furu.idi.ntnu.no:1337/MultiBRISserver/MBServlet?dest="+stop+"&lat="+location.getLatitude()+"&long="+location.getLongitude() + "&type=json&nStops="+3));
+			m_get.setURI(new URI("http://furu.idi.ntnu.no:1337/MultiBRISserver/MBServlet?dest="+stop+"&lat="+location.getLatitude()+"&long="+location.getLongitude() + "&type=json&nStops="+numStops +"&key=SoapMacTavish"));
 			//http://furu.idi.ntnu.no:1337/MultiBRISserver/MBServlet?dest=Ila&type=json&lat=63.4169548&long=10.40284478 n�
 			// 			m_get.setURI(new URI("http://ec2-79-125-87-39.eu-west-1.compute.amazonaws.com:8080/MultiBRISserver/MBServlet?dest="+stop+"&type=json&lat="+location.getLatitude()+"&long="+location.getLongitude()));
 			HttpResponse m_response = m_client.execute(m_get);
@@ -600,7 +600,7 @@ public class Browser
 
 					BusDeparture t = new BusDeparture();
 					t.line = j_a.getJSONObject(i).getInt("line");
-					SimpleDateFormat formatter = new SimpleDateFormat("dd/Mm/yyyy HH:mm"); 
+					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"); 
 					Date date = (Date)formatter.parse(j_a.getJSONObject(i).getString("arrivalTime"));
 					t.arrivalTime = date;
 					System.out.println("FOUND HOURS: " + t.arrivalTime.getHours());

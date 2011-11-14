@@ -54,6 +54,8 @@ import com.google.android.maps.OverlayItem;
 public class Helpers 
 {
 
+
+
 	public static ClosestStopOnMap[] getList(String[][]coords, String provider, int numStops,int dist, Location currentLocation)
 	{
 		ArrayList <BusStop> busStops = Helpers.getLocationsArray(coords, "", currentLocation,1000,numStops, true);
@@ -68,7 +70,7 @@ public class Helpers
 
 		}
 		return cl;
-		
+
 	}
 
 	public static HashMap<String,Integer> getMostFrequentDestination(ArrayList<String> destination){
@@ -203,17 +205,17 @@ public class Helpers
 				if(isTransfer)
 				{
 					System.out.println("I " + i);
-					text.add((i+1)  +": OVERGANGSFORSLAG " + (i) + ": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1)  +": OVERGANGSFORSLAG " + (i) + ": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 
 				}
 				else if(value.get(i).getWalkingDistance() != 0)
 				{
-					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 
 				else
 				{
-					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 
 			}
@@ -221,11 +223,11 @@ public class Helpers
 			{		
 				if(!isTransfer)
 				{
-					text.add((i+1) +": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+ " klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1) +": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+ " klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 				else
 				{
-					text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nÃ¥ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 				isTransfer = true;
 
@@ -329,7 +331,7 @@ public class Helpers
 				if((Integer.parseInt(firstDest.getArrivalTime())+ Integer.parseInt(firstDest.getTravelTime()) +walk)>= ( Integer.parseInt(transfer.getArrivalTime())))
 				{
 					String beforeTwelve = "0";
-					System.out.println("PRï¿½VER ï¿½  FINNE NY");
+					System.out.println("PRØVER Å FINNE NY");
 					if(value.get(i-1).getArrivalTime().length() == 3)
 					{
 						beforeTwelve = beforeTwelve+value.get(i-1).getArrivalTime();
@@ -340,7 +342,7 @@ public class Helpers
 					System.out.println("Travel time: " + travelTime);
 					int arrivalTimeMinutes = Integer.parseInt(beforeTwelve.substring(2,4))+ (arrivalTimeHours * 60) + travelTime;
 					System.out.println("Arrival minutes: "+ arrivalTimeMinutes);
-					
+
 					int newHours = (int) Math.ceil((arrivalTimeMinutes )/ 60);
 					System.out.println("New hours: " + newHours);
 					// Check if hour is past 23. If so, adjust
@@ -363,10 +365,10 @@ public class Helpers
 					{
 						// Remove route we won't catch anyway
 						value.remove(value.get(i));
-						
+
 						// Update list
 						value.trimToSize();
-						
+
 						ArrayList <Route> routes = Helpers.runString(destination, newList, Homescreen.k_browser, Homescreen.realTimeCodes, query);						
 						finalRoutes = new ArrayList <Route>();
 						// Assure that no routes leave before we arrive at the stop
@@ -474,7 +476,7 @@ public class Helpers
 	 * Runs query against Retro's server
 	 * According methods such as createJSONServer are modified versions of the existing
 	 */
-	public static ArrayList <Route> runServer(String input, Browser k_browser, Location location)
+	public static ArrayList <Route> runServer(String input, Browser k_browser, Location location, int numStops)
 	{
 		Route[] finalRoutes;
 		// Perform action on clicks
@@ -482,7 +484,7 @@ public class Helpers
 		try
 		{
 			long time = System.nanoTime();
-			String html_page = k_browser.getRequestServer(input,false, location);   
+			String html_page = k_browser.getRequestServer(input,false, location, numStops);   
 			long newTime = System.nanoTime() - time;
 			System.out.println("TIME ORACLEREQUEST: " +  newTime/1000000000.0);	
 			Calculate calculator = new Calculate();          
@@ -603,11 +605,15 @@ public class Helpers
 		}
 		Collections.sort(busStops);
 		ArrayList <BusStop> retList = new ArrayList <BusStop>();
-		for(int i=0; i<numStops; i++)
+		if(busStops.size() == 0) return busStops;
+		else
 		{
-			retList.add(busStops.get(i));
+			for(int i=0; i<numStops; i++)
+			{
+				retList.add(busStops.get(i));
+			}
+			return retList;
 		}
-		return retList;
 	}
 
 	/*

@@ -30,7 +30,7 @@ public class RealTimeList extends ListActivity
 	ClosestStopOnMap pressedStop;
 	int outgoing; 
 	ArrayList <BusDeparture> stops;
-	
+
 	HashMap<String, Object> hm, hm2;
 	ListView lv;
 	String [] stopNames;
@@ -45,47 +45,59 @@ public class RealTimeList extends ListActivity
 		lv.setBackgroundColor(Color.parseColor("#3C434A"));
 		lv.setCacheColorHint(Color.parseColor("#3C434A"));
 		lv.setClickable(true);
-		
+
 		text = new TextView(this);
 		text.setClickable(false);
 		text.setTextSize(30);
 		text.setTextColor(Color.parseColor("#A3AB19"));
 		text.setTypeface(null,Typeface.BOLD);
-		text.setText("Busstopp nÃ¦r deg");
+		text.setText("Busstopp nær deg");
 		lv.addHeaderView(text);
 		setFromExtras();
 
 	}
 	@Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+	}
 
-	
+
 	public void setFromMenu(int position)
 	{
 		try
 		{
 			Intent intent = new Intent(this,RealTimeListFromMenu.class);
 			pressedStop = holder.get(position-1);
-			
-			outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(pressedStop.getBusStopID()).toString());
-			
-			intent.putExtra("stopId", outgoing);
-			intent.putExtra("key", pressedStop.getBusStopID());
-			intent.putExtra("stopName", pressedStop.getStopName());
-			
-			startActivity(intent);
+
+
+			if(Homescreen.realTimeCodes == null)
+			{
+				returnHome();
+			}
+			else
+			{
+				outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(pressedStop.getBusStopID()).toString());
+
+				intent.putExtra("stopId", outgoing);
+				intent.putExtra("key", pressedStop.getBusStopID());
+				intent.putExtra("stopName", pressedStop.getStopName());
+
+				startActivity(intent);
+			}
 		}
 		catch(Exception e)
 		{
-			Intent intent = new Intent(this, Homescreen.class);
-			startActivity(intent);
+			e.printStackTrace();
 		}
-			
+
 
 	}
 
+	public void returnHome()
+	{
+		Intent intent = new Intent(this, Homescreen.class);
+		this.startActivity(intent);
+	}
 	public void setFromExtras()
 	{
 		try
@@ -107,9 +119,9 @@ public class RealTimeList extends ListActivity
 				//holder.get(i).setStopName(holder.get(i).getStopName() + " " + tmp);
 				//stopNames[i] = holder.get(i).getStopName();
 				hm2 = new HashMap<String, Object>();
-		        hm2.put("name", holder.get(i).getStopName() );
-		        hm2.put("toFrom", tmp);
-		        realTimeStop.add(hm2);
+				hm2.put("name", holder.get(i).getStopName() );
+				hm2.put("toFrom", tmp);
+				realTimeStop.add(hm2);
 			}
 			setListAdapter(new SimpleAdapter(this, realTimeStop, R.layout.realtimestop,
 					new String[]{"name","toFrom"}, new int[]{R.id.stopName,R.id.toFrom}));

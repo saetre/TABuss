@@ -75,6 +75,7 @@ public class Answer extends  ListActivity{
 		}
 		else
 		{
+			returnHome();
 			this.finish();
 		}
 
@@ -93,6 +94,12 @@ public class Answer extends  ListActivity{
 		positionInTable = position;
 		new MapThread(context).execute();
 
+	}
+	
+	public void returnHome()
+	{
+		Intent intent = new Intent(context, Homescreen.class);
+		context.startActivity(intent);
 	}
 
 	@Override

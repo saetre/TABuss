@@ -30,7 +30,7 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 	private Drawable drawable;
 	// Change to none-static later if necessary. Problem with parcelable in this case,
 	// is  the Date object
-	public static ArrayList <BusDeparture> foundStopsList;
+	//public static ArrayList <BusDeparture> foundStopsList;
 	public String foundBusStop;
 	public int foundBusStopNr;
 	int lat,longi, outgoing, line;
@@ -87,51 +87,56 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 			{
 				try
 				{
-				System.out.println("FOUND PRESSED STOP! " +cl[i].getBusStopID());
-				foundBusStop = cl[i].getStopName();
-				foundBusStopNr = cl[i].getBusStopID();
-				line = cl[i].getBusStopID();
-				
-				outgoing = Integer.parseInt(realTimeCodes.get(line).toString());
-				AlertDialog.Builder builder = new AlertDialog.Builder(m_Context);
-				String tmp = "" + cl[i].getBusStopID();
-				// Check which direction buses passing this stop are going
-				if(Integer.parseInt((tmp.substring(4,5))) == 1)
+					System.out.println("FOUND PRESSED STOP! " +cl[i].getBusStopID());
+					foundBusStop = cl[i].getStopName();
+					foundBusStopNr = cl[i].getBusStopID();
+					line = cl[i].getBusStopID();
+
+					outgoing = Integer.parseInt(realTimeCodes.get(line).toString());
+					AlertDialog.Builder builder = new AlertDialog.Builder(m_Context);
+					String tmp = "" + cl[i].getBusStopID();
+					// Check which direction buses passing this stop are going
+					if(Integer.parseInt((tmp.substring(4,5))) == 1)
+					{
+						tmp = "til byen";
+					} else if(Integer.parseInt((tmp.substring(4,5))) == 0)tmp = "fra byen";
+					// If user clicks yes, run thread
+					builder.setMessage(cl[i].getStopName() + " " + tmp +"\nVise realtime?").setPositiveButton("Ja", new DialogInterface.OnClickListener()
+					{
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Intent intent = new Intent(m_Context,RealTimeListFromMenu.class);
+							if(Homescreen.realTimeCodes == null)
+							{
+								Intent home = new Intent(m_Context, Homescreen.class);
+								m_Context.startActivity(home);
+							}
+							else
+							{
+								outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(foundBusStopNr).toString());						
+								intent.putExtra("stopId", outgoing);
+								intent.putExtra("stopName", foundBusStop);
+								intent.putExtra("key", line);
+								m_Context.startActivity(intent);
+							}
+
+						}
+
+					})
+					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// DO nothing, as user canceled
+						}
+					}).show();	
+					break;
+				}
+				catch(Exception e)
 				{
-					tmp = "til byen";
-				} else if(Integer.parseInt((tmp.substring(4,5))) == 0)tmp = "fra byen";
-				// If user clicks yes, run thread
-				builder.setMessage(cl[i].getStopName() + " " + tmp +"\nVise realtime?").setPositiveButton("Ja", new DialogInterface.OnClickListener()
-				{
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						Intent intent = new Intent(m_Context,RealTimeListFromMenu.class);
-						
-						outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(foundBusStopNr).toString());
-						
-						intent.putExtra("stopId", outgoing);
-						intent.putExtra("stopName", foundBusStop);
-						intent.putExtra("key", line);
-						m_Context.startActivity(intent);
-
-					}
-
-				})
-				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// DO nothing, as user canceled
-					}
-				}).show();	
-				break;
-			}
-			catch(Exception e)
-			{
-				Intent intent = new Intent(m_Context, Homescreen.class);
-				m_Context.startActivity(intent);
-			}
+					e.printStackTrace();
+				}
 			}
 
 		}		
@@ -140,6 +145,11 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 
 	}
 
+	public void returnHome()
+	{
+		Intent intent = new Intent(m_Context, Homescreen.class);
+		m_Context.startActivity(intent);
+	}
 
 
 	@Override
@@ -151,7 +161,7 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 	public int size() {
 		return items.size();
 	}
-	
+
 	@Override
 	public void draw(Canvas canvas, MapView mapView, boolean shadow)
 	{
@@ -159,57 +169,4 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 		boundCenterBottom(drawable);
 	}
 
-
-	class RealTimeThread extends AsyncTask<Void, Void, Void>
-	{
-		private Context context;    
-		Intent intent;
-		ProgressDialog myDialog = null;
-		public RealTimeThread(Context context)
-		{
-
-			this.context = context;
-		}
-
-		@Override
-		protected Void doInBackground(Void... params)
-		{
-			try
-			{
-				long time = System.nanoTime();
-				 foundStopsList = Browser.specificRequestForStop(outgoing);       
-				//foundStopsList = Browser.specificRequestForStopServer(line);
-				Intent intent = new Intent(m_Context, RealTimeList.class);
-				intent.putExtra("tag", foundBusStop);
-				intent.putExtra("nr", foundBusStopNr);
-				m_Context.startActivity(intent);
-				Long newTime = System.nanoTime() - time;
-				System.out.println("TIME LOOKUP: " +  newTime/1000000000.0);
-			}
-			catch(Exception e)
-			{
-				myDialog.dismiss();
-				Toast.makeText(context, "Something bad happened.." , Toast.LENGTH_LONG).show();
-				ArrayList <String> err = new ArrayList <String>();
-				err.add(e.toString());
-				SDCard.generateNoteOnSD("errorMapOverlay::RealtimeThread", err, "errors");
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPreExecute()
-		{
-
-			myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
-
-		}
-
-		@Override
-		protected void onPostExecute(Void unused)
-		{
-			myDialog.dismiss();
-
-		}
-	}
 }

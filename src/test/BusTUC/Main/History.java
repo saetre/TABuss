@@ -10,14 +10,19 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 public class History extends ListActivity {
 	public static String ID;
 	DatabaseHelper dbHelper;
 	Button deletebutton;
+	String[] columns;
+	int [] to;
+	SimpleCursorAdapter mAdapter;
     @Override
-    public void onCreate(Bundle savedInstance) {
+    public void onCreate(Bundle savedInstance)
+    {
     	super.onCreate(savedInstance);
     	  getListView().setBackgroundColor(Color.parseColor("#3C434A"));
     	  getListView().setBackgroundColor(Color.parseColor("#3C434A"));
@@ -33,13 +38,12 @@ public class History extends ListActivity {
           }
           Toast.makeText(this, "FOUND " + cursor.getCount() + " Columsn", Toast.LENGTH_LONG).show();
           // the desired columns to be bound
-          String[] columns = new String[] { DatabaseHelper.origin, DatabaseHelper.destination, DatabaseHelper.time };
+          columns = new String[] { DatabaseHelper.origin, DatabaseHelper.destination, DatabaseHelper.time };
           // the XML defined views which the data will be bound to
-          int[] to = new int[] {R.id.origin_entry, R.id.destination_entry, R.id.time_entry };
+          to = new int[] {R.id.origin_entry, R.id.destination_entry, R.id.time_entry };
 
           // create the adapter using the cursor pointing to the desired data as well as the layout information
-          SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, R.layout.history, cursor, columns, to);
-          
+           mAdapter = new SimpleCursorAdapter(this, R.layout.history, cursor, columns, to);
           // set this adapter as your ListActivity's adapter
           this.setListAdapter(mAdapter);
           //cursor.close();
@@ -51,5 +55,5 @@ public class History extends ListActivity {
   					dbHelper.clearDatabase();	  
   				}
   			});
-    }	
+    }
 }

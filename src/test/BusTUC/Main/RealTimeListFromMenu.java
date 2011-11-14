@@ -55,86 +55,87 @@ public class RealTimeListFromMenu extends ListActivity
 	ArrayList<HashMap<String,Object>> realTimeData;
 	HashMap<String, Object> hm;
 	ListView lv;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{
-	  super.onCreate(savedInstanceState);
-	  Bundle extras = getIntent().getExtras();
-	  String stopName = extras.getString("stopName");
-	  int stopId = extras.getInt("stopId");
-	  outgoing = extras.getInt("key");
-	  lv = getListView();
-	  lv.setBackgroundColor(Color.parseColor("#3C434A"));
-	  lv.setCacheColorHint(Color.parseColor("#3C434A"));
-	  lv.setClickable(false);
-	  TextView text = new TextView(this);
+		super.onCreate(savedInstanceState);
+		Bundle extras = getIntent().getExtras();
+		String stopName = extras.getString("stopName");
+		int stopId = extras.getInt("stopId");
+		outgoing = extras.getInt("key");
+		lv = getListView();
+		lv.setBackgroundColor(Color.parseColor("#3C434A"));
+		lv.setCacheColorHint(Color.parseColor("#3C434A"));
+		lv.setClickable(false);
+		TextView text = new TextView(this);
 
-	  text.setTextSize(30);
-	  text.setTextColor(Color.parseColor("#A3AB19"));
-	  text.setTypeface(null,Typeface.BOLD);
-	  text.setText(stopName +"\n");
-	  text.setClickable(false);
-	  lv.addHeaderView(text);
-	  lv.setTextFilterEnabled(true);
-	  
-	  try
-	  {
-				Date date = new Date();
-				
-				text.setText(stopName);
+		text.setTextSize(30);
+		text.setTextColor(Color.parseColor("#A3AB19"));
+		text.setTypeface(null,Typeface.BOLD);
+		text.setText(stopName +"\n");
+		text.setClickable(false);
+		lv.addHeaderView(text);
+		lv.setTextFilterEnabled(true);
 
-				stops = Browser.specificRequestForStop(stopId); 
-			//	stops = Browser.specificRequestForStopServer(outgoing);
-				long currenttimeInMillis = date.getTime();
-				long arrivaltimeInMillis, diff;
+		try
+		{
+			Date date = new Date();
+
+			text.setText(stopName);
+
+			//stops = Browser.specificRequestForStop(stopId); 
+			stops = Browser.specificRequestForStopServer(outgoing);
+			long currenttimeInMillis = date.getTime();
+			long arrivaltimeInMillis, diff;
 
 
-				realTimeData = new ArrayList<HashMap<String,Object>>();
+			realTimeData = new ArrayList<HashMap<String,Object>>();
 
-				for(int i=0; i<stops.size(); i++)
-				{
-					stops.get(i).getArrivalTime().setDate(date.getDate());
-					arrivaltimeInMillis = stops.get(i).getArrivalTime().getTime();
-					diff = arrivaltimeInMillis - currenttimeInMillis;
-					//System.out.println("DIFF: " + arrivaltimeInMillis + "  " + currenttimeInMillis + "  " +diff);
-					//Date d2 = new Date(diff);
-					
-				   // long hours =  //TimeUnit.MILLISECONDS.toHours(diff);
-					int m_minutes = (int) Math.ceil((TimeUnit.MILLISECONDS.toSeconds(diff)) / 60);
-				   int hours = m_minutes / 60;
-				   int minutes = m_minutes % 60;
-				   //int minutes = (int) TimeUnit.MILLISECONDS.toSeconds(duration)
-				    //long minutes = TimeUnit.MILLISECONDS.toMinutes(diff)-(hours*60);
-					String nAtm = "";
-					if(hours == 0){
-						nAtm = minutes + " min";
-					}else{
-						nAtm = hours + "t " + minutes + "m";
-					}
-					
-					hm = new HashMap<String, Object>();
-			        hm.put("busNumber", stops.get(i).getLine());
-			        hm.put("destination", stops.get(i).getDest());
-			        hm.put("origin", nAtm);
-			        hm.put("arrivalText",String.format("%d:%02d", stops.get(i).getArrivalTime().getHours(),stops.get(i).getArrivalTime().getMinutes()));
-			        
-			        realTimeData.add(hm);
+			for(int i=0; i<stops.size(); i++)
+			{
+				stops.get(i).getArrivalTime().setDate(date.getDate());
+				System.out.println("ARRIVAL TIME: " + stops.get(i).getArrivalTime());
+				arrivaltimeInMillis = stops.get(i).getArrivalTime().getTime();
+				diff = arrivaltimeInMillis - currenttimeInMillis;
+				System.out.println("DIFF: " + arrivaltimeInMillis + "  " + currenttimeInMillis + "  " +diff);
+				//Date d2 = new Date(diff);
+
+				// long hours =  //TimeUnit.MILLISECONDS.toHours(diff);
+				int m_minutes = (int) Math.ceil((TimeUnit.MILLISECONDS.toSeconds(diff)) / 60);
+				int hours = m_minutes / 60;
+				int minutes = m_minutes % 60;
+				//int minutes = (int) TimeUnit.MILLISECONDS.toSeconds(duration)
+				//long minutes = TimeUnit.MILLISECONDS.toMinutes(diff)-(hours*60);
+				String nAtm = "";
+				if(hours == 0){
+					nAtm = minutes + " min";
+				}else{
+					nAtm = hours + "t " + minutes + "m";
 				}
 
-				setListAdapter(new SimpleAdapter(this, realTimeData, R.layout.realtimelistrow,
-						new String[]{"busNumber","destination","origin","arrivalText"}, new int[]{R.id.routeNumber,R.id.destination, R.id.origin,
-						R.id.arrival}));
-	  }
-	  catch(Exception e)
-	  {
-		  System.out.println("No routes found");
-		  Toast.makeText(this, "No routes found", Toast.LENGTH_SHORT);
-	  }
-	  
+				hm = new HashMap<String, Object>();
+				hm.put("busNumber", stops.get(i).getLine());
+				hm.put("destination", stops.get(i).getDest());
+				hm.put("origin", nAtm);
+				hm.put("arrivalText",String.format("%d:%02d", stops.get(i).getArrivalTime().getHours(),stops.get(i).getArrivalTime().getMinutes()));
+
+				realTimeData.add(hm);
+			}
+
+			setListAdapter(new SimpleAdapter(this, realTimeData, R.layout.realtimelistrow,
+					new String[]{"busNumber","destination","origin","arrivalText"}, new int[]{R.id.routeNumber,R.id.destination, R.id.origin,
+					R.id.arrival}));
+		}
+		catch(Exception e)
+		{
+			System.out.println("No routes found");
+			Toast.makeText(this, "No routes found", Toast.LENGTH_SHORT);
+		}
+
 	}
 
 
 
-	
+
 }
