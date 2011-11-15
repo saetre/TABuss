@@ -476,7 +476,7 @@ public class Helpers
 	 * Runs query against Retro's server
 	 * According methods such as createJSONServer are modified versions of the existing
 	 */
-	public static ArrayList <Route> runServer(String input, Browser k_browser, Location location, int numStops)
+	public static ArrayList <Route> runServer(String input, Browser k_browser, Location location, int numStops, int dist)
 	{
 		Route[] finalRoutes;
 		// Perform action on clicks
@@ -484,7 +484,7 @@ public class Helpers
 		try
 		{
 			long time = System.nanoTime();
-			String html_page = k_browser.getRequestServer(input,false, location, numStops);   
+			String html_page = k_browser.getRequestServer(input,false, location, numStops, dist);   
 			long newTime = System.nanoTime() - time;
 			System.out.println("TIME ORACLEREQUEST: " +  newTime/1000000000.0);	
 			Calculate calculator = new Calculate();          

@@ -420,6 +420,7 @@ public class Homescreen extends Activity {
 			// Load real-time codes
 			long rt = System.nanoTime();
 			realTimeCodes = k_browser.realTimeData();
+		
 			long rt2 = System.nanoTime() - rt;
 			System.out.println("TIME SPENT REALTIMECODES: " + (rt2/1000000000.0));
 			System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
@@ -427,8 +428,21 @@ public class Homescreen extends Activity {
 		}
 		catch(Exception e)
 		{
-			//Toast.makeText(this, "No connection", Toast.LENGTH_LONG).show();
-			System.exit(0);
+			System.out.println("ERROR");
+			AlertDialog.Builder alert = new AlertDialog.Builder(this);
+			// First input dialog 
+			alert.setTitle("Tilkoblingsproblem");
+			alert.setMessage("Ingen tilkobling, har du nettilgang?");        	
+			alert.setPositiveButton("Avslutt", new DialogInterface.OnClickListener() 
+			{
+				@Override
+				public void onClick(DialogInterface dialog, int whichButton) 
+				{
+					System.exit(0);
+
+				}
+			});
+			alert.show();
 
 		}
 	}
@@ -447,17 +461,17 @@ public class Homescreen extends Activity {
 			int m_numStopsOnMap = extras.getInt("num2");
 			int m_dist = extras.getInt("num3");
 
-			if(numStops != m_numStops)
+			if(numStops != m_numStops && m_numStops <=5)
 			{
 				numStops = extras.getInt("num1");
 				change = true;
 			}
-			if( m_numStopsOnMap != numStopsOnMap)
+			if( m_numStopsOnMap != numStopsOnMap && m_numStopsOnMap <=20)
 			{
 				numStopsOnMap = extras.getInt("num2");
 				change = true;
 			}
-			if(m_dist != dist)
+			if(m_dist != dist && m_dist <= 1000)
 			{
 				dist = extras.getInt("num3");
 				change = true;
@@ -636,7 +650,7 @@ public class Homescreen extends Activity {
 					System.out.println("Objects hopefully init: " + busStopsNoDuplicates.size() + "  " + k_browser.toString() + "  " + realTimeCodes.size());
 					//	buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
 
-					buf = Helpers.runServer(textView.getText().toString(), k_browser, currentlocation, numStops);
+					buf = Helpers.runServer(textView.getText().toString(), k_browser, currentlocation, numStops, dist);
 					long newTime = System.nanoTime() - time;
 					System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 
@@ -674,10 +688,9 @@ public class Homescreen extends Activity {
 				System.out.println("Starting activity");
 				Intent intent = new Intent(getApplicationContext(), Answer.class);
 				intent.putParcelableArrayListExtra("test", buf);
-
+				
 				//intent.putExtra("test", buf);
 				context.startActivity(intent);
-
 			}
 			else
 			{
@@ -753,6 +766,7 @@ public class Homescreen extends Activity {
 		private Context context;    
 		Intent intent;
 		ProgressDialog myDialog = null;
+		boolean check = false;
 		public StartUpThread(Context context)
 		{
 
@@ -770,7 +784,9 @@ public class Homescreen extends Activity {
 			}
 			catch(Exception e)
 			{
+				System.out.println("Exception creating locManager");
 				myDialog.dismiss();
+				check = true;
 			}
 
 			return null;
@@ -811,8 +827,28 @@ public class Homescreen extends Activity {
 		{
 
 			myDialog.dismiss();
+			if(check)
+			{
+				AlertDialog.Builder alert = new AlertDialog.Builder(context);
+				// First input dialog 
+				alert.setTitle("Tilkoblingsproblem");
+				alert.setMessage("Ingen tilkobling, har du nettilgang?");        	
+				alert.setPositiveButton("Avslutt", new DialogInterface.OnClickListener() 
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int whichButton) 
+					{
+						System.exit(0);
+
+					}
+				});
+				alert.show();;
+			}
+			else
+			{
 			locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
 			new LocationListenerThread(context).execute();
+			}
 
 		}
 	}  
@@ -826,6 +862,7 @@ public class Homescreen extends Activity {
 		private Context context;    
 		Intent intent;
 		ProgressDialog myDialog = null;
+		boolean noLoc = false;
 		public LocationListenerThread(Context context)
 		{
 
@@ -845,6 +882,7 @@ public class Homescreen extends Activity {
 					{
 						locCheck = true;
 					}
+				
 				}
 
 			}
@@ -879,7 +917,7 @@ public class Homescreen extends Activity {
 		{
 
 			myDialog.dismiss();
-			locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
+		
 
 		}
 	}  
