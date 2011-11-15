@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+	android:id="@+id/homelayout" 
+	xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+    android:orientation="vertical" 
+    android:background="#FFFFFF">    
+	
+	<LinearLayout 
+	android:layout_height="wrap_content"
+	android:layout_width="fill_parent"
+	android:orientation="horizontal"
+	android:id="@+id/topview"
+	android:background="#A3AB19">
+	    
+    <AutoCompleteTextView android:id="@+id/autocomplete2"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+       	android:maxLines="1" 
+       	android:hint="Hvilket busstopp?" 
+       	android:layout_gravity="left|center_vertical"
+       	android:gravity="left"
+        android:layout_margin="5sp"
+        android:layout_weight="2"/>
+        
+    <LinearLayout 
+    	android:layout_width="wrap_content" 
+    	android:layout_gravity="right" 
+    	android:id="@+id/linearLayout1"
+    	android:layout_weight="1" 
+    	android:layout_height="fill_parent"
+    	android:layout_margin="5sp">
+    	<Button android:layout_height="fill_parent" 
+			android:layout_width="50sp" 
+			android:background="#A3AB19" 
+			android:layout_weight="1" 
+			android:id="@+id/goButton2" 
+			android:text="Finn"
+			android:textSize="16sp"
+			android:textColor="#ffffff"
+			android:gravity="center"
+			android:layout_marginRight="0sp"
+			android:layout_gravity="right|center_vertical">
+		</Button>
+    </LinearLayout>
+	</LinearLayout>
+</LinearLayout>
