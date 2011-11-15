@@ -4,41 +4,32 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import test.BusTUC.R;
+import test.BusTUC.Main.Homescreen.OracleThread;
 import test.BusTUC.Stops.BusDeparture;
 import test.BusTUC.Stops.ClosestStopOnMap;
-
-
-import android.app.ListActivity;
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class RealTimeList extends ListActivity
 {
 	public static String ID;
 	Bundle extras;
 	TextView text;
+	Button other;
 	ArrayList <ClosestStopOnMap> holder;
 	ArrayList<HashMap<String,Object>> realTimeData, realTimeStop;
 	ClosestStopOnMap pressedStop;
 	int outgoing; 
 	ArrayList <BusDeparture> stops;
-
+	Context context;
 	HashMap<String, Object> hm, hm2;
 	ListView lv;
 	String [] stopNames;
+	
 	// Needed as this activity can be accessed from two places
 	// Not not want to register list item clicks if accessed from map
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{
+		context = this;
 		super.onCreate(savedInstanceState);
 		extras = getIntent().getExtras();
 		lv = getListView();
@@ -53,6 +44,23 @@ public class RealTimeList extends ListActivity
 		text.setTypeface(null,Typeface.BOLD);
 		text.setText("Busstopp nær deg");
 		lv.addHeaderView(text);
+		
+		other = new Button(this);
+		other.setClickable(true);
+		other.setTextSize(30);
+		other.setTextColor(Color.parseColor("#A3AB19"));
+		other.setTypeface(null,Typeface.BOLD);
+		other.setText("Annet busstopp");
+		other.setOnClickListener(new OnClickListener() 
+			{
+				@Override
+				public void onClick(View v) 
+				{
+					Intent intent = new Intent(context,OtherBusstop.class);
+					startActivity(intent);
+				}
+			});
+		lv.addFooterView(other);
 		setFromExtras();
 
 	}
