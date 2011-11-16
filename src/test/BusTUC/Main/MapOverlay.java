@@ -34,6 +34,7 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 	public String foundBusStop;
 	public int foundBusStopNr;
 	int lat,longi, outgoing, line;
+	boolean server = true;
 
 	HashMap <Integer, Integer> realTimeCodes;
 	ClosestStopOnMap[] cl;
@@ -45,13 +46,12 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 		// TODO Auto-generated constructor stub
 	}
 
-	public MapOverlay(Drawable defaultMarker, Context context, HashMap <Integer, Integer> realTimeCodes, ClosestStopOnMap[] cl) {
+	public MapOverlay(Drawable defaultMarker, Context context, ClosestStopOnMap[] cl) {
 		super(boundCenterBottom(defaultMarker));
 
 		//super(defaultMarker);
 		drawable = defaultMarker;
 		m_Context = context;
-		this.realTimeCodes = realTimeCodes;
 		this.cl = cl;
 		items = new ArrayList<OverlayItem>();
 
@@ -92,7 +92,7 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 					foundBusStopNr = cl[i].getBusStopID();
 					line = cl[i].getBusStopID();
 
-					outgoing = Integer.parseInt(realTimeCodes.get(line).toString());
+					if(!server) outgoing = Integer.parseInt(realTimeCodes.get(line).toString());
 					AlertDialog.Builder builder = new AlertDialog.Builder(m_Context);
 					String tmp = "" + cl[i].getBusStopID();
 					// Check which direction buses passing this stop are going
@@ -107,19 +107,31 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							Intent intent = new Intent(m_Context,RealTimeListFromMenu.class);
-							if(Homescreen.realTimeCodes == null)
+							if(!server)
 							{
-								Intent home = new Intent(m_Context, Homescreen.class);
-								m_Context.startActivity(home);
+								if(Homescreen.realTimeCodes == null)
+								{
+									Intent home = new Intent(m_Context, Homescreen.class);
+									m_Context.startActivity(home);
+								}
+								else
+								{
+									outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(foundBusStopNr).toString());						
+									intent.putExtra("stopId", outgoing);
+									intent.putExtra("stopName", foundBusStop);
+									intent.putExtra("key", line);
+									m_Context.startActivity(intent);
+
+								}
 							}
 							else
 							{
-								outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(foundBusStopNr).toString());						
-								intent.putExtra("stopId", outgoing);
 								intent.putExtra("stopName", foundBusStop);
 								intent.putExtra("key", line);
 								m_Context.startActivity(intent);
+
 							}
+
 
 						}
 

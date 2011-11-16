@@ -1,7 +1,9 @@
 package test.BusTUC.Main;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
@@ -54,6 +56,32 @@ import com.google.android.maps.OverlayItem;
 public class Helpers 
 {
 
+
+	 
+	 public static String[] readLines(InputStream is) throws IOException {
+		    
+         URL url = null;
+          
+         BufferedReader bufferedReader = null;
+
+          bufferedReader = new BufferedReader(
+              new InputStreamReader(is, "UTF-8"));         
+      
+      
+            //  new InputStreamReader(new FileInputStream(filename), "iso-8859-1"));
+      List<String> lines = new ArrayList<String>();
+      String line = null;
+      while ((line = bufferedReader.readLine()) != null) {
+
+          if (line.startsWith("<item>")) {
+              String[] trim = line.split(">");
+              String[] tmp = trim[1].split("</");
+              lines.add(tmp[0]);
+          }
+      }
+      bufferedReader.close();
+      return lines.toArray(new String[lines.size()]);
+  }
 
 
 	public static ClosestStopOnMap[] getList(String[][]coords, String provider, int numStops,int dist, Location currentLocation)
@@ -134,13 +162,11 @@ public class Helpers
 	// Add dictionary to app. If not stored in SD-card previously, do so
 	public static ArrayList <String> createDictionary(String[][] gpsCords)
 	{
-		ArrayList <String> dictionary = SDCard.getFilesFromSD("dictionary_finalv2");
+		ArrayList <String> dictionary = new ArrayList <String>();
 
-		if(dictionary.size() == 0)
-		{
 			for(int i=0; i<gpsCords.length; i++)
 			{
-				dictionary.add(gpsCords[i][1]);
+				dictionary.add(gpsCords[i][1] + "\n");
 			}
 
 			// Remove duplicates
@@ -154,9 +180,18 @@ public class Helpers
 				//	System.out.println("SECOND: " + dictionary.get(i));
 			}
 			SDCard.generateNoteOnSD("dictionary_finalv2", dictionary, "dictionary"); 
-		}
+		
 		return dictionary;
 	}
+	
+	public static ArrayList <String> getDictionary(String name)
+	{
+		ArrayList <String> dictionary = SDCard.getFilesFromSD("dictionary");
+		System.out.println("STR: " + dictionary.size());
+		return dictionary;
+
+	}
+
 
 	public static ArrayList <String> getTrainingSet()
 	{

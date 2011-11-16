@@ -55,6 +55,8 @@ public class RealTimeListFromMenu extends ListActivity
 	ArrayList<HashMap<String,Object>> realTimeData;
 	HashMap<String, Object> hm;
 	ListView lv;
+	// Switch server on or off
+	boolean server = true;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -62,8 +64,9 @@ public class RealTimeListFromMenu extends ListActivity
 		super.onCreate(savedInstanceState);
 		Bundle extras = getIntent().getExtras();
 		String stopName = extras.getString("stopName");
-		int stopId = extras.getInt("stopId");
-		outgoing = extras.getInt("key");
+		int stopId = 0;
+		if(!server)stopId = extras.getInt("stopId");
+		 outgoing = extras.getInt("key");
 		lv = getListView();
 		lv.setBackgroundColor(Color.parseColor("#3C434A"));
 		lv.setCacheColorHint(Color.parseColor("#3C434A"));
@@ -84,8 +87,8 @@ public class RealTimeListFromMenu extends ListActivity
 
 			text.setText(stopName);
 
-			//stops = Browser.specificRequestForStop(stopId); 
-			stops = Browser.specificRequestForStopServer(outgoing);
+			if(!server)stops = Browser.specificRequestForStop(stopId); 
+			else stops = Browser.specificRequestForStopServer(outgoing);
 			long currenttimeInMillis = date.getTime();
 			long arrivaltimeInMillis, diff;
 

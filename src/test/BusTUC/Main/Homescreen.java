@@ -2,6 +2,10 @@ package test.BusTUC.Main;
 
 
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +34,7 @@ import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Criteria;
@@ -85,7 +90,8 @@ public class Homescreen extends Activity {
 	public static 	HashMap <Integer, Integer>realTimeCodes; 
 	public static ArrayList <BusStop> allStops;
 	ArrayList<BusStop> busStops, busStopsNoDuplicates;
-
+	// Switch server on or off
+	boolean server = true;
 	DatabaseHelper dbHelper;
 	// End of global variables
 	AutoCompleteTextView textView;
@@ -198,22 +204,35 @@ public class Homescreen extends Activity {
 
 		// Gets the coordinates from the bus XML file
 		long f = System.nanoTime();              
-		String[] gpsCoordinates = getResources().getStringArray(R.array.coords4);    
-		String [] gpsCoordinates2 = getResources().getStringArray(R.array.coords3);
+		String[] gpsCoordinates;
+		String [] gpsCoordinates2;
 
-		// creates a HashMap containing all the location objects 
+		try {	
 
-		// Formats the bus coordinates
-		// 1 - navn
-		// 2 - lat
-		// 3 - long
-		// Create locationmanager/listener, and retrieve real-time codes
-		gpsCords = GPS.formatCoordinates(gpsCoordinates);
-		gpsCords2 = GPS.formatCoordinates(gpsCoordinates2);
+			gpsCoordinates2 =  Helpers.readLines(getAssets().open("gps3.xml")); 
+			gpsCords2 = GPS.formatCoordinates(gpsCoordinates2);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
 		long s = System.nanoTime() - f;
 		System.out.println("TIME SPENT FINDING LOCATION: " + s /(1000000000.0));
 		// Autocompletion
-		ArrayList <String> dictionary = Helpers.createDictionary(gpsCords);
+		ArrayList <String> dictionary = Helpers.getDictionary("dictionary"); 
+		if(dictionary.size() == 0 || !server)
+		{
+			// If no dictionary present, load stops from xml-file.
+			// Need separate file, as this only includes stops working with BussTUC
+			try {
+				System.out.println("No dictionary present!");
+				gpsCoordinates = Helpers.readLines(getAssets().open("gps3Mod.xml"));
+				gpsCords = GPS.formatCoordinates(gpsCoordinates);
+				dictionary = Helpers.createDictionary(gpsCords);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			// Only for oracle. Uncomment if system is not used with ReTro's server
+		}
 		textView = (AutoCompleteTextView) findViewById(R.id.autocomplete);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, dictionary);
 		textView.setAdapter(adapter);
@@ -223,19 +242,9 @@ public class Homescreen extends Activity {
 		line.setOnTouchListener(activitySwipeDetector);
 		// Hide keyboard on start
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		// Retrieve favourites
-		// Can have 6 favourites
-		// Bind listeners to favourites
+
 		updateButtons(busStop,buttons);      
 
-
-
-		/*  try {
-			System.out.println("OVERSATT: " +Helpers.translateRequest("skole"));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 		if(currentlocation!=null) this.getSuggestionBasedOnPosition();
 		// binds listener to the button
 		goButton.setOnClickListener(new OnClickListener() 
@@ -350,8 +359,8 @@ public class Homescreen extends Activity {
 
 		long first = System.nanoTime();
 		// For use with the oracle and the gps2 file
-		// Not needed when running on ReTro's server
-		busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, dist,numStops,false);
+		// Not needed when running on ReTro's server. Switched on or of by a bool val
+		if(!server)busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, dist,numStops,false);
 
 		// All stops
 		allStops = Helpers.getAllLocations(gpsCords2, provider);
@@ -419,11 +428,11 @@ public class Homescreen extends Activity {
 			k_browser = new Browser(); 
 			// Load real-time codes
 			long rt = System.nanoTime();
-			realTimeCodes = k_browser.realTimeData();
+			if(!server) realTimeCodes = k_browser.realTimeData();
 
 			long rt2 = System.nanoTime() - rt;
 			System.out.println("TIME SPENT REALTIMECODES: " + (rt2/1000000000.0));
-			System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
+			//System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
 			//    Log.v("provider","provider:"+ provider);
 		}
 		catch(Exception e)
@@ -631,26 +640,9 @@ public class Homescreen extends Activity {
 				try
 				{
 
-					double lat = currentlocation.getLatitude();
-					double lon = currentlocation.getLongitude();
+					if(!server)buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
+					else buf = Helpers.runServer(textView.getText().toString(), k_browser, currentlocation, numStops, dist);
 
-					Cursor areas = dbHelper.getAreaId(lat, lon);
-					int area = 0;
-					if(areas.getCount()==0){
-						area = dbHelper.AddArea(lat+0.01, lat-0.01, lon+0.01, lon-0.01);
-					}else{
-						areas.moveToFirst();
-						area = areas.getInt(0);
-					}
-					Cursor a = dbHelper.getArea(area);
-					a.moveToFirst();
-					System.out.println(a.getDouble(1)+ "-" + a.getDouble(2));
-					dbHelper.AddQuery(new Query(area ,textView.getText().toString(), Helpers.minutesFromDate(new Date()), new Date().getDay()));
-
-					System.out.println("Objects hopefully init: " + busStopsNoDuplicates.size() + "  " + k_browser.toString() + "  " + realTimeCodes.size());
-					//	buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
-					buf = Helpers.runServer(textView.getText().toString(), k_browser, currentlocation, numStops, dist);
-				
 					long newTime = System.nanoTime() - time;
 					System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 
@@ -685,6 +677,21 @@ public class Homescreen extends Activity {
 
 			if(buf != null)
 			{
+				double lat = currentlocation.getLatitude();
+				double lon = currentlocation.getLongitude();
+
+				Cursor areas = dbHelper.getAreaId(lat, lon);
+				int area = 0;
+				if(areas.getCount()==0){
+					area = dbHelper.AddArea(lat+0.01, lat-0.01, lon+0.01, lon-0.01);
+				}else{
+					areas.moveToFirst();
+					area = areas.getInt(0);
+				}
+				Cursor a = dbHelper.getArea(area);
+				a.moveToFirst();
+				System.out.println(a.getDouble(1)+ "-" + a.getDouble(2));
+				dbHelper.AddQuery(new Query(area ,textView.getText().toString(), Helpers.minutesFromDate(new Date()), new Date().getDay()));
 				System.out.println("Starting activity");
 				Intent intent = new Intent(getApplicationContext(), Answer.class);
 				intent.putParcelableArrayListExtra("test", buf);
