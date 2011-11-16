@@ -302,25 +302,6 @@ public void drivingPath(double []dest, Location loc)
 		// draw path
 		drawPath(ds, Color.parseColor("#add331"), mapView );
 
-		// find boundary by using itemized overlay
-		GeoPoint destPoint = new GeoPoint((int)dest[0],(int)dest[1]);
-		GeoPoint currentPoint = new GeoPoint( new Double(lastKnownLocation.getLatitude()*1E6).intValue()
-				,new Double(lastKnownLocation.getLongitude()*1E6).intValue() );
-
-		Drawable dot = this.getResources().getDrawable(R.drawable.icon);
-		MapOverlay bgItemizedOverlay = new MapOverlay(dot,this);
-		OverlayItem currentPixel = new OverlayItem(destPoint, null, null );
-		OverlayItem destPixel = new OverlayItem(currentPoint, null, null );
-		bgItemizedOverlay.addItem(currentPixel);
-		bgItemizedOverlay.addItem(destPixel);
-
-		// center and zoom in the map
-		/*MapController mc = mapView.getController();
-            mc.zoomToSpan(bgItemizedOverlay.getLatSpanE6()*2,bgItemizedOverlay.getLonSpanE6()*2);
-            mc.animateTo(new GeoPoint(
-                    (currentPoint.getLatitudeE6() + destPoint.getLatitudeE6()) / 2
-                    , (currentPoint.getLongitudeE6() + destPoint.getLongitudeE6()) / 2));*/
-
 	} catch(Exception e) {
 		//e.printStackTrace();
 	}
@@ -350,13 +331,7 @@ public void drawPath(NavigationDataSet navSet, int color, MapView mMapView01) {
 	// Log.d(myapp.APP, "path=" + path);
 	if (path != null && path.trim().length() > 0) {
 		String[] pairs = path.trim().split(" ");
-
-		//   Log.d(myapp.APP, "pairs.length=" + pairs.length);
-
 		String[] lngLat = pairs[0].split(","); // lngLat[0]=longitude lngLat[1]=latitude lngLat[2]=height
-
-		//Log.d(myapp.APP, "lnglat =" + lngLat + ", length: " + lngLat.length);
-
 		if (lngLat.length<3) lngLat = pairs[1].split(","); // if first pair is not transferred completely, take seconds pair //TODO 
 
 		try {
