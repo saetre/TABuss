@@ -608,7 +608,7 @@ public class Homescreen extends Activity {
 		//  ArrayList <String> buf = new ArrayList <String>();
 		ProgressDialog myDialog = null;
 		String noLoc = "Ingen lokasjon tilgjengelig. Sjekk dine innstillinger";
-		String noRoutes = "Fant ingen ruter for søkekriterie";
+		String noRoutes = "Fant ingen ruter for søkekriterie. Sjekk nettilgang/søkeord";
 		boolean noLocCheck = false;
 		public OracleThread(Context context)
 		{
@@ -649,8 +649,8 @@ public class Homescreen extends Activity {
 
 					System.out.println("Objects hopefully init: " + busStopsNoDuplicates.size() + "  " + k_browser.toString() + "  " + realTimeCodes.size());
 					//	buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
-
 					buf = Helpers.runServer(textView.getText().toString(), k_browser, currentlocation, numStops, dist);
+				
 					long newTime = System.nanoTime() - time;
 					System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 
@@ -697,12 +697,12 @@ public class Homescreen extends Activity {
 				myDialog.dismiss();
 				if(noLocCheck)
 				{
-					Toast.makeText(context, noLoc, Toast.LENGTH_LONG).show();
+					Toast.makeText(context, noLoc, Toast.LENGTH_SHORT).show();
 
 				}
 				else
 				{
-					Toast.makeText(context, noRoutes, Toast.LENGTH_LONG).show();
+					Toast.makeText(context, noRoutes, Toast.LENGTH_SHORT).show();
 				}
 
 			}
