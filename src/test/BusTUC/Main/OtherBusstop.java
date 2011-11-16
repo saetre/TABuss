@@ -40,15 +40,27 @@ public class OtherBusstop extends Activity {
 		setContentView(R.layout.otherbusstop);
 		String[] gpsCoordinates;
 		try {
-			gpsCoordinates = Helpers.readLines(this.getAssets().open("gps3Mod.xml"));
-			gpsCords = GPS.formatCoordinates(gpsCoordinates);
+			if(Homescreen.gpsCords2 != null)
+			{
+				gpsCords = Homescreen.gpsCords2;
+			}
+			else
+			{
+				gpsCoordinates = Helpers.readLines(this.getAssets().open("gps3.xml"));
+				gpsCords = GPS.formatCoordinates(gpsCoordinates);
+			}
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		button = (Button) findViewById(R.id.goButton2);
-		ArrayList <String> dictionary = Helpers.getDictionary("dictionary");
+		ArrayList <String> dictionary = Helpers.getDictionary("dictionary2", "dictionaryAll");
+		if(dictionary.size() == 0)
+		{			
+			dictionary = Helpers.createDictionary(gpsCords, "dictionaryAll");
+			// Only for oracle. Uncomment if system is not used with ReTro's server
+		}
 		textView = (AutoCompleteTextView) findViewById(R.id.autocomplete2);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, dictionary);
 		textView.setAdapter(adapter);
@@ -115,7 +127,7 @@ public class OtherBusstop extends Activity {
 	private ArrayList<Integer> findCodeFromStopName(String stopname){
 		ArrayList<Integer> stops = new ArrayList<Integer>();
 		for(BusStop s : Homescreen.allStops){
-			if(s.name.equalsIgnoreCase(stopname)) stops.add(s.stopID);
+			if(s.name.equalsIgnoreCase(stopname.trim())) stops.add(s.stopID);
 		}
 		return stops;
 	}

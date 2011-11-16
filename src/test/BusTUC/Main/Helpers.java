@@ -160,7 +160,7 @@ public class Helpers
 
 	}
 	// Add dictionary to app. If not stored in SD-card previously, do so
-	public static ArrayList <String> createDictionary(String[][] gpsCords)
+	public static ArrayList <String> createDictionary(String[][] gpsCords, String folderName)
 	{
 		ArrayList <String> dictionary = new ArrayList <String>();
 
@@ -179,14 +179,14 @@ public class Helpers
 			{
 				//	System.out.println("SECOND: " + dictionary.get(i));
 			}
-			SDCard.generateNoteOnSD("dictionary_finalv2", dictionary, "dictionary"); 
+			SDCard.generateNoteOnSD("dictionary_finalv2", dictionary, folderName); 
 		
 		return dictionary;
 	}
 	
-	public static ArrayList <String> getDictionary(String name)
+	public static ArrayList <String> getDictionary(String name, String folderName)
 	{
-		ArrayList <String> dictionary = SDCard.getFilesFromSD("dictionary");
+		ArrayList <String> dictionary = SDCard.getFilesFromSD(folderName);
 		System.out.println("STR: " + dictionary.size());
 		return dictionary;
 
