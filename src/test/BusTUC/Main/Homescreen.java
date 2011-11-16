@@ -217,7 +217,7 @@ public class Homescreen extends Activity {
 		long s = System.nanoTime() - f;
 		System.out.println("TIME SPENT FINDING LOCATION: " + s /(1000000000.0));
 		// Autocompletion
-		ArrayList <String> dictionary = Helpers.getDictionary("dictionary"); 
+		ArrayList <String> dictionary = Helpers.getDictionary("dictionary_finalv2","dictionary"); 
 		if(dictionary.size() == 0 || !server)
 		{
 			// If no dictionary present, load stops from xml-file.
@@ -226,7 +226,7 @@ public class Homescreen extends Activity {
 				System.out.println("No dictionary present!");
 				gpsCoordinates = Helpers.readLines(getAssets().open("gps3Mod.xml"));
 				gpsCords = GPS.formatCoordinates(gpsCoordinates);
-				dictionary = Helpers.createDictionary(gpsCords);
+				dictionary = Helpers.createDictionary(gpsCords, "dictionary");
 
 			} catch (IOException e) {
 				e.printStackTrace();
