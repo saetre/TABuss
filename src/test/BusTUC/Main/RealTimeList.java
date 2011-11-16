@@ -38,7 +38,9 @@ public class RealTimeList extends ListActivity
 	HashMap<String, Object> hm, hm2;
 	ListView lv;
 	String [] stopNames;
-	
+
+	boolean server = true;
+
 	// Needed as this activity can be accessed from two places
 	// Not not want to register list item clicks if accessed from map
 	@Override
@@ -92,21 +94,29 @@ public class RealTimeList extends ListActivity
 			Intent intent = new Intent(this,RealTimeListFromMenu.class);
 			pressedStop = holder.get(position-1);
 
-
-			if(Homescreen.realTimeCodes == null)
+			if(!server)
 			{
-				returnHome();
+				if(Homescreen.realTimeCodes == null)
+				{
+					returnHome();
+				}
+				else
+				{
+					outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(pressedStop.getBusStopID()).toString());
+
+					intent.putExtra("stopId", outgoing);
+					intent.putExtra("key", pressedStop.getBusStopID());
+					intent.putExtra("stopName", pressedStop.getStopName());
+				}
+
 			}
 			else
 			{
-				outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(pressedStop.getBusStopID()).toString());
-
-				intent.putExtra("stopId", outgoing);
 				intent.putExtra("key", pressedStop.getBusStopID());
 				intent.putExtra("stopName", pressedStop.getStopName());
-
-				startActivity(intent);
 			}
+			startActivity(intent);
+
 		}
 		catch(Exception e)
 		{

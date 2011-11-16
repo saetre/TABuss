@@ -1,5 +1,6 @@
 package test.BusTUC.Main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -36,8 +37,15 @@ public class OtherBusstop extends Activity {
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.otherbusstop);
-		String[] gpsCoordinates = getResources().getStringArray(R.array.coords4);
-		gpsCords = GPS.formatCoordinates(gpsCoordinates);
+		String[] gpsCoordinates;
+		try {
+			gpsCoordinates = Helpers.readLines(context.getAssets().open("gps3Mod.xml"));
+			gpsCords = GPS.formatCoordinates(gpsCoordinates);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		button = (Button) findViewById(R.id.goButton2);
 		ArrayList <String> dictionary = Helpers.createDictionary(gpsCords);
 		textView = (AutoCompleteTextView) findViewById(R.id.autocomplete2);
