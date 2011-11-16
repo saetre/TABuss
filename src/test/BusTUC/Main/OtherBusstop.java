@@ -33,13 +33,14 @@ public class OtherBusstop extends Activity {
 	Context context;
 	String[] items;
 	ArrayList<Integer> code;
-	
+	boolean server = true;
+
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.otherbusstop);
 		String[] gpsCoordinates;
 		try {
-			gpsCoordinates = Helpers.readLines(context.getAssets().open("gps3Mod.xml"));
+			gpsCoordinates = Helpers.readLines(this.getAssets().open("gps3Mod.xml"));
 			gpsCords = GPS.formatCoordinates(gpsCoordinates);
 
 		} catch (IOException e) {
@@ -47,21 +48,21 @@ public class OtherBusstop extends Activity {
 			e.printStackTrace();
 		} 
 		button = (Button) findViewById(R.id.goButton2);
-		ArrayList <String> dictionary = Helpers.createDictionary(gpsCords);
+		ArrayList <String> dictionary = Helpers.getDictionary("dictionary");
 		textView = (AutoCompleteTextView) findViewById(R.id.autocomplete2);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, dictionary);
 		textView.setAdapter(adapter);
 		context = this;
-		
-		
-		
+
+
+
 
 		button.setOnClickListener(new OnClickListener() 
 		{
 			@Override
 			public void onClick(View v) 
 			{
-				
+
 				code = findCodeFromStopName(textView.getText().toString());				
 				items=new String[code.size()];
 				for(int i=0;i<code.size();i++){
@@ -74,34 +75,42 @@ public class OtherBusstop extends Activity {
 				//final String [] items=new String []{"Item 1","Item 2","Item 3","Item 4"};
 				AlertDialog.Builder builder=new AlertDialog.Builder(context);
 				builder.setTitle(textView.getText().toString());
-				
+
 				builder.setItems(items, new DialogInterface.OnClickListener() {
 
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-					int outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(code.get(which)).toString());
-					Intent intent = new Intent(context, RealTimeListFromMenu.class);
-					intent.putExtra("stopId", outgoing);
-					intent.putExtra("key", code.get(which));
-					intent.putExtra("stopName", textView.getText().toString());
-					
-					startActivity(intent);
-				}
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+
+						Intent intent = new Intent(context, RealTimeListFromMenu.class);
+						int outgoing = 0;
+						if(!server)
+						{
+							Integer.parseInt(Homescreen.realTimeCodes.get(code.get(which)).toString());
+							intent.putExtra("stopId", outgoing);
+						}
+						else
+						{
+							intent.putExtra("key", code.get(which));
+							intent.putExtra("stopName", textView.getText().toString());
+						}
+
+						startActivity(intent);
+					}
 				});
-				
+
 				builder.show();
 				/*int outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(code).toString());
-				
+
 				intent.putExtra("stopId", outgoing);
 				intent.putExtra("key", code);
 				intent.putExtra("stopName", textView.getText().toString());
-				
+
 				startActivity(intent);*/
 
 			}
 		});
-		
+
 	}
 	private ArrayList<Integer> findCodeFromStopName(String stopname){
 		ArrayList<Integer> stops = new ArrayList<Integer>();
