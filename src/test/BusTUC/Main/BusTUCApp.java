@@ -224,7 +224,8 @@ public class BusTUCApp extends MapActivity
 					// Initialise mapOverlay, and add items
 					initializePress(buf);
 
-					// Draw air dist
+					// Draw air dist. Commented now, as 
+					// Walking dist covers our needs. Uncomment to add.
 					if(!id.isEmpty())
 					{
 						//	drawPath(id);
