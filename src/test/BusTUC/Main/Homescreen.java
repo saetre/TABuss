@@ -895,7 +895,7 @@ public class Homescreen extends Activity {
 			}
 			catch(Exception e)
 			{
-				myDialog.dismiss();
+				myDialog.dismiss(); //
 			}
 
 			return null;

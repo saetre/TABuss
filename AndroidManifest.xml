@@ -29,6 +29,7 @@
         <activity android:name=".Main.History" />
         <activity android:name=".Main.About" />
         <activity android:name=".Main.Settings" />
+        <activity android:name=".Main.OtherBusstop" />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
