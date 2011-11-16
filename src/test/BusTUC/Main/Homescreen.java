@@ -420,7 +420,7 @@ public class Homescreen extends Activity {
 			// Load real-time codes
 			long rt = System.nanoTime();
 			realTimeCodes = k_browser.realTimeData();
-		
+
 			long rt2 = System.nanoTime() - rt;
 			System.out.println("TIME SPENT REALTIMECODES: " + (rt2/1000000000.0));
 			System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
@@ -688,7 +688,7 @@ public class Homescreen extends Activity {
 				System.out.println("Starting activity");
 				Intent intent = new Intent(getApplicationContext(), Answer.class);
 				intent.putParcelableArrayListExtra("test", buf);
-				
+
 				//intent.putExtra("test", buf);
 				context.startActivity(intent);
 			}
@@ -842,12 +842,12 @@ public class Homescreen extends Activity {
 
 					}
 				});
-				alert.show();;
+				alert.show();
 			}
 			else
 			{
-			locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
-			new LocationListenerThread(context).execute();
+				locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
+				new LocationListenerThread(context).execute();
 			}
 
 		}
@@ -882,7 +882,7 @@ public class Homescreen extends Activity {
 					{
 						locCheck = true;
 					}
-				
+
 				}
 
 			}
@@ -901,6 +901,16 @@ public class Homescreen extends Activity {
 			try
 			{
 				myDialog = ProgressDialog.show(context, "Loading!", "Setter lokasjon");
+				myDialog.setCancelable(true);
+				myDialog.setOnCancelListener(new OnCancelListener() {
+
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						finish();
+						System.exit(0);
+
+					}
+				});
 
 			}
 			catch(Exception e)
@@ -917,7 +927,7 @@ public class Homescreen extends Activity {
 		{
 
 			myDialog.dismiss();
-		
+
 
 		}
 	}  
@@ -975,8 +985,30 @@ public class Homescreen extends Activity {
 		textView.setEnabled(true);
 		goButton.setEnabled(true);
 
-		// Sets the restrictions on the location update. 
-		locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 10, 1, locationListener);
+		try
+		{
+			// Sets the restrictions on the location update. If no locationmanager object exists, error message is sent to user,
+			// requiring closing of app
+			locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 10, 1, locationListener);
+		}
+		catch(Exception e)
+		{
+			AlertDialog.Builder alert = new AlertDialog.Builder(context);
+			// First input dialog 
+			alert.setTitle("Tilkoblingsproblem");
+			alert.setMessage("Ingen tilkobling, har du nettilgang?");        	
+			alert.setPositiveButton("Avslutt", new DialogInterface.OnClickListener() 
+			{
+				@Override
+				public void onClick(DialogInterface dialog, int whichButton) 
+				{
+					System.exit(0);
+
+				}
+			});
+			alert.show();
+		}
+
 
 	}
 	@Override

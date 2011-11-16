@@ -322,7 +322,6 @@ public void drivingPath(double []dest, Location loc)
                     , (currentPoint.getLongitudeE6() + destPoint.getLongitudeE6()) / 2));*/
 
 	} catch(Exception e) {
-		Log.d("DirectionMap","Exception parsing kml.");
 		//e.printStackTrace();
 	}
 }
