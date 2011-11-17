@@ -520,6 +520,14 @@ public class Helpers
 		{
 			long time = System.nanoTime();
 			String html_page = k_browser.getRequestServer(input,false, location, numStops, dist);   
+			// No internet connection
+			if(html_page == null)
+			{
+				ArrayList <Route> temp = new ArrayList <Route>();
+				temp.add(new Route());
+				temp.get(0).setBusStopName("Nettilgang");
+				return temp;
+			}
 			long newTime = System.nanoTime() - time;
 			System.out.println("TIME ORACLEREQUEST: " +  newTime/1000000000.0);	
 			Calculate calculator = new Calculate();          

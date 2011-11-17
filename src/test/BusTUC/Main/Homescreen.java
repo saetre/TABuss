@@ -616,7 +616,8 @@ public class Homescreen extends Activity {
 		//  ArrayList <String> buf = new ArrayList <String>();
 		ProgressDialog myDialog = null;
 		String noLoc = "Ingen lokasjon tilgjengelig. Sjekk dine innstillinger";
-		String noRoutes = "Fant ingen ruter for søkekriterie. Sjekk nettilgang/søkeord";
+		String noRoutes = "Fant ingen ruter for søkekriterie. Sjekk søkeord";
+		String noInternet = "Ingen internettilgang, har du skrudd av Wifi/3G?";
 		boolean noLocCheck = false;
 		public OracleThread(Context context)
 		{
@@ -638,10 +639,10 @@ public class Homescreen extends Activity {
 			{
 				try
 				{
+					System.out.println("curloc: " + currentlocation + " browser " + k_browser);
 
 					if(!server)buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
 					else buf = Helpers.runServer(textView.getText().toString(), k_browser, currentlocation, numStops, dist);
-
 					long newTime = System.nanoTime() - time;
 					System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 
@@ -676,40 +677,50 @@ public class Homescreen extends Activity {
 
 			if(buf != null)
 			{
-				double lat = currentlocation.getLatitude();
-				double lon = currentlocation.getLongitude();
-
-				Cursor areas = dbHelper.getAreaId(lat, lon);
-				int area = 0;
-				if(areas.getCount()==0){
-					area = dbHelper.AddArea(lat+0.01, lat-0.01, lon+0.01, lon-0.01);
-				}else{
-					areas.moveToFirst();
-					area = areas.getInt(0);
+				if(buf.get(0).getBusStopName().equalsIgnoreCase("Bussorakelet"))
+				{
+					Toast.makeText(context, noRoutes, Toast.LENGTH_SHORT).show();
 				}
-				Cursor a = dbHelper.getArea(area);
-				a.moveToFirst();
-				System.out.println(a.getDouble(1)+ "-" + a.getDouble(2));
-				dbHelper.AddQuery(new Query(area ,textView.getText().toString(), Helpers.minutesFromDate(new Date()), new Date().getDay()));
-				System.out.println("Starting activity");
-				Intent intent = new Intent(getApplicationContext(), Answer.class);
-				intent.putParcelableArrayListExtra("test", buf);
+				
+				else if(buf.get(0).getBusStopName().equalsIgnoreCase("Nettilgang"))
+				{
+					Toast.makeText(context, noInternet, Toast.LENGTH_SHORT).show();
 
-				//intent.putExtra("test", buf);
-				context.startActivity(intent);
-			}
-			else
-			{
-				myDialog.dismiss();
-				if(noLocCheck)
+				}
+				else if(noLocCheck)
 				{
 					Toast.makeText(context, noLoc, Toast.LENGTH_SHORT).show();
 
 				}
 				else
 				{
-					Toast.makeText(context, noRoutes, Toast.LENGTH_SHORT).show();
+					double lat = currentlocation.getLatitude();
+					double lon = currentlocation.getLongitude();
+
+					Cursor areas = dbHelper.getAreaId(lat, lon);
+					int area = 0;
+					if(areas.getCount()==0){
+						area = dbHelper.AddArea(lat+0.01, lat-0.01, lon+0.01, lon-0.01);
+					}else{
+						areas.moveToFirst();
+						area = areas.getInt(0);
+					}
+					Cursor a = dbHelper.getArea(area);
+					a.moveToFirst();
+					System.out.println(a.getDouble(1)+ "-" + a.getDouble(2));
+					dbHelper.AddQuery(new Query(area ,textView.getText().toString(), Helpers.minutesFromDate(new Date()), new Date().getDay()));
+					System.out.println("Starting activity");
+					Intent intent = new Intent(getApplicationContext(), Answer.class);
+					intent.putParcelableArrayListExtra("test", buf);
+
+					//intent.putExtra("test", buf);
+					context.startActivity(intent);
 				}
+			}
+			else
+			{
+				myDialog.dismiss();
+				Toast.makeText(context, "Noe uhåndtert skjedde", Toast.LENGTH_SHORT).show();
 
 			}
 
