@@ -682,8 +682,9 @@ public class Homescreen extends Activity {
 			{
 				try
 				{
-					if(!server)buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
-					else buf = Helpers.runServer(textView.getText().toString(), k_browser, currentlocation, numStops, dist);
+					String query = textView.getText().toString();
+					if(!server)buf = Helpers.run(query, busStopsNoDuplicates,k_browser, realTimeCodes);
+					else buf = Helpers.runServer(query, k_browser, currentlocation, numStops, dist);
 					long newTime = System.nanoTime() - time;
 					System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 

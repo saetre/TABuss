@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -157,6 +159,12 @@ public class Browser
 	{
 		String html_string = null; 
 		HttpGet m_get = new HttpGet();	    
+		try {
+			stop = URLEncoder.encode(stop, "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
 		try {
 			m_get.setURI(new URI("http://busstjener.idi.ntnu.no/MultiBRISserver/MBServlet?dest="+stop+"&lat="+location.getLatitude()+"&long="+location.getLongitude() + "&type=json&nStops="+numStops +"&maxWalkDist="+dist+"&key=SoapMacTavish"));
@@ -185,7 +193,7 @@ public class Browser
 		}
 		catch(Exception e)
 		{
-			Log.v("FUCKINGTOLARGE", "Exception");
+			e.printStackTrace();
 		}
 
 		return html_string; 

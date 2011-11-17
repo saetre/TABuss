@@ -66,7 +66,7 @@ public class SDCard
 						// Stream file content. Change to file name when file contains other properties
 						while((readString = buf.readLine()) != null)
 						{
-							System.out.println("FOUND: " + readString);
+							//System.out.println("FOUND: " + readString);
 							fileContent.add(readString);
 						}
 						buf.close();
