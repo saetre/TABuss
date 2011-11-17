@@ -6,22 +6,33 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.SimpleAdapter;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import test.BusTUC.R;
+import test.BusTUC.Database.DatabaseHelper;
 import test.BusTUC.GPS.GPS;
 import test.BusTUC.Main.Homescreen.OracleThread;
 import test.BusTUC.Stops.BusStop;
@@ -33,11 +44,66 @@ public class OtherBusstop extends Activity {
 	Context context;
 	String[] items;
 	ArrayList<Integer> code;
+	LinearLayout ll;
+	ListView lv;
+	DatabaseHelper dbHelper;
+	String[] columns;
+	SimpleCursorAdapter mAdapter;
+	int[] to;
+
 	boolean server = true;
+
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+		context = this;
 		setContentView(R.layout.otherbusstop);
+		lv = (ListView) findViewById(R.id.listViewMongo);
+		lv.setBackgroundColor(Color.parseColor("#3C434A"));
+		lv.setCacheColorHint(Color.parseColor("#3C434A"));
+		lv.setClickable(true);
+		//ll = (LinearLayout) findViewById(R.layout.realtimestop);
+		lv.setOnItemClickListener(new OnItemClickListener() {
+		    @Override
+		    public void onItemClick(AdapterView<?> arg0, View v, int arg2,
+					long arg3) { 
+				TextView tv = (TextView)v.findViewById(R.id.stopName);
+				TextView tv2 = (TextView)v.findViewById(R.id.toFrom);
+				ArrayList<Integer> stopName = findCodeFromStopName(tv.getText().toString());
+				int realtimecode = 0;
+				
+				for(int code:stopName){
+					System.out.println("KODE:"+code);
+					if(Integer.parseInt(String.valueOf(code).substring(4, 5))==1 && tv2.getText().toString().equalsIgnoreCase("Mot Sentrum") ){
+						realtimecode = code; 
+					}else if(Integer.parseInt(String.valueOf(code).substring(4, 5))==0 && tv2.getText().toString().equalsIgnoreCase("Fra Sentrum")){
+						realtimecode = code;
+					}			
+				}
+				Intent intent = new Intent(context, RealTimeListFromMenu.class);
+				int outgoing = 0;
+				if(!server)
+				{
+					outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(realtimecode).toString());
+					intent.putExtra("stopId", outgoing);
+					intent.putExtra("key", realtimecode);
+					intent.putExtra("stopName", tv.getText().toString());
+				}
+				else
+				{
+					System.out.println(realtimecode + ":" + tv.getText().toString());
+					intent.putExtra("key", realtimecode);
+					intent.putExtra("stopName", tv.getText().toString());
+				}
+
+				startActivity(intent);
+				
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	
+		
 		String[] gpsCoordinates;
 		try {
 			if(Homescreen.gpsCords2 != null)
@@ -66,7 +132,25 @@ public class OtherBusstop extends Activity {
 		textView.setAdapter(adapter);
 		context = this;
 
+		
+		dbHelper = new DatabaseHelper(this);
+        Cursor cursor = dbHelper.getAllRealtime();
+        startManagingCursor(cursor);
+        String [] column = cursor.getColumnNames();
+        for(String c:column){
+      	  System.out.println("COLUMN: " + c);
+        }
+        Toast.makeText(this, "FOUND " + cursor.getCount() + " Columsn", Toast.LENGTH_LONG).show();
+        // the desired columns to be bound
+        columns = new String[] { DatabaseHelper.stopName, DatabaseHelper.toFrom};
+        // the XML defined views which the data will be bound to
+        to = new int[] {R.id.stopName, R.id.toFrom};
 
+        // create the adapter using the cursor pointing to the desired data as well as the layout information
+         mAdapter = new SimpleCursorAdapter(this, R.layout.realtimestop, cursor, columns, to);
+        // set this adapter as your ListActivity's adapter
+        lv.setAdapter(mAdapter);
+        
 
 
 		button.setOnClickListener(new OnClickListener() 
@@ -90,16 +174,20 @@ public class OtherBusstop extends Activity {
 
 				builder.setItems(items, new DialogInterface.OnClickListener() {
 
+
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
-
+						DatabaseHelper dbHelper = new DatabaseHelper(context);
+						dbHelper.addRealTime(textView.getText().toString(), items[which]);
 						Intent intent = new Intent(context, RealTimeListFromMenu.class);
 						int outgoing = 0;
 						if(!server)
 						{
-							Integer.parseInt(Homescreen.realTimeCodes.get(code.get(which)).toString());
+							outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(code.get(which)).toString());
 							intent.putExtra("stopId", outgoing);
+							intent.putExtra("key", code.get(which));
+							intent.putExtra("stopName", textView.getText().toString());
 						}
 						else
 						{
@@ -130,5 +218,5 @@ public class OtherBusstop extends Activity {
 			if(s.name.equalsIgnoreCase(stopname.trim())) stops.add(s.stopID);
 		}
 		return stops;
-	}
+	}	
 }

@@ -208,7 +208,6 @@ public class Homescreen extends Activity {
 		String [] gpsCoordinates2;
 
 		try {	
-
 			gpsCoordinates2 =  Helpers.readLines(getAssets().open("gps3.xml")); 
 			gpsCords2 = GPS.formatCoordinates(gpsCoordinates2);
 		} catch (IOException e) {

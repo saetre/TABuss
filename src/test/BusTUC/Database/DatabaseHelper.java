@@ -26,6 +26,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final String time="time";
 	public static final String day="day";
 	public static final String success="success";
+	public static final String realtimeTable="realtimeTable";
+	public static final String stopName="stopName";
+	public static final String toFrom="toFrom";
 
 	public DatabaseHelper(Context context) {
 		super(context, dbName, null, 6);
@@ -45,14 +48,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		db.execSQL("CREATE TABLE "+areaTable+" ("+rowId+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
 				maxLat+" REAL, "+minLat+" REAL, "+maxLong+" REAL, "+minLong+" REAL);");
+		
+		db.execSQL("CREATE TABLE "+realtimeTable+" ("+rowId+" INTEGER PRIMARY KEY AUTOINCREMENT, "+stopName+" TEXT, "+toFrom+" TEXT);");
 
 	}
 
+	public void addRealTime(String stopName, String toFrom){
+		SQLiteDatabase db= this.getWritableDatabase();
+		Cursor curse = db.rawQuery("SELECT stopName from "+realtimeTable+ " t WHERE t.stopName = '"+stopName+"' AND t.toFrom = '"+toFrom+"'",null);
+		if(curse.getCount()==0){
+			ContentValues cv=new ContentValues();
+
+			cv.put(DatabaseHelper.stopName, stopName);
+			cv.put(DatabaseHelper.toFrom, toFrom);
+
+			db.insert(realtimeTable, DatabaseHelper.toFrom, cv);
+		}
+		db.close();
+	}
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// TODO Auto-generated method stub
 		db.execSQL("DROP TABLE IF EXISTS "+areaTable);
 		db.execSQL("DROP TABLE IF EXISTS "+queryTable);
+		db.execSQL("DROP TABLE IF EXISTS "+realtimeTable);
 		onCreate(db);
 	}
 
@@ -101,6 +120,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.insert(queryTable, destination, cv);
 		db.close();
 	}
+	public Cursor getAllRealtime(){
+		SQLiteDatabase db=this.getReadableDatabase();
+		Cursor cur= db.rawQuery("Select * from "+realtimeTable +" ORDER BY stopName", null);
+
+		if(cur!=null){
+			//db.close();
+			return cur;
+		}
+		//db.close();
+		return null;	
+	}
 	public Cursor getAllQueries(){
 		SQLiteDatabase db=this.getReadableDatabase();
 		Cursor cur= db.rawQuery("Select * from "+queryTable, null);
@@ -124,6 +154,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db=this.getWritableDatabase();
 		db.execSQL("DROP TABLE IF EXISTS "+areaTable);
 		db.execSQL("DROP TABLE IF EXISTS "+queryTable);
+		db.execSQL("DROP TABLE IF EXISTS "+realtimeTable);
 		onCreate(db);
 		db.close();
 	}

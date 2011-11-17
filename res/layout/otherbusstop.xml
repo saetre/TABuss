@@ -45,4 +45,8 @@
 		</Button>
     </LinearLayout>
 	</LinearLayout>
+	<ListView android:layout_height="wrap_content" 
+	android:id="@+id/listViewMongo" 
+	android:layout_width="match_parent">
+	</ListView>
 </LinearLayout>
