@@ -130,6 +130,17 @@ public class OtherBusstop extends Activity {
 		textView = (AutoCompleteTextView) findViewById(R.id.autocomplete2);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, dictionary);
 		textView.setAdapter(adapter);
+		textView.setOnItemClickListener(new OnItemClickListener()
+		{
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) 
+			{
+				run();
+			}
+			
+		});
 		context = this;
 
 		
@@ -158,60 +169,73 @@ public class OtherBusstop extends Activity {
 			@Override
 			public void onClick(View v) 
 			{
+				run();
+			}
+		});	
 
-				code = findCodeFromStopName(textView.getText().toString());				
-				items=new String[code.size()];
-				for(int i=0;i<code.size();i++){
-					if(Integer.parseInt(String.valueOf(code.get(i)).substring(4, 5)) == 1){
-						items[i] = "Mot sentrum";
-					}else{
-						items[i] = "Fra sentrum";
-					}
+				
+		
+
+	}
+	
+	private void run()
+	{
+		code = findCodeFromStopName(textView.getText().toString());				
+		items=new String[code.size()];
+		for(int i=0;i<code.size();i++){
+			if(Integer.parseInt(String.valueOf(code.get(i)).substring(4, 5)) == 1){
+				items[i] = "Mot sentrum";
+			}else{
+				items[i] = "Fra sentrum";
+			}
+		}
+		//final String [] items=new String []{"Item 1","Item 2","Item 3","Item 4"};
+		AlertDialog.Builder builder=new AlertDialog.Builder(context);
+		builder.setTitle(textView.getText().toString());
+
+		builder.setItems(items, new DialogInterface.OnClickListener()
+		{
+
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) 
+			{
+				// TODO Auto-generated method stub
+				DatabaseHelper dbHelper = new DatabaseHelper(context);
+				dbHelper.addRealTime(textView.getText().toString(), items[which]);
+				Intent intent = new Intent(context, RealTimeListFromMenu.class);
+				int outgoing = 0;
+				if(!server)
+				{
+					outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(code.get(which)).toString());
+					intent.putExtra("stopId", outgoing);
+					intent.putExtra("key", code.get(which));
+					intent.putExtra("stopName", textView.getText().toString());
 				}
-				//final String [] items=new String []{"Item 1","Item 2","Item 3","Item 4"};
-				AlertDialog.Builder builder=new AlertDialog.Builder(context);
-				builder.setTitle(textView.getText().toString());
+				else
+				{
+					intent.putExtra("key", code.get(which));
+					intent.putExtra("stopName", textView.getText().toString());
+				}
 
-				builder.setItems(items, new DialogInterface.OnClickListener() {
-
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						DatabaseHelper dbHelper = new DatabaseHelper(context);
-						dbHelper.addRealTime(textView.getText().toString(), items[which]);
-						Intent intent = new Intent(context, RealTimeListFromMenu.class);
-						int outgoing = 0;
-						if(!server)
-						{
-							outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(code.get(which)).toString());
-							intent.putExtra("stopId", outgoing);
-							intent.putExtra("key", code.get(which));
-							intent.putExtra("stopName", textView.getText().toString());
-						}
-						else
-						{
-							intent.putExtra("key", code.get(which));
-							intent.putExtra("stopName", textView.getText().toString());
-						}
-
-						startActivity(intent);
-					}
-				});
-
-				builder.show();
-				/*int outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(code).toString());
-
-				intent.putExtra("stopId", outgoing);
-				intent.putExtra("key", code);
-				intent.putExtra("stopName", textView.getText().toString());
-
-				startActivity(intent);*/
-
+				startActivity(intent);
 			}
 		});
 
-	}
+		builder.show();
+		/*int outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(code).toString());
+
+		intent.putExtra("stopId", outgoing);
+		intent.putExtra("key", code);
+		intent.putExtra("stopName", textView.getText().toString());
+
+		startActivity(intent);*/
+	
+
+		}
+	
+
+	
 	private ArrayList<Integer> findCodeFromStopName(String stopname){
 		ArrayList<Integer> stops = new ArrayList<Integer>();
 		for(BusStop s : Homescreen.allStops){

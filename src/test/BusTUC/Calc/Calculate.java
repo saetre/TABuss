@@ -34,7 +34,14 @@ public class Calculate {
 			{
 				int ArrayLength = json_arr.length(); 
 				Log.v("arraylength","ar:"+ArrayLength);
-				if(ArrayLength == 0) return null;
+				// Empty array, which means no routes were found
+				if(ArrayLength == 0)
+					{
+					routeSuggestions = new Route[1];
+					routeSuggestions[0] = new Route();
+					routeSuggestions[0].setBusStopName("Bussorakelet");
+					return routeSuggestions;
+					}
 				routeSuggestions = new Route[ArrayLength];
 				GeoPoint location;
 				for(int i = 0;i<ArrayLength;i++)

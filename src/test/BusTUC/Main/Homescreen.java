@@ -57,6 +57,8 @@ import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -179,8 +181,8 @@ public class Homescreen extends Activity {
 		setContentView(R.layout.homescreen);
 		new StartUpThread(context).execute();
 		dbHelper=new DatabaseHelper(context);
-		this.setRequestedOrientation(
-				ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		//this.setRequestedOrientation(
+		//	ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		// Set properties according to existing preferences
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -201,40 +203,8 @@ public class Homescreen extends Activity {
 		goButton = (Button)this.findViewById(R.id.goButton);
 		amazeButton = (Button)this.findViewById(R.id.amazebutton);
 		//editText = (EditText)this.findViewById(R.id.editText);
-
-		// Gets the coordinates from the bus XML file
-		long f = System.nanoTime();              
-		String[] gpsCoordinates;
-		String [] gpsCoordinates2;
-
-		try {	
-			gpsCoordinates2 =  Helpers.readLines(getAssets().open("gps3.xml")); 
-			gpsCords2 = GPS.formatCoordinates(gpsCoordinates2);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
-		long s = System.nanoTime() - f;
-		System.out.println("TIME SPENT FINDING LOCATION: " + s /(1000000000.0));
-		// Autocompletion
-		ArrayList <String> dictionary = Helpers.getDictionary("dictionary_finalv2","dictionary"); 
-		if(dictionary.size() == 0 || !server)
-		{
-			// If no dictionary present, load stops from xml-file.
-			// Need separate file, as this only includes stops working with BussTUC
-			try {
-				System.out.println("No dictionary present!");
-				gpsCoordinates = Helpers.readLines(getAssets().open("gps3Mod.xml"));
-				gpsCords = GPS.formatCoordinates(gpsCoordinates);
-				dictionary = Helpers.createDictionary(gpsCords, "dictionary");
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			// Only for oracle. Uncomment if system is not used with ReTro's server
-		}
-		textView = (AutoCompleteTextView) findViewById(R.id.autocomplete);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, dictionary);
-		textView.setAdapter(adapter);
+		
+		loadDictionaries();
 
 		ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(this);
 		line = (LinearLayout)this.findViewById(R.id.homelayout);
@@ -295,6 +265,79 @@ public class Homescreen extends Activity {
 
 
 	}
+	
+	
+	private void loadDictionaries()
+	{
+		System.out.println("Loading dictionaries...");
+		// Gets the coordinates from the bus XML file
+		long f = System.nanoTime();              
+		String[] gpsCoordinates;
+		String [] gpsCoordinates2;
+
+		try 
+		{	
+			gpsCoordinates2 =  Helpers.readLines(getAssets().open("gps3.xml")); 
+			gpsCords2 = GPS.formatCoordinates(gpsCoordinates2);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		long s = System.nanoTime() - f;
+		System.out.println("TIME SPENT FINDING LOCATION: " + s /(1000000000.0));
+		// Autocompletion
+		ArrayList <String> dictionary = new ArrayList <String>();
+		// Check if SD-card is present
+
+		try
+		{
+			dictionary = Helpers.getDictionary("dictionary_finalv2","dictionary"); 
+
+		}
+		
+		// TODO: 
+		/*
+		 * Move out of onCreate(), as modifying UI during onCreate() is unpopular..
+		 */
+		catch(Exception e)
+		{
+			System.exit(0);
+		}
+
+
+		if(dictionary.size() == 0 || !server)
+		{
+			// If no dictionary present, load stops from xml-file.
+			// Need separate file, as this only includes stops working with BussTUC
+			try {
+				System.out.println("No dictionary present!");
+				gpsCoordinates = Helpers.readLines(getAssets().open("gps3Mod.xml"));
+				gpsCords = GPS.formatCoordinates(gpsCoordinates);
+				dictionary = Helpers.createDictionary(gpsCords, "dictionary");
+
+			} 
+			catch(Exception e)
+			{
+				System.exit(0);
+			}
+		}
+		textView = (AutoCompleteTextView) findViewById(R.id.autocomplete);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, dictionary);
+		textView.setAdapter(adapter);
+		textView.setOnItemClickListener(new OnItemClickListener()
+		{
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) 
+			{
+				new OracleThread(context).execute();
+				
+			}
+			
+		});
+	}
+	
+	
 
 	private void createButtonListeners() 
 	{
@@ -639,8 +682,6 @@ public class Homescreen extends Activity {
 			{
 				try
 				{
-					System.out.println("curloc: " + currentlocation + " browser " + k_browser);
-
 					if(!server)buf = Helpers.run(textView.getText().toString(), busStopsNoDuplicates,k_browser, realTimeCodes);
 					else buf = Helpers.runServer(textView.getText().toString(), k_browser, currentlocation, numStops, dist);
 					long newTime = System.nanoTime() - time;
@@ -677,16 +718,19 @@ public class Homescreen extends Activity {
 
 			if(buf != null)
 			{
+				// Error returned from bussTUC
 				if(buf.get(0).getBusStopName().equalsIgnoreCase("Bussorakelet"))
 				{
 					Toast.makeText(context, noRoutes, Toast.LENGTH_SHORT).show();
 				}
-				
+
+				// No interenet connection
 				else if(buf.get(0).getBusStopName().equalsIgnoreCase("Nettilgang"))
 				{
 					Toast.makeText(context, noInternet, Toast.LENGTH_SHORT).show();
 
 				}
+				// No location
 				else if(noLocCheck)
 				{
 					Toast.makeText(context, noLoc, Toast.LENGTH_SHORT).show();
@@ -826,7 +870,8 @@ public class Homescreen extends Activity {
 
 					}
 				});
-				createLocationListener();		
+				createLocationListener();
+
 
 				// Only request updates if > 500 ms and 10 m
 			}
@@ -842,6 +887,7 @@ public class Homescreen extends Activity {
 		@Override
 		protected void onPostExecute(Void unused)
 		{
+			
 
 			myDialog.dismiss();
 			if(check)
