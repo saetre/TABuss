@@ -2,12 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
 	android:layout_width="fill_parent"
-	android:layout_height="fill_parent" >
-		<Button android:layout_width="wrap_content" 
-	android:text="Slett logg" 
-	android:layout_height="wrap_content" 
+	android:layout_height="fill_parent"
+	android:background="#FFFFFF" >
+	<TextView android:layout_width="fill_parent" 
+	android:textColor="#FFFFFF"
+	android:text="Logg" 
+	android:textSize="21sp"
+	android:background="#A3AB19"
+	android:gravity="center_vertical"
+	android:layout_height="50sp" 
 	android:id="@+id/deleteHistory" 
-	android:layout_gravity="bottom"></Button>
+	android:layout_gravity="bottom"></TextView>
 
 	<ListView
 	android:background="#FFFFFF"

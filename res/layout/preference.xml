@@ -14,5 +14,4 @@
 		android:inputType="number"
 		android:summary="Hvor stor radius søk etter nære stopp skal gjøres. Maks 10000 m"
 		android:key="num3" android:persistent="true" android:defaultValue="1000"></EditTextPreference>
-
 </PreferenceScreen>

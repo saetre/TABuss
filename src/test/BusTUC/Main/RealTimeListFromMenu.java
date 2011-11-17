@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.util.TimeUtils;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -68,14 +69,16 @@ public class RealTimeListFromMenu extends ListActivity
 		if(!server)stopId = extras.getInt("stopId");
 		 outgoing = extras.getInt("key");
 		lv = getListView();
-		lv.setBackgroundColor(Color.parseColor("#3C434A"));
-		lv.setCacheColorHint(Color.parseColor("#3C434A"));
+		lv.setBackgroundColor(Color.parseColor("#FFFFFF"));
+		lv.setCacheColorHint(Color.parseColor("#FFFFFF"));
 		lv.setClickable(false);
+		
 		TextView text = new TextView(this);
-
-		text.setTextSize(30);
-		text.setTextColor(Color.parseColor("#A3AB19"));
-		text.setTypeface(null,Typeface.BOLD);
+		text.setHeight(50);
+		text.setBackgroundColor(Color.parseColor("#A3AB19"));
+		text.setTextSize(21);
+		text.setTextColor(Color.parseColor("#FFFFFF"));
+		text.setGravity(Gravity.CENTER_VERTICAL);
 		text.setText(stopName +"\n");
 		text.setClickable(false);
 		lv.addHeaderView(text);

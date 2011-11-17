@@ -158,6 +158,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		onCreate(db);
 		db.close();
 	}
+	
+	public void clearRealtime(){
+		SQLiteDatabase db=this.getWritableDatabase();
+		db.execSQL("DROP TABLE IF EXISTS "+realtimeTable);		
+		db.execSQL("CREATE TABLE "+realtimeTable+" ("+rowId+" INTEGER PRIMARY KEY AUTOINCREMENT, "+stopName+" TEXT, "+toFrom+" TEXT);");
+		db.close();
+	}
+	
+	public void clearLog(){
+		SQLiteDatabase db=this.getWritableDatabase();
+		db.execSQL("DROP TABLE IF EXISTS "+areaTable);
+		db.execSQL("DROP TABLE IF EXISTS "+queryTable);
+		db.execSQL("CREATE TABLE "+queryTable+" ("+rowId+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
+				destination+" TEXT, "+origin+" Integer, "+time+" INTEGER NOT NULL, "+day+" INTEGER NOT NULL);");
+		
+		db.execSQL("CREATE TABLE "+areaTable+" ("+rowId+" INTEGER PRIMARY KEY AUTOINCREMENT, "+
+				maxLat+" REAL, "+minLat+" REAL, "+maxLong+" REAL, "+minLong+" REAL);");
+		db.close();
+	}
 	public int getQueryCount()
 	{
 		SQLiteDatabase db=this.getReadableDatabase();

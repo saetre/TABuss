@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -59,9 +60,11 @@ public class OtherBusstop extends Activity {
 		context = this;
 		setContentView(R.layout.otherbusstop);
 		lv = (ListView) findViewById(R.id.listViewMongo);
-		lv.setBackgroundColor(Color.parseColor("#3C434A"));
-		lv.setCacheColorHint(Color.parseColor("#3C434A"));
+		lv.setBackgroundColor(Color.parseColor("#FFFFFF"));
+		lv.setCacheColorHint(Color.parseColor("#FFFFFF"));
 		lv.setClickable(true);
+		// Hide keyboard on start
+		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		//ll = (LinearLayout) findViewById(R.layout.realtimestop);
 		lv.setOnItemClickListener(new OnItemClickListener() {
 		    @Override
@@ -147,11 +150,6 @@ public class OtherBusstop extends Activity {
 		dbHelper = new DatabaseHelper(this);
         Cursor cursor = dbHelper.getAllRealtime();
         startManagingCursor(cursor);
-        String [] column = cursor.getColumnNames();
-        for(String c:column){
-      	  System.out.println("COLUMN: " + c);
-        }
-        Toast.makeText(this, "FOUND " + cursor.getCount() + " Columsn", Toast.LENGTH_LONG).show();
         // the desired columns to be bound
         columns = new String[] { DatabaseHelper.stopName, DatabaseHelper.toFrom};
         // the XML defined views which the data will be bound to

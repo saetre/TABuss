@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -50,22 +51,24 @@ public class RealTimeList extends ListActivity
 		super.onCreate(savedInstanceState);
 		extras = getIntent().getExtras();
 		lv = getListView();
-		lv.setBackgroundColor(Color.parseColor("#3C434A"));
-		lv.setCacheColorHint(Color.parseColor("#3C434A"));
+		lv.setBackgroundColor(Color.parseColor("#A3AB19"));
+		lv.setCacheColorHint(Color.parseColor("#A3AB19"));
 		lv.setClickable(true);
 
 		text = new TextView(this);
 		text.setClickable(false);
-		text.setTextSize(30);
-		text.setTextColor(Color.parseColor("#A3AB19"));
-		text.setTypeface(null,Typeface.BOLD);
-		text.setText("Busstopp nær deg");
+		text.setTextSize(21);
+		text.setGravity(Gravity.CENTER_VERTICAL);
+		text.setTextColor(Color.parseColor("#FFFFFF"));
+		text.setText("Busstopp n¾r deg");
+		text.setHeight(50);
 		lv.addHeaderView(text);
 		
 		other = new Button(this);
 		other.setClickable(true);
-		other.setTextSize(30);
-		other.setTextColor(Color.parseColor("#A3AB19"));
+		other.setTextSize(21);
+		other.setBackgroundColor(Color.parseColor("#FFFFFF"));
+		other.setTextColor(Color.parseColor("#3C434A"));
 		other.setTypeface(null,Typeface.BOLD);
 		other.setText("Annet busstopp");
 		other.setOnClickListener(new OnClickListener() 

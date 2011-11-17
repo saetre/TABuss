@@ -1,5 +1,6 @@
 package test.BusTUC.Main;
 import test.BusTUC.R;
+import test.BusTUC.Database.DatabaseHelper;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,6 +12,10 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.Toast;
 
 public class Settings extends PreferenceActivity implements OnSharedPreferenceChangeListener
 {
@@ -19,6 +24,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 	int numStopsOnMap ;
 	int radius ;
 	Context context;
+	Button deletelog, deletert;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -34,6 +40,29 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 		String foo3  = preferences.getString("num3", "");
 		radius = Integer.parseInt(foo3);
 		addPreferencesFromResource(R.layout.preference);
+		setContentView(R.layout.deletelog);
+		deletelog = (Button) findViewById(R.id.slettlogg);
+		deletert = (Button) findViewById(R.id.slettandre);
+		deletelog.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				DatabaseHelper dbHelper = new DatabaseHelper(context);
+				dbHelper.clearLog();
+				Toast.makeText(context, "Slettet logg", Toast.LENGTH_SHORT).show();
+			}
+			
+		});
+		deletert.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				DatabaseHelper dbHelper = new DatabaseHelper(context);
+				dbHelper.clearRealtime();
+				Toast.makeText(context, "Slettet sanntidshistorie", Toast.LENGTH_SHORT).show();
+			}
+			
+		});
 	}
 
 
