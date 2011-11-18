@@ -15,10 +15,12 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -144,6 +146,24 @@ public class OtherBusstop extends Activity {
 			}
 			
 		});
+		
+		textView.setOnKeyListener(new OnKeyListener()
+		{
+			
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event)
+			{
+				switch(keyCode)
+				{
+				case KeyEvent.KEYCODE_ENTER:
+					if(!textView.getText().toString().equals(""))
+					{
+						run();
+					}
+				}
+				return false;
+			}
+		});
 		context = this;
 
 		
@@ -170,9 +190,6 @@ public class OtherBusstop extends Activity {
 				run();
 			}
 		});	
-
-				
-		
 
 	}
 	

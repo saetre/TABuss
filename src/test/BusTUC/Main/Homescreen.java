@@ -47,12 +47,14 @@ import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
 import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.view.WindowManager;
@@ -76,6 +78,7 @@ public class Homescreen extends Activity {
 	private int numStops;
 	private int numStopsOnMap;
 	private int dist;
+	private boolean fancyOracle;
 	//private int[] buttons = {R.id.button1,R.id.button2,R.id.button3,R.id.button4,R.id.button5, R.id.button6};
 	private Button[] buttons;
 	private Button goButton, amazeButton; 
@@ -203,7 +206,7 @@ public class Homescreen extends Activity {
 		goButton = (Button)this.findViewById(R.id.goButton);
 		amazeButton = (Button)this.findViewById(R.id.amazebutton);
 		//editText = (EditText)this.findViewById(R.id.editText);
-		
+
 		loadDictionaries();
 
 		ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(this);
@@ -265,8 +268,8 @@ public class Homescreen extends Activity {
 
 
 	}
-	
-	
+
+
 	private void loadDictionaries()
 	{
 		System.out.println("Loading dictionaries...");
@@ -293,7 +296,7 @@ public class Homescreen extends Activity {
 			dictionary = Helpers.getDictionary("dictionary_finalv2","dictionary"); 
 
 		}
-		
+
 		// TODO: 
 		/*
 		 * Move out of onCreate(), as modifying UI during onCreate() is unpopular..
@@ -304,23 +307,27 @@ public class Homescreen extends Activity {
 		}
 
 
-		if(dictionary.size() == 0 || !server)
-		{
-			// If no dictionary present, load stops from xml-file.
-			// Need separate file, as this only includes stops working with BussTUC
-			try {
+
+		// If no dictionary present, load stops from xml-file.
+		// Need separate file, as this only includes stops working with BussTUC
+		try {
+		
+			if(dictionary.size() == 0)
+			{
 				System.out.println("No dictionary present!");
 				gpsCoordinates = Helpers.readLines(getAssets().open("gps3Mod.xml"));
 				gpsCords = GPS.formatCoordinates(gpsCoordinates);
 				dictionary = Helpers.createDictionary(gpsCords, "dictionary");
-
-			} 
-			catch(Exception e)
-			{
-				System.exit(0);
 			}
+
+		} 
+		catch(Exception e)
+		{
+			System.exit(0);
 		}
+
 		textView = (AutoCompleteTextView) findViewById(R.id.autocomplete);
+
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, dictionary);
 		textView.setAdapter(adapter);
 		textView.setOnItemClickListener(new OnItemClickListener()
@@ -331,13 +338,31 @@ public class Homescreen extends Activity {
 					long arg3) 
 			{
 				new OracleThread(context).execute();
-				
+
 			}
-			
+
+		});
+
+		textView.setOnKeyListener(new OnKeyListener()
+		{
+
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event)
+			{
+				switch(keyCode)
+				{
+				case KeyEvent.KEYCODE_ENTER:
+					if(!textView.getText().toString().equals(""))
+					{
+						new OracleThread(context).execute();
+					}
+				}
+				return false;
+			}
 		});
 	}
-	
-	
+
+
 
 	private void createButtonListeners() 
 	{
@@ -394,15 +419,27 @@ public class Homescreen extends Activity {
 
 		}
 	}
+	
+	private void updateTextViewHint()
+	{
+		if(fancyOracle)
+		{
+		textView.setHint("Kun destinasjon");
+		}
+		
+		else
+		{
+			textView.setHint("Fullstendig setning");
+		}
+	}
 
 	private void loadStops()
 	{
 		System.out.println("numstops: " + numStops + " numstopsonmap: " + numStopsOnMap + " dist: " + dist);
 
 		long first = System.nanoTime();
-		// For use with the oracle and the gps2 file
 		// Not needed when running on ReTro's server. Switched on or of by a bool val
-		if(!server)busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, dist,numStops,false);
+		//busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, dist,numStops,false);
 
 		// All stops
 		allStops = Helpers.getAllLocations(gpsCords2, provider);
@@ -413,6 +450,25 @@ public class Homescreen extends Activity {
 		System.out.println("USING " + numStops + " STOPS");
 		// For use with the map, and real-time functionality
 		cl = Helpers.getList(gpsCords2, provider, numStopsOnMap,dist, currentlocation);
+		updateTextViewHint();
+	}
+
+	/*
+	 * Validate input before sending to server
+	 */
+	public boolean validate(String input)
+	{
+		boolean check = false;
+		for(int i=0; i<allStops.size(); i++)
+		{
+			if(allStops.get(i).name.trim().equalsIgnoreCase(input.trim()))
+			{
+				check = true;
+				break;
+			}
+		}
+
+		return check;
 	}
 
 	private void createLocationListener() {
@@ -430,6 +486,7 @@ public class Homescreen extends Activity {
 				//	10.394555,63.43109
 				//getSuggestionBasedOnPosition();
 				loadStops();
+				Toast.makeText(context, "Lokasjon oppdatert", Toast.LENGTH_SHORT).show();
 				Log.v("currentLoc","PROV:LOC=" + currentlocation.getLatitude()+":"+currentlocation.getLongitude());
 
 
@@ -511,6 +568,7 @@ public class Homescreen extends Activity {
 			int m_numStops = extras.getInt("num1");
 			int m_numStopsOnMap = extras.getInt("num2");
 			int m_dist = extras.getInt("num3");
+			boolean m_fancy = extras.getBoolean("num4");
 
 			if(numStops != m_numStops && m_numStops <=5)
 			{
@@ -527,6 +585,12 @@ public class Homescreen extends Activity {
 				dist = extras.getInt("num3");
 				change = true;
 			}
+			if(!fancyOracle && m_fancy || fancyOracle && !m_fancy)
+			{
+				fancyOracle = m_fancy;
+				change = true;
+			}
+
 			if(change)Toast.makeText(context, "Endringer trer i kraft ved neste lokasjonssjekk", Toast.LENGTH_LONG).show();
 
 
@@ -655,6 +719,8 @@ public class Homescreen extends Activity {
 	{
 		private Context context;    
 		ArrayList <Route> buf;
+		StringBuffer buffer = new StringBuffer();
+		
 		//    StringBuffer buf = new StringBuffer();
 		//  ArrayList <String> buf = new ArrayList <String>();
 		ProgressDialog myDialog = null;
@@ -662,6 +728,7 @@ public class Homescreen extends Activity {
 		String noRoutes = "Fant ingen ruter for søkekriterie. Sjekk søkeord";
 		String noInternet = "Ingen internettilgang, har du skrudd av Wifi/3G?";
 		boolean noLocCheck = false;
+		boolean validated = false;
 		public OracleThread(Context context)
 		{
 
@@ -683,8 +750,25 @@ public class Homescreen extends Activity {
 				try
 				{
 					String query = textView.getText().toString();
-					if(!server)buf = Helpers.run(query, busStopsNoDuplicates,k_browser, realTimeCodes);
-					else buf = Helpers.runServer(query, k_browser, currentlocation, numStops, dist);
+					if(!server && validate(query) && fancyOracle)
+					{
+						System.out.println("Her skal vi ikke havne");
+						buf = Helpers.run(query, busStopsNoDuplicates,k_browser, realTimeCodes);
+					}
+					else if(!fancyOracle)
+					{
+						System.out.println("Her skal vi ikke havne");
+						buffer = Helpers.runStandard(query);
+					}
+					else
+					{
+						if(validate(query))
+						{
+							buf = Helpers.runServer(query, k_browser, currentlocation, numStops, dist);
+							validated = true;
+						}
+
+					}
 					long newTime = System.nanoTime() - time;
 					System.out.println("TIME ORACLE: " +  newTime/1000000000.0);
 
@@ -717,24 +801,24 @@ public class Homescreen extends Activity {
 		{
 			myDialog.dismiss();
 
-			if(buf != null)
+			if(buf != null && fancyOracle)
 			{
 				// Error returned from bussTUC
 				if(buf.get(0).getBusStopName().equalsIgnoreCase("Bussorakelet"))
 				{
-					Toast.makeText(context, noRoutes, Toast.LENGTH_SHORT).show();
+					Toast.makeText(context, noRoutes, Toast.LENGTH_LONG).show();
 				}
 
 				// No interenet connection
 				else if(buf.get(0).getBusStopName().equalsIgnoreCase("Nettilgang"))
 				{
-					Toast.makeText(context, noInternet, Toast.LENGTH_SHORT).show();
+					Toast.makeText(context, noInternet, Toast.LENGTH_LONG).show();
 
 				}
 				// No location
 				else if(noLocCheck)
 				{
-					Toast.makeText(context, noLoc, Toast.LENGTH_SHORT).show();
+					Toast.makeText(context, noLoc, Toast.LENGTH_LONG).show();
 
 				}
 				else
@@ -762,10 +846,26 @@ public class Homescreen extends Activity {
 					context.startActivity(intent);
 				}
 			}
+			
+			else if(!fancyOracle)
+			{
+				Intent intent = new Intent(getApplicationContext(), Answer.class);
+				intent.putExtra("text", buffer.toString());
+
+				//intent.putExtra("test", buf);
+				context.startActivity(intent);
+			}
 			else
 			{
 				myDialog.dismiss();
-				Toast.makeText(context, "Noe uhåndtert skjedde", Toast.LENGTH_SHORT).show();
+
+				if(server && !validated)
+				{
+
+					Toast.makeText(context, "Ugyldig input, query ikke stilt. Har du riktig orakel valgt under innstillinger?", Toast.LENGTH_SHORT).show();
+
+				}
+				else Toast.makeText(context, "Noe uhåndtert skjedde", Toast.LENGTH_LONG).show();
 
 			}
 
@@ -888,7 +988,7 @@ public class Homescreen extends Activity {
 		@Override
 		protected void onPostExecute(Void unused)
 		{
-			
+
 
 			myDialog.dismiss();
 			if(check)

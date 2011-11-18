@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -23,6 +24,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 	int numStops ;
 	int numStopsOnMap ;
 	int radius ;
+	boolean fancyOracle = true;
 	Context context;
 	Button deletelog, deletert;
 	@Override
@@ -63,6 +65,19 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 			}
 			
 		});
+		
+		
+		  final CheckBoxPreference checkboxPref = (CheckBoxPreference) getPreferenceManager().findPreference("Orakelvalg");
+
+		    checkboxPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() 
+		    {            
+		        public boolean onPreferenceChange(Preference preference, Object newValue) 
+		        {
+		        	System.out.println("CHANGED " + newValue);
+		        	fancyOracle = (Boolean) newValue;
+		            return true;
+		        }
+		    }); 
 	}
 
 
@@ -123,6 +138,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 		intent.putExtra("num1", numStops);
 		intent.putExtra("num2", numStopsOnMap);
 		intent.putExtra("num3", radius);
+		intent.putExtra("num4", fancyOracle);
 		setResult(Activity.RESULT_OK, intent);
 		super.onBackPressed();
 

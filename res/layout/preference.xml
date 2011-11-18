@@ -2,7 +2,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 	android:title="Settings">
 	<EditTextPreference android:title="Antall stopp"
-		android:inputType="number" android:summary="Antall stopp systemet skal bruke for å finne rute. Maks 5 stk"
+		android:inputType="number"
+		android:summary="Antall stopp systemet skal bruke for å finne rute. Maks 5 stk"
 		android:key="num1" android:persistent="true" android:defaultValue="3"></EditTextPreference>
 
 	<EditTextPreference android:title="Antall stopp på kart"
@@ -14,4 +15,7 @@
 		android:inputType="number"
 		android:summary="Hvor stor radius søk etter nære stopp skal gjøres. Maks 10000 m"
 		android:key="num3" android:persistent="true" android:defaultValue="1000"></EditTextPreference>
+		
+	<CheckBoxPreference android:key="Orakelvalg"
+		android:title="Fancypants orakel?" android:defaultValue="true" android:summary="Her kan du velge mellom fancy orakel, og vanlig" />
 </PreferenceScreen>

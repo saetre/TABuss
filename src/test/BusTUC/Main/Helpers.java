@@ -442,6 +442,37 @@ public class Helpers
 		}
 		return value;
 	}
+	
+	
+	/*
+	 * Will run a query directly towards BussTUC with standard natural language syntax
+	 * 
+	 */
+	public static StringBuffer runStandard(String input)
+	{
+		StringBuffer buf = new StringBuffer();
+		Browser k_browser = new Browser();
+		// Perform action on clicks
+		if(!input.equals(""))
+		{
+			try
+			{
+				// System.out.println("K-browserobj " + k_browser.toString() + "realtimelength: " + realTimeCodes.size()); 
+
+				long time = System.nanoTime();
+				buf = k_browser.getRequestStandard(input);   
+				return buf;
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				return null;
+			}
+		}
+		else System.out.println("EMPTY TEXT");
+		//System.out.println("HER SKAL VI IKKE HAVNE");
+		return null;
+	}
 
 
 	/*

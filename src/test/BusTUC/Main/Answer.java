@@ -32,6 +32,8 @@ public class Answer extends  ListActivity{
 	private int walkingDistance; 
 	private int totalTime; 
 	private int positionInTable;
+	boolean standardOracle = false;
+
 	public Answer()
 	{
 
@@ -46,6 +48,7 @@ public class Answer extends  ListActivity{
 		super.onCreate(savedInstanceState);
 		context = this;
 		value = new ArrayList<Route>();
+		String textContent;
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 
@@ -53,25 +56,41 @@ public class Answer extends  ListActivity{
 
 		Bundle extras = getIntent().getExtras();
 
-		if(extras !=null) 
+		if(extras !=null)  
 		{
 
 			value = extras.getParcelableArrayList("test");	
+			textContent = extras.getString("text");
 			// Parse extracted into answer
-			try
+			if(value != null)
 			{
-			ArrayList <String> text = Helpers.parseData(value);
-			ad = new ArrayAdapter<String>(this, R.layout.list_item, text);
-			setListAdapter(ad);
+				try
+				{
+					ArrayList <String> text = Helpers.parseData(value);
+					ad = new ArrayAdapter<String>(this, R.layout.list_item, text);
+					setListAdapter(ad);
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+					ArrayList <String> err = new ArrayList <String>();
+					err.add(e.toString());
+					SDCard.generateNoteOnSD("errorAnswerParseData", err, "errors");
+				}
 			}
-			catch(Exception e)
+
+			else if(!textContent.equals(""))
 			{
-				e.printStackTrace();
-				ArrayList <String> err = new ArrayList <String>();
-				err.add(e.toString());
-				SDCard.generateNoteOnSD("errorAnswerParseData", err, "errors");
+				standardOracle = true;
+				String[] tmp = new String[1];
+				tmp[0] = textContent;
+				ad = new ArrayAdapter<String>(this, R.layout.list_item, tmp);
+				setListAdapter(ad);
 			}
-			
+
+
+
+
 		}
 		else
 		{
@@ -89,13 +108,16 @@ public class Answer extends  ListActivity{
 	protected void onListItemClick(ListView l, View v, int position, long id) 
 	{
 		super.onListItemClick(l, v, position, id);
-		o = this.getListAdapter().getItem(position);
-		System.out.println("TRYKKET PÅ POSISJON: " + position);
-		positionInTable = position;
-		new MapThread(context).execute();
+		if(!standardOracle)
+		{
+			o = this.getListAdapter().getItem(position);
+			System.out.println("TRYKKET PÅ POSISJON: " + position);
+			positionInTable = position;
+			new MapThread(context).execute();
+		}
 
 	}
-	
+
 	public void returnHome()
 	{
 		Intent intent = new Intent(context, Homescreen.class);
@@ -136,7 +158,7 @@ public class Answer extends  ListActivity{
 				err.add(e.toString());
 				SDCard.generateNoteOnSD("errorMapThreadFromAnswer", err, "errors");
 				Toast.makeText(context, "Something shitty happened", Toast.LENGTH_LONG).show();
-				
+
 			}
 			return null;
 		}

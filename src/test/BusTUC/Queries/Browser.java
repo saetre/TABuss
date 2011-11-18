@@ -198,6 +198,64 @@ public class Browser
 
 		return html_string; 
 	}
+	
+	
+	public StringBuffer getRequestStandard(String buf)
+	{		
+		StringBuffer html_string = null; 
+		
+		HttpPost m_post= new HttpPost("http://www.idi.ntnu.no/~tagore/cgi-bin/busstuc/busq.cgi");
+
+
+		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
+		Long time = System.nanoTime();
+		try {
+		
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);  
+			nameValuePairs.add(new BasicNameValuePair("lang", "eng"));  
+			nameValuePairs.add(new BasicNameValuePair("quest", buf)); 
+			UrlEncodedFormEntity url = new UrlEncodedFormEntity(nameValuePairs);	
+
+			m_post.setEntity(url);  
+			String responseBody = EntityUtils.toString(m_post.getEntity());       
+
+			HttpResponse m_response = m_client.execute(m_post);
+			//Log.v("m_response", inputStreamToString(m_response.getEntity().getContent()));
+			System.out.println("Wanted String: " + buf);
+			// Request
+			html_string = httpF.requestStandard(m_response);
+
+			// Will fail if server is busy or down
+			Log.v("html_string", "Returned html: " + html_string);
+			//Long newTime = System.nanoTime() - time;
+			//System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +  newTime/1000000000.0);
+		} catch (ClientProtocolException e) {
+			Log.v("CLIENTPROTOCOL EX", "e:"+e.toString());
+		} catch (IOException e) {
+			Log.v("IO EX", "e:"+e.toString()); 
+
+		}
+		catch(NullPointerException e)
+		{
+			Log.v("NULL", "NullPointer");
+		} 
+		catch(StringIndexOutOfBoundsException e)
+		{
+			Log.v("StringIndexOutOfBounds", "Exception");
+		}
+		catch(Exception e)
+		{
+			Log.v("FUCKINGTOLARGE", "Exception");
+		}
+
+		/*	for(int i =0; i< html_string.length;i++)
+		{
+			Log.v("HTMLFOO", html_string[i]);
+		}*/
+
+		return html_string; 
+	}
+	
 	public String[] getRequest(ArrayList<BusStop> startMap, String stop, Boolean formated)
 	{		
 		String[] html_string = null; 
