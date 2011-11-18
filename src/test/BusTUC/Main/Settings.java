@@ -24,7 +24,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 	int numStops ;
 	int numStopsOnMap ;
 	int radius ;
-	boolean fancyOracle = true;
+	boolean fancyOracle;
 	Context context;
 	Button deletelog, deletert;
 	@Override
@@ -41,6 +41,8 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 		numStopsOnMap = Integer.parseInt(foo2);
 		String foo3  = preferences.getString("num3", "");
 		radius = Integer.parseInt(foo3);
+		fancyOracle = preferences.getBoolean("Orakelvalg", fancyOracle);
+		System.out.println("FANCY: " + fancyOracle);
 		addPreferencesFromResource(R.layout.preference);
 		setContentView(R.layout.deletelog);
 		deletelog = (Button) findViewById(R.id.slettlogg);
@@ -138,7 +140,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 		intent.putExtra("num1", numStops);
 		intent.putExtra("num2", numStopsOnMap);
 		intent.putExtra("num3", radius);
-		intent.putExtra("num4", fancyOracle);
+		intent.putExtra("Orakelvalg", fancyOracle);
 		setResult(Activity.RESULT_OK, intent);
 		super.onBackPressed();
 

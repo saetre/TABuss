@@ -196,6 +196,8 @@ public class Homescreen extends Activity {
 		numStopsOnMap = Integer.parseInt(foo2);
 		String foo3  = preferences.getString("num3", "");
 		dist = Integer.parseInt(foo3);
+		fancyOracle = preferences.getBoolean("Orakelvalg", fancyOracle);
+
 
 		//title = (TextView) findViewById(R.id.header);
 		//title.setText("BussTUC Mobile   " +c + " s¿k gjort");
@@ -480,8 +482,8 @@ public class Homescreen extends Activity {
 			{
 				System.out.println("LOCATIONLISTENER CALLED IN HOMESCREEN");
 				currentlocation = location; 
-				//currentlocation.setLatitude(63.43602);
-				//currentlocation.setLongitude(10.400648);
+				//sentrumcurrentlocation.setLatitude(63.43235);
+				//currentlocation.setLongitude(10.394115);
 				// ila 10.367672,63.429256
 				//	10.394555,63.43109
 				//getSuggestionBasedOnPosition();
@@ -568,7 +570,7 @@ public class Homescreen extends Activity {
 			int m_numStops = extras.getInt("num1");
 			int m_numStopsOnMap = extras.getInt("num2");
 			int m_dist = extras.getInt("num3");
-			boolean m_fancy = extras.getBoolean("num4");
+			boolean m_fancy = extras.getBoolean("Orakelvalg");
 
 			if(numStops != m_numStops && m_numStops <=5)
 			{
@@ -752,7 +754,7 @@ public class Homescreen extends Activity {
 					String query = textView.getText().toString();
 					if(!server && validate(query) && fancyOracle)
 					{
-						System.out.println("Her skal vi ikke havne");
+						//System.out.println("Her skal vi ikke havne");
 						buf = Helpers.run(query, busStopsNoDuplicates,k_browser, realTimeCodes);
 					}
 					else if(!fancyOracle)
@@ -847,7 +849,7 @@ public class Homescreen extends Activity {
 				}
 			}
 			
-			else if(!fancyOracle)
+			else if(!fancyOracle && buffer != null)
 			{
 				Intent intent = new Intent(getApplicationContext(), Answer.class);
 				intent.putExtra("text", buffer.toString());
@@ -862,7 +864,7 @@ public class Homescreen extends Activity {
 				if(server && !validated)
 				{
 
-					Toast.makeText(context, "Ugyldig input, query ikke stilt. Har du riktig orakel valgt under innstillinger?", Toast.LENGTH_SHORT).show();
+					Toast.makeText(context, "Ugyldig input, query ikke stilt. Sjekk orakelinnstillinger i menyen", Toast.LENGTH_LONG).show();
 
 				}
 				else Toast.makeText(context, "Noe uhåndtert skjedde", Toast.LENGTH_LONG).show();
