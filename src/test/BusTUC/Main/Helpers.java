@@ -290,18 +290,23 @@ public class Helpers
 				String newTime = "00"+value.get(i).getArrivalTime().substring(2, 4);
 				value.get(i).setArrivalTime(newTime);
 			}
-			if(value.get(i).isTransfer()) isTransfer = true;
+			if(value.get(i).isTransfer()) 
 			
 				suggestion.line = value.get(i).getBusNumber();
 				suggestion.origin = value.get(i).getBusStopName();//+" klokken "+
 				suggestion.arrivaltime = value.get(i).getArrivalTime().substring(0, 2)+":"+value.get(i).getArrivalTime().substring(2,4);//+". Du vil nå "+
 				suggestion.destination= value.get(i).getDestination();//+" ca "+
-				suggestion.departuretime = "+" + value.get(i).getTravelTime() + "min";//+ " minutter senere.\n");
+				int tmptime = Integer.parseInt(value.get(i).getArrivalTime());
+				int tmptime2 = Integer.parseInt(value.get(i).getTravelTime());
+				int hours = tmptime/100 + (tmptime%100+tmptime2)/60;
+				int minutes = (tmptime%100+tmptime2)%60;
+				suggestion.departuretime = hours +":"+ minutes;
 				
-				if(isTransfer){
+				if(value.get(i).isTransfer() && !isTransfer){
 					suggestion.isTransfer = "Overgang";
+					isTransfer = true;
 				}
-				else suggestion.isTransfer ="";
+				else suggestion.isTransfer ="Ankomst";
 				if(value.get(i).getWalkingDistance() != 0)
 				{
 					suggestion.origin+="("+value.get(i).getWalkingDistance()+"m)";
