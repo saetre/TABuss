@@ -38,12 +38,14 @@ import test.BusTUC.Stops.BusDeparture;
 import test.BusTUC.Stops.BusStop;
 import test.BusTUC.Stops.BusSuggestion;
 import test.BusTUC.Stops.ClosestStopOnMap;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -57,32 +59,51 @@ import com.google.android.maps.OverlayItem;
 public class Helpers 
 {
 
+	/**
+	 * Method for sending a text message to the sms-oracle
+	 * @param phoneNumber
+	 * @param message
+	 * @param context
+	 */
+	public static void sendSMS(String phoneNumber, String message, Context context)
+	{        
+		       
+		SmsManager sms = SmsManager.getDefault();
+		try
+		{
+			sms.sendTextMessage(phoneNumber, null, message, null, null);   
+		}
+		catch (Exception e) 
+		{
+			Toast.makeText(context, "Meding ikke sendt", Toast.LENGTH_LONG).show();        
+		}
+	}
 
-	 
-	 public static String[] readLines(InputStream is) throws IOException {
-		    
-         URL url = null;
-          
-         BufferedReader bufferedReader = null;
 
-          bufferedReader = new BufferedReader(
-              new InputStreamReader(is, "UTF-8"));         
-      
-      
-            //  new InputStreamReader(new FileInputStream(filename), "iso-8859-1"));
-      List<String> lines = new ArrayList<String>();
-      String line = null;
-      while ((line = bufferedReader.readLine()) != null) {
+	public static String[] readLines(InputStream is) throws IOException {
 
-          if (line.startsWith("<item>")) {
-              String[] trim = line.split(">");
-              String[] tmp = trim[1].split("</");
-              lines.add(tmp[0]);
-          }
-      }
-      bufferedReader.close();
-      return lines.toArray(new String[lines.size()]);
-  }
+		URL url = null;
+
+		BufferedReader bufferedReader = null;
+
+		bufferedReader = new BufferedReader(
+				new InputStreamReader(is, "UTF-8"));         
+
+
+		//  new InputStreamReader(new FileInputStream(filename), "iso-8859-1"));
+		List<String> lines = new ArrayList<String>();
+		String line = null;
+		while ((line = bufferedReader.readLine()) != null) {
+
+			if (line.startsWith("<item>")) {
+				String[] trim = line.split(">");
+				String[] tmp = trim[1].split("</");
+				lines.add(tmp[0]);
+			}
+		}
+		bufferedReader.close();
+		return lines.toArray(new String[lines.size()]);
+	}
 
 
 	public static ClosestStopOnMap[] getList(String[][]coords, String provider, int numStops,int dist, Location currentLocation)
@@ -137,7 +158,7 @@ public class Helpers
 			//request = 
 			HttpResponse response = client.execute(request);
 			in = new BufferedReader
-					(new InputStreamReader(response.getEntity().getContent()));
+			(new InputStreamReader(response.getEntity().getContent()));
 
 			String line = "";
 			String NL = System.getProperty("line.separator");
@@ -165,26 +186,26 @@ public class Helpers
 	{
 		ArrayList <String> dictionary = new ArrayList <String>();
 
-			for(int i=0; i<gpsCords.length; i++)
-			{
-				dictionary.add(gpsCords[i][1] + "\n");
-			}
+		for(int i=0; i<gpsCords.length; i++)
+		{
+			dictionary.add(gpsCords[i][1] + "\n");
+		}
 
-			// Remove duplicates
-			HashSet<String> set = new HashSet<String>();
-			set.addAll(dictionary);
-			// Clear and add back to ArrayList 
-			dictionary.clear();
-			dictionary.addAll(set);
-			for(int i=0; i<dictionary.size(); i++)
-			{
-				//	System.out.println("SECOND: " + dictionary.get(i));
-			}
-			SDCard.generateNoteOnSD("dictionary_finalv2", dictionary, folderName); 
-		
+		// Remove duplicates
+		HashSet<String> set = new HashSet<String>();
+		set.addAll(dictionary);
+		// Clear and add back to ArrayList 
+		dictionary.clear();
+		dictionary.addAll(set);
+		for(int i=0; i<dictionary.size(); i++)
+		{
+			//	System.out.println("SECOND: " + dictionary.get(i));
+		}
+		SDCard.generateNoteOnSD("dictionary_finalv2", dictionary, folderName); 
+
 		return dictionary;
 	}
-	
+
 	public static ArrayList <String> getDictionary(String name, String folderName)
 	{
 		ArrayList <String> dictionary = SDCard.getFilesFromSD(folderName);
@@ -241,17 +262,17 @@ public class Helpers
 				if(isTransfer)
 				{
 					System.out.println("I " + i);
-					text.add((i+1)  +": OVERGANGSFORSLAG " + (i) + ": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1)  +": OVERGANGSFORSLAG " + (i) + ": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nï¿½ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 
 				}
 				else if(value.get(i).getWalkingDistance() != 0)
 				{
-					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+" klokken "+value.get(i).getArrivalTime()+". Du vil nï¿½ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 
 				else
 				{
-					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1)+": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nï¿½ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 
 			}
@@ -259,11 +280,11 @@ public class Helpers
 			{		
 				if(!isTransfer)
 				{
-					text.add((i+1) +": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+ " klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1) +": Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" ("+value.get(i).getWalkingDistance()+" meter)"+ " klokken "+value.get(i).getArrivalTime()+". Du vil nï¿½ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 				else
 				{
-					text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nå "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
+					text.add((i+1) +": OVERGANG: Ta Buss "+value.get(i).getBusNumber()+" fra "+value.get(i).getBusStopName()+" klokken "+value.get(i).getArrivalTime()+". Du vil nï¿½ "+value.get(i).getDestination()+" ca "+value.get(i).getTravelTime()+ " minutter senere.\n");
 				}
 				isTransfer = true;
 
@@ -273,13 +294,13 @@ public class Helpers
 		return text;
 
 	}
-	
+
 	public static ArrayList<BusSuggestion> parseDataObject(ArrayList <Route> value)
 	{
 		ArrayList <BusSuggestion> suggestions = new ArrayList <BusSuggestion>();
 		System.out.println("VALUE SIZE: " + value.size());
 		boolean isTransfer = false;
-		
+
 		for(int i=0; i<value.size(); i++)
 		{
 			BusSuggestion suggestion = new BusSuggestion();
@@ -290,31 +311,30 @@ public class Helpers
 				String newTime = "00"+value.get(i).getArrivalTime().substring(2, 4);
 				value.get(i).setArrivalTime(newTime);
 			}
-			if(value.get(i).isTransfer()) 
-			
-				suggestion.line = value.get(i).getBusNumber();
-				suggestion.origin = value.get(i).getBusStopName();//+" klokken "+
-				suggestion.arrivaltime = value.get(i).getArrivalTime().substring(0, 2)+":"+value.get(i).getArrivalTime().substring(2,4);//+". Du vil nå "+
-				suggestion.destination= value.get(i).getDestination();//+" ca "+
-				int tmptime = Integer.parseInt(value.get(i).getArrivalTime());
-				int tmptime2 = Integer.parseInt(value.get(i).getTravelTime());
-				int hours = tmptime/100 + (tmptime%100+tmptime2)/60;
-				int minutes = (tmptime%100+tmptime2)%60;
-				suggestion.departuretime = hours +":"+ minutes;
-				
-				if(value.get(i).isTransfer() && !isTransfer){
-					suggestion.isTransfer = "Overgang";
-					isTransfer = true;
-				}
-				else suggestion.isTransfer ="Ankomst";
-				if(value.get(i).getWalkingDistance() != 0)
-				{
-					suggestion.origin+="("+value.get(i).getWalkingDistance()+"m)";
-				}
-				
-				suggestions.add(suggestion);
-			
-			
+
+			suggestion.line = value.get(i).getBusNumber();
+			suggestion.origin = value.get(i).getBusStopName();//+" klokken "+
+			suggestion.arrivaltime = value.get(i).getArrivalTime().substring(0, 2)+":"+value.get(i).getArrivalTime().substring(2,4);//+". Du vil nï¿½ "+
+			suggestion.destination= value.get(i).getDestination();//+" ca "+
+			int tmptime = Integer.parseInt(value.get(i).getArrivalTime());
+			int tmptime2 = Integer.parseInt(value.get(i).getTravelTime());
+			int hours = tmptime/100 + (tmptime%100+tmptime2)/60;
+			int minutes = (tmptime%100+tmptime2)%60;
+			suggestion.departuretime = hours +":"+ minutes;
+
+			if(value.get(i).isTransfer() && !isTransfer){
+				suggestion.isTransfer = "Overgang";
+				isTransfer = true;
+			}
+			else suggestion.isTransfer ="Ankomst";
+			if(value.get(i).getWalkingDistance() != 0)
+			{
+				suggestion.origin+="("+value.get(i).getWalkingDistance()+"m)";
+			}
+
+			suggestions.add(suggestion);
+
+
 		}
 		System.out.println("RETURN END");
 		return suggestions;
@@ -413,7 +433,7 @@ public class Helpers
 				if((Integer.parseInt(firstDest.getArrivalTime())+ Integer.parseInt(firstDest.getTravelTime()) +walk)>= ( Integer.parseInt(transfer.getArrivalTime())))
 				{
 					String beforeTwelve = "0";
-					System.out.println("PRØVER Å FINNE NY");
+					System.out.println("PRï¿½VER ï¿½ FINNE NY");
 					if(value.get(i-1).getArrivalTime().length() == 3)
 					{
 						beforeTwelve = beforeTwelve+value.get(i-1).getArrivalTime();
@@ -489,8 +509,8 @@ public class Helpers
 		}
 		return value;
 	}
-	
-	
+
+
 	/*
 	 * Will run a query directly towards BussTUC with standard natural language syntax
 	 * 

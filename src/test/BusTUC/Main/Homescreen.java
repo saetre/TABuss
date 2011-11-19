@@ -71,7 +71,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Homescreen extends Activity {
+public class Homescreen extends Activity{
 	private String [] bgColors = {"#3C434A","#A3AB19","#F66F89","#D9F970"};
 	private int currentBgColor = 0;
 	private int numButtons = 6;
@@ -97,6 +97,8 @@ public class Homescreen extends Activity {
 	ArrayList<BusStop> busStops, busStopsNoDuplicates;
 	// Switch server on or off
 	boolean server = true;
+	// Send sms, or query via net
+	boolean sms = false;
 	DatabaseHelper dbHelper;
 	// End of global variables
 	AutoCompleteTextView textView;
@@ -140,8 +142,16 @@ public class Homescreen extends Activity {
 		busStop[3] = "Pirbadet";
 		busStop[4] = "Dragvoll";
 		busStop[5] = "Ilsvika";
-
-		ArrayList <String> favorites = SDCard.getFilesFromSD("fav_routes");
+		ArrayList <String> favorites;
+		try
+		{
+			favorites = SDCard.getFilesFromSD("fav_routes");
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();		
+			favorites = new ArrayList<String>();
+		}
 		List <String> temp = Arrays.asList(busStop);
 		int addedfavorites = 0;
 		// Set font
@@ -198,12 +208,6 @@ public class Homescreen extends Activity {
 		dist = Integer.parseInt(foo3);
 		fancyOracle = preferences.getBoolean("Orakelvalg", fancyOracle);
 
-
-		//title = (TextView) findViewById(R.id.header);
-		//title.setText("BussTUC Mobile   " +c + " s¿k gjort");
-		//icon  = (ImageView) findViewById(R.id.icon);
-		//setContentView(R.layout.main);
-
 		buttons = new Button[6];
 		goButton = (Button)this.findViewById(R.id.goButton);
 		amazeButton = (Button)this.findViewById(R.id.amazebutton);
@@ -226,7 +230,7 @@ public class Homescreen extends Activity {
 			@Override
 			public void onClick(View v) 
 			{
-				new OracleThread(context).execute();    	  
+				queryOrSMS(); 	  
 			}
 		});
 		amazeButton.setOnClickListener(new OnClickListener() 
@@ -247,7 +251,8 @@ public class Homescreen extends Activity {
 						case DialogInterface.BUTTON_POSITIVE:
 							textView.setText(whereTo);
 							Toast.makeText(context, "I'm awesome!", Toast.LENGTH_SHORT).show();
-							new OracleThread(context).execute();
+							queryOrSMS();
+
 							break;
 						case DialogInterface.BUTTON_NEGATIVE:
 							// Do nothing
@@ -270,6 +275,42 @@ public class Homescreen extends Activity {
 
 
 	}
+	
+	
+	
+	private void queryOrSMS()
+	{
+
+		AlertDialog.Builder alert = new AlertDialog.Builder(context);
+
+		// First input dialog 
+		alert.setTitle("Velg kjÃ¸ring");
+		alert.setMessage("Query via nett eller sms til orakel");   
+	
+		alert.setPositiveButton("SMS", new DialogInterface.OnClickListener() 
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) 
+			{
+				sms = true;
+				new OracleThread(context).execute();    	  
+
+			}
+		});
+		alert.setNegativeButton("Query", new DialogInterface.OnClickListener() 
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) 
+			{
+				sms = false;
+				new OracleThread(context).execute();    	  
+
+				
+			}
+		});
+
+		alert.show();
+	}
 
 
 	private void loadDictionaries()
@@ -290,7 +331,7 @@ public class Homescreen extends Activity {
 		long s = System.nanoTime() - f;
 		System.out.println("TIME SPENT FINDING LOCATION: " + s /(1000000000.0));
 		// Autocompletion
-		ArrayList <String> dictionary = new ArrayList <String>();
+		ArrayList <String> dictionary;
 		// Check if SD-card is present
 
 		try
@@ -305,7 +346,9 @@ public class Homescreen extends Activity {
 		 */
 		catch(Exception e)
 		{
-			System.exit(0);
+			e.printStackTrace();
+			 dictionary = new ArrayList <String>();
+			 Toast.makeText(context, "Fant ikke SD-kort. Sjekk innstillnger, og start app pÃ¥ nytt", Toast.LENGTH_LONG).show();
 		}
 
 
@@ -313,7 +356,7 @@ public class Homescreen extends Activity {
 		// If no dictionary present, load stops from xml-file.
 		// Need separate file, as this only includes stops working with BussTUC
 		try {
-		
+
 			if(dictionary.size() == 0)
 			{
 				System.out.println("No dictionary present!");
@@ -321,11 +364,12 @@ public class Homescreen extends Activity {
 				gpsCords = GPS.formatCoordinates(gpsCoordinates);
 				dictionary = Helpers.createDictionary(gpsCords, "dictionary");
 			}
+		
 
 		} 
 		catch(Exception e)
 		{
-			System.exit(0);
+		//	System.exit(0);
 		}
 
 		textView = (AutoCompleteTextView) findViewById(R.id.autocomplete);
@@ -339,7 +383,8 @@ public class Homescreen extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) 
 			{
-				new OracleThread(context).execute();
+				queryOrSMS(); 	  
+
 
 			}
 
@@ -356,7 +401,8 @@ public class Homescreen extends Activity {
 				case KeyEvent.KEYCODE_ENTER:
 					if(!textView.getText().toString().equals(""))
 					{
-						new OracleThread(context).execute();
+						queryOrSMS(); 	  
+
 					}
 				}
 				return false;
@@ -378,7 +424,8 @@ public class Homescreen extends Activity {
 				public void onClick(View v) 
 				{
 					textView.setText(shortcutButtons.getText());
-					new OracleThread(context).execute();
+					queryOrSMS(); 	  
+
 
 				}
 			});
@@ -421,14 +468,14 @@ public class Homescreen extends Activity {
 
 		}
 	}
-	
+
 	private void updateTextViewHint()
 	{
 		if(fancyOracle)
 		{
-		textView.setHint("Kun destinasjon");
+			textView.setHint("Kun destinasjon");
 		}
-		
+
 		else
 		{
 			textView.setHint("Fullstendig setning");
@@ -556,6 +603,8 @@ public class Homescreen extends Activity {
 
 		}
 	}
+	
+
 
 
 	@Override
@@ -722,19 +771,20 @@ public class Homescreen extends Activity {
 		private Context context;    
 		ArrayList <Route> buf;
 		StringBuffer buffer = new StringBuffer();
-		
+
 		//    StringBuffer buf = new StringBuffer();
 		//  ArrayList <String> buf = new ArrayList <String>();
 		ProgressDialog myDialog = null;
 		String noLoc = "Ingen lokasjon tilgjengelig. Sjekk dine innstillinger";
-		String noRoutes = "Fant ingen ruter for søkekriterie. Sjekk søkeord";
+		String noRoutes = "Fant ingen ruter for sÃ¸kekriterie. Sjekk sÃ¸keord";
 		String noInternet = "Ingen internettilgang, har du skrudd av Wifi/3G?";
 		boolean noLocCheck = false;
 		boolean validated = false;
 		public OracleThread(Context context)
 		{
-
 			this.context = context;
+
+			
 		}
 
 		@Override
@@ -746,13 +796,26 @@ public class Homescreen extends Activity {
 				noLocCheck = true;
 				myDialog.dismiss();
 			}
+			else if(sms && fancyOracle)
+			{
+				Helpers.sendSMS("2027", "rute " + cl[0].getStopName().toString() + " til " + textView.getText().toString(), context);
+				System.out.println("SMS " + cl[0].getStopName().toString() + " til " + textView.getText().toString());
+
+			}
+			
+			else if(sms && !fancyOracle)
+			{
+				Helpers.sendSMS("2027", "rute " + textView.getText().toString(), context);
+				System.out.println("SMS " + cl[0].getStopName().toString() + " til " + textView.getText().toString());
+
+			}
 
 			else
 			{
 				try
 				{
 					String query = textView.getText().toString();
-					if(!server && validate(query) && fancyOracle)
+					if(!server && fancyOracle)
 					{
 						//System.out.println("Her skal vi ikke havne");
 						buf = Helpers.run(query, busStopsNoDuplicates,k_browser, realTimeCodes);
@@ -764,11 +827,9 @@ public class Homescreen extends Activity {
 					}
 					else
 					{
-						if(validate(query))
-						{
-							buf = Helpers.runServer(query, k_browser, currentlocation, numStops, dist);
-							validated = true;
-						}
+
+						buf = Helpers.runServer(query, k_browser, currentlocation, numStops, dist);
+						validated = true;					
 
 					}
 					long newTime = System.nanoTime() - time;
@@ -792,10 +853,13 @@ public class Homescreen extends Activity {
 		{
 			InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); 
 			imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+			
+		
 			myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
 
 			textView.setEnabled(false);
 			goButton.setEnabled(false);
+			
 		}
 
 		@Override
@@ -803,7 +867,7 @@ public class Homescreen extends Activity {
 		{
 			myDialog.dismiss();
 
-			if(buf != null && fancyOracle)
+			if(buf != null && fancyOracle && !sms)
 			{
 				// Error returned from bussTUC
 				if(buf.get(0).getBusStopName().equalsIgnoreCase("Bussorakelet"))
@@ -848,12 +912,12 @@ public class Homescreen extends Activity {
 					context.startActivity(intent);
 				}
 			}
-			
-			else if(!fancyOracle && buffer != null)
+
+			else if(!fancyOracle && buffer != null && !sms)
 			{
 				Intent intent = new Intent(getApplicationContext(), Answer.class);
 				intent.putExtra("text", buffer.toString());
-
+				System.out.println("Started activity");
 				//intent.putExtra("test", buf);
 				context.startActivity(intent);
 			}
@@ -861,13 +925,12 @@ public class Homescreen extends Activity {
 			{
 				myDialog.dismiss();
 
-				if(server && !validated)
+				if(server && !validated && !sms)
 				{
 
 					Toast.makeText(context, "Ugyldig input, query ikke stilt. Sjekk orakelinnstillinger i menyen", Toast.LENGTH_LONG).show();
 
 				}
-				else Toast.makeText(context, "Noe uhåndtert skjedde", Toast.LENGTH_LONG).show();
 
 			}
 
@@ -1145,7 +1208,7 @@ public class Homescreen extends Activity {
 	protected void onResume() 
 	{
 		int c= dbHelper.getQueryCount();
-		this.setTitle("AndroidAmble - "+c+" Søk gjort");
+		this.setTitle("AndroidAmble - "+c+" SÃ¸k gjort");
 		super.onResume();
 		//	editText.setEnabled(true);
 		textView.setEnabled(true);
