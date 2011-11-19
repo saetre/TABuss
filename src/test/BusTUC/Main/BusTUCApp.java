@@ -670,7 +670,7 @@ public class BusTUCApp extends MapActivity
 
 			try
 			{
-				if(myLocation.getMyLocation() == null)	Toast.makeText(context, "Venter på lokasjon på kart", Toast.LENGTH_SHORT).show();
+				if(myLocation.getMyLocation() == null)	Toast.makeText(context, "Venter pÃ¥ lokasjon pÃ¥ kart", Toast.LENGTH_SHORT).show();
 			}
 			catch(Exception e)
 			{

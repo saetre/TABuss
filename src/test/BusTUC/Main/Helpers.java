@@ -69,6 +69,7 @@ public class Helpers
 	{        
 		       
 		SmsManager sms = SmsManager.getDefault();
+		
 		try
 		{
 			sms.sendTextMessage(phoneNumber, null, message, null, null);   

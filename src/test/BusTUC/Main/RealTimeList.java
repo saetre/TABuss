@@ -60,7 +60,7 @@ public class RealTimeList extends ListActivity
 		text.setTextSize(21);
 		text.setGravity(Gravity.CENTER_VERTICAL);
 		text.setTextColor(Color.parseColor("#FFFFFF"));
-		text.setText("Busstopp nær deg");
+		text.setText("Busstopp nÃ¦r deg");
 		text.setHeight(50);
 		lv.addHeaderView(text);
 		

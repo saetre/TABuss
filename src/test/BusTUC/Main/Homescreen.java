@@ -117,7 +117,7 @@ public class Homescreen extends Activity{
 	String[] busStop = new String[numButtons];
 	ArrayList <String> favorites;
 	// adds edittext box
-	Context context;
+	static Context context;
 
 	private static final int SWIPE_MIN_DISTANCE = 120;
 	private static final int SWIPE_MAX_OFF_PATH = 250;
@@ -856,7 +856,16 @@ public class Homescreen extends Activity{
 			
 		
 			myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
+			myDialog.setCancelable(true);
+			myDialog.setOnCancelListener(new OnCancelListener() {
 
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					finish();
+					System.exit(0);
+
+				}
+			});
 			textView.setEnabled(false);
 			goButton.setEnabled(false);
 			
@@ -924,6 +933,7 @@ public class Homescreen extends Activity{
 			else
 			{
 				myDialog.dismiss();
+			
 
 				if(server && !validated && !sms)
 				{

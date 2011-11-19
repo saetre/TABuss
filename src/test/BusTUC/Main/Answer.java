@@ -40,6 +40,7 @@ public class Answer extends  ListActivity{
 	private ArrayList<HashMap<String, Object>> busSuggestions;
 	private HashMap<String, Object> hm;
 	boolean standardOracle = false;
+	private String sms;
 
 	public Answer()
 	{
@@ -54,7 +55,7 @@ public class Answer extends  ListActivity{
 		//showButton = (Button)this.findViewById(R.id.showinmap);
 		super.onCreate(savedInstanceState);
 		context = this;
-		value = new ArrayList<Route>();
+		//value = new ArrayList<Route>();
 		String textContent;
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
@@ -68,6 +69,8 @@ public class Answer extends  ListActivity{
 
 			value = extras.getParcelableArrayList("test");	
 			textContent = extras.getString("text");
+			sms = extras.getString("sms");
+			
 			// Parse extracted into answer
 
 			
@@ -99,11 +102,20 @@ public class Answer extends  ListActivity{
 			R.id.arrivaltime, R.id.isTransfer}));
 			}
 
-			else if(!textContent.equals(""))
+			else if(textContent != null)
 			{
 				standardOracle = true;
 				String[] tmp = new String[1];
 				tmp[0] = textContent;
+				ad = new ArrayAdapter<String>(this, R.layout.list_item, tmp);
+				setListAdapter(ad);
+			}
+			
+			else if(sms != null)
+			{
+				standardOracle = true;
+				String[] tmp = new String[1];
+				tmp[0] = sms;
 				ad = new ArrayAdapter<String>(this, R.layout.list_item, tmp);
 				setListAdapter(ad);
 			}
@@ -131,7 +143,7 @@ public class Answer extends  ListActivity{
 		if(!standardOracle)
 		{
 			o = this.getListAdapter().getItem(position);
-			System.out.println("TRYKKET PÅ POSISJON: " + position);
+			System.out.println("TRYKKET PÃ… POSISJON: " + position);
 			positionInTable = position;
 			new MapThread(context).execute();
 		}
