@@ -1,8 +1,12 @@
 package test.BusTUC.Main;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+
 import test.BusTUC.R;
 import test.BusTUC.Favourites.SDCard;
+import test.BusTUC.Stops.BusSuggestion;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -12,6 +16,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 public class Answer extends  ListActivity{
@@ -32,6 +37,8 @@ public class Answer extends  ListActivity{
 	private int walkingDistance; 
 	private int totalTime; 
 	private int positionInTable;
+	private ArrayList<HashMap<String, Object>> busSuggestions;
+	private HashMap<String, Object> hm;
 	boolean standardOracle = false;
 
 	public Answer()
@@ -62,21 +69,34 @@ public class Answer extends  ListActivity{
 			value = extras.getParcelableArrayList("test");	
 			textContent = extras.getString("text");
 			// Parse extracted into answer
+
+			
+
+
 			if(value != null)
+
 			{
-				try
+				ArrayList <BusSuggestion> sug = Helpers.parseDataObject(value);
+
+				busSuggestions = new ArrayList<HashMap<String,Object>>();
+
+				for(BusSuggestion bs : sug)
 				{
-					ArrayList <String> text = Helpers.parseData(value);
-					ad = new ArrayAdapter<String>(this, R.layout.list_item, text);
-					setListAdapter(ad);
+
+					hm = new HashMap<String, Object>();
+					hm.put("busNumber", bs.line);
+					hm.put("origin", bs.origin);
+					hm.put("destination",bs.destination);
+					hm.put("departuretime", bs.departuretime);
+					hm.put("arrivaltime",bs.arrivaltime);
+					hm.put("transfer",bs.isTransfer);
+					busSuggestions.add(hm);
 				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
-					ArrayList <String> err = new ArrayList <String>();
-					err.add(e.toString());
-					SDCard.generateNoteOnSD("errorAnswerParseData", err, "errors");
-				}
+
+
+			setListAdapter(new SimpleAdapter(context, busSuggestions, R.layout.suggestion,
+			new String[]{"busNumber","origin","destination","departuretime","arrivaltime","transfer"}, new int[]{R.id.answerrouteNumber,R.id.answerorigin, R.id.answerdestination, R.id.origintime,
+			R.id.arrivaltime, R.id.isTransfer}));
 			}
 
 			else if(!textContent.equals(""))

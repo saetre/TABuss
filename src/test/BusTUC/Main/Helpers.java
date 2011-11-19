@@ -36,6 +36,7 @@ import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.Queries.Browser;
 import test.BusTUC.Stops.BusDeparture;
 import test.BusTUC.Stops.BusStop;
+import test.BusTUC.Stops.BusSuggestion;
 import test.BusTUC.Stops.ClosestStopOnMap;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -271,6 +272,47 @@ public class Helpers
 		System.out.println("RETURN END");
 		return text;
 
+	}
+	
+	public static ArrayList<BusSuggestion> parseDataObject(ArrayList <Route> value)
+	{
+		ArrayList <BusSuggestion> suggestions = new ArrayList <BusSuggestion>();
+		System.out.println("VALUE SIZE: " + value.size());
+		boolean isTransfer = false;
+		
+		for(int i=0; i<value.size(); i++)
+		{
+			BusSuggestion suggestion = new BusSuggestion();
+			// If hour is 24, change to 00.
+			if(Integer.parseInt(value.get(i).getArrivalTime().substring(0, 2)) == 24 )
+			{
+				int hour = Integer.parseInt(value.get(i).getArrivalTime().substring(0, 2));
+				String newTime = "00"+value.get(i).getArrivalTime().substring(2, 4);
+				value.get(i).setArrivalTime(newTime);
+			}
+			if(value.get(i).isTransfer()) isTransfer = true;
+			
+				suggestion.line = value.get(i).getBusNumber();
+				suggestion.origin = value.get(i).getBusStopName();//+" klokken "+
+				suggestion.arrivaltime = value.get(i).getArrivalTime().substring(0, 2)+":"+value.get(i).getArrivalTime().substring(2,4);//+". Du vil nå "+
+				suggestion.destination= value.get(i).getDestination();//+" ca "+
+				suggestion.departuretime = "+" + value.get(i).getTravelTime() + "min";//+ " minutter senere.\n");
+				
+				if(isTransfer){
+					suggestion.isTransfer = "Overgang";
+				}
+				else suggestion.isTransfer ="";
+				if(value.get(i).getWalkingDistance() != 0)
+				{
+					suggestion.origin+="("+value.get(i).getWalkingDistance()+"m)";
+				}
+				
+				suggestions.add(suggestion);
+			
+			
+		}
+		System.out.println("RETURN END");
+		return suggestions;
 	}
 
 
