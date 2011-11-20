@@ -275,9 +275,9 @@ public class Homescreen extends Activity{
 
 
 	}
-	
-	
-	
+
+
+
 	private void queryOrSMS()
 	{
 
@@ -286,7 +286,7 @@ public class Homescreen extends Activity{
 		// First input dialog 
 		alert.setTitle("Velg kjøring");
 		alert.setMessage("Query via nett eller sms til orakel");   
-	
+
 		alert.setPositiveButton("SMS", new DialogInterface.OnClickListener() 
 		{
 			@Override
@@ -305,7 +305,7 @@ public class Homescreen extends Activity{
 				sms = false;
 				new OracleThread(context).execute();    	  
 
-				
+
 			}
 		});
 
@@ -347,8 +347,8 @@ public class Homescreen extends Activity{
 		catch(Exception e)
 		{
 			e.printStackTrace();
-			 dictionary = new ArrayList <String>();
-			 Toast.makeText(context, "Fant ikke SD-kort. Sjekk innstillnger, og start app på nytt", Toast.LENGTH_LONG).show();
+			dictionary = new ArrayList <String>();
+			Toast.makeText(context, "Fant ikke SD-kort. Sjekk innstillnger, og start app på nytt", Toast.LENGTH_LONG).show();
 		}
 
 
@@ -364,12 +364,12 @@ public class Homescreen extends Activity{
 				gpsCords = GPS.formatCoordinates(gpsCoordinates);
 				dictionary = Helpers.createDictionary(gpsCords, "dictionary");
 			}
-		
+
 
 		} 
 		catch(Exception e)
 		{
-		//	System.exit(0);
+			//	System.exit(0);
 		}
 
 		textView = (AutoCompleteTextView) findViewById(R.id.autocomplete);
@@ -603,7 +603,7 @@ public class Homescreen extends Activity{
 
 		}
 	}
-	
+
 
 
 
@@ -689,9 +689,18 @@ public class Homescreen extends Activity{
 					fav.setQuery(value);
 					queries.add(value);
 					// For now, store query as filename, as the file does not contain anything else
-					if(SDCard.generateNoteOnSD(fav.getQuery(), queries,"fav_routes"))
+					try
 					{
-						updateButtons(busStop,buttons);
+						if(SDCard.generateNoteOnSD(fav.getQuery(), queries,"fav_routes"))
+						{
+							updateButtons(busStop,buttons);
+						}
+					}
+					
+					catch(Exception e)
+					{
+						e.printStackTrace();
+						Toast.makeText(context, "Fikk ikke skrevet til SD-kort. Er det montert?", Toast.LENGTH_LONG).show();
 					}
 
 
@@ -784,7 +793,7 @@ public class Homescreen extends Activity{
 		{
 			this.context = context;
 
-			
+
 		}
 
 		@Override
@@ -801,7 +810,7 @@ public class Homescreen extends Activity{
 				Helpers.sendSMS("2027", "rute " + cl[0].getStopName().toString() + " til " + textView.getText().toString(), context);
 				System.out.println("SMS " + cl[0].getStopName().toString() + " til " + textView.getText().toString());
 			}
-			
+
 			else if(sms && !fancyOracle)
 			{
 				Helpers.sendSMS("2027", "rute " + textView.getText().toString(), context);
@@ -823,7 +832,7 @@ public class Homescreen extends Activity{
 					{
 						System.out.println("Her skal vi ikke havne");
 						buffer = Helpers.runStandard(query);
-						
+
 					}
 					else
 					{
@@ -858,7 +867,7 @@ public class Homescreen extends Activity{
 			imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
 			if(sms) 				Toast.makeText(context, "Venter på svar...", Toast.LENGTH_LONG).show();
 
-		
+
 			myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
 			myDialog.setCancelable(true);
 			myDialog.setOnCancelListener(new OnCancelListener() {
@@ -872,7 +881,7 @@ public class Homescreen extends Activity{
 			});
 			textView.setEnabled(false);
 			goButton.setEnabled(false);
-			
+
 		}
 
 		@Override
@@ -937,7 +946,7 @@ public class Homescreen extends Activity{
 			else
 			{
 				myDialog.dismiss();
-			
+
 
 				if(server && !validated && !sms)
 				{
