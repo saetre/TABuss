@@ -696,7 +696,7 @@ public class Homescreen extends Activity{
 							updateButtons(busStop,buttons);
 						}
 					}
-					
+
 					catch(Exception e)
 					{
 						e.printStackTrace();
@@ -789,6 +789,7 @@ public class Homescreen extends Activity{
 		String noInternet = "Ingen internettilgang, har du skrudd av Wifi/3G?";
 		boolean noLocCheck = false;
 		boolean validated = false;
+		boolean empty = false;
 		public OracleThread(Context context)
 		{
 			this.context = context;
@@ -807,41 +808,66 @@ public class Homescreen extends Activity{
 			}
 			else if(sms && fancyOracle)
 			{
-				Helpers.sendSMS("2027", "rute " + cl[0].getStopName().toString() + " til " + textView.getText().toString(), context);
-				System.out.println("SMS " + cl[0].getStopName().toString() + " til " + textView.getText().toString());
+				if(textView.getText().toString().equals(""))Toast.makeText(context, "Tom tekst", Toast.LENGTH_SHORT).show();
+				else
+				{
+					Helpers.sendSMS("2027", "rute " + cl[0].getStopName().toString() + " til " + textView.getText().toString(), context);
+					System.out.println("SMS " + cl[0].getStopName().toString() + " til " + textView.getText().toString());
+
+				}
 			}
 
 			else if(sms && !fancyOracle)
 			{
-				Helpers.sendSMS("2027", "rute " + textView.getText().toString(), context);
-				System.out.println("SMS " + cl[0].getStopName().toString() + " til " + textView.getText().toString());
-
+				if(textView.getText().toString().equals(""))Toast.makeText(context, "Tom tekst", Toast.LENGTH_SHORT).show();
+				else
+				{
+					Helpers.sendSMS("2027", "rute " + textView.getText().toString(), context);
+					System.out.println("SMS " + cl[0].getStopName().toString() + " til " + textView.getText().toString());
+				}
 			}
 
 			else
 			{
 				try
 				{
-					String query = textView.getText().toString();
+					String query = textView.getText().toString().trim();
 					if(!server && fancyOracle)
 					{
 						//System.out.println("Her skal vi ikke havne");
-						buf = Helpers.run(query, busStopsNoDuplicates,k_browser, realTimeCodes);
+						if(!query.equals(""))
+						{
+							buf = Helpers.run(query, busStopsNoDuplicates,k_browser, realTimeCodes);
+						}
+						else
+						{
+							empty = true;
+						}
 					}
 					else if(!fancyOracle)
 					{
-						System.out.println("Her skal vi ikke havne");
-						buffer = Helpers.runStandard(query);
+						//	System.out.println("Her skal vi ikke havne");
+						if(!query.equals(""))
+							{
+							System.out.println("FUBAR");
+							buffer = Helpers.runStandard(query);
+							}
+						else empty = true;
+
 
 					}
 					else
 					{
+						if(!query.equals(""))
+						{
 						long pre = System.nanoTime();
-
 						buf = Helpers.runServer(query, k_browser, currentlocation, numStops, dist);
 						long post = System.nanoTime() - pre;
 						System.out.println("POST-TIME: " + (post/1000000000.0));
-						validated = true;					
+						validated = true;		
+						}
+						else empty = true;
+
 
 					}
 					long newTime = System.nanoTime() - time;
@@ -888,8 +914,13 @@ public class Homescreen extends Activity{
 		protected void onPostExecute(Void unused)
 		{
 			myDialog.dismiss();
+			
+			if(empty)
+			{
+				Toast.makeText(context, "Tom input!", Toast.LENGTH_SHORT).show();
 
-			if(buf != null && fancyOracle && !sms)
+			}
+			else if(buf != null && fancyOracle && !sms)
 			{
 				// Error returned from bussTUC
 				if(buf.get(0).getBusStopName().equalsIgnoreCase("Bussorakelet"))
