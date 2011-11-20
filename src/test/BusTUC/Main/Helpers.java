@@ -321,7 +321,21 @@ public class Helpers
 			int tmptime2 = Integer.parseInt(value.get(i).getTravelTime());
 			int hours = tmptime/100 + (tmptime%100+tmptime2)/60;
 			int minutes = (tmptime%100+tmptime2)%60;
-			suggestion.departuretime = hours +":"+ minutes;
+			String fixedMinutes = "";
+			System.out.println("Fixed " + minutes);
+			if(String.valueOf(minutes).length() == 1)
+			{
+				fixedMinutes = "0"+minutes;
+				System.out.println("Fixedminutes: " + fixedMinutes);
+
+			}
+			else if(String.valueOf(minutes).length() == 0)
+			{
+				fixedMinutes = "00";
+				System.out.println("Fixedminutes: " + fixedMinutes);
+			}
+			else fixedMinutes = String.valueOf(minutes);
+			suggestion.departuretime = hours +":"+ fixedMinutes;
 
 			if(value.get(i).isTransfer() && !isTransfer){
 				suggestion.isTransfer = "Overgang";
