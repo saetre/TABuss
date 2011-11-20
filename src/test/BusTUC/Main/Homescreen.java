@@ -823,11 +823,15 @@ public class Homescreen extends Activity{
 					{
 						System.out.println("Her skal vi ikke havne");
 						buffer = Helpers.runStandard(query);
+						
 					}
 					else
 					{
+						long pre = System.nanoTime();
 
 						buf = Helpers.runServer(query, k_browser, currentlocation, numStops, dist);
+						long post = System.nanoTime() - pre;
+						System.out.println("POST-TIME: " + (post/1000000000.0));
 						validated = true;					
 
 					}

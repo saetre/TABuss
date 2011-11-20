@@ -73,9 +73,6 @@ public class Answer extends  ListActivity{
 			
 			// Parse extracted into answer
 
-			
-
-
 			if(value != null)
 
 			{
