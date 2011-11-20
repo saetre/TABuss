@@ -68,26 +68,14 @@ public class HttpFormat {
 
 			while((line = reader.readLine()) != null)
 			{
-				if(line.endsWith("</body>"))
-				{
-
-					contentArray = line.split("<br>");
-				}
-			
+				retBuffer.append(line +"\n");
 			}
 			in.close();
 			reader.close();
 		
-			
-			
-			for(int i=0; i<contentArray.length-1; i++)
-			{
-				retBuffer.append(contentArray[i] + "\n");
-			}
+		
 			return retBuffer;
 		}
-
-
 		catch(Exception ex){
 			ex.printStackTrace();
 		
