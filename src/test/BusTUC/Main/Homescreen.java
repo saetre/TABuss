@@ -297,7 +297,7 @@ public class Homescreen extends Activity{
 
 			}
 		});
-		alert.setNegativeButton("Query", new DialogInterface.OnClickListener() 
+		alert.setNegativeButton("Nett", new DialogInterface.OnClickListener() 
 		{
 			@Override
 			public void onClick(DialogInterface dialog, int whichButton) 
