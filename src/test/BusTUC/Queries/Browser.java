@@ -203,22 +203,9 @@ public class Browser
 	public StringBuffer getRequestStandard(String buf)
 	{		
 		StringBuffer html_string = null; 
-		
-		HttpPost m_post= new HttpPost("http://www.idi.ntnu.no/~tagore/cgi-bin/busstuc/busq.cgi");
-
-
-		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
 		Long time = System.nanoTime();
 		try {
-		
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);  
-			nameValuePairs.add(new BasicNameValuePair("lang", "eng"));  
-			nameValuePairs.add(new BasicNameValuePair("quest", buf)); 
-			UrlEncodedFormEntity url = new UrlEncodedFormEntity(nameValuePairs);	
-
-			m_post.setEntity(url);  
-			String responseBody = EntityUtils.toString(m_post.getEntity());       
-
+			HttpPost m_post= new HttpPost("http://furu.idi.ntnu.no:1337/bussstuc/oracle?q="+URLEncoder.encode(buf,"UTF-8"));
 			HttpResponse m_response = m_client.execute(m_post);
 			//Log.v("m_response", inputStreamToString(m_response.getEntity().getContent()));
 			System.out.println("Wanted String: " + buf);
@@ -227,8 +214,6 @@ public class Browser
 
 			// Will fail if server is busy or down
 			Log.v("html_string", "Returned html: " + html_string);
-			//Long newTime = System.nanoTime() - time;
-			//System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +  newTime/1000000000.0);
 		} catch (ClientProtocolException e) {
 			Log.v("CLIENTPROTOCOL EX", "e:"+e.toString());
 		} catch (IOException e) {
@@ -245,7 +230,7 @@ public class Browser
 		}
 		catch(Exception e)
 		{
-			Log.v("FUCKINGTOLARGE", "Exception");
+			e.printStackTrace();
 		}
 
 		/*	for(int i =0; i< html_string.length;i++)
