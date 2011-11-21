@@ -284,7 +284,7 @@ public class Homescreen extends Activity{
 		AlertDialog.Builder alert = new AlertDialog.Builder(context);
 
 		// First input dialog 
-		alert.setTitle("Velg kjÃ¸ring");
+		alert.setTitle("Velg kjøring");
 		alert.setMessage("Query via nett eller sms til orakel");   
 
 		alert.setPositiveButton("SMS", new DialogInterface.OnClickListener() 
@@ -348,7 +348,7 @@ public class Homescreen extends Activity{
 		{
 			e.printStackTrace();
 			dictionary = new ArrayList <String>();
-			Toast.makeText(context, "Fant ikke SD-kort. Sjekk innstillnger, og start app pÃ¥ nytt", Toast.LENGTH_LONG).show();
+			Toast.makeText(context, "Fant ikke SD-kort. Sjekk innstillnger, og start app på nytt", Toast.LENGTH_LONG).show();
 		}
 
 
@@ -785,7 +785,7 @@ public class Homescreen extends Activity{
 		//  ArrayList <String> buf = new ArrayList <String>();
 		ProgressDialog myDialog = null;
 		String noLoc = "Ingen lokasjon tilgjengelig. Sjekk dine innstillinger";
-		String noRoutes = "Fant ingen ruter for sÃ¸kekriterie. Sjekk sÃ¸keord";
+		String noRoutes = "Fant ingen ruter for sÃ¸kekriterie. Sjekk søkeord";
 		String noInternet = "Ingen internettilgang, har du skrudd av Wifi/3G?";
 		boolean noLocCheck = false;
 		boolean validated = false;
@@ -891,7 +891,7 @@ public class Homescreen extends Activity{
 		{
 			InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); 
 			imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
-			if(sms) 				Toast.makeText(context, "Venter pÃ¥ svar...", Toast.LENGTH_LONG).show();
+			if(sms)	Toast.makeText(context, "Venter på svar...", Toast.LENGTH_LONG).show();
 
 
 			myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
@@ -1262,7 +1262,7 @@ public class Homescreen extends Activity{
 	protected void onResume() 
 	{
 		int c= dbHelper.getQueryCount();
-		this.setTitle("AndroidAmble - "+c+" SÃ¸k gjort");
+		this.setTitle("AndroidAmble - "+c+" Søk gjort");
 		super.onResume();
 		//	editText.setEnabled(true);
 		textView.setEnabled(true);

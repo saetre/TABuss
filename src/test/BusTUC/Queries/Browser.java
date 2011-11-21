@@ -203,6 +203,7 @@ public class Browser
 	public StringBuffer getRequestStandard(String buf)
 	{		
 		StringBuffer html_string = null; 
+
 		Long time = System.nanoTime();
 		try {
 			HttpPost m_post= new HttpPost("http://furu.idi.ntnu.no:1337/bussstuc/oracle?q="+URLEncoder.encode(buf,"UTF-8"));

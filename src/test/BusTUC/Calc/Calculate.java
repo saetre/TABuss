@@ -68,6 +68,10 @@ public class Calculate {
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			Log.v("jsonError","e:"+e.toString());
+			routeSuggestions = new Route[1];
+			routeSuggestions[0] = new Route();
+			routeSuggestions[0].setBusStopName("Bussorakelet");
+			return routeSuggestions;
 			//e.printStackTrace();
 		}
 		catch(NullPointerException ex)
