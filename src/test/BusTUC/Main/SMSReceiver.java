@@ -26,18 +26,22 @@ public class SMSReceiver extends BroadcastReceiver
 		SmsMessage smsMessage[] = new SmsMessage[messages.length];
 		for (int i = 0; i<messages.length; i++) 
 		{
-		smsMessage[i] = SmsMessage.createFromPdu((byte[]) messages[i]);
+			smsMessage[i] = SmsMessage.createFromPdu((byte[]) messages[i]);
 		}
 		// Get message
-		receivedMessage = smsMessage[0].getMessageBody();
-		Intent answer = new Intent(Homescreen.context, Answer.class);
-		answer.putExtra("sms", receivedMessage);
-		System.out.println("Started activity");
-		//intent.putExtra("test", buf);
-		Homescreen.context.startActivity(answer);
-		
+		if(smsMessage[0].getOriginatingAddress().equals("2027"))
+		{
+			receivedMessage = smsMessage[0].getMessageBody();
+
+			Intent answer = new Intent(Homescreen.context, Answer.class);
+			answer.putExtra("sms", receivedMessage);
+			System.out.println("Started activity");
+			//intent.putExtra("test", buf);
+			Homescreen.context.startActivity(answer);
+		}
+
 	}
-	
-	
+
+
 
 }
