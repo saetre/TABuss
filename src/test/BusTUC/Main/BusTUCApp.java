@@ -67,7 +67,7 @@ public class BusTUCApp extends MapActivity
 	MyLocationOverlay myLocation;
 	Context context;
 	boolean fromExtras = false;
-	boolean server = false;
+	boolean server = true;
 	Location currentLocation;
 	Browser k_browser;
 	/** Called when the activity is first created. */
