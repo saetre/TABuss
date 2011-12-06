@@ -17,5 +17,5 @@
 		android:key="num3" android:persistent="true" android:defaultValue="1000"></EditTextPreference>
 		
 	<CheckBoxPreference android:key="Orakelvalg"
-		android:title="Fancypants orakel?" android:defaultValue="true" android:summary="Her kan du velge mellom fancy orakel, og vanlig" />
+		android:title="Orakelv2" android:defaultValue="true" android:summary="Her kan du velge mellom orakelv2, og vanlig" />
 </PreferenceScreen>
