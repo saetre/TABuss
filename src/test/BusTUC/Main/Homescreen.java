@@ -96,7 +96,7 @@ public class Homescreen extends Activity{
 	public static ArrayList <BusStop> allStops;
 	ArrayList<BusStop> busStops, busStopsNoDuplicates;
 	// Switch server on or off
-	boolean server = false;
+	boolean server = true;
 	// Send sms, or query via net
 	boolean sms = false;
 	DatabaseHelper dbHelper;
@@ -485,7 +485,10 @@ public class Homescreen extends Activity{
 	private void loadStops()
 	{
 		System.out.println("numstops: " + numStops + " numstopsonmap: " + numStopsOnMap + " dist: " + dist);
-
+		if(gpsCords != null)
+		{
+			busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, dist,numStops,false);
+		}
 		long first = System.nanoTime();
 		// Not needed when running on ReTro's server. Switched on or of by a bool val
 		//if(!server)busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, dist,numStops,false);
@@ -579,7 +582,7 @@ public class Homescreen extends Activity{
 			if(!server)
 			{
 				realTimeCodes = k_browser.realTimeData();
-				
+
 			}
 
 			long rt2 = System.nanoTime() - rt;

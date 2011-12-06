@@ -67,7 +67,7 @@ public class BusTUCApp extends MapActivity
 	MyLocationOverlay myLocation;
 	Context context;
 	boolean fromExtras = false;
-	boolean server = true;
+	boolean server = false;
 	Location currentLocation;
 	Browser k_browser;
 	/** Called when the activity is first created. */
@@ -670,7 +670,7 @@ public class BusTUCApp extends MapActivity
 
 			try
 			{
-				if(myLocation.getMyLocation() == null)	Toast.makeText(context, "Venter pÃ¥ lokasjon pÃ¥ kart", Toast.LENGTH_SHORT).show();
+				if(myLocation.getMyLocation() == null)	Toast.makeText(context, "Venter på lokasjon på kart", Toast.LENGTH_SHORT).show();
 			}
 			catch(Exception e)
 			{
