@@ -96,7 +96,7 @@ public class Homescreen extends Activity{
 	public static ArrayList <BusStop> allStops;
 	ArrayList<BusStop> busStops, busStopsNoDuplicates;
 	// Switch server on or off
-	boolean server = true;
+	boolean server = false;
 	// Send sms, or query via net
 	boolean sms = false;
 	DatabaseHelper dbHelper;
@@ -284,7 +284,7 @@ public class Homescreen extends Activity{
 		AlertDialog.Builder alert = new AlertDialog.Builder(context);
 
 		// First input dialog 
-		alert.setTitle("Velg kjÃ¸ring");
+		alert.setTitle("Velg kjøring");
 		alert.setMessage("Query via nett eller sms til orakel");   
 
 		alert.setPositiveButton("SMS", new DialogInterface.OnClickListener() 
@@ -357,7 +357,7 @@ public class Homescreen extends Activity{
 		// Need separate file, as this only includes stops working with BussTUC
 		try {
 
-			if(dictionary.size() == 0)
+			if(dictionary.size() == 0 || !server)
 			{
 				System.out.println("No dictionary present!");
 				gpsCoordinates = Helpers.readLines(getAssets().open("gps3Mod.xml"));
@@ -488,7 +488,7 @@ public class Homescreen extends Activity{
 
 		long first = System.nanoTime();
 		// Not needed when running on ReTro's server. Switched on or of by a bool val
-		//busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, dist,numStops,false);
+		//if(!server)busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, dist,numStops,false);
 
 		// All stops
 		allStops = Helpers.getAllLocations(gpsCords2, provider);
@@ -576,7 +576,11 @@ public class Homescreen extends Activity{
 			k_browser = new Browser(); 
 			// Load real-time codes
 			long rt = System.nanoTime();
-			if(!server) realTimeCodes = k_browser.realTimeData();
+			if(!server)
+			{
+				realTimeCodes = k_browser.realTimeData();
+				
+			}
 
 			long rt2 = System.nanoTime() - rt;
 			System.out.println("TIME SPENT REALTIMECODES: " + (rt2/1000000000.0));
@@ -848,10 +852,10 @@ public class Homescreen extends Activity{
 					{
 						//	System.out.println("Her skal vi ikke havne");
 						if(!query.equals(""))
-							{
+						{
 							System.out.println("FUBAR");
 							buffer = Helpers.runStandard(query);
-							}
+						}
 						else empty = true;
 
 
@@ -860,11 +864,11 @@ public class Homescreen extends Activity{
 					{
 						if(!query.equals(""))
 						{
-						long pre = System.nanoTime();
-						buf = Helpers.runServer(query, k_browser, currentlocation, numStops, dist);
-						long post = System.nanoTime() - pre;
-						System.out.println("POST-TIME: " + (post/1000000000.0));
-						validated = true;		
+							long pre = System.nanoTime();
+							buf = Helpers.runServer(query, k_browser, currentlocation, numStops, dist);
+							long post = System.nanoTime() - pre;
+							System.out.println("POST-TIME: " + (post/1000000000.0));
+							validated = true;		
 						}
 						else empty = true;
 
@@ -914,7 +918,7 @@ public class Homescreen extends Activity{
 		protected void onPostExecute(Void unused)
 		{
 			myDialog.dismiss();
-			
+
 			if(empty)
 			{
 				Toast.makeText(context, "Tom input!", Toast.LENGTH_SHORT).show();
@@ -1210,6 +1214,7 @@ public class Homescreen extends Activity{
 		{
 
 			myDialog.dismiss();
+			if(!server) busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, dist,numStops,false);
 
 
 		}
@@ -1262,7 +1267,7 @@ public class Homescreen extends Activity{
 	protected void onResume() 
 	{
 		int c= dbHelper.getQueryCount();
-		this.setTitle("AndroidAmble - "+c+" Sï¿½k gjort");
+		this.setTitle("AndroidAmble - "+c+" Søk gjort");
 		super.onResume();
 		//	editText.setEnabled(true);
 		textView.setEnabled(true);
