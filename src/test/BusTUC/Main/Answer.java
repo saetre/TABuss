@@ -11,6 +11,7 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -59,6 +60,7 @@ public class Answer extends  ListActivity{
 		String textContent;
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
+		lv.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
 		//setContentView(R.layout.list_item);
 
