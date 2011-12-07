@@ -105,8 +105,10 @@ public class BusTUCApp extends MapActivity
 				{
 					try
 					{
-						Toast.makeText(context, "Mangler sanntidsinfo, returnerer til hjemmeskjerm", Toast.LENGTH_LONG).show();
-						returnHome();
+						//Toast.makeText(context, "Mangler sanntidsinfo, returnerer til hjemmeskjerm", Toast.LENGTH_LONG).show();
+						//returnHome();
+						Browser browser = new Browser();
+						realTimeCodes = browser.realTimeData();
 					}
 					catch(Exception e)
 					{

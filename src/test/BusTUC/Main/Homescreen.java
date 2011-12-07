@@ -815,23 +815,18 @@ public class Homescreen extends Activity{
 			}
 			else if(sms && fancyOracle)
 			{
-				if(textView.getText().toString().equals(""))Toast.makeText(context, "Tom tekst", Toast.LENGTH_SHORT).show();
-				else
-				{
+				
 					Helpers.sendSMS("2027", "rute " + cl[0].getStopName().toString() + " til " + textView.getText().toString(), context);
 					System.out.println("SMS " + cl[0].getStopName().toString() + " til " + textView.getText().toString());
 
-				}
+				
 			}
 
 			else if(sms && !fancyOracle)
 			{
-				if(textView.getText().toString().equals(""))Toast.makeText(context, "Tom tekst", Toast.LENGTH_SHORT).show();
-				else
-				{
 					Helpers.sendSMS("2027", "rute " + textView.getText().toString(), context);
 					System.out.println("SMS " + cl[0].getStopName().toString() + " til " + textView.getText().toString());
-				}
+				
 			}
 
 			else
@@ -898,7 +893,7 @@ public class Homescreen extends Activity{
 		{
 			InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE); 
 			imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
-			if(sms)	Toast.makeText(context, "Venter pï¿½ svar...", Toast.LENGTH_LONG).show();
+			if(sms)	Toast.makeText(context, "Venter på svar...", Toast.LENGTH_LONG).show();
 
 
 			myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
