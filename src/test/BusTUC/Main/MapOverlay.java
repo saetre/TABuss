@@ -92,7 +92,7 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 					foundBusStopNr = cl[i].getBusStopID();
 					line = cl[i].getBusStopID();
 
-					if(!server) outgoing = Integer.parseInt(realTimeCodes.get(line).toString());
+					if(!server) outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(line).toString());
 					AlertDialog.Builder builder = new AlertDialog.Builder(m_Context);
 					String tmp = "" + cl[i].getBusStopID();
 					// Check which direction buses passing this stop are going
