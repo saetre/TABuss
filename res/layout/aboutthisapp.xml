@@ -1,38 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent" android:weightSum="1">
-    <TextView android:layout_width="match_parent" 
-    android:textAppearance="?android:attr/textAppearanceLarge" 
-    android:layout_height="wrap_content"
-    android:gravity="center" 
-    android:maxLines="10"    
-    android:text="FUiROUS" 
-    android:id="@+id/textView1">
-    </TextView>
-    <TextView android:layout_width="match_parent" 
-    android:textAppearance="?android:attr/textAppearanceMedium" 
-    android:layout_height="wrap_content"
-    android:gravity="center" 
-    android:maxLines="10"    
-    android:text="The Intelligent Bus App" 
-    android:id="@+id/textView1"
-    android:layout_marginBottom="20px">
-    </TextView>
-    <TextView android:textAppearance="?android:attr/textAppearanceSmall" 
-    android:text="BusTUC is a natural language bus route system for Trondheim. It gives information about scheduled bus route passings, but has no information about the real passing times. This is about to change, because Atb has installed GPS tracking of the buses, giving access to real passing times and delays. Besides, with new smart phones arriving rapidly on the market, there are possibilities for GPS localisations and connections to maps. The project shall take a broad view, and consider all possible advanced concepts, resulting in advanced smart phone applications." 
-    android:id="@+id/textView3"
-    android:layout_height="wrap_content" 
-    android:layout_width="match_parent" 
-    android:layout_below="@id/textView1">
-    </TextView>
-    <QuickContactBadge android:id="@+id/quickContactBadge2" 
-    android:layout_width="wrap_content" 
-    android:layout_height="wrap_content"></QuickContactBadge>
-    <QuickContactBadge android:layout_height="wrap_content" android:id="@+id/quickContactBadge1" 
-    android:layout_width="wrap_content" android:src="@drawable/lars"></QuickContactBadge>
-    <TextView android:layout_width="match_parent" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:text="\u00A9 2010 Team LaKris" android:id="@+id/textView2" android:layout_gravity="bottom"></TextView>
-    
-</LinearLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffff"
+    >
+    <ScrollView 
+     android:layout_width="fill_parent"
+ android:layout_height="fill_parent"
+ android:layout_above="@+id/imageView1"
+ android:layout_margin="15px" >
+ <TextView
+ android:background="@drawable/btn_green"
+ android:fadeScrollbars="true"
+ android:text="OM APPEN:\n
+
+Denne applikasjonen er laget av studenter i forbindelse med et fordypningsprosjekt ved Institutt for Datateknikk og Informasjonsteknologi,NTNU.
+Den benytter seg av BussTUC, et ressonerings-system for ruteopplysning og sanntidsinfo fra AtB.
+ 
+ 
+\n\nOM BUSSTUC:\n
+
+BussTUC er en naturlig-språk problemløser med evne til å besvare spørsmål om bussavganger i Trondheim stilt på vanlig norsk.
+BussTUC er utviklet av Jon S Bratseth som et studentprosjekt på NTNU. 
+Det er bygd på TUC (The Understanding Computer), et generelt naturlig-språk-system utviklet av Tore Amble. 
+Begge systemene er i sin helhet utviklet i Prolog.BussTUC-prosjektet er en del av det større prosjektet TABOR (Talebaserte grensesnitt og resonnerende systemer) som har som mål å utvikle et system som kan svare på bussavgangs-spørsmål stilt med vanlig tale over telefon.
+
+
+\n\nOM OPPGAVEN:\n
+
+BussTUC er et naturlig-språk basert ruteopplysnings-system for Trondheim. 
+Det gir informasjon om bussavganger, men har ingen informasjon om faktiskeavgangstider. 
+Dette kommer til å endre seg, ettersom AtB har installert GPS-sporing på bussene, noe som gir tilgang til faktiske avgangstider og forsinkelser.
+
+Med stadig nye smart-telefoner på markedet, kommermuligheten for GPS-lokalisering og kartintegrasjon.
+Dette prosjektet skal med et bredt utgangspunkt undersøke alle mulige avanserte konsepter, noe som skal resultere i avanserte applikasjoner."
+ android:layout_margin="15px" 
+ android:layout_width="fill_parent"
+ android:layout_height="fill_parent" 
+ android:id="@+id/suggestions" 
+ android:textColor="#3c434a" 
+ android:scrollbars="vertical" 
+ android:layout_above="@+id/imageView1"/>
+ </ScrollView>
+ <ImageView android:id="@+id/imageView1"
+ android:src="@drawable/ntnulogo" 
+ android:layout_height="50sp" 
+ android:layout_width="wrap_content" 
+ android:layout_alignParentBottom="true" 
+ android:layout_centerHorizontal="true"></ImageView>
+ 
+</RelativeLayout>
