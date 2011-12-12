@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello World, MapsActivity!</string>
-    <string name="app_name">TaBuss</string>
+    <string name="app_name">TABuss</string>
     <string name ="menu_item_1">Favoritter</string>
     <string name = "add_new">Legg til ny</string>
     <string name = "map_press">Gå til kart</string>
