@@ -1,0 +1,46 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{inconsolata}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx,mathpple,textcomp,varioref,listings,color}
+\usepackage{wrapfig}
+\definecolor{lightgray}{rgb}{.9,.9,.9}
+\definecolor{darkgray}{rgb}{.4,.4,.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\def\tiny{\fontsize{8pt}{8pt}\selectfont}
+\usepackage{url}
+\usepackage[colorlinks=true,pageanchor=true,linkcolor=black,anchorcolor=black,filecolor=black,citecolor=black,menucolor=black,pagecolor=black,urlcolor=black,bookmarksopen=true,bookmarksopenlevel=1]{hyperref}
+
+
+\begin{document}
+
+\author{Christoffer Jun Marcussen, Lars Moland Eliassen}
+\title{TABuss: An Intelligent Smartphone Application}
+\maketitle
+\clearpage
+\begin{abstract}
+\input{Abstract/Abstract.tex}
+\end{abstract}
+\newpage
+\tableofcontents
+
+\clearpage
+\section{Introduction}
+\input{Introduction/Introduction.tex}
+\section{Existing technologies}
+\input{Technologies/Technologies.tex}
+\section{Method}
+\input{Method/Method.tex}
+\section{Results}
+\input{Results/Results.tex}
+\section{Discussion}
+\input{Discussion/Discussion.tex}
+\section{Future work}
+\input{FurtherWork/FurtherWork.tex}
+\newpage
+\section{Acknowledgements}
+\input{Acknowledgements/Ack.tex}
+\bibliographystyle{plain}
+\bibliography{fuirous}
+
+\end{document}

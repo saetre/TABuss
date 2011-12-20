@@ -1,0 +1,958 @@
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.11.26)  17 DEC 2011 00:08
+entering extended mode
+ %&-line parsing enabled.
+**Disposisjon.tex
+(./Disposisjon.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, farsi, arabic, croatian, bulgarian, ukrainian, russian, czech, slov
+ak, danish, dutch, finnish, french, basque, ngerman, german, german-x-2009-06-1
+9, ngerman-x-2009-06-19, ibycus, monogreek, greek, ancientgreek, hungarian, san
+skrit, italian, latin, latvian, lithuanian, mongolian2a, mongolian, bokmal, nyn
+orsk, romanian, irish, coptic, serbian, turkish, welsh, esperanto, uppersorbian
+, estonian, indonesian, interlingua, icelandic, kurmanji, slovenian, polish, po
+rtuguese, spanish, galician, catalan, swedish, ukenglish, pinyin, loaded.
+(/usr/share/texmf-texlive/tex/latex/base/article.cls
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/share/texmf-texlive/tex/latex/base/size11.clo
+File: size11.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/share/texmf-texlive/tex/latex/inconsolata/inconsolata.sty
+Package: inconsolata 2009/06/07 Inconsolata
+
+(/usr/share/texmf-texlive/tex/latex/base/textcomp.sty
+Package: textcomp 2005/09/27 v1.99g Standard LaTeX package
+Package textcomp Info: Sub-encoding information:
+(textcomp)               5 = only ISO-Adobe without \textcurrency
+(textcomp)               4 = 5 + \texteuro
+(textcomp)               3 = 4 + \textohm
+(textcomp)               2 = 3 + \textestimated + \textcurrency
+(textcomp)               1 = TS1 - \textcircled - \t
+(textcomp)               0 = TS1 (full)
+(textcomp)             Font families with sub-encoding setting implement
+(textcomp)             only a restricted character set as indicated.
+(textcomp)             Family '?' is the default used for unknown fonts.
+(textcomp)             See the documentation for details.
+Package textcomp Info: Setting ? sub-encoding to TS1/1 on input line 71.
+
+(/usr/share/texmf-texlive/tex/latex/base/ts1enc.def
+File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
+)
+LaTeX Info: Redefining \oldstylenums on input line 266.
+Package textcomp Info: Setting cmr sub-encoding to TS1/0 on input line 281.
+Package textcomp Info: Setting cmss sub-encoding to TS1/0 on input line 282.
+Package textcomp Info: Setting cmtt sub-encoding to TS1/0 on input line 283.
+Package textcomp Info: Setting cmvtt sub-encoding to TS1/0 on input line 284.
+Package textcomp Info: Setting cmbr sub-encoding to TS1/0 on input line 285.
+Package textcomp Info: Setting cmtl sub-encoding to TS1/0 on input line 286.
+Package textcomp Info: Setting ccr sub-encoding to TS1/0 on input line 287.
+Package textcomp Info: Setting ptm sub-encoding to TS1/4 on input line 288.
+Package textcomp Info: Setting pcr sub-encoding to TS1/4 on input line 289.
+Package textcomp Info: Setting phv sub-encoding to TS1/4 on input line 290.
+Package textcomp Info: Setting ppl sub-encoding to TS1/3 on input line 291.
+Package textcomp Info: Setting pag sub-encoding to TS1/4 on input line 292.
+Package textcomp Info: Setting pbk sub-encoding to TS1/4 on input line 293.
+Package textcomp Info: Setting pnc sub-encoding to TS1/4 on input line 294.
+Package textcomp Info: Setting pzc sub-encoding to TS1/4 on input line 295.
+Package textcomp Info: Setting bch sub-encoding to TS1/4 on input line 296.
+Package textcomp Info: Setting put sub-encoding to TS1/5 on input line 297.
+Package textcomp Info: Setting uag sub-encoding to TS1/5 on input line 298.
+Package textcomp Info: Setting ugq sub-encoding to TS1/5 on input line 299.
+Package textcomp Info: Setting ul8 sub-encoding to TS1/4 on input line 300.
+Package textcomp Info: Setting ul9 sub-encoding to TS1/4 on input line 301.
+Package textcomp Info: Setting augie sub-encoding to TS1/5 on input line 302.
+Package textcomp Info: Setting dayrom sub-encoding to TS1/3 on input line 303.
+Package textcomp Info: Setting dayroms sub-encoding to TS1/3 on input line 304.
+
+Package textcomp Info: Setting pxr sub-encoding to TS1/0 on input line 305.
+Package textcomp Info: Setting pxss sub-encoding to TS1/0 on input line 306.
+Package textcomp Info: Setting pxtt sub-encoding to TS1/0 on input line 307.
+Package textcomp Info: Setting txr sub-encoding to TS1/0 on input line 308.
+Package textcomp Info: Setting txss sub-encoding to TS1/0 on input line 309.
+Package textcomp Info: Setting txtt sub-encoding to TS1/0 on input line 310.
+Package textcomp Info: Setting futs sub-encoding to TS1/4 on input line 311.
+Package textcomp Info: Setting futx sub-encoding to TS1/4 on input line 312.
+Package textcomp Info: Setting futj sub-encoding to TS1/4 on input line 313.
+Package textcomp Info: Setting hlh sub-encoding to TS1/3 on input line 314.
+Package textcomp Info: Setting hls sub-encoding to TS1/3 on input line 315.
+Package textcomp Info: Setting hlst sub-encoding to TS1/3 on input line 316.
+Package textcomp Info: Setting hlct sub-encoding to TS1/5 on input line 317.
+Package textcomp Info: Setting hlx sub-encoding to TS1/5 on input line 318.
+Package textcomp Info: Setting hlce sub-encoding to TS1/5 on input line 319.
+Package textcomp Info: Setting hlcn sub-encoding to TS1/5 on input line 320.
+Package textcomp Info: Setting hlcw sub-encoding to TS1/5 on input line 321.
+Package textcomp Info: Setting hlcf sub-encoding to TS1/5 on input line 322.
+Package textcomp Info: Setting pplx sub-encoding to TS1/3 on input line 323.
+Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 324.
+Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 325.
+Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 326.
+)
+(/usr/share/texmf-texlive/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+))
+(/usr/share/texmf-texlive/tex/latex/base/inputenc.sty
+Package: inputenc 2008/03/30 v1.1d Input encoding file
+\inpenc@prehook=\toks15
+\inpenc@posthook=\toks16
+
+(/usr/share/texmf-texlive/tex/latex/base/latin1.def
+File: latin1.def 2008/03/30 v1.1d Input encoding file
+))
+(/usr/share/texmf-texlive/tex/latex/base/fontenc.sty
+Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+
+(/usr/share/texmf-texlive/tex/latex/base/t1enc.def
+File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
+))
+(/usr/share/texmf-texlive/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf-texlive/tex/latex/graphics/graphics.sty
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf-texlive/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/etc/texmf/tex/latex/config/graphics.cfg
+File: graphics.cfg 2009/08/28 v1.8 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+(/usr/share/texmf-texlive/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2010/03/12 v0.04p Graphics/color for pdfTeX
+\Gread@gobject=\count87
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+)
+(/usr/share/texmf-texlive/tex/latex/psnfss/mathpple.sty
+Package: mathpple 2005/04/12 PSNFSS-v9.2a Palatino w/ Math (WaS) 
+
+
+Package mathpple Warning: This package is to be regarded as obsolete.
+(mathpple)                See the PSNFSS documentation.
+
+) (/usr/share/texmf-texlive/tex/latex/tools/varioref.sty
+Package: varioref 2009/09/13 v1.4w package for extended references (FMi)
+\c@vrcnt=\count88
+)
+(/usr/share/texmf-texlive/tex/latex/listings/listings.sty
+\lst@mode=\count89
+\lst@gtempboxa=\box26
+\lst@token=\toks17
+\lst@length=\count90
+\lst@currlwidth=\dimen105
+\lst@column=\count91
+\lst@pos=\count92
+\lst@lostspace=\dimen106
+\lst@width=\dimen107
+\lst@newlines=\count93
+\lst@lineno=\count94
+\lst@maxwidth=\dimen108
+
+(/usr/share/texmf-texlive/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2007/02/22 1.4 (Carsten Heinz)
+\c@lstnumber=\count95
+\lst@skipnumbers=\count96
+\lst@framebox=\box27
+)
+(/usr/share/texmf-texlive/tex/latex/listings/listings.cfg
+File: listings.cfg 2007/02/22 1.4 listings configuration
+))
+Package: listings 2007/02/22 1.4 (Carsten Heinz)
+
+(/usr/share/texmf-texlive/tex/latex/graphics/color.sty
+Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
+
+(/etc/texmf/tex/latex/config/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package color Info: Driver file: pdftex.def on input line 130.
+)
+(/usr/share/texmf-texlive/tex/latex/wrapfig/wrapfig.sty
+\wrapoverhang=\dimen109
+\WF@size=\dimen110
+\c@WF@wrappedlines=\count97
+\WF@box=\box28
+\WF@everypar=\toks18
+Package: wrapfig 2003/01/31  v 3.6
+)
+(/usr/share/texmf-texlive/tex/latex/ltxmisc/url.sty
+\Urlmuskip=\muskip10
+Package: url 2006/04/12  ver 3.3  Verb mode for urls, etc.
+)
+(/usr/share/texmf-texlive/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2009/10/09 v6.79a Hypertext links for LaTeX
+
+(/usr/share/texmf-texlive/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2009/04/10 v2.0 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in pdf mode detected.
+)
+(/usr/share/texmf-texlive/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2008/11/04 v1.4 Switches for detecting VTeX and its modes (HO)
+Package ifvtex Info: VTeX not detected.
+)
+(/usr/share/texmf-texlive/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2009/01/23 v0.5 Provides ifxetex conditional
+)
+(/usr/share/texmf-texlive/tex/latex/oberdiek/hycolor.sty
+Package: hycolor 2009/10/02 v1.5 Code for color options of hyperref/bookmark (H
+O)
+
+(/usr/share/texmf-texlive/tex/latex/oberdiek/xcolor-patch.sty
+Package: xcolor-patch 2009/10/02 xcolor patch
+))
+\@linkdim=\dimen111
+\Hy@linkcounter=\count98
+\Hy@pagecounter=\count99
+
+(/usr/share/texmf-texlive/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2009/10/09 v6.79a Hyperref: PDFDocEncoding definition (HO)
+)
+(/usr/share/texmf-texlive/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2007/12/12 v1.2 Prefix for e-TeX command names (HO)
+
+(/usr/share/texmf-texlive/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2007/09/09 v1.2 Providing info/warning/message (HO)
+)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)
+(/usr/share/texmf-texlive/tex/latex/latexconfig/hyperref.cfg
+File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
+)
+(/usr/share/texmf-texlive/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2009/08/13 v3.4 Keyval support for LaTeX options (HO)
+
+(/usr/share/texmf-texlive/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2009/07/30 v1.5 Key value parser with default handler suppor
+t (HO)
+))
+Package hyperref Info: Option `colorlinks' set `true' on input line 2864.
+Package hyperref Info: Option `pageanchor' set `true' on input line 2864.
+
+
+Package hyperref Warning: Option `pagecolor' is not available anymore.
+
+Package hyperref Info: Option `bookmarksopen' set `true' on input line 2864.
+Package hyperref Info: Hyper figures OFF on input line 2975.
+Package hyperref Info: Link nesting OFF on input line 2980.
+Package hyperref Info: Hyper index ON on input line 2983.
+Package hyperref Info: Plain pages OFF on input line 2990.
+Package hyperref Info: Backreferencing OFF on input line 2995.
+Implicit mode ON; LaTeX internals redefined
+Package hyperref Info: Bookmarks ON on input line 3191.
+LaTeX Info: Redefining \url on input line 3428.
+(/usr/share/texmf-texlive/tex/generic/oberdiek/bitset.sty
+Package: bitset 2007/09/28 v1.0 Data type bit set (HO)
+
+(/usr/share/texmf-texlive/tex/generic/oberdiek/intcalc.sty
+Package: intcalc 2007/09/27 v1.1 Expandable integer calculations (HO)
+)
+(/usr/share/texmf-texlive/tex/generic/oberdiek/bigintcalc.sty
+Package: bigintcalc 2007/11/11 v1.1 Expandable big integer calculations (HO)
+
+(/usr/share/texmf-texlive/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2009/09/23 v0.6 LuaTeX support for pdfTeX utility functions
+ (HO)
+
+(/usr/share/texmf-texlive/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2009/04/17 v1.2 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+(/usr/share/texmf-texlive/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2009/08/05 v1.0 Some LaTeX kernel commands for general use (HO
+)
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+)))
+\Fld@menulength=\count100
+\Field@Width=\dimen112
+\Fld@charsize=\dimen113
+\Field@toks=\toks19
+Package hyperref Info: Hyper figures OFF on input line 4377.
+Package hyperref Info: Link nesting OFF on input line 4382.
+Package hyperref Info: Hyper index ON on input line 4385.
+Package hyperref Info: backreferencing OFF on input line 4392.
+Package hyperref Info: Link coloring ON on input line 4395.
+Package hyperref Info: Link coloring with OCG OFF on input line 4402.
+Package hyperref Info: PDF/A mode OFF on input line 4407.
+
+(/usr/share/texmf-texlive/tex/generic/oberdiek/atbegshi.sty
+Package: atbegshi 2008/07/31 v1.9 At begin shipout hook (HO)
+)
+\Hy@abspage=\count101
+\c@Item=\count102
+\c@Hfootnote=\count103
+)
+*hyperref using default driver hpdftex*
+(/usr/share/texmf-texlive/tex/latex/hyperref/hpdftex.def
+File: hpdftex.def 2009/10/09 v6.79a Hyperref driver for pdfTeX
+\Fld@listcount=\count104
+) (./Disposisjon.aux
+
+LaTeX Warning: Label `fig:gudes' multiply defined.
+
+)
+\openout1 = `Disposisjon.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 15.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 15.
+ (/usr/share/texmf-texlive/tex/latex/base/ts1cmr.fd
+File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Try loading font information for T1+ppl on input line 15.
+
+(/usr/share/texmf-texlive/tex/latex/psnfss/t1ppl.fd
+File: t1ppl.fd 2001/06/04 font definitions for T1/ppl.
+)
+(/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count105
+\scratchdimen=\dimen114
+\scratchbox=\box29
+\nofMPsegments=\count106
+\nofMParguments=\count107
+\everyMPshowfont=\toks20
+\MPscratchCnt=\count108
+\MPscratchDim=\dimen115
+\MPnumerator=\count109
+\everyMPtoPDFconversion=\toks21
+)
+\big@size=\dimen116
+\c@lstlisting=\count110
+Package hyperref Info: Link coloring ON on input line 15.
+ (/usr/share/texmf-texlive/tex/latex/hyperref/nameref.sty
+Package: nameref 2007/05/29 v2.31 Cross-referencing by name of section
+
+(/usr/share/texmf-texlive/tex/latex/oberdiek/refcount.sty
+Package: refcount 2008/08/11 v3.1 Data extraction from references (HO)
+)
+\c@section@level=\count111
+LaTeX Info: Redefining \Ref on input line 396.
+)
+LaTeX Info: Redefining \ref on input line 15.
+LaTeX Info: Redefining \pageref on input line 15.
+ (./Disposisjon.out) (./Disposisjon.out)
+\@outlinefile=\write3
+\openout3 = `Disposisjon.out'.
+
+\AtBeginShipoutBox=\box30
+LaTeX Info: Redefining \Ref on input line 15.
+LaTeX Font Info:    Try loading font information for OT1+zpple on input line 20
+.
+ (/usr/share/texmf-texlive/tex/latex/psnfss/ot1zpple.fd
+File: ot1zpple.fd 1999/12/20 Fontinst v1.801 font definitions for OT1/zpple.
+)
+LaTeX Font Info:    Try loading font information for OML+zpple on input line 20
+.
+
+(/usr/share/texmf-texlive/tex/latex/psnfss/omlzpple.fd
+File: omlzpple.fd 1999/12/20 Fontinst v1.801 font definitions for OML/zpple.
+)
+LaTeX Font Info:    Try loading font information for OMS+zpple on input line 20
+.
+
+(/usr/share/texmf-texlive/tex/latex/psnfss/omszpple.fd
+File: omszpple.fd 1999/12/20 Fontinst v1.801 font definitions for OMS/zpple.
+)
+LaTeX Font Info:    Try loading font information for OMX+zpple on input line 20
+.
+
+(/usr/share/texmf-texlive/tex/latex/psnfss/omxzpple.fd
+File: omxzpple.fd 1999/12/20 Fontinst v1.801 font definitions for OMX/zpple.
+) [1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <10> not available
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 21.
+ (./Abstract/Abstract.tex) [2
+
+]
+LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <14.4> not available
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 25.
+
+(./Disposisjon.toc
+LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <10.95> not available
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 1.
+ [3] [4])
+\tf@toc=\write4
+\openout4 = `Disposisjon.toc'.
+
+ [5] (./Introduction/Introduction.tex
+LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 3.
+
+(./Abbreviations.tex [6
+
+]) [7]
+Overfull \hbox (13.38948pt too wide) in paragraph at lines 41--42
+\T1/ppl/m/n/10.95 The new ar-ti-fi-cial in-tel-li-gence func-tion-al-i-ties wit
+hin TABuss' scope, are mainly
+ []
+
+[8]) (./Technologies/Technologies.tex
+LaTeX Font Info:    Try loading font information for TS1+ppl on input line 16.
+
+(/usr/share/texmf-texlive/tex/latex/psnfss/ts1ppl.fd
+File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
+)
+Underfull \hbox (badness 10000) in paragraph at lines 16--16
+[]\T1/ppl/m/n/10.95 When does the bus de-par-ture from Sam-fun-det to Torv-
+ []
+
+
+Overfull \hbox (12.27496pt too wide) in paragraph at lines 16--17
+ [] 
+ []
+
+[9]
+LaTeX Font Info:    Try loading font information for T1+fi4 on input line 53.
+ (/usr/share/texmf-texlive/tex/latex/inconsolata/t1fi4.fd
+File: t1fi4.fd 2009/05/28 T1/Inconsolata
+) [10]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[11] [12]
+Underfull \hbox (badness 10000) in paragraph at lines 188--188
+[][][]\T1/ppl/m/n/9 http://code.google.com/intl/no-NO/android/add-ons/google-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 188--188
+[][][]\T1/ppl/m/n/9 http://code.google.com/intl/no-NO/android/add-ons/google-
+ []
+
+[13] <Technologies/phonegapfigure.png, id=564, 330.23375pt x 485.815pt>
+File: Technologies/phonegapfigure.png Graphic file (type png)
+
+<use Technologies/phonegapfigure.png> [14]
+Underfull \hbox (badness 1038) in paragraph at lines 205--206
+\T1/ppl/m/n/10.95 ble na-tive ap-pli-ca-tions re-gard-ing
+ []
+
+
+Underfull \hbox (badness 2384) in paragraph at lines 205--206
+\T1/ppl/m/n/10.95 for de-vel-op-ment: JQuery[][][][][] and
+ []
+
+[15 <./Technologies/phonegapfigure.png>]
+<Technologies/javaandroid.png, id=592, 309.155pt x 305.14pt>
+File: Technologies/javaandroid.png Graphic file (type png)
+
+<use Technologies/javaandroid.png>
+Underfull \hbox (badness 2486) in paragraph at lines 224--226
+[]\T1/ppl/m/n/10.95 The main dis-ad-van-tage with
+ []
+
+
+Underfull \hbox (badness 4886) in paragraph at lines 224--226
+\T1/ppl/m/n/10.95 na-tive de-vel-op-ment lies in the
+ []
+
+
+Underfull \hbox (badness 1789) in paragraph at lines 224--226
+\T1/ppl/m/n/10.95 ca-tions are na-tive, they are not
+ []
+
+
+Overfull \hbox (2.01617pt too wide) in paragraph at lines 229--230
+\T1/ppl/m/n/10.95 com-put-ing is not sup-ported by build sys-tems (such as Phon
+e-Gap[][][][][]). Graph-
+ []
+
+[16 <./Technologies/javaandroid.png>]
+Overfull \hbox (5.2775pt too wide) in paragraph at lines 246--247
+\T1/ppl/m/n/10.95 Context and con-text aware-ness have many def-i-ni-tions [[]]
+ [[]] [[]] [[]](1997).
+ []
+
+[17] [18]) (./Method/Method.tex [19] (./Research/Research.tex
+(./ExistingSolutions/ExistingSolutions.tex
+Underfull \hbox (badness 10000) in paragraph at lines 7--25
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 7--25
+
+ []
+
+[20]
+Overfull \hbox (7.48846pt too wide) in paragraph at lines 34--35
+[]\T1/ppl/m/n/10.95 History de-fines ear-lier searched queries or se-lected bus
+ stops, stored
+ []
+
+<ExistingSolutions/bartebuss.jpg, id=655, 481.8pt x 803.0pt>
+File: ExistingSolutions/bartebuss.jpg Graphic file (type jpg)
+
+<use ExistingSolutions/bartebuss.jpg>
+Underfull \hbox (badness 10000) in paragraph at lines 41--48
+\T1/ppl/m/n/10.95 nav-i-gate but it might pro-vide too many choices to the user
+.
+ []
+
+
+Underfull \hbox (badness 1158) in paragraph at lines 48--51
+\T1/ppl/m/n/10.95 pli-ca-tion to find bus de-par-tures.
+ []
+
+
+Underfull \hbox (badness 1708) in paragraph at lines 48--51
+\T1/ppl/m/n/10.95 where sev-eral bus stops can be
+ []
+
+
+Underfull \hbox (badness 1377) in paragraph at lines 48--51
+\T1/ppl/m/n/10.95 a favourite is se-lected, real-time
+ []
+
+[21 <./ExistingSolutions/bartebuss.jpg>] [22]
+<ExistingSolutions/alfsbybuss.jpg, id=668, 481.8pt x 803.0pt>
+File: ExistingSolutions/alfsbybuss.jpg Graphic file (type jpg)
+
+<use ExistingSolutions/alfsbybuss.jpg>
+<ExistingSolutions/bussdroid.png, id=669, 321.2pt x 481.8pt>
+File: ExistingSolutions/bussdroid.png Graphic file (type png)
+
+<use ExistingSolutions/bussdroid.png>
+Underfull \hbox (badness 10000) in paragraph at lines 54--65
+\T1/ppl/m/n/10.95 tion as the de-par-ture pa-ram-e-ter.
+ []
+
+
+Underfull \hbox (badness 3343) in paragraph at lines 65--68
+\T1/ppl/m/n/10.95 for en-ter-ing queries, and some
+ []
+
+
+Underfull \hbox (badness 4981) in paragraph at lines 65--68
+\T1/ppl/m/n/10.95 ad-di-tional func-tion-al-i-ties in the
+ []
+
+
+Underfull \hbox (badness 7759) in paragraph at lines 65--68
+\T1/ppl/m/n/10.95 menu (ac-ti-vated by the menu
+ []
+
+
+Underfull \hbox (badness 2790) in paragraph at lines 65--68
+\T1/ppl/m/n/10.95 but-ton). The main com-po-nent
+ []
+
+
+Underfull \hbox (badness 3098) in paragraph at lines 65--68
+\T1/ppl/m/n/10.95 of the user in-ter-face is a map
+ []
+
+
+Underfull \hbox (badness 2875) in paragraph at lines 65--68
+\T1/ppl/m/n/10.95 names, as de-par-ture and des-ti-
+ []
+
+
+Underfull \hbox (badness 1152) in paragraph at lines 65--68
+\T1/ppl/m/n/10.95 na-tion, and view real-time data.
+ []
+
+
+Underfull \hbox (badness 1281) in paragraph at lines 65--68
+\T1/ppl/m/n/10.95 ture and des-ti-na-tion stops), and
+ []
+
+
+Underfull \hbox (badness 1715) in paragraph at lines 65--68
+\T1/ppl/m/n/10.95 a link to the on-line bus sched-
+ []
+
+
+Underfull \hbox (badness 1147) in paragraph at lines 65--68
+\T1/ppl/m/n/10.95 re-spon-sive than \T1/ppl/m/it/10.95 Bar-te-buss \T1/ppl/m/n/
+10.95 dur-ing
+ []
+
+
+Package wrapfig Warning: Collision between wrapping environments on input line 
+71.
+
+<ExistingSolutions/busstider.jpg, id=671, 481.8pt x 803.0pt>
+File: ExistingSolutions/busstider.jpg Graphic file (type jpg)
+
+<use ExistingSolutions/busstider.jpg>
+
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 78
+.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 78--83
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 78--83
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 78--83
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 78--83
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 78--83
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 78--83
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 78--83
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 78--83
+
+ []
+
+[23 <./ExistingSolutions/alfsbybuss.jpg> <./ExistingSolutions/bussdroid.png (PN
+G copy)>]
+
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 84
+.
+
+
+Underfull \hbox (badness 1014) in paragraph at lines 87--88
+\T1/ppl/m/n/10.95 us-ing this API was con-sid-ered .
+ []
+
+[24 <./ExistingSolutions/busstider.jpg>] [25] [26]
+<ExistingSolutions/mybus.jpg, id=726, 203.25937pt x 162.6075pt>
+File: ExistingSolutions/mybus.jpg Graphic file (type jpg)
+
+<use ExistingSolutions/mybus.jpg>
+Overfull \hbox (0.18535pt too wide) in paragraph at lines 130--131
+\T1/ppl/m/n/10.95 real-time guid-ance based on user lo-ca-tion, and had fea-tur
+es worth re-search-
+ []
+
+[27 <./ExistingSolutions/mybus.jpg>]))
+(./TestingTheApplication/TestingTheApplication.tex
+
+LaTeX Warning: Reference `sec:existing' on page 28 undefined on input line 4.
+
+
+Overfull \hbox (0.15742pt too wide) in paragraph at lines 25--26
+[]\T1/ppl/m/n/10.95 Slow query runs were caused by the Bus-TUC server, lo-cated
+ at Gløshau-
+ []
+
+[28] <TestingTheApplication/screen1.png, id=752, 181.42781pt x 243.15843pt>
+File: TestingTheApplication/screen1.png Graphic file (type png)
+
+<use TestingTheApplication/screen1.png>
+Overfull \hbox (1.42737pt too wide) in paragraph at lines 35--36
+ [] 
+ []
+
+
+Underfull \hbox (badness 2884) in paragraph at lines 41--42
+[][]\T1/ppl/m/n/10.95 Raaum's ap-pli-ca-tion uses an
+ []
+
+
+Underfull \hbox (badness 1803) in paragraph at lines 43--44
+[]\T1/ppl/m/n/10.95 Raaum's ap-pli-ca-tion has two
+ []
+
+[29 <./TestingTheApplication/screen1.png (PNG copy)>] [30]
+
+LaTeX Font Warning: Font shape `T1/fi4/bx/n' undefined
+(Font)              using `T1/fi4/m/n' instead on input line 83.
+
+[31] [32] <TestingTheApplication/atb2.png, id=787, 220.57407pt x 222.07968pt>
+File: TestingTheApplication/atb2.png Graphic file (type png)
+
+<use TestingTheApplication/atb2.png>)
+<Method/Figures/noserver.png, id=789, 655.44875pt x 117.43875pt>
+File: Method/Figures/noserver.png Graphic file (type png)
+
+<use Method/Figures/noserver.png> [33 <./TestingTheApplication/atb2.png (PNG co
+py)> <./Method/Figures/noserver.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 23--23
+[][][]\T1/ppl/m/n/9 http://code.google.com/intl/no-NO/android/add-ons/google-
+ []
+
+
+Overfull \hbox (8.78069pt too wide) in paragraph at lines 23--24
+\T1/ppl/m/n/10.95 The marker used to dis-play the user's lo-ca-tion moved when 
+the user zoomed.
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 29--29
+[][][]\T1/ppl/m/n/9 http://code.google.com/intl/no-NO/android/add-ons/google-
+ []
+
+[34] <Method/Figures/homescreen.png, id=809, 404.51125pt x 362.35374pt>
+File: Method/Figures/homescreen.png Graphic file (type png)
+
+<use Method/Figures/homescreen.png>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<Method/magnus1.png, id=811, 357.335pt x 475.7775pt>
+File: Method/magnus1.png Graphic file (type png)
+ <use Method/magnus1.png>
+<Method/magnus2.png, id=812, 356.33125pt x 476.78125pt>
+File: Method/magnus2.png Graphic file (type png)
+
+<use Method/magnus2.png>
+Overfull \hbox (9.85147pt too wide) in paragraph at lines 90--101
+[][]   [] 
+ []
+
+[35] [36 <./Method/Figures/homescreen.png> <./Method/magnus1.png> <./Method/mag
+nus2.png>] <DesigningGUI/magnus1.png, id=831, 357.335pt x 475.7775pt>
+File: DesigningGUI/magnus1.png Graphic file (type png)
+
+<use DesigningGUI/magnus1.png>
+<DesigningGUI/earlydraft.png, id=832, 493.845pt x 817.0525pt>
+File: DesigningGUI/earlydraft.png Graphic file (type png)
+
+<use DesigningGUI/earlydraft.png>
+<DesigningGUI/finaldraft.png, id=833, 481.8pt x 803.0pt>
+File: DesigningGUI/finaldraft.png Graphic file (type png)
+
+<use DesigningGUI/finaldraft.png>
+Overfull \hbox (32.40198pt too wide) in paragraph at lines 122--127
+[][] 
+ []
+
+<DesigningGUI/suggestion.png, id=834, 803.0pt x 481.8pt>
+File: DesigningGUI/suggestion.png Graphic file (type png)
+
+<use DesigningGUI/suggestion.png> [37] [38 <./DesigningGUI/magnus1.png> <./Desi
+gningGUI/earlydraft.png> <./DesigningGUI/finaldraft.png (PNG copy)> <./Designin
+gGUI/suggestion.png>] [39]
+<Method/enfigur.png, id=860, 471.7625pt x 503.8825pt>
+File: Method/enfigur.png Graphic file (type png)
+ <use Method/enfigur.png>
+<Intelligence/database.png, id=861, 723.70375pt x 200.75pt>
+File: Intelligence/database.png Graphic file (type png)
+
+<use Intelligence/database.png>
+Overfull \hbox (1.85098pt too wide) in paragraph at lines 150--151
+[][] 
+ []
+
+
+Overfull \hbox (6.97934pt too wide) in paragraph at lines 154--155
+[]\T1/ppl/m/n/10.95 To re-trieve rel-e-vant cases, queries with sim-i-lar ori-g
+in and time are fetched
+ []
+
+[40 <./Method/enfigur.png> <./Intelligence/database.png>]
+<Method/Figures/webend.png, id=872, 506.89375pt x 144.54pt>
+File: Method/Figures/webend.png Graphic file (type png)
+
+<use Method/Figures/webend.png>
+<Method/Figures/sms.png, id=873, 506.89375pt x 144.54pt>
+File: Method/Figures/sms.png Graphic file (type png)
+
+<use Method/Figures/sms.png> [41 <./Method/Figures/webend.png> <./Method/Figure
+s/sms.png>]
+Overfull \hbox (1.9977pt too wide) in paragraph at lines 193--194
+[]\T1/ppl/m/n/10.95 The SQLite-database con-tains logged queries and a his-tory
+ of per-formed
+ []
+
+[42]
+Overfull \hbox (1.82732pt too wide) in paragraph at lines 203--204
+\T1/ppl/m/n/10.95 tion makes the start-up of the ap-pli-ca-tion faster, and als
+o al-lows for progress
+ []
+
+<Method/Figures/server.png, id=896, 655.44875pt x 295.1025pt>
+File: Method/Figures/server.png Graphic file (type png)
+
+<use Method/Figures/server.png>) (./Results/Results.tex [43] [44 <./Method/Figu
+res/server.png>]
+Overfull \hbox (13.57623pt too wide) in paragraph at lines 40--41
+\T1/ppl/m/n/10.95 com-par-isons, but as the server han-dles both com-pu-ta-tion
+al op-er-a-tions(queries
+ []
+
+<Results/startscreen.png, id=917, 481.8pt x 803.0pt>
+File: Results/startscreen.png Graphic file (type png)
+
+<use Results/startscreen.png> <Results/menu.png, id=918, 481.8pt x 803.0pt>
+File: Results/menu.png Graphic file (type png)
+
+<use Results/menu.png> <Results/answer.png, id=919, 481.8pt x 803.0pt>
+File: Results/answer.png Graphic file (type png)
+
+<use Results/answer.png> <Results/textanswer.png, id=920, 481.8pt x 803.0pt>
+File: Results/textanswer.png Graphic file (type png)
+
+<use Results/textanswer.png>
+<Results/maprealtime.png, id=921, 481.8pt x 803.0pt>
+File: Results/maprealtime.png Graphic file (type png)
+
+<use Results/maprealtime.png>
+<Results/realtime.png, id=922, 481.8pt x 803.0pt>
+File: Results/realtime.png Graphic file (type png)
+ <use Results/realtime.png>
+<Results/realtimelist.png, id=923, 481.8pt x 803.0pt>
+File: Results/realtimelist.png Graphic file (type png)
+
+<use Results/realtimelist.png>
+<Results/otherbusstop.png, id=924, 481.8pt x 803.0pt>
+File: Results/otherbusstop.png Graphic file (type png)
+
+<use Results/otherbusstop.png> <Results/other.png, id=925, 481.8pt x 803.0pt>
+File: Results/other.png Graphic file (type png)
+
+<use Results/other.png> [45] [46 <./Results/startscreen.png (PNG copy)> <./Resu
+lts/menu.png (PNG copy)> <./Results/answer.png (PNG copy)> <./Results/textanswe
+r.png (PNG copy)> <./Results/maprealtime.png (PNG copy)> <./Results/realtime.pn
+g (PNG copy)> <./Results/realtimelist.png (PNG copy)> <./Results/otherbusstop.p
+ng (PNG copy)> <./Results/other.png (PNG copy)>]
+<Results/contextaware.png, id=939, 481.8pt x 803.0pt>
+File: Results/contextaware.png Graphic file (type png)
+
+<use Results/contextaware.png>
+<Results/autocomplete.png, id=940, 481.8pt x 803.0pt>
+File: Results/autocomplete.png Graphic file (type png)
+
+<use Results/autocomplete.png>
+<Results/settings.png, id=941, 481.8pt x 803.0pt>
+File: Results/settings.png Graphic file (type png)
+ <use Results/settings.png>
+[47 <./Results/contextaware.png (PNG copy)> <./Results/autocomplete.png (PNG co
+py)> <./Results/settings.png (PNG copy)>] (./Testing/Testing.tex [48] [49]))
+[50] (./Discussion/Discussion.tex [51]
+Overfull \hbox (1.20226pt too wide) in paragraph at lines 22--23
+\T1/ppl/m/n/10.95 should con-tinue to utilise the server, as more func-tion-al-
+ity de-vel-oped client-
+ []
+
+[52]) (./FurtherWork/FurtherWork.tex [53] [54]
+Overfull \hbox (6.15773pt too wide) in paragraph at lines 36--37
+[]\T1/ppl/m/n/10.95 Architecturally, it is im-por-tant to de-cide which parts o
+f the sys-tem should
+ []
+
+
+Overfull \hbox (1.76704pt too wide) in paragraph at lines 38--39
+[]\T1/ppl/m/n/10.95 While TABuss has ex-plored the op-por-tu-ni-ties of in-volv
+-ing smart-phones,
+ []
+
+[55] [56]
+Underfull \hbox (badness 10000) in paragraph at lines 53--53
+[][][]\T1/ppl/m/n/9 http://www.sintef.no/Projectweb/UbiCompForAll/Results/Softw
+are/City-
+ []
+
+
+Overfull \hbox (53.0418pt too wide) in paragraph at lines 60--60
+[][][]\T1/ppl/m/n/9 http://www.kizoom.com/standards/siri/schema/1.4/examples/ex
+s_stopMonitoring_request.xml| 
+ []
+
+
+Overfull \hbox (105.72101pt too wide) in paragraph at lines 60--61
+\T1/ppl/m/n/10.95 made the \T1/ppl/m/it/10.95 Stop-Mon-i-tor-ingRe-quests[][][]
+[][] \T1/ppl/m/n/10.95 pub-licly avail-able through a JSON API.\T1/ppl/m/it/10.
+95 StopMonitoringRequests
+ []
+
+[57]) (./Acknowledgements/Ack.tex) [58] (./Disposisjon.bbl [59]
+Underfull \hbox (badness 1881) in paragraph at lines 137--141
+[]\T1/ppl/m/n/10.95 Markku Tu-runen, Jaakko Haku-li-nen, Anssi Kain-u-lainen, A
+leksi
+ []
+
+[60]) [61] (./Disposisjon.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 7557 strings out of 493848
+ 108136 string characters out of 1152822
+ 342756 words of memory out of 3000000
+ 10300 multiletter control sequences out of 15000+50000
+ 43284 words of font info for 95 fonts, out of 3000000 for 9000
+ 714 hyphenation exceptions out of 8191
+ 38i,18n,40p,1366b,1812s stack positions out of 5000i,500n,10000p,200000b,50000s
+pdfTeX warning (dest): name{Hfootnote.7} has been referenced but does not exi
+st, replaced by a fixed one
+
+{/usr/share/texmf-texlive/fonts/enc/dvips/inconsolata/fi4-ec.enc}{/usr/share/te
+xmf-texlive/fonts/enc/dvips/base/8r.enc}</usr/share/texmf-texlive/fonts/type1/p
+ublic/inconsolata/Inconsolata.pfb></usr/share/texmf-texlive/fonts/type1/public/
+amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm
+/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+</usr/share/texmf-texlive/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/texmf
+-texlive/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texmf-texlive/fonts/ty
+pe1/urw/palatino/uplri8a.pfb>
+Output written on Disposisjon.pdf (61 pages, 2456713 bytes).
+PDF statistics:
+ 1161 PDF objects out of 1200 (max. 8388607)
+ 312 named destinations out of 1000 (max. 500000)
+ 859 words of extra memory for PDF output out of 10000 (max. 10000000)
+

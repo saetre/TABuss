@@ -1,0 +1,21 @@
+- Fikse figurer:
+	- Lage nye av de to jeg hadde i existing apps - check
+	- Real-time return uten server
+	- Orakel return uten server
+	- Henvise til Retros rapport for server return
+
+	- Fikse screens på nytt med hvit bakgrunn - check
+	- Nye screens:
+		- Settings-skjerm - check
+		- Få med plotting av gangavstand - check
+
+	- Figur for å demonstrere context awareness - check
+	- Figur for å illustrere uthenting av brukers lokasjon - check
+	- Figur som viser autocomplete - check
+
+
+- Metode for systemet
+	- Query syntax + JSON svar - check
+	- Sanntidssvar - check
+	- Pseudo
+	- Fikse labels for tabeller

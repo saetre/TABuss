@@ -1,0 +1,86 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Task Description}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{Terminology}{section.1}% 3
+\BOOKMARK [2][-]{subsection.1.3}{Background and Motivation}{section.1}% 4
+\BOOKMARK [2][-]{subsection.1.4}{Goals}{section.1}% 5
+\BOOKMARK [3][-]{subsubsection.1.4.1}{Reviewing and Re-implementing Raaum's Application}{subsection.1.4}% 6
+\BOOKMARK [3][-]{subsubsection.1.4.2}{Research of Similar Applications}{subsection.1.4}% 7
+\BOOKMARK [3][-]{subsubsection.1.4.3}{Real-time Functionality}{subsection.1.4}% 8
+\BOOKMARK [3][-]{subsubsection.1.4.4}{Artificial Intelligence}{subsection.1.4}% 9
+\BOOKMARK [3][-]{subsubsection.1.4.5}{Improvement of The User Interface}{subsection.1.4}% 10
+\BOOKMARK [3][-]{subsubsection.1.4.6}{Shifting to the MultiBRIS Server}{subsection.1.4}% 11
+\BOOKMARK [1][-]{section.2}{Existing technologies}{}% 12
+\BOOKMARK [2][-]{subsection.2.1}{BusTUC}{section.2}% 13
+\BOOKMARK [2][-]{subsection.2.2}{The Real-time System}{section.2}% 14
+\BOOKMARK [2][-]{subsection.2.3}{Servers}{section.2}% 15
+\BOOKMARK [2][-]{subsection.2.4}{Android OS}{section.2}% 16
+\BOOKMARK [2][-]{subsection.2.5}{Android SDK}{section.2}% 17
+\BOOKMARK [2][-]{subsection.2.6}{Devices}{section.2}% 18
+\BOOKMARK [2][-]{subsection.2.7}{Maps}{section.2}% 19
+\BOOKMARK [2][-]{subsection.2.8}{Application .apk-files}{section.2}% 20
+\BOOKMARK [2][-]{subsection.2.9}{Developing Native Applications vs Web Applications}{section.2}% 21
+\BOOKMARK [3][-]{subsubsection.2.9.1}{Web Applications}{subsection.2.9}% 22
+\BOOKMARK [3][-]{subsubsection.2.9.2}{Native Applications}{subsection.2.9}% 23
+\BOOKMARK [3][-]{subsubsection.2.9.3}{Comparison}{subsection.2.9}% 24
+\BOOKMARK [2][-]{subsection.2.10}{Context Awareness}{section.2}% 25
+\BOOKMARK [3][-]{subsubsection.2.10.1}{Location-aware Computing}{subsection.2.10}% 26
+\BOOKMARK [3][-]{subsubsection.2.10.2}{Definitions}{subsection.2.10}% 27
+\BOOKMARK [1][-]{section.3}{Method}{}% 28
+\BOOKMARK [2][-]{subsection.3.1}{Raaum's BusTUC Android Application}{section.3}% 29
+\BOOKMARK [2][-]{subsection.3.2}{Existing Solutions in Trondheim}{section.3}% 30
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Bartebuss}{subsection.3.2}% 31
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Alf's ByBuss}{subsection.3.2}% 32
+\BOOKMARK [3][-]{subsubsection.3.2.3}{Bussdroid}{subsection.3.2}% 33
+\BOOKMARK [3][-]{subsubsection.3.2.4}{Busstider}{subsection.3.2}% 34
+\BOOKMARK [3][-]{subsubsection.3.2.5}{BusBuddy API}{subsection.3.2}% 35
+\BOOKMARK [3][-]{subsubsection.3.2.6}{Summary of Existing Solutions in Trondheim}{subsection.3.2}% 36
+\BOOKMARK [2][-]{subsection.3.3}{Extended Research}{section.3}% 37
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Natural Language Applications}{subsection.3.3}% 38
+\BOOKMARK [3][-]{subsubsection.3.3.2}{Real-time Bus Information}{subsection.3.3}% 39
+\BOOKMARK [3][-]{subsubsection.3.3.3}{Summary of Extended Research}{subsection.3.3}% 40
+\BOOKMARK [2][-]{subsection.3.4}{Testing}{section.3}% 41
+\BOOKMARK [3][-]{subsubsection.3.4.1}{Testing Raaum's Application}{subsection.3.4}% 42
+\BOOKMARK [3][-]{subsubsection.3.4.2}{Adjustments Made to Raaum's Application}{subsection.3.4}% 43
+\BOOKMARK [3][-]{subsubsection.3.4.3}{Testing BusTUC and The Real-time System}{subsection.3.4}% 44
+\BOOKMARK [2][-]{subsection.3.5}{Finalising Raaum's Application}{section.3}% 45
+\BOOKMARK [3][-]{subsubsection.3.5.1}{Location}{subsection.3.5}% 46
+\BOOKMARK [3][-]{subsubsection.3.5.2}{Map with Bus Stops}{subsection.3.5}% 47
+\BOOKMARK [3][-]{subsubsection.3.5.3}{User Feedback}{subsection.3.5}% 48
+\BOOKMARK [2][-]{subsection.3.6}{TABuss}{section.3}% 49
+\BOOKMARK [3][-]{subsubsection.3.6.1}{Development Framework}{subsection.3.6}% 50
+\BOOKMARK [3][-]{subsubsection.3.6.2}{Architecture}{subsection.3.6}% 51
+\BOOKMARK [3][-]{subsubsection.3.6.3}{User Interface}{subsection.3.6}% 52
+\BOOKMARK [3][-]{subsubsection.3.6.4}{Context Awareness}{subsection.3.6}% 53
+\BOOKMARK [3][-]{subsubsection.3.6.5}{BusTUC and Natural Language}{subsection.3.6}% 54
+\BOOKMARK [3][-]{subsubsection.3.6.6}{Real-time Functionality}{subsection.3.6}% 55
+\BOOKMARK [3][-]{subsubsection.3.6.7}{Storage}{subsection.3.6}% 56
+\BOOKMARK [3][-]{subsubsection.3.6.8}{Display of Answers}{subsection.3.6}% 57
+\BOOKMARK [3][-]{subsubsection.3.6.9}{Optimisation}{subsection.3.6}% 58
+\BOOKMARK [3][-]{subsubsection.3.6.10}{Shifting Functionality to MultiBRIS' Server}{subsection.3.6}% 59
+\BOOKMARK [1][-]{section.4}{Results}{}% 60
+\BOOKMARK [2][-]{subsection.4.1}{Performance}{section.4}% 61
+\BOOKMARK [2][-]{subsection.4.2}{Optimisation with MultiBRIS' Server}{section.4}% 62
+\BOOKMARK [2][-]{subsection.4.3}{Screenshots}{section.4}% 63
+\BOOKMARK [3][-]{subsubsection.4.3.1}{Screenshot Descriptions}{subsection.4.3}% 64
+\BOOKMARK [2][-]{subsection.4.4}{System Testing}{section.4}% 65
+\BOOKMARK [2][-]{subsection.4.5}{User Testing}{section.4}% 66
+\BOOKMARK [3][-]{subsubsection.4.5.1}{General Opinion}{subsection.4.5}% 67
+\BOOKMARK [3][-]{subsubsection.4.5.2}{Suggestions}{subsection.4.5}% 68
+\BOOKMARK [3][-]{subsubsection.4.5.3}{Implemented Suggestions}{subsection.4.5}% 69
+\BOOKMARK [3][-]{subsubsection.4.5.4}{Conclusion}{subsection.4.5}% 70
+\BOOKMARK [1][-]{section.5}{Discussion}{}% 71
+\BOOKMARK [2][-]{subsection.5.1}{Advantages}{section.5}% 72
+\BOOKMARK [2][-]{subsection.5.2}{Improvements}{section.5}% 73
+\BOOKMARK [2][-]{subsection.5.3}{Answer to Research Questions}{section.5}% 74
+\BOOKMARK [3][-]{subsubsection.5.3.1}{The Future of The Application}{subsection.5.3}% 75
+\BOOKMARK [1][-]{section.6}{Future work}{}% 76
+\BOOKMARK [2][-]{subsection.6.1}{TABuss}{section.6}% 77
+\BOOKMARK [3][-]{subsubsection.6.1.1}{Known Bugs}{subsection.6.1}% 78
+\BOOKMARK [2][-]{subsection.6.2}{Future Research}{section.6}% 79
+\BOOKMARK [3][-]{subsubsection.6.2.1}{Speech Processing}{subsection.6.2}% 80
+\BOOKMARK [3][-]{subsubsection.6.2.2}{Context Awareness}{subsection.6.2}% 81
+\BOOKMARK [3][-]{subsubsection.6.2.3}{Intelligent Computations}{subsection.6.2}% 82
+\BOOKMARK [3][-]{subsubsection.6.2.4}{Future Extensions of TABuss}{subsection.6.2}% 83
+\BOOKMARK [2][-]{subsection.6.3}{BusTUC}{section.6}% 84
+\BOOKMARK [2][-]{subsection.6.4}{Real-time}{section.6}% 85
+\BOOKMARK [1][-]{section.7}{Acknowledgements}{}% 86

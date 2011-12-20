@@ -1,0 +1,39 @@
+\subsection{Advantages}
+We are satisfied with the development process, including the learning of new technology aspects involving Android. There were no major problems during development, and research progressed in parallel. The implementation of new features was done in iterations, resulting in a functional application for every demo.
+
+\subsection{Improvements}
+Development was delayed due to unavailability of the source code from the Raaum's application\cite{mag}. In retrospect, we should have been more aggressive towards retrieval. Due to tragical circumstances there was also a switch of supervisors. This happened at an unfortunate time, as decisions had not yet been made regarding task descriptions. Whether this lead to less functionality being implemented is uncertain, as development progressed rapidly when the source code eventually was received. 
+
+The shifting of functionality to MultiBRIS' server \cite{multibris} caused some duplicate programming, as MultiBRIS began the implementation of server functionalities in parallel to our development. While not visible in the running of TABuss, parts of the source code providing the same functionalities, is written separately by both groups. 
+
+\subsection{Answer to Research Questions}
+Reviewing the defined goals, we claim that all have been fulfilled. 
+
+Raaum's application\cite{mag} has been thoroughly reviewed and tested, and all obvious bugs have been fixed. This was done before any new functionalities or major changes were implemented. While the time estimates regarding duration was exceeded, the goal is still considered to be reached.
+
+None of the research papers regarding natural language directly affected development, as the purpose was to facilitate for future work. The articles found and analysed represent a good foundation.
+
+The implementation of a new user interface was an important goal to reach. The resulting user interface is satisfying, and the feedback received from users support the graphical choices made. Doing design with usability in mind was given a considerate amount of resources, as it was important that an acceptable suggestion was finalised within given time.
+
+For the actual development, all planned functionalities involving usage of real-time data were implemented, including searching and storing possibilities.
+
+The standard syntax for BusTUC queries was also implemented. Hopefully, users will prefer the new syntax, but both syntaxes are still available.Together with the text messaging service, covering usage without an internet connection, natural language queries can now be sent to BusTUC in three different ways.
+
+The server shifting proved to be successful. While TABuss still works as a stand-alone application, computational gains are achieved, especially during start-up. The loading of bus stop lists has been reduced, and the loading of the Real-time ID list has been removed. The time estimated for shifting functionality was about the same as the actual time spent. The shifting is considered to be permanent at this point. Future development should continue to utilise the server, as more functionality developed client-side would put further restraints on the underlying resources.
+
+It was concluded during research of existing solutions in section \ref{sec:existingtrondheim}, that \emph{Bartebuss} and \emph{Alf's ByBuss} were comparable applications to TABuss. As Rune M. Andersen has been available as a resource through the development process, \emph{Bartebuss} has mainly been used for comparisons. Compared to \emph{Bartebuss}, TABuss' functionalities are more focused on user location and context awareness. In our opinion, intelligence is what separates TABuss from \emph{Bartebuss}, and also from the other test subjects for Trondheim. We claim that in order for an intelligent bus route information application to actually ''be intelligent'', the natural input source is context data. Whether TABuss can be classified as ''better'' is unsure, as \emph{Bartebuss} has been developed over a longer period of time, and been through more extensive user testing. Still, we feel TABuss represents a more complex approach, with market potential, as no other applications have the exact same functionalities. 
+
+We discussed in Section \ref{sec:nativeweb} the advantages and disadvantages with native and web development, and stated that both of the project members prefer native. In retrospect we are satisfied with our technology choice. Compared to \emph{Bartebuss}, a technology difference is in the storage functionalities. For Bartebuss to work cross-platform and also through a regular browser, ''web storage'' through ''local storage'' is used\footnote{http://en.wikipedia.org/wiki/Web\_Storage}. The size limit of local storage depends on which browser is used, but is no bigger than 10 MB(Internet Explorer). TABuss uses the devices' external storage, where the size limit depends on the size of the mounted SD-card, which normally can store gigabytes of information. While not necessary in the current version of TABuss, future extensions could need more storage space than 10 MB. The storage limitation of local storage also affects the iOS version of Bartebuss, where the internal storage optimally is used instead(external storage not available).
+
+The map problems in web applications deployed on the Android platform are avoided in TABuss, where the map is much more responsive. Native development also allows for pinch zooming, which is an important feature when navigating. 
+
+The use of \emph{activities} utilise the devices' screen sizes, because the same information does not have to be displayed at all times(can instead navigate between activities). TABuss also binds the devices' buttons to functionalities such as the home screen menu, which also contributes to minimise the amount of displayed information.
+
+Although web applications can be deployed on multiple platforms, native applications provide, in our opinion, the best user experience for Android and our domain. We prefer to rather develop a competitive application for a specific platform, than to deploy a ''working'' solution to more. It has to mentioned that this is given today's web application performance on Android. Future SDK updates will benefit web application development and improve the browser rendering\footnote{http://www.sencha.com/blog/galaxy-nexus-the-html5-developer-scorecard/}. The problem is that older devices will not receive these updates, and it will also take time for newer devices to get them. The releases to newer devices almost always have to wait until the different manufacturers have adapted their own distributions. Developers will then have a dilemma on which SDK versions to target, and which users to exclude.
+
+TABuss does not represent a complete solution or the ''holy grail'' for intelligent route information applications. It represents a contribution, and a motivation for others to do future development. We have illustrated possibilities with mobile development and artificial intelligence and, together with MultiBRIS' server\cite{multibris}, developed a working system. TABuss differs from other applications providing bus route information in Trondheim, and has not at this point any competitors regarding the level of artificial intelligence.
+
+
+\subsubsection{The Future of The Application}
+The future of the application is to be decided by the department. The concept of an intelligent bus route information system will most likely continue to be pursued during next semester's masters thesis. However, the direct involvement of TABuss is unsure.
+

@@ -1,0 +1,54 @@
+This report is the final product by Lars M Eliassen and Christoffer Jun Marcussen for the course TDT 4501, Department of Computer and Information Science, NTNU, 2011.
+
+\subsection{Task Description}
+The task at hand was given by Tore Amble at IDI, NTNU:
+\begin{quotation}
+\begin{center}
+\emph{FUIROUS - Fremtidens ultimate intelligente ruteopplysningssystem.} 
+\end{center}
+\vspace{10 pt}
+\emph{
+BusTUC is a natural language bus route system for Trondheim. It gives information about scheduled bus route passings, but has no information about the real passing times. This is about to change, because AtB has installed GPS tracking of the buses, giving access to real passing times and delays. Besides, with new smart phones arriving rapidly on the market, there are possibilities for GPS localisation and connections to maps. The project shall take a broad view, and consider all possible advanced concepts, resulting in advanced smart phone applications.}
+\end{quotation}
+\vspace{10 pt}
+
+\subsection{Terminology}
+Explicit terms not covered by the following abbreviations are in this report written in \emph{italic}.
+\input{Abbreviations.tex}	
+\subsection{Background and Motivation}
+BusTUC\cite{busstuc} became publicly available to the inhabitants of Trondheim in 1998, based on time tables by the bus company Trondheim Trafikkselskap. Since the commercialisation by LingIT\footnote{http://nyweb.lingit.no/nb/om-lingit/tuc} in 2001, approximately one million queries have been asked every year. Now hosted by AtB\footnote{https://www.atb.no/}, BusTUC can be accessed through both the web and Short Message Service (SMS). 
+
+With the recent progress in smartphone technology, several bus route information applications have become available. Here, we present TABuss, an intelligent application developed to explore new possibilities within the bus route information domain and to utilise more smartphone capabilities. The aim is to close in on the concept of an ultimate intelligent bus route information system.
+
+TABuss is the result of continued development of a previous project\cite{mag}. It was initiated by Magnus Raaum, a former M.Sc student at the Department of Computer and Information Science(IDI), NTNU. 
+
+
+\newpage
+\subsection{Goals}
+The goals were based on their estimated time consumption and the time available, both regarding reviewing Raaum's project, and the implementation of new functionality. 
+
+\subsubsection{Reviewing and Re-implementing Raaum's Application}
+Raaum's application\cite{mag} was not tested thoroughly. User testing is important, to detect \emph{black-box}\footnote{http://en.wikipedia.org/wiki/Black-box\_testing} errors. \emph{White-box}\footnote{http://en.wikipedia.org/wiki/White-box\_testing} was also performed and it highlighted several flaws leading to frequent crashes when using the application. Testing had to be addressed before adding new functionality, and should also be done before a future release.
+
+
+\subsubsection{Research of Similar Applications}
+There are several existing applications available using BusTUC and real-time data. Research must be done to gather inspiration, and also to see what the standards are, and what functionality TABuss should contain to be competitive. Existing research performed in the domain of intelligent route information systems should also be reviewed, to guide future development.
+
+\subsubsection{Real-time Functionality}
+Real-time data was already introduced in Raaum's application as a way to improve the BusTUC answers. Real-time data can also be used to: E.g. show the user real-time data for the bus stops closest to the his/her location or any other bus stop. Real-time information itself is not within the domain of artificial intelligence, but it can be used as a valuable resource in intelligent systems.
+
+\subsubsection{Artificial Intelligence}
+The new artificial intelligence functionalities within TABuss' scope, are mainly related to different usages of BusTUC. In Raaum's application, BusTUC was accessed through web communication with a nested syntax. It is a project goal to find alternative ways of handling both the user input and the network communication. 
+
+Other interesting features to study are context and context awareness. Possibilities in context awareness, starting with a formal definition of  context, are addressed Section \ref{sec:catechnology}.
+
+\subsubsection{Improvement of The User Interface}
+The user interface in Raaum's application was prototypic. The user interface is important for the user experience, e.g: A user is more likely to use applications that are easy to navigate and use. The average user might reject an application after only a few seconds of use, if the user interface is not aesthetically pleasing and intuitive. Therefore, an effort has to been made to design a new user interface that is easy to navigate.
+
+\subsubsection{Shifting to the MultiBRIS Server}
+As mobile devices suffer from restricted hardware compared to stationary devices, performing all the computations on the client-side can affect both performance and battery power. It was therefore decided to shift all the core functionality to an external server, MultiBRIS\cite{multibris}.
+
+
+
+
+

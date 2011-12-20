@@ -1,0 +1,221 @@
+In this section we first identify solutions similar to TABuss, found in Trondheim and in other parts of the world, before we describe the development process.
+
+At the beginning of the project, MultiBRIS\cite{multibris} planned the implementation of a server hosting the application logic, including the communication with BusTUC\cite{busstuc} and AtB's real-time system. The development sections first describe the implementation of TABuss without thinking about the server functionalities. Then, the shifting to the server and necessary adjustments are described.
+
+\input{Research/Research.tex}
+
+\subsection{Testing}
+In this section we identify several existing problems that will be fixed in this project, or in the extension projects in the spring 2012.
+\input{TestingTheApplication/TestingTheApplication}
+
+\subsection{Finalising Raaum's Application}
+Raaum's application has several errors (see Section\ref{sec:testing}), and finalising his application was prioritised before the implementation of new functionalities. 
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[width=0.9\textwidth]{Method/Figures/noserver.png}
+\caption{Query functionality}
+\label{fig:noserver}
+\end{center}
+\end{figure}
+\subsubsection{Location}
+The user's location is retrieved through a position technology such as WiFi, 3G or GPS. The accuracy depends on the choice, as WiFi provides higher accuracy than 3G. The reason for this, is partially controversial\footnote{http://www.wired.com/threatlevel/2010/05/google-street-view-cams/}: Google scanned and stored MAC-addresses in the process of developing Google Street View. 
+
+Raaum's application has problems displaying the location of the user. The marker used to display the user's location moved when the user zoomed. There is also no indication of how accurate a location fix is. This is solved by the implementation of an Android built-in overlay\footnote{http://code.google.com/intl/no-NO/android/add-ons/google-apis/reference/com/google/android/maps/MyLocationOverlay.html}, where a circle is drawn to display the user's location. The circle's diameter is determined by the accuracy of the location fix. Raaum's application also does not give the user any feedback if a location fix is lost. 
+
+When TABuss starts, it retrieves a location fix and does not proceed until one is present. How long this takes is dependent on location technology, e.g Edge is likely to use more time than WiFi. If the location fix is lost, a warning is given if the user tries to use functionalities dependent on his/her location.
+
+\subsubsection{Map with Bus Stops}
+\label{sec:mapsstops}
+The displayed map is re-implemented to allow touch events, triggered by pressing bus stop icons. The map is changed to use an ''ItemizedOverlay'' \footnote{http://code.google.com/intl/no-NO/android/add-ons/google-apis/reference/com/google/android/maps/ItemizedOverlay.html}, which the bus stop icons are added to. The XML-file containing bus stop information is also replaced, and TABuss now uses two bus stop lists. One contains information on all bus stops, and one only contains information on one bus stop per bus stop group. The latter is used in the BusTUC query functionality, where only a bus stop's name is required. If we use the list with information on all bus stops, duplicate bus stop names are included in queries. This happens because bus stops within a bus stop group often are located close to each other.
+
+An example of the content in the bus stop lists is shown in table \ref{tab:list}. Each list element contains: The bus stop's ID, the bus stop's name and the bus stop's coordinates.
+\begin{table}[h!]
+\centering
+\caption{Bus stop list}
+\label{tab:list}
+\begin{tabular}{|c|c|c|}
+\hline
+ ID & Name & Latitude,longitude \\
+\hline
+16538544 & \O ie skole &10.254138,63.32273 \\
+16011292 & Marcus Thranes vei &10.367198,63.35539 \\
+16011374 & Ranheim idrettsplass & 10.521225,63.42812 \\
+16010258 & Anders Buens gate &10.429856,63.43846 \\
+... & ... & ...\\
+\hline 
+\end{tabular}
+\end{table}
+
+\subsubsection{User Feedback}
+An important part of the user experience is to get feedback when errors occur, caused by either faulty user input or a system failure. A system failure in Raaum's application involves errors from BusTUC, the real-time system and the application itself.
+In TABuss, feedback is returned to the user both when actions are performed and when exceptions are caught:
+
+\begin{itemize} 
+    \item{Progress bars for start-up operations}
+    \item{Progress bars for query runs}
+    \item{Error message for missing internet connection}
+    \item{Error message for missing location fix}
+    \item{Error message for missing mounted SD-card}
+    \item{Error message for no result found for query}
+    \item{Error message for empty input in text fields}
+\end{itemize}
+
+
+\subsection{TABuss}
+The following sections provide an overview of the development of TABuss.
+
+\subsubsection{Development Framework}
+The development of TABuss has followed Scrum\footnote{www.scrum.org}'s guidelines for iterative development.
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[width = 0.5\textwidth]{Method/Figures/homescreen.png}
+\caption{Activity overview}
+\label{fig:homescreen}
+\end{center}
+\end{figure}
+
+\subsubsection{Architecture}
+The development part focuses on making usage of the application as easy as possible. By encouraging thumb-navigation, the map is reduced to an extra feature. Raaum's application runs only one activity, which also includes the map. This means map info is downloaded every time the application runs. To avoid this, TABuss is divided into several activities, where the top activity defines a home screen. Menu and button presses start other activities, and the users can choose for themselves whether or not to use the map.
+
+\vspace{0.5cm}
+\begin{figure}[ht]
+\begin{minipage}[b]{0.5\linewidth}
+\centering
+\includegraphics[width=0.5\linewidth]{Method/magnus1.png}
+\label{fig:figure1}
+\end{minipage}
+\hspace{0.2cm}
+\begin{minipage}[b]{0.5\linewidth}
+\centering
+\includegraphics[width=0.5\linewidth]{Method/magnus2.png}
+\label{fig:figure2}
+\end{minipage}
+\caption{Screenshots of Raaum's application.}
+\end{figure}
+
+\subsubsection{User Interface}
+The user interface in Raaum's application consists only of the screen in Figure \ref{fig:figure1}. Queries are sent and answers displayed in the top section of the screen, while the bottom section displays the map.
+
+One of the most important principles when designing a user interface, is simple and intuitive usage. Extended functionalities require more screens, and has to be solved carefully to achieve user friendliness.
+
+According to \cite{mchallenges}, one of the challenges in mobile computing is the small displays. Even though this article was written in 1994 and the size and resolution of mobile devices have increased since then, it remains a challenge. While a laptop-computer has a 15 inch screen, the minimum requirement for an Android device is 2.5 inches and QVGA resolution (240 $\times$ 320 pixels)\footnote{http://source.android.com/compatibility/index.html}. To cope with the small screen sizes, the amount of elements in the user interface is reduced to a minimum.
+
+\begin{quotation}
+\emph{
+The acronym KISS (Keep It Simple, Stupid) applies well to interface design. A simple, effective interface should be designed with the users' needs taking first priority.} \cite{guikisses}
+\end{quotation}
+\vspace{10 pt}
+\begin{figure}
+\begin{tabular}{ccc}
+\includegraphics[width=0.25\linewidth]{DesigningGUI/magnus1.png} & 
+\includegraphics[width=0.25\linewidth]{DesigningGUI/earlydraft.png}&
+\includegraphics[width=0.25\linewidth]{DesigningGUI/finaldraft.png}
+\end{tabular}
+\caption{a) Raaum's home screen, b) First draft, c) Final draft}
+\end{figure}
+The user interface is designed following the ``KISS'' and the ``Less is more'' principles. We want to keep it as basic as possible, while still being aesthetically pleasing. Icons are not used as we want focus on the displayed text.
+
+We chose to use the colours from the AtB website\footnote{www.atb.no}, as these colours are associated with buses by the people in Trondheim.
+An early version of the user interface had buttons resembling the LCD signs found on the front of buses, but as the user interface in other features of the application did not have a similar look, a more simplistic approach was chosen in the end. Contrasting colours are used to make the text visible under various lighting conditions.
+
+The route suggestions in Raaum's application are text based. This is not a very good solution for handheld devices with small screens,and is redesigned to show only the most important information, where intuitive layout replaces unnecessary text.
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{DesigningGUI/suggestion.png}
+\caption{The answer screen.}
+\end{center}
+\end{figure}
+
+\subsubsection{Context Awareness}
+\label{sec:contextawareness}
+
+Context is mainly extracted from the user's location. The device's location listener automatically loads the bus stop objects(from the bus stop list) closest to the user's location, when a location change has been triggered. Real-time data for these can be accessed from the map, or through a list available in the menu. The closest bus stops also play an important part in the main query functionality, where the user's location determines which bus stops are included as departure stops.
+\setlength{\intextsep}{0pt}
+\begin{wrapfigure}{l}{0.5\textwidth}
+  \begin{center}
+    \includegraphics[scale=0.3]{Method/enfigur.png}
+
+  \end{center}
+  \caption{Context retrieval}
+\end{wrapfigure}
+\setlength{\intextsep}{3pt}
+To distinguish TABuss from the many existing solutions, extra functionality is added by giving the user the option to let the application guess where he/she is going. A simplified version of case-based reasoning \cite{aam} is implemented, by logging each made query as a case. These data are stored locally in a database, where each case consists of: The departing area, time of day, day of week and destination. Departure areas are squares of 500 $\times$ 500 metres, with defined area codes stored in a separate table. Whenever a new log item is created, a new area is created if the origin location is not covered by an existing area.
+
+To retrieve relevant cases, queries with similar origin and time are fetched from the database. Similarity is implied by identical areas and somewhat similar time of day. For now, +/- 2 hours is used. The retrieved cases are rated by the euclidean distance between each case, and the current time and weekday. The best matching destination is then presented to the user. +/- for hours is used as finding a direct match is difficult. We want to also include delayed bus departures, and bus departures from within a time period.
+
+When TABuss suggests a route, the user can respond by validating the result. At the current moment positive user feedback triggers a query run, while negative feedback has no effect.
+
+The level of intelligence is fairly low, but is still higher than in functionalities with direct look-ups, e.g ''if val.equals(another)''. 
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.3]{Intelligence/database.png}
+\caption{Database tables}
+\end{center}
+\end{figure}
+\newpage
+\subsubsection{BusTUC and Natural Language}
+To enhance the use of natural language in TABuss, new functionalities which use BusTUC are implemented. Raaum's application only requires a destination as input, which limits the amount of natural language provided to the system. New functionality is firstly the option to switch between the BusTUC syntaxes, defined in section \ref{sec:bustuc}. While the new syntax assumes that the user wants to depart from one of the closest located bus stops, the standard syntax allows for user defined departure stops. Switching between the two BusTUC syntaxes can be done in the home screen menu.
+
+The second part involves AtB's text messaging service\footnote{https://www.atb.no/spoer-bussorakelet/category228.html}. An SMS query starts with ''rute''(route), followed by text, to 2027. This has been incorporated in two ways. If the new BusTUC syntax is chosen from the home screen menu, TABuss uses the closest bus stop to the user's location as the departure stop. If the standard syntax is chosen, the user has to provide both departure and destination input.
+
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[width = 0.9\textwidth]{Method/Figures/webend.png}
+\caption{Web end communication}
+\end{center}
+\label{fig:webend}
+\end{figure}
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[width = 0.9\textwidth]{Method/Figures/sms.png}
+\caption{SMS communication}
+\end{center}
+\label{fig:sms}
+\end{figure}
+
+
+\subsubsection{Real-time Functionality}
+Real-time data can be accessed from the map by pressing a bus stop icon, or through the home screen menu. Both functionalities use the user's location to retrieve and display the $n$ closest bus stops.
+
+The retrieval of a bus stop's ID is done by comparing the chosen bus stop's location with the locations of each of the $n$ closest bus stops. If matched, the found bus stop ID is used to extract the real-time ID. The real-time ID is then sent via SOAP to the real-time server, which returns the five next bus departures.
+The user can also search for bus stops that are not among the $n$ closest, by providing a bus stop name as input. This option also lets the user select which direction to retrieve real-time data for(from/towards the city centre), before a real-time query is sent.
+
+\subsubsection{Storage}
+The external and internal storages are used with SD-card external storage, and a SQLite\footnote{http://www.sqlite.org/} internal storage database. Favourite strings are stored on the SD-card in text files in a ''favourite'' folder. On application start-up, these are retrieved and displayed in the home screen as query shortcuts. The SD-card also stores a text file with all bus stop names. This list is used for the auto-completion functionality in the input text fields.
+
+The SQLite-database contains logged queries and a history of performed real-time searches for bus stop names. The latter allows quick retrieval of previously performed searches.
+
+\subsubsection{Display of Answers}
+The display of query answers is built from scratch. Route suggestions are displayed in a list view, where touch events on a list element trigger a map activity. This map activity shows: The user's location, the location of the selected departure bus stop and a walking route between the two locations. As mentioned in section \ref{sec:maps}, Android does not provide direct access to the Google Maps API, and no native functionality for plotting is available. Our solution is to use KML-files\footnote{http://code.google.com/intl/no-NO/apis/kml/documentation/} for retrieval of walking coordinates between locations. Plotting is done using an ''ItemizedOverlay''.
+
+
+
+\subsubsection{Optimisation}
+To not the map as a main feature is an optimisation, as data traffic is minimised. Other implemented optimisations are according to the limitations with handheld devices. Unnecessary object creations are avoided by using static calls. Existing objects are also used across \emph{activities} if possible. The application will then check whether or not the needed objects exist, and only create new instances if not. As \emph{activities} over time can ''pop out'' of the \emph{activity stack}\footnote{http://developer.android.com/reference/android/app/Activity.html}, initialised objects do not always exist for the entire application lifetime.
+
+Logical computations are put in \emph{asynchronous threads}\footnote{http://developer.android.com/reference/android/os/AsyncTask.html}. This parallelisation makes the start-up of the application faster, and also allows for progress bars to be integrated. Threading is also introduced in the retrieval of real-time data for route suggestions, where a computation time half of the original is achieved. The application creates a new thread for each bus stop to retrieve real-time data for, and sends all queries in parallel. The threads are stopped and removed by a recursive call, when all queries have returned answers.
+
+\subsubsection{Shifting Functionality to MultiBRIS' Server}
+To shift core functionality to a separate server has advantages. During the mentioned Google I/O talks referred to in section \ref{sec:nativeweb}, Reto Meier emphasised the importance of energy conservation in applications because of battery constraints. As back-end computations are shifted to a server, CPU cycles and battery power are saved. Another advantage is the reduced amount of data traffic. In a query involving BusTUC and real-time updates of the departure times, only one query has to be sent to the server. When the application is used stand-alone, a query has to be sent to each.
+
+However, there are disadvantages with the usage of servers. Adding another layer introduces an error source in the communication between the application and the server. BusTUC and the real-time system can be available, but if the server crashes, the application will not receive a response. A server also has to be maintained and updated. 
+
+Advantages and disadvantages are further described by MultiBRIS\cite{multibris}.
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[width = 0.9\textwidth]{Method/Figures/server.png}
+\caption{Queries with MultiBRIS' server}
+\label{fig:server}
+\end{center}
+\end{figure}
+
+TABuss benefits from having a modular code architecture, where simple type boolean values control whether to use MultiBRIS' server. Results are either way parsed into dedicated class objects ready for display. 
+\newpage
+

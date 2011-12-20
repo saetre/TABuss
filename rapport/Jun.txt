@@ -1,0 +1,9 @@
+Notes 2 Jun:
+
+- Legge til overordnet oppgavetekst.
+- Debugge mer
+- Forskjellig busstoppnr for hver retning
+  Feks: Ila - gløshaugen: 16011192
+        Ila - buenget: 16010192
+
+- http://www.html5rocks.com/en/mobile/nativedebate.html

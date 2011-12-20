@@ -1,0 +1,41 @@
+\subsection{System Testing}
+TABuss has been tested before, during and after development. Most errors affecting core functionality were fixed during the testing of Raaum's application. Other errors were detected during runs, by running queries with different inputs, and also by adjusting the settings parameters. Testing was mainly done with the ''Eclipse Debugger\footnote{http://www.eclipse.org/}'', which displays error traces if exceptions occur. Our goal regarding error rate was not to achieve zero percent. With the project's time limitations, this would be too optimistic. Instead we decided to do testing continuously during implementation, fix what we could, and identify possible error sources for future reviewing. An example of a performed test was during the implementation of the error messages a user can be presented. Different scenarios were designed for the application to throw exceptions: Unmount of the SD-card after application start-up, disconnection from a network and lost location fix.
+
+Testing without the Eclipse debugger was done by travelling routes suggested by the application. Detected exceptions were stored on the test devices' SD-cards, and reviewed when connected to a development machine.
+
+\subsection{User Testing}
+A simplified user test was performed to get feedback of TABuss' functionalities. An extensive user test was not conducted because of time limitations, and issues with permission for public release of the application. 
+
+All of the test subjects were Trondheim inhabitants, and  experienced bus travellers.
+
+\subsubsection{General Opinion}
+The general user opinion indicated that the application was easy to use. However, some users experienced difficulties during installation, as their devices did not meet the original SDK requirements(2.3). 
+
+It was clear that the users appreciated our prioritising of user interface. Positive feedback was received on both the colour combinations and the layout. Most users preferred the application functionalities detached from the map, and feedback suggested the map should only be an add-on.
+
+Users found the query functionality to be useful. The main functionality with the new BusTUC syntax was seen as interesting. Accustomed to BusTUC with standard syntax, not having to provide the same amount of text was a time-saver. It was subsequently easier for the users to blame the system if an erroneous answer was returned, as user input was limited.
+
+
+The real-time data functionality for the closest bus stops was a functionality found quick to access and use. This especially applied to the real-time functionality accessible from the home screen, as this required less navigation than through the map.
+
+\subsubsection{Suggestions}
+All users requested a more extensive feedback from the system, when errors occurred. Errors such as: A missing internet connection and no location fix, had up to this point been covered by a general error feedback.
+
+For the query functionality, users requested the possibility to use the standard BusTUC syntax for queries not involving the closest located bus stops. This was not an option at the current development stage. Another suggestion was a ''settings''-screen,  allowing the user to set properties such as the number of bus stops to use in queries. 
+
+\subsubsection{Implemented Suggestions}
+When solving the installation problems some users had, a memory bug was discovered on Android 2.2. The loading and parsing of bus stop lists needed to be re-implemented, as a memory overflow occurred. The list used in Raaum's application\cite{mag} contained 498 elements, while the new lists each contains over 1000. After researching this error, a possible error source was found on a debugging forum \footnote{http://stackoverflow.com/occuring}. One forum user posted that he did not get his application to work with >505 elements. If correct, this explains why this was not detected during Raaum's project. A bug report had been filed to Google regarding this issue. The re-implementation consisted of manually parsing the XML-files,  instead of using Android's built-in parser. 
+
+For the system feedback request, additional error messages were added. This included checks for internet connection, mounted SD-card and location fix. The usage of the standard BusTUC syntax was also implemented. The last added suggestion was a settings functionality, which lets the user set different properties within given boundaries.
+
+\subsubsection{Conclusion}
+The user's opinions were divided in the choice between the BusTUC query functionality and only real-time functionality. A possible reason may be speed, as the BusTUC query functionality during user testing was not optimised. Another reason may be the limitations some users experienced with the new BusTUC syntax. 
+
+It is difficult to draw a concise conclusion after a narrow user test, but the feedback we received from the target users was valuable. We received implementation suggestions, information on errors and an indication that TABuss suited the needs of bus travellers. 
+
+
+
+
+
+
+

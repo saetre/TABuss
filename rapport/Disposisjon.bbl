@@ -1,0 +1,160 @@
+\begin{thebibliography}{10}
+
+\bibitem{aam}
+A.~Aamodt and E.~Plaza.
+\newblock Case-based reasoning: Foundational issues, methodological variations,
+  and system approaches.
+\newblock {\em AICom - Artificial Intelligence Communications}, 7, 1994.
+
+\bibitem{busstuc}
+Tore Amble.
+\newblock Bustuc: a natural language bus route oracle.
+\newblock In {\em Proceedings of the sixth conference on Applied natural
+  language processing}, ANLC '00, pages 1--6, Stroudsburg, PA, USA, 2000.
+  Association for Computational Linguistics.
+
+\bibitem{tsp}
+David~L. Applegate.
+\newblock {\em The Traveling Salesman Problem: a Computational Study}, page~1.
+\newblock Princeton University Press, 2006.
+
+\bibitem{Dey}
+Anind~K. Dey and Gregory~D. Abowd.
+\newblock Towards a better understanding of context and context-awareness.
+\newblock In {\em In HUC '99: Proceedings of the 1st international symposium on
+  Handheld and Ubiquitous Computing}, pages 304--307. Springer-Verlag, 1999.
+
+\bibitem{multibris}
+Trond~B\o e~Engell and Runar Andersstuen.
+\newblock Multibris: -a multiple-platform approach to the ultimate bus route
+  information system for mobile devices.
+\newblock Master's thesis, NTNU, December 2011.
+
+\bibitem{Onebusaway}
+Brian Ferris, Kari Watkins, and Alan Borning.
+\newblock Onebusaway: Location-aware tools for improving public transit
+  usability.
+\newblock {\em IEEE Pervasive Computing}, 2010.
+
+\bibitem{spectra}
+Jason Flinn, Soyoung Park, and M.~Satyanarayanan.
+\newblock Balancing performance, energy, and quality in pervasive computing.
+\newblock In {\em In Proceedings of the 22nd International Conference on.
+  Distributed Computing Systems}, pages 217--226, 2002.
+
+\bibitem{mchallenges}
+George~H. Forman and John Zahorjan.
+\newblock The challenges of mobile computing.
+\newblock {\em Computer}, 27(4):38--47, April 1994.
+
+\bibitem{astar}
+Peter~E. Hart, Nils~J. Nilsson, and Bertram Raphael.
+\newblock Correction to "a formal basis for the heuristic determination of
+  minimum cost paths".
+\newblock {\em SIGART Bull.}, pages 28--29, December 1972.
+
+\bibitem{hazas}
+Mike Hazas, James Scott, and John Krumm.
+\newblock Location-aware computing comes of age.
+\newblock {\em Computer}, 37:95--97, February 2004.
+
+\bibitem{kalman}
+R.E. Kalman and R.S. Bucy.
+\newblock A new approach to linear filtering and prediction problems.
+\newblock {\em Journal of Basic Engineering}, 82(1):35--45, 1960.
+
+\bibitem{ANN}
+S.V. Kolekar, S.G. Sanjeevi, and D.S. Bormane.
+\newblock Learning style recognition using artificial neural network for
+  adaptive user interface in e-learning.
+\newblock In {\em Computational Intelligence and Computing Research (ICCIC),
+  2010 IEEE International Conference on}, pages 1 --5, dec. 2010.
+
+\bibitem{mybus}
+S.D. Maclean and D.J. Dailey.
+\newblock Mybus: An advanced public transportation system based on the us tcip
+  standard.
+\newblock {\em Proceedings of the Seventh Annual World Congress on Intelligent
+  Transport Systems}, November 2000.
+
+\bibitem{maclean}
+S.D. Maclean and D.J. Dailey.
+\newblock Real-time bus information on mobile devices.
+\newblock In {\em Intelligent Transportation Systems, 2001. Proceedings. 2001
+  IEEE}, pages 988 --993, 2001.
+
+\bibitem{Pascoe}
+J~Pascoe.
+\newblock Adding generic contextual capabilities to wearable computers.
+\newblock {\em International Symposium on Wearable Computers}, 2:92--99, 1998.
+
+\bibitem{guikisses}
+John~A. Quarantillo.
+\newblock Gui kisses: Tips and strategies for interface design.
+\newblock {\em SUGI}, 24, April 1999.
+
+\bibitem{mag}
+Magnus Raaum.
+\newblock An intelligent smartphone application.
+\newblock Master's thesis, NTNU, 2010.
+
+\bibitem{raento}
+Mika Raento, Antti Oulasvirta, Renaud Petit, and Hannu Toivonen.
+\newblock Contextphone: A prototyping platform for context-aware mobile
+  applications.
+\newblock {\em IEEE Pervasive Computing}, 4:51--59, 2005.
+
+\bibitem{Raux03let'sgo:}
+Antoine Raux, Brian Langner, Alan~W Black, and Maxine Eskenazi.
+\newblock Let's go: Improving spoken dialog systems for the elderly and
+  non-natives.
+\newblock In {\em in Eurospeech03}, 2003.
+
+\bibitem{Ryan}
+N.~Ryan, J.~Pascoe, and D.~Morse.
+\newblock Enhanced reality fieldwork: the context-aware archaeological
+  assistant.
+\newblock In V.~Gaffney, M.~van Leusen, and S.~Exxon, editors, {\em Computer
+  Applications and Quantitative Methods in Archaeology (CAA 97), Oxford}, 1997.
+
+\bibitem{Schilit}
+Bill~N. Schilit and Marvin~M. Theimer.
+\newblock Disseminating active map information to mobile hosts, 1994.
+
+\bibitem{szc}
+Robert~J. Szczerba, Peggy Galkowski, Ira~S. Glickstein, and Noah Ternullo.
+\newblock Robust algorithm for real-time route planning.
+\newblock {\em IEEE Transactions on Aerospace and Electronic Systems}, 36(3),
+  July 2000.
+
+\bibitem{Turunen06evaluationof}
+Markku Turunen, Jaakko Hakulinen, and Anssi Kainulainen.
+\newblock Evaluation of a spoken dialogue system with usability tests and
+  longterm pilot studies: Similarities and differences.
+\newblock In {\em In Proceedings of Interspeech 2006}, 2006.
+
+\bibitem{Turunen_designof}
+Markku Turunen, Jaakko Hakulinen, Anssi Kainulainen, Aleksi Melto, and Topi
+  Hurtig.
+\newblock Design of a rich multimodal interface for mobile spoken route
+  guidance, 2007.
+
+\bibitem{Turunen_mobilespeech-based}
+Markku Turunen, Topi Hurtig, Jaakko Hakulinen, Ari Virtanen, and Sami Koskinen.
+\newblock Mobile speech-based and multimodal public transport information
+  services, 2006.
+
+\bibitem{vieira}
+Vaninha Vieira, Luiz~Rodrigo Caldas, and Ana~Carolina Salgado.
+\newblock Towards an ubiquitous and context sensitive public transportation
+  system.
+\newblock {\em International Conference on Ubi-Media Computing}, 0:174--179,
+  2011.
+
+\bibitem{wang}
+Alf~Inge Wang, Carl-Fredrik~S\o rensen, Steinar Brede, Hege Servold, and Sigurd
+  Gimre.
+\newblock Development of location-aware applications the nidaros framework,
+  2005.
+
+\end{thebibliography}

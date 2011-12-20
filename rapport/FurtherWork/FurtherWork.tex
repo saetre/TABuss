@@ -1,0 +1,69 @@
+\subsection{TABuss}
+\label{tabuss}
+TABuss has not been thoroughly user tested after its recent updates. A detailed user test will elucidate problems concerning both aesthetics and functionality, better than random bug reports from just a few users. Optimally, this should be done before TABuss is uploaded to the Android Market. 
+
+A functionality that is missing is dynamic switching from using MultiBRIS' server to using BussTUC and the real-time server directly. The intention is to switch if MultiBRIS' server experiences problems. Basic implementation should be relatively easy, as all the functionality exists for manual switching. More advanced implementations could be similar to the \emph{Spectra} system developed by Flinn, Soyoung Park and Satyanarayanan\cite{spectra}. \emph{Spectra} monitors resource usage during operations, and uses this to decide whether to perform operations locally, with a remote server or through a hybrid solution. In TABuss this would mainly concern the queries' time consumptions, and a choice to switch to stand-alone computations if the server is too busy. 
+
+The bus stop lists should reside on the server. Data should be downloaded to the application on start-up, and only if there are any changes since the last startup. As bus stop IDs and bus stop names are regularly updated by AtB , managing the lists on the server prevents the user from having to download a new version of TABuss each time a change occurs in the list.
+
+We were made aware of an SMS API text messaging service located at IME \footnote{http://boost.com}. Shifting to this could be an option for students to save some money on behalf of the department during debugging.
+
+The functionality for guessing a user's intended destination is incomplete, and only a little testing has been performed. Continued development should strive for getting correct suggestions most of the time. A high success rate is both intelligent and user friendly. In order to achieve a high success rate the "simplified" case-based reasoning described in Section \ref{sec:contextawareness} will have to be extended.
+
+To further utilise the advantages of native development, widget functionality could be implemented. An idea is to have a widget displaying information on the closest bus stop to the user's location. If the user chooses to access the widget, the widget itself could provide some information or trigger the start-up of the actual application.
+
+Another interesting field is Near Field Communication(NFC)\footnote{http://en.wikipedia.org/wiki/Near\_field\_communication}. NFC is based on RFID standards, and can be used to set up ad-hoc\footnote{http://en.wikipedia.org/wiki/Wireless\_ad-hoc\_network} networks. Typical usages include instant messaging services and games. A usage involving TABuss could be to integrate an RFID tag in every bus stop, and trigger display of real-time data when the user approaches.
+
+
+\subsubsection{Known Bugs}
+When downloading of real-time data the returned JSON objects from AtB's real-time system sometimes contains nodes with the wrong date, while the time is still correct. This does not affect the display of departure time, only the display of additional information on minutes to departure. The value grow erroneously large, as the wrong dates lead to wrong calculations. The real-time system is also unstable around midnight as it does not return JSON objects formatted similarly to the ones returned during daytime. In detail, the nodes containing departure times are missing. Both of these bugs are present in the real-time server, and will have to be addressed by AtB.
+
+
+Another bug is in the retrieval of the closest bus stops, and the distance to them (in metres). The built-in Android algorithm for calculating distance between two locations returns the air distance in metres. An optimal solution would be to use the walking distance: air distance disregards physical objects that may be blocking the way. A possibility is to use KML-files, as described in Section \ref{sec:mapsstops}.
+
+The application has (on a few occasions) continued to run in the background when it should have exited. This may indicate that there is a need for a more careful exit process.
+
+For the query functionality with BusTUC, TABuss sometimes cannot return an answer when the user is located in a specific area in the city centre. This problem occurs on the server, and is handled as any other exception by TABuss.
+
+
+\subsection{Future Research}
+This section identifies future research areas of FUIROUS and TABuss.
+\subsubsection{Speech Processing}
+IDI has a speech-extension to BusTUC(\emph{TeleBuster}),but there is no certainty to whether future development of this extension provides the best possible solution.
+
+\emph{TravelMan}(2007)\cite {Turunen_designof} (2006)\cite{Turunen06evaluationof} is an interesting system because of it's speech processing and route guidance. A goal could be to create a similar prototype, and compare with other implementations including \emph{TeleBuster}. 
+
+Architecturally, it is important to decide which parts of the system should perform the speech processing. Integrating the functionalities on MultiBRIS' server will minimise application computations and contribute to a modular solution. Application side implementations also has its advantages, such as sending small parsed texts across HTTP instead of sending large sound files. 
+
+While TABuss has explored the opportunities of involving smartphones, another area of research is the the extension of functionality to users with only regular cell phones. TABuss already utilises SMS for communication with BusTUC, and a speech recognising module could involve a simple calling interface. The predecessor to \emph{TravelMan}, \emph{StopMan}\cite{Turunen_mobilespeech-based}(2006), used a calling interface to provide route information, and could together with IDI's \emph{TeleBuster} be a natural starting point.
+
+\subsubsection{Context Awareness}
+TABuss uses location data as context input. An extension is to use more sensors than only the location sensor. Raento, Oulasvirta, Petit and Toivonen(2005) developed the system \emph{ContextPhone}\cite{raento}. \emph{ContextPhone} uses four sensors: location, user interaction, communication behaviour and physical environment. This means that besides from location information, \emph{ContextPhone} monitors: what actions the user performs, calls and SMSs and surrounding devices. 
+
+For TABuss, this sensor information could be used to introduce context awareness to the user interface. The age differences between potential target users is large, and an adaptive user interface could be a solution. The user interface could through sensors track the user's actions, register some trends and then adjust visibility and availability accordingly. An alternative may be in the direction of the work performed in 2010, by Kolekar, Sanjeevi and Bormane\cite{ANN}. They proposed an adaptive user interface solution with the use of feedforward artificial neural networks\footnote{http://en.wikipedia.org/wiki/Artificial\_neural\_network} and backpropagation\footnote{http://en.wikipedia.org/wiki/Backpropagation} to learn the user's behaviour.
+
+The tracking of user trends could also be used to perfect route suggestions. People of different ages have different levels of mobility, and have different walking speeds. This has been addressed by Vieira, Caldas and Salgado(2011), in their proposed system \emph{UbiBus}\cite{vieira}. UbiBus considers different people's and vehicle's mobility, and other factors than can affect a bus departure. An interesting idea is for AtB to contribute to such functionalities in order to improve route suggestions. Buses have installed cameras, and could be used to monitor how crowded a bus is. This could prove beneficial for handicapped people, or people with small children, who need seats or at least clear floor area.
+
+\subsubsection{Intelligent Computations}
+In Section \ref{tabuss}, the \emph{Spectra} system was mentioned. For TABuss to use a similar approach, resource usage has to be monitored. An algorithm implemented on MultiBRIS' server could then be used to make the actual choice, on whether TABuss should run queries as a stand-alone application, or to use MultiBRIS' server. 
+
+It is also possible to implement computations based on monitoring results client-side, in TABuss. Monitored data for runs could be stored on the device as cases, and a case-based reasoning implementation could retrieve the best matching ones. An artificial neural network approach is also possible, where the system makes decisions based on learnt information. Training could be done over a number of runs, for TABuss to learn which operations to perform locally, and which to perform through MultiBRIS' server. An example is a standard BusTUC query: if the monitored battery power is low, TABuss should opt for server computations to minimise CPU cycles. However, if the server is busy(caused by a high traffic load) TABuss has to view earlier runs in order to find the best solution.
+
+\subsubsection{Future Extensions of TABuss}
+A future extension could be to integrate TABuss into a tourist application. The \emph{Trondheim Guide}\footnote{www.trondheim.no/app} is an intelligent travel guide which already implements some bus information. This information is limited, and we could not find any information on arrival/departure times. Another alternative is \emph{City Explorer}\footnote{http://www.sintef.no/Projectweb/UbiCompForAll/Results/Software/City-Explorer/}, which is a framework for city exploration.
+
+
+\subsection{BusTUC}
+Future work on BusTUC involves researching other solutions for intelligent route information. As BusTUC is the only available candidate in Trondheim, there are no available comparisons. One specific task would be to do research on similar systems, and to develop comparable prototypes. Expansion of BusTUC outside of Trondheim, to cities of different sizes and number of inhabitants, is also an exciting option. If BusTUC turns out to be the best solution, a goal could be to establish it as a standard for bus route information in Norway.
+
+\subsection{Real-time}
+AtB has planned the implementation of SIRI\footnote{http://www.kizoom.com/standards/siri/}. SIRI is a CEN standard\footnote{http://www.cen.eu/cen/pages/default.aspx} XML-protocol for the retrieval of real-time data. In Oslo, Trafikanten has made the \emph{StopMonitoringRequests\footnote{http://www.kizoom.com/standards/siri/schema/1.4/examples/exs\_stopMonitoring\_request.xml}} publicly available through a JSON API.\emph{StopMonitoringRequests} offer the same functionalities as AtB's real-time system offers today, with real-time departure times of buses. By using a JSON API the overhead provided by SOAP-messages is avoided, which means less data needs to be transferred.  
+
+In the ''Experts in teamwork''\footnote{http://www.idi.ntnu.no/grupper/sos/eit2010/} subject in 2011, one of the project members participated in a project aimed towards the use of the SIRI standard. We were then made aware of AtB's plans, but also that delays already had occurred, and most likely would continue to occur. Keeping these delays in mind, TABuss' real-time functionalities should be more modularised. As AtB had no accurate answer for when the SIRI implementation would be finalised, a modularised application could benefit from a ''plug-and-play'' solution. TABuss would then not have to re-implement functionalities when the SIRI implementation is finalised, but simply swap.
+
+An ultimate goal should be for all bus companies to use the same standards. This would aid the development of bus route information systems, because adaptation to more cities would be simplified. When AtB has implemented the SIRI standard, real-time data for two major cities in Norway use the same standard. In addition has Bergen begun a real-time data trial period, with GPS trackers installed on trams\footnote{http://labs.trafikanten.no/2011/3/1/sanntid-paa-bybanen-i-bergen.aspx}. It may therefore be reason to believe that future real-time data implementations in other cities will follow the SIRI standard, which would simplify a future version of TABuss to be adapted to several cities.
+
+
+
+
+

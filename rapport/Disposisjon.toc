@@ -1,0 +1,86 @@
+\contentsline {section}{\numberline {1}Introduction}{6}{section.1}
+\contentsline {subsection}{\numberline {1.1}Task Description}{6}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Terminology}{6}{subsection.1.2}
+\contentsline {subsection}{\numberline {1.3}Background and Motivation}{7}{subsection.1.3}
+\contentsline {subsection}{\numberline {1.4}Goals}{8}{subsection.1.4}
+\contentsline {subsubsection}{\numberline {1.4.1}Reviewing and Re-implementing Raaum's Application}{8}{subsubsection.1.4.1}
+\contentsline {subsubsection}{\numberline {1.4.2}Research of Similar Applications}{8}{subsubsection.1.4.2}
+\contentsline {subsubsection}{\numberline {1.4.3}Real-time Functionality}{8}{subsubsection.1.4.3}
+\contentsline {subsubsection}{\numberline {1.4.4}Artificial Intelligence}{8}{subsubsection.1.4.4}
+\contentsline {subsubsection}{\numberline {1.4.5}Improvement of The User Interface}{9}{subsubsection.1.4.5}
+\contentsline {subsubsection}{\numberline {1.4.6}Shifting to the MultiBRIS Server}{9}{subsubsection.1.4.6}
+\contentsline {section}{\numberline {2}Existing technologies}{9}{section.2}
+\contentsline {subsection}{\numberline {2.1}BusTUC}{9}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}The Real-time System}{10}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Servers}{11}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Android OS}{12}{subsection.2.4}
+\contentsline {subsection}{\numberline {2.5}Android SDK}{12}{subsection.2.5}
+\contentsline {subsection}{\numberline {2.6}Devices}{13}{subsection.2.6}
+\contentsline {subsection}{\numberline {2.7}Maps}{14}{subsection.2.7}
+\contentsline {subsection}{\numberline {2.8}Application .apk-files}{14}{subsection.2.8}
+\contentsline {subsection}{\numberline {2.9}Developing Native Applications vs Web Applications}{14}{subsection.2.9}
+\contentsline {subsubsection}{\numberline {2.9.1}Web Applications}{15}{subsubsection.2.9.1}
+\contentsline {subsubsection}{\numberline {2.9.2}Native Applications}{16}{subsubsection.2.9.2}
+\contentsline {subsubsection}{\numberline {2.9.3}Comparison}{16}{subsubsection.2.9.3}
+\contentsline {subsection}{\numberline {2.10}Context Awareness}{17}{subsection.2.10}
+\contentsline {subsubsection}{\numberline {2.10.1}Location-aware Computing}{18}{subsubsection.2.10.1}
+\contentsline {subsubsection}{\numberline {2.10.2}Definitions}{18}{subsubsection.2.10.2}
+\contentsline {section}{\numberline {3}Method}{20}{section.3}
+\contentsline {subsection}{\numberline {3.1}Raaum's BusTUC Android Application}{20}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Existing Solutions in Trondheim}{20}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1}Bartebuss}{21}{subsubsection.3.2.1}
+\contentsline {subsubsection}{\numberline {3.2.2}Alf's ByBuss}{22}{subsubsection.3.2.2}
+\contentsline {subsubsection}{\numberline {3.2.3}Bussdroid}{22}{subsubsection.3.2.3}
+\contentsline {subsubsection}{\numberline {3.2.4}Busstider}{22}{subsubsection.3.2.4}
+\contentsline {subsubsection}{\numberline {3.2.5}BusBuddy API}{23}{subsubsection.3.2.5}
+\contentsline {subsubsection}{\numberline {3.2.6}Summary of Existing Solutions in Trondheim}{23}{subsubsection.3.2.6}
+\contentsline {subsection}{\numberline {3.3}Extended Research}{24}{subsection.3.3}
+\contentsline {subsubsection}{\numberline {3.3.1}Natural Language Applications}{24}{subsubsection.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.2}Real-time Bus Information}{25}{subsubsection.3.3.2}
+\contentsline {subsubsection}{\numberline {3.3.3}Summary of Extended Research}{26}{subsubsection.3.3.3}
+\contentsline {subsection}{\numberline {3.4}Testing}{27}{subsection.3.4}
+\contentsline {subsubsection}{\numberline {3.4.1}Testing Raaum's Application}{27}{subsubsection.3.4.1}
+\contentsline {subsubsection}{\numberline {3.4.2}Adjustments Made to Raaum's Application}{30}{subsubsection.3.4.2}
+\contentsline {subsubsection}{\numberline {3.4.3}Testing BusTUC and The Real-time System}{31}{subsubsection.3.4.3}
+\contentsline {subsection}{\numberline {3.5}Finalising Raaum's Application}{32}{subsection.3.5}
+\contentsline {subsubsection}{\numberline {3.5.1}Location}{32}{subsubsection.3.5.1}
+\contentsline {subsubsection}{\numberline {3.5.2}Map with Bus Stops}{33}{subsubsection.3.5.2}
+\contentsline {subsubsection}{\numberline {3.5.3}User Feedback}{33}{subsubsection.3.5.3}
+\contentsline {subsection}{\numberline {3.6}TABuss}{34}{subsection.3.6}
+\contentsline {subsubsection}{\numberline {3.6.1}Development Framework}{34}{subsubsection.3.6.1}
+\contentsline {subsubsection}{\numberline {3.6.2}Architecture}{35}{subsubsection.3.6.2}
+\contentsline {subsubsection}{\numberline {3.6.3}User Interface}{35}{subsubsection.3.6.3}
+\contentsline {subsubsection}{\numberline {3.6.4}Context Awareness}{37}{subsubsection.3.6.4}
+\contentsline {subsubsection}{\numberline {3.6.5}BusTUC and Natural Language}{38}{subsubsection.3.6.5}
+\contentsline {subsubsection}{\numberline {3.6.6}Real-time Functionality}{38}{subsubsection.3.6.6}
+\contentsline {subsubsection}{\numberline {3.6.7}Storage}{39}{subsubsection.3.6.7}
+\contentsline {subsubsection}{\numberline {3.6.8}Display of Answers}{39}{subsubsection.3.6.8}
+\contentsline {subsubsection}{\numberline {3.6.9}Optimisation}{40}{subsubsection.3.6.9}
+\contentsline {subsubsection}{\numberline {3.6.10}Shifting Functionality to MultiBRIS' Server}{40}{subsubsection.3.6.10}
+\contentsline {section}{\numberline {4}Results}{41}{section.4}
+\contentsline {subsection}{\numberline {4.1}Performance}{41}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Optimisation with MultiBRIS' Server}{41}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Screenshots}{42}{subsection.4.3}
+\contentsline {subsubsection}{\numberline {4.3.1}Screenshot Descriptions}{42}{subsubsection.4.3.1}
+\contentsline {subsection}{\numberline {4.4}System Testing}{45}{subsection.4.4}
+\contentsline {subsection}{\numberline {4.5}User Testing}{45}{subsection.4.5}
+\contentsline {subsubsection}{\numberline {4.5.1}General Opinion}{45}{subsubsection.4.5.1}
+\contentsline {subsubsection}{\numberline {4.5.2}Suggestions}{46}{subsubsection.4.5.2}
+\contentsline {subsubsection}{\numberline {4.5.3}Implemented Suggestions}{46}{subsubsection.4.5.3}
+\contentsline {subsubsection}{\numberline {4.5.4}Conclusion}{47}{subsubsection.4.5.4}
+\contentsline {section}{\numberline {5}Discussion}{47}{section.5}
+\contentsline {subsection}{\numberline {5.1}Advantages}{47}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Improvements}{47}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.3}Answer to Research Questions}{47}{subsection.5.3}
+\contentsline {subsubsection}{\numberline {5.3.1}The Future of The Application}{50}{subsubsection.5.3.1}
+\contentsline {section}{\numberline {6}Future work}{50}{section.6}
+\contentsline {subsection}{\numberline {6.1}TABuss}{50}{subsection.6.1}
+\contentsline {subsubsection}{\numberline {6.1.1}Known Bugs}{51}{subsubsection.6.1.1}
+\contentsline {subsection}{\numberline {6.2}Future Research}{51}{subsection.6.2}
+\contentsline {subsubsection}{\numberline {6.2.1}Speech Processing}{52}{subsubsection.6.2.1}
+\contentsline {subsubsection}{\numberline {6.2.2}Context Awareness}{52}{subsubsection.6.2.2}
+\contentsline {subsubsection}{\numberline {6.2.3}Intelligent Computations}{53}{subsubsection.6.2.3}
+\contentsline {subsubsection}{\numberline {6.2.4}Future Extensions of TABuss}{53}{subsubsection.6.2.4}
+\contentsline {subsection}{\numberline {6.3}BusTUC}{53}{subsection.6.3}
+\contentsline {subsection}{\numberline {6.4}Real-time}{54}{subsection.6.4}
+\contentsline {section}{\numberline {7}Acknowledgements}{55}{section.7}

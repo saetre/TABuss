@@ -1,0 +1,104 @@
+The following sections describe the development results of TABuss. 
+\subsection{Performance}
+Raaum's application suffered from poor performance. Queries took up to 40 seconds to complete, which is more than the average user is willing to wait. With the use of MultiBRIS' \cite{multibris} server, queries rarely use more than 10-15 seconds to return. 
+
+
+\subsection{Optimisation with MultiBRIS' Server}
+
+An important aspect when developing an application that uses 3G is to monitor data traffic. Table \ref{tab:without} and \ref{tab:with} display average results based on three different tests performed with the application 3G Watchdog\footnote{https://market.android.com/details?id=net.rgruet.android.g3watchdog}. The tested queries used \emph{Gl\o shaugen} as the departure stop. The first destination was set to \emph{Ila}, the second to \emph{sentrum} and the third monitored data traffic when only real-time data was downloaded.
+
+The results especially differ in the sending of data for the queries to \emph{Ila} and \emph{Sentrum}. As MultiBRIS' server handles all computations, only one request is sent from the application to the server for each query.
+
+Received data is also less, because only one result is returned. For the same queries in the stand-alone application, data was received from both BusTUC and the real-time system. There is also a significant reduction of downloaded data for the real-time query, because only a bus stop ID is sent from the application, and a JSON object is returned. 
+
+It is difficult to replicate the exact same query scenarios when doing comparisons, but as the server handles both computational operations(queries to BusTUC, and real-time updates of departure times), and minimises overhead provided by SOAP messages, we can conclude that less data is sent and received. 
+
+The stand-alone application in addition downloads a list mapping bus stop IDs to real-time IDs, on each start-up. This results in an average 400 kb of data, and is in MultiBRIS handled by the server.
+
+\begin{table}[!h]
+\caption{Data Usage without MultiBRIS' Server}
+\label{tab:without}
+\begin{center}
+    \begin{tabular}{ |  l  |  l  |  l  |  l  |}
+    \hline
+    Query & Ila & Sentrum & Real-time\\ \hline
+    Data sent & 5,5 kB & 8 kB & 4 kB\\ \hline
+    Data received & 6,1 kB & 4,4 kB & 4,5 kB \\ \hline
+    \end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[!h]
+\caption{Data Usage with MultiBRIS' Server}
+\label{tab:with}
+\begin{center}
+    \begin{tabular}{ |  l  |  l  |  l  |  l  |}
+    \hline
+    Query & Ila & Sentrum & Real-time\\ \hline
+    Data sent & 2 kB &  2 kB & 800 B\\ \hline
+    Data  received & 3,5 kB & 1,5 kB & 3,5 kB \\ \hline
+    \end{tabular}
+\end{center}
+\end{table}
+\subsection{Screenshots}
+\begin{figure}
+\begin{tabular}{ccc}
+\includegraphics[width=0.27\linewidth]{Results/startscreen.png} & 
+\includegraphics[width=0.27\linewidth]{Results/menu.png} &
+\includegraphics[width=0.27\linewidth]{Results/answer.png} \\
+\includegraphics[width=0.27\linewidth]{Results/textanswer} & 
+\includegraphics[width=0.27\linewidth]{Results/maprealtime.png} &
+\includegraphics[width=0.27\linewidth]{Results/realtime.png} \\
+\includegraphics[width=0.27\linewidth]{Results/realtimelist.png} & 
+\includegraphics[width=0.27\linewidth]{Results/otherbusstop.png} &
+\includegraphics[width=0.27\linewidth]{Results/other.png}\\
+\end{tabular}
+\caption{From top left: (1)start screen, (2)menu, (3)answer screen, (4)text answer, (5)map for real-time. Displaying user location and closest bus stops, (6)real-time for stop,(7)list of real-time stops, (8)Walking route, (9)Bus stop search}
+\end{figure}
+
+
+
+
+\subsubsection{Screenshot Descriptions}
+\begin{enumerate}
+\item{Start menu where text buttons represent shortcuts stored on the device's SD-card.}
+\item{Application menu. Menu elements are translated to English below. \\
+\begin{table}
+\caption{Translation of menu elements}
+    \begin{tabular}{ |  l  |  l  |}
+    \hline
+    \textbf{Norwegian} & \textbf{English} \\ \hline
+ Legg til ny & Add a new bus stop shortcut to the home screen\\ \hline
+   Logg & Logged queries\\ \hline
+    G\aa\ til kart & Proceed to map\\ \hline
+   Innstillinger & Settings\\ \hline
+   Om denne appen & About this application\\ \hline
+    \end{tabular}
+\end{table}
+}
+\item{The answer screen with results from a HTTP query with the new syntax. The displayed routes are the results of a BusTUC query with real-time updated departure times. In parenthesis, walking distance to the bus stop is shown. ''Overgang'' indicates the resulting route suggestions include a transfer.}
+\item{The answer screen with results from a text message query with the standard syntax. Both the text message and HTTP functionality with standard syntax, will output results to this answer screen.}
+\item{Map displaying user location. The closest bus stops are represented by clickable bus stop icons.}
+\item{Result of a real-time data query. The query is either initiated by menu access, or by a bus stop icon press.}
+\item{List of the closest bus stops to the user's location, accessed from the menu. On registered clicks, real-time data is downloaded for the selected bus stop. Each element also displays route direction, either towards or away from the city centre.}
+\item{Map displaying walking route to a departure bus stop suggested by query results.}
+\item{Search functionality for bus stops not in range of the user's location. If the search returns a bus stop, real-time data can be viewed. The list of elements below the input field contains recently searched bus stops. These are stored in a SQLite database.}
+\end{enumerate}
+
+
+
+\begin{figure}[!h]
+\begin{tabular}{ccc}
+\includegraphics[width=0.27\linewidth]{Results/contextaware.png} & 
+\includegraphics[width=0.27\linewidth]{Results/autocomplete.png} &
+\includegraphics[width=0.27\linewidth]{Results/settings.png}\\
+\end{tabular}
+\caption{From left to right: (1)guess based on context, (2)autocomplete, (3)settings}
+\end{figure}
+\begin{enumerate}
+\item{Suggestion from TABuss, based on stored cases. The bottom pop-up suggests a route, while the above dialog prompts for validation.}
+\item{Autocomplete suggestions, retrieved based on the two letters entered in the input field. If clicking a suggestion, a query is run with the chosen suggestion as the departure stop.}
+\item{The settings screen, where options are: delete logs, adjust number of bus stops to be included in queries with the new syntax, adjust number of bus stops to be displayed on the map, adjust search radius for bus stops and an option to switch between new and standard BusTUC syntaxes.}
+\end{enumerate}
+\input{Testing/Testing.tex}
+
