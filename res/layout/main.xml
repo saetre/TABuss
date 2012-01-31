@@ -11,7 +11,7 @@
         android:enabled="true"
         android:clickable="true"
 
-        android:apiKey="0dCUiNqFL6GnQ-hHe-sK2yF3sG5d7xZaR9w1ILA"/>
+        android:apiKey="05MLhk0p9hp2l6gi5P2sy-NJPyNEi-gtfd9Bq6g"/>
 
     <LinearLayout android:id="@+id/zoom" 
         android:layout_width="wrap_content" 
