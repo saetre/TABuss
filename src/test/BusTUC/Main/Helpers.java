@@ -146,6 +146,9 @@ public class Helpers
 	{
 		ArrayList <BusStop> busStops = Helpers.getLocationsArray(coords, "", currentLocation,1000,numStops, true);
 		ClosestStopOnMap []cl = new ClosestStopOnMap[numStops];
+		if(busStops.size() == 0) return cl;
+		else
+		{ 
 		for(int i = 0;i<numStops;i++)
 		{
 			cl[i] = new ClosestStopOnMap(new GeoPoint(
@@ -154,6 +157,7 @@ public class Helpers
 					(int) busStops.get(i).stopID,
 					busStops.get(i).name);
 
+		}
 		}
 		return cl;
 

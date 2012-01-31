@@ -284,7 +284,7 @@ public class Homescreen extends Activity{
 		AlertDialog.Builder alert = new AlertDialog.Builder(context);
 
 		// First input dialog 
-		alert.setTitle("Velg kjøring");
+		alert.setTitle("Velg kjøring. SMS koster 1 kr");
 		alert.setMessage("Query via nett eller sms til orakel");   
 
 		alert.setPositiveButton("SMS", new DialogInterface.OnClickListener() 
@@ -348,7 +348,7 @@ public class Homescreen extends Activity{
 		{
 			e.printStackTrace();
 			dictionary = new ArrayList <String>();
-			Toast.makeText(context, "Fant ikke SD-kort. Sjekk innstillnger, og start app pï¿½ nytt", Toast.LENGTH_LONG).show();
+			Toast.makeText(context, "Fant ikke SD-kort. Sjekk innstillnger, og start app på nytt", Toast.LENGTH_LONG).show();
 		}
 
 
@@ -489,6 +489,8 @@ public class Homescreen extends Activity{
 		{
 			busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, dist,numStops,false);
 		}
+		else busStopsNoDuplicates = new ArrayList<BusStop>();
+		
 		long first = System.nanoTime();
 		// Not needed when running on ReTro's server. Switched on or of by a bool val
 		//if(!server)busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords, provider, currentlocation, dist,numStops,false);
@@ -532,8 +534,8 @@ public class Homescreen extends Activity{
 			{
 				System.out.println("LOCATIONLISTENER CALLED IN HOMESCREEN");
 				currentlocation = location; 
-				//sentrumcurrentlocation.setLatitude(63.43235);
-				//currentlocation.setLongitude(10.394115);
+				//currentlocation.setLatitude(59.77075);
+				//currentlocation.setLongitude(9.91087);
 				// ila 10.367672,63.429256
 				//	10.394555,63.43109
 				//getSuggestionBasedOnPosition();
@@ -737,7 +739,7 @@ public class Homescreen extends Activity{
 			}
 			catch(Exception e)
 			{
-				Toast.makeText(context, "Could not retrieve real-time", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Kunne ikke hente ut sanntid", Toast.LENGTH_LONG).show();
 			}
 			return false;
 
@@ -792,7 +794,7 @@ public class Homescreen extends Activity{
 		//  ArrayList <String> buf = new ArrayList <String>();
 		ProgressDialog myDialog = null;
 		String noLoc = "Ingen lokasjon tilgjengelig. Sjekk dine innstillinger";
-		String noRoutes = "Fant ingen ruter for sÃ¸kekriterie. Sjekk sï¿½keord";
+		String noRoutes = "Fant ingen ruter for søkekriterie. Sjekk søkeord";
 		String noInternet = "Ingen internettilgang, har du skrudd av Wifi/3G?";
 		boolean noLocCheck = false;
 		boolean validated = false;
