@@ -206,7 +206,7 @@ public class Browser
 
 		Long time = System.nanoTime();
 		try {
-			HttpPost m_post= new HttpPost("http://busstjener.idi.ntnu.no/bussstuc/oracle?q="+URLEncoder.encode(buf,"UTF-8"));
+			HttpPost m_post= new HttpPost("http://busstjener.idi.ntnu.no/busstuc/oracle?q="+URLEncoder.encode(buf,"UTF-8"));
 			HttpResponse m_response = m_client.execute(m_post);
 			//Log.v("m_response", inputStreamToString(m_response.getEntity().getContent()));
 			System.out.println("Wanted String: " + buf);
