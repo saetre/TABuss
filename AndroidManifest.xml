@@ -42,6 +42,11 @@
             </intent-filter> 
         </receiver>
         
+                	<!-- The following three lines are required to used iSpeech's Android SDK. -->
+		<activity android:name="org.ispeech.iSpeechFramework" android:theme="@android:style/Theme.Translucent" />
+		<meta-data android:name="ispeech_api_key" android:value="3a53fd86f0f4453ba0fee3f5b77dea55" />
+		<meta-data android:name="debug" android:value="false" />
+        
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -50,5 +55,7 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>
     <uses-permission android:name="android.permission.SEND_SMS"></uses-permission>
      <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
+     	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"></uses-permission>
+         
 
 </manifest>
