@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import org.ispeech.SpeechSynthesis;
+import org.ispeech.SpeechSynthesisEvent;
+import org.ispeech.error.BusyException;
+import org.ispeech.error.InvalidApiKeyException;
+import org.ispeech.error.NoNetworkException;
+
 import test.BusTUC.R;
 import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.Stops.BusSuggestion;
@@ -14,8 +20,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -42,6 +51,9 @@ public class Answer extends  ListActivity{
 	private HashMap<String, Object> hm;
 	boolean standardOracle = false;
 	private String sms;
+	SpeechSynthesis synthesis;
+	private String answerText;
+
 
 	public Answer()
 	{
@@ -61,7 +73,7 @@ public class Answer extends  ListActivity{
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		lv.setBackgroundColor(Color.parseColor("#FFFFFF"));
-
+		prepareTTSEngine();
 		//setContentView(R.layout.list_item);
 
 		Bundle extras = getIntent().getExtras();
@@ -93,12 +105,32 @@ public class Answer extends  ListActivity{
 					hm.put("arrivaltime",bs.arrivaltime);
 					hm.put("transfer",bs.isTransfer);
 					busSuggestions.add(hm);
+					answerText += "Buss " + bs.line + " fra " + bs.origin + " til " +bs.destination + " klokka " + bs.arrivaltime;
+
 				}
 
 
 			setListAdapter(new SimpleAdapter(context, busSuggestions, R.layout.suggestion,
 			new String[]{"busNumber","origin","destination","departuretime","arrivaltime","transfer"}, new int[]{R.id.answerrouteNumber,R.id.answerorigin, R.id.answerdestination, R.id.origintime,
 			R.id.arrivaltime, R.id.isTransfer}));
+			String ttsText = answerText;
+			try
+			{
+				synthesis.getTTSEngine().setVoice("eurnorwegianfemale");
+				synthesis.speak(ttsText);
+			} catch (BusyException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoNetworkException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			finally
+			{
+				if(synthesis != null) synthesis.stop();
+			}
 			}
 
 			else if(textContent != null)
@@ -213,7 +245,66 @@ public class Answer extends  ListActivity{
 		}
 	}
 
+	private void prepareTTSEngine() {
+		try {
+			synthesis = SpeechSynthesis.getInstance(this);
+			synthesis.setSpeechSynthesisEvent(new SpeechSynthesisEvent() {
 
+				public void onPlaySuccessful() {
+				}
+
+				public void onPlayStopped() {
+				}
+
+				public void onPlayFailed(Exception e) {
+					e.printStackTrace();
+				}
+
+				public void onPlayStart() {
+				}
+
+				@Override
+				public void onPlayCanceled() {
+				}
+				
+				
+			});
+
+			//synthesis.setVoiceType("usenglishfemale1"); // All the values available to you can be found in the developer portal under your account
+
+		} catch (InvalidApiKeyException e) {
+			Toast.makeText(context, "ERROR: Invalid API key", Toast.LENGTH_LONG).show();
+		}
+
+	}
+
+	private class OnSpeakListener implements OnClickListener {
+
+		public void onClick(View v) {
+
+			try {
+				String ttsText = answerText;
+				synthesis.speak(ttsText);
+
+			} catch (BusyException e) {
+				e.printStackTrace();
+				Toast.makeText(context, "ERROR: SDK is busy", Toast.LENGTH_LONG).show();
+			} catch (NoNetworkException e) {
+				Toast.makeText(context, "ERROR: Network is not available", Toast.LENGTH_LONG).show();
+			}
+		}
+	}
+
+
+	
+	public class OnStopListener implements OnClickListener {
+
+		public void onClick(View v) {
+			if (synthesis != null) {
+				synthesis.stop();
+			}
+		}
+	}
 
 
 
