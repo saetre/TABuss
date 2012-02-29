@@ -113,13 +113,13 @@ public class Answer extends ListActivity
 
 					hm = new HashMap<String, Object>();
 					hm.put("busNumber", bs.line);
-					hm.put("origin", bs.origin);
+					hm.put("origin", bs.origin + "("+bs.walkingDistance+"m)");
 					hm.put("destination", bs.destination);
 					hm.put("departuretime", bs.departuretime);
 					hm.put("arrivaltime", bs.arrivaltime);
 					hm.put("transfer", bs.isTransfer);
 					busSuggestions.add(hm);
-					answerText += "Buss " + bs.line + " fra " + bs.origin
+					answerText += "Buss " + bs.line + " går fra " + bs.origin
 							+ " til " + bs.destination + " klokka "
 							+ bs.arrivaltime + ", ";
 
