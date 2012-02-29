@@ -7,5 +7,6 @@ public class BusSuggestion {
 	public String departuretime;
 	public String arrivaltime;
 	public String isTransfer;
+	public int walkingDistance;
 	public BusSuggestion(){};
 }
