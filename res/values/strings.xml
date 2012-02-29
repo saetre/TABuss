@@ -10,6 +10,7 @@
      <string name = "t_setting">Innstillinger</string>
      <string name= "history">Logg</string>
      <string name= "speech">Tale</string>
+     <string name= "tts">Tale</string>
     <string name="splash_screen">SplashScreen</string>
     <style name="ButtonText">
     <item name="android:layout_width">fill_parent</item>
