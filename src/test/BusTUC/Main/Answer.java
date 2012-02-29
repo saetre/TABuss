@@ -120,10 +120,11 @@ public class Answer extends ListActivity
 					hm.put("transfer", bs.isTransfer);
 					busSuggestions.add(hm);
 					answerText += "Buss " + bs.line + " går fra " + bs.origin
-							+ " til " + bs.destination + " klokka "
-							+ bs.arrivaltime + ", ";
+							+ " klokka "
+							+ bs.arrivaltime + ", og ankommer " + bs.destination + " klokka " + bs.departuretime + ".";
 
 				}
+				answerText += ", Fred ut!";
 
 				setListAdapter(new SimpleAdapter(context, busSuggestions,
 						R.layout.suggestion, new String[]
