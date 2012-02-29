@@ -304,7 +304,7 @@ public class Homescreen extends Activity {
 		AlertDialog.Builder alert = new AlertDialog.Builder(context);
 
 		// First input dialog
-		alert.setTitle("Velg kjøring. SMS koster 1 kr");
+		alert.setTitle("Velg kjï¿½ring. SMS koster 1 kr");
 		alert.setMessage("Query via nett eller sms til orakel");
 
 		alert.setPositiveButton("SMS", new DialogInterface.OnClickListener() {
@@ -363,7 +363,7 @@ public class Homescreen extends Activity {
 			dictionary = new ArrayList<String>();
 			Toast.makeText(
 					context,
-					"Fant ikke SD-kort. Sjekk innstillnger, og start app på nytt",
+					"Fant ikke SD-kort. Sjekk innstillnger, og start app pï¿½ nytt",
 					Toast.LENGTH_LONG).show();
 		}
 
@@ -789,7 +789,7 @@ public class Homescreen extends Activity {
 		// ArrayList <String> buf = new ArrayList <String>();
 		ProgressDialog myDialog = null;
 		String noLoc = "Ingen lokasjon tilgjengelig. Sjekk dine innstillinger";
-		String noRoutes = "Fant ingen ruter for søkekriterie. Sjekk søkeord";
+		String noRoutes = "Fant ingen ruter for sï¿½kekriterie. Sjekk sï¿½keord";
 		String noInternet = "Ingen internettilgang, har du skrudd av Wifi/3G?";
 		boolean noLocCheck = false;
 		boolean validated = false;
@@ -877,7 +877,7 @@ public class Homescreen extends Activity {
 			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
 			if (sms)
-				Toast.makeText(context, "Venter på svar...", Toast.LENGTH_LONG)
+				Toast.makeText(context, "Venter pï¿½ svar...", Toast.LENGTH_LONG)
 						.show();
 
 			myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
@@ -1210,7 +1210,7 @@ public class Homescreen extends Activity {
 	@Override
 	protected void onResume() {
 		int c = dbHelper.getQueryCount();
-		this.setTitle("AndroidAmble - " + c + " Søk gjort");
+		this.setTitle("AndroidAmble - " + c + " Sï¿½k gjort");
 		super.onResume();
 		// editText.setEnabled(true);
 		textView.setEnabled(true);
@@ -1404,7 +1404,7 @@ public class Homescreen extends Activity {
 		final HTTP http = new HTTP();
 		AlertDialog.Builder alert = new AlertDialog.Builder(this); // First
 		alert.setTitle("Snakk i vei");
-		alert.setMessage("Trykk når du er ferdig");
+		alert.setMessage("Trykk nÃ¥r du er ferdig");
 		alert.setPositiveButton("Avslutt",
 				new DialogInterface.OnClickListener()
 				{
