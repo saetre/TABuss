@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -15,6 +16,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
@@ -46,9 +48,8 @@ public class HTTP
 		}
 	}
 
-	public void sendPostTTS(String input)
+	public void sendGetTTS(String input)
 	{
-		long first = System.nanoTime();
 		HttpClient client = new DefaultHttpClient();
 
 		try
@@ -56,9 +57,14 @@ public class HTTP
 			HttpGet httpget = new HttpGet(
 					"http://vm-6114.idi.ntnu.no:1337/SpeechServer/tts?textInput="
 							+ URLEncoder.encode(input, "UTF-8"));
+			long first = System.nanoTime();
+
 			HttpResponse response = client.execute(httpget);
 			ByteArrayOutputStream outstream = new ByteArrayOutputStream();
 			response.getEntity().writeTo(outstream);
+			long second = System.nanoTime() - first;
+			
+			System.out.println("TIME TTSGET: " + second/1000000000.0);
 			byte [] responseBody = outstream.toByteArray();
 			File sdCard = Environment.getExternalStorageDirectory();
 			File dir = new File (sdCard.getAbsolutePath() + "/tts");
@@ -75,7 +81,7 @@ public class HTTP
 
 	}
 
-	public DummyObj sendPost(String filePath)
+	public DummyObj sendPost(String filePath, String cbr)
 	{
 		String response = "Fant ikke noe";
 		long first = System.nanoTime();
@@ -92,7 +98,10 @@ public class HTTP
 		try
 		{
 			MultipartEntity entity = new MultipartEntity();
-			entity.addPart("speechinput", new FileBody(file, "application/zip"));
+			StringBody body = new StringBody(cbr.trim(), "text/plain",Charset.forName("UTF-8"));
+			entity.addPart("cbrtext", body);
+			entity.addPart("speechinput", new FileBody(file, "multipart/form-data;charset=\"UTF-8\""));
+			
 			httppost.setEntity(entity);
 			response = EntityUtils.toString(httpclient.execute(httppost)
 					.getEntity(), "UTF-8");
