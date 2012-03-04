@@ -24,7 +24,6 @@ import test.BusTUC.Queries.Browser;
 import test.BusTUC.Speech.DummyObj;
 import test.BusTUC.Speech.ExtAudioRecorder;
 import test.BusTUC.Speech.HTTP;
-import test.BusTUC.Speech.Listener;
 import test.BusTUC.Stops.BusStop;
 import test.BusTUC.Stops.ClosestStopOnMap;
 
@@ -76,8 +75,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Homescreen extends Activity {
-	private String[] bgColors = { "#3C434A", "#A3AB19", "#F66F89", "#D9F970" };
+public class Homescreen extends Activity
+{
+	private String[] bgColors =
+	{ "#3C434A", "#A3AB19", "#F66F89", "#D9F970" };
 	private int currentBgColor = 0;
 	private int numButtons = 6;
 	private int numStops;
@@ -167,7 +168,8 @@ public class Homescreen extends Activity {
 	boolean stopRecording = false;
 	boolean recorder = true;
 
-	public void updateButtons(String[] busStop, Button[] buttons) {
+	public void updateButtons(String[] busStop, Button[] buttons)
+	{
 		// Add some dummy stops to fill lists
 		busStop[0] = "Buenget";
 		busStop[1] = "Tiller";
@@ -176,9 +178,11 @@ public class Homescreen extends Activity {
 		busStop[4] = "Dragvoll";
 		busStop[5] = "Ilsvika";
 		ArrayList<String> favorites;
-		try {
+		try
+		{
 			favorites = SDCard.getFilesFromSD("fav_routes");
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 			favorites = new ArrayList<String>();
 		}
@@ -188,15 +192,18 @@ public class Homescreen extends Activity {
 		// Typeface font = Typeface.createFromAsset(getAssets(),
 		// "dotmatrix.ttf");
 		// Iterate through stops, and add from SD-card
-		for (int i = 0; i < busStop.length && i < favorites.size(); i++) {
-			if (!Helpers.containsIgnoreCase(temp, favorites.get(i))) {
+		for (int i = 0; i < busStop.length && i < favorites.size(); i++)
+		{
+			if (!Helpers.containsIgnoreCase(temp, favorites.get(i)))
+			{
 				System.out.println("Does not contain ");
 				busStop[addedfavorites] = favorites.get(i);
 				addedfavorites++;
 			}
 		}
 		// Connect buttons with corresponding XML-files
-		if (busStop != null) {
+		if (busStop != null)
+		{
 			buttons[0] = (Button) this.findViewById(R.id.button1);
 			buttons[1] = (Button) this.findViewById(R.id.button2);
 			buttons[2] = (Button) this.findViewById(R.id.button3);
@@ -206,7 +213,8 @@ public class Homescreen extends Activity {
 
 		}
 		// Finally set button text according to bus stop
-		for (int i = 0; i < numButtons && i < busStop.length; i++) {
+		for (int i = 0; i < numButtons && i < busStop.length; i++)
+		{
 			buttons[i].setText(busStop[i]);
 			// buttons[i].setTypeface(font);
 		}
@@ -214,7 +222,8 @@ public class Homescreen extends Activity {
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		context = this;
 		setContentView(R.layout.homescreen);
@@ -255,22 +264,29 @@ public class Homescreen extends Activity {
 		if (currentlocation != null)
 			this.getSuggestionBasedOnPosition();
 		// binds listener to the button
-		goButton.setOnClickListener(new OnClickListener() {
+		goButton.setOnClickListener(new OnClickListener()
+		{
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v)
+			{
 				queryOrSMS();
 			}
 		});
-		amazeButton.setOnClickListener(new OnClickListener() {
+		amazeButton.setOnClickListener(new OnClickListener()
+		{
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v)
+			{
 				final String whereTo = getSuggestionBasedOnPosition();
 
-				DialogInterface.OnClickListener dc = new DialogInterface.OnClickListener() {
+				DialogInterface.OnClickListener dc = new DialogInterface.OnClickListener()
+				{
 
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						switch (which) {
+					public void onClick(DialogInterface dialog, int which)
+					{
+						switch (which)
+						{
 						case DialogInterface.BUTTON_POSITIVE:
 							textView.setText(whereTo);
 							Toast.makeText(context, "I'm awesome!",
@@ -299,7 +315,8 @@ public class Homescreen extends Activity {
 
 	}
 
-	private void queryOrSMS() {
+	private void queryOrSMS()
+	{
 
 		AlertDialog.Builder alert = new AlertDialog.Builder(context);
 
@@ -307,17 +324,21 @@ public class Homescreen extends Activity {
 		alert.setTitle("Velg kjøring. SMS koster 1 kr");
 		alert.setMessage("Query via nett eller sms til orakel");
 
-		alert.setPositiveButton("SMS", new DialogInterface.OnClickListener() {
+		alert.setPositiveButton("SMS", new DialogInterface.OnClickListener()
+		{
 			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
+			public void onClick(DialogInterface dialog, int whichButton)
+			{
 				sms = true;
 				new OracleThread(context).execute();
 
 			}
 		});
-		alert.setNegativeButton("Nett", new DialogInterface.OnClickListener() {
+		alert.setNegativeButton("Nett", new DialogInterface.OnClickListener()
+		{
 			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
+			public void onClick(DialogInterface dialog, int whichButton)
+			{
 				sms = false;
 				new OracleThread(context).execute();
 
@@ -327,17 +348,20 @@ public class Homescreen extends Activity {
 		alert.show();
 	}
 
-	private void loadDictionaries() {
+	private void loadDictionaries()
+	{
 		System.out.println("Loading dictionaries...");
 		// Gets the coordinates from the bus XML file
 		long f = System.nanoTime();
 		String[] gpsCoordinates;
 		String[] gpsCoordinates2;
 
-		try {
+		try
+		{
 			gpsCoordinates2 = Helpers.readLines(getAssets().open("gps3.xml"));
 			gpsCords2 = GPS.formatCoordinates(gpsCoordinates2);
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 		long s = System.nanoTime() - f;
@@ -347,7 +371,8 @@ public class Homescreen extends Activity {
 		ArrayList<String> dictionary;
 		// Check if SD-card is present
 
-		try {
+		try
+		{
 			dictionary = Helpers.getDictionary("dictionary_finalv2",
 					"dictionary");
 
@@ -358,7 +383,8 @@ public class Homescreen extends Activity {
 		 * Move out of onCreate(), as modifying UI during onCreate() is
 		 * unpopular..
 		 */
-		catch (Exception e) {
+		catch (Exception e)
+		{
 			e.printStackTrace();
 			dictionary = new ArrayList<String>();
 			Toast.makeText(
@@ -369,9 +395,11 @@ public class Homescreen extends Activity {
 
 		// If no dictionary present, load stops from xml-file.
 		// Need separate file, as this only includes stops working with BussTUC
-		try {
+		try
+		{
 
-			if (dictionary.size() == 0 || !server) {
+			if (dictionary.size() == 0 || !server)
+			{
 				System.out.println("No dictionary present!");
 				gpsCoordinates = Helpers.readLines(getAssets().open(
 						"gps3Mod.xml"));
@@ -379,7 +407,8 @@ public class Homescreen extends Activity {
 				dictionary = Helpers.createDictionary(gpsCords, "dictionary");
 			}
 
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			// System.exit(0);
 		}
 
@@ -388,24 +417,30 @@ public class Homescreen extends Activity {
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 				R.layout.list_item, dictionary);
 		textView.setAdapter(adapter);
-		textView.setOnItemClickListener(new OnItemClickListener() {
+		textView.setOnItemClickListener(new OnItemClickListener()
+		{
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
+					long arg3)
+			{
 				queryOrSMS();
 
 			}
 
 		});
 
-		textView.setOnKeyListener(new OnKeyListener() {
+		textView.setOnKeyListener(new OnKeyListener()
+		{
 
 			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				switch (keyCode) {
+			public boolean onKey(View v, int keyCode, KeyEvent event)
+			{
+				switch (keyCode)
+				{
 				case KeyEvent.KEYCODE_ENTER:
-					if (!textView.getText().toString().equals("")) {
+					if (!textView.getText().toString().equals(""))
+					{
 						queryOrSMS();
 
 					}
@@ -415,13 +450,17 @@ public class Homescreen extends Activity {
 		});
 	}
 
-	private void createButtonListeners() {
-		for (int i = 0; i < buttons.length; i++) {
+	private void createButtonListeners()
+	{
+		for (int i = 0; i < buttons.length; i++)
+		{
 			final Button shortcutButtons = buttons[i];
 			// If click, set text to text field, and start thread
-			shortcutButtons.setOnClickListener(new OnClickListener() {
+			shortcutButtons.setOnClickListener(new OnClickListener()
+			{
 				@Override
-				public void onClick(View v) {
+				public void onClick(View v)
+				{
 					textView.setText(shortcutButtons.getText());
 					queryOrSMS();
 
@@ -429,17 +468,23 @@ public class Homescreen extends Activity {
 			});
 
 			// If long click, delete item
-			shortcutButtons.setOnLongClickListener(new OnLongClickListener() {
+			shortcutButtons.setOnLongClickListener(new OnLongClickListener()
+			{
 				@Override
-				public boolean onLongClick(View v) {
-					DialogInterface.OnClickListener dc = new DialogInterface.OnClickListener() {
+				public boolean onLongClick(View v)
+				{
+					DialogInterface.OnClickListener dc = new DialogInterface.OnClickListener()
+					{
 
 						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							switch (which) {
+						public void onClick(DialogInterface dialog, int which)
+						{
+							switch (which)
+							{
 							case DialogInterface.BUTTON_POSITIVE:
 								String tmp = (String) shortcutButtons.getText();
-								if (SDCard.deleteFileFromSD(tmp, "fav_routes")) {
+								if (SDCard.deleteFileFromSD(tmp, "fav_routes"))
+								{
 									updateButtons(busStop, buttons);
 								}
 								break;
@@ -464,20 +509,25 @@ public class Homescreen extends Activity {
 		}
 	}
 
-	private void updateTextViewHint() {
-		if (fancyOracle) {
+	private void updateTextViewHint()
+	{
+		if (fancyOracle)
+		{
 			textView.setHint("Kun destinasjon");
 		}
 
-		else {
+		else
+		{
 			textView.setHint("Fullstendig setning");
 		}
 	}
 
-	private void loadStops() {
+	private void loadStops()
+	{
 		System.out.println("numstops: " + numStops + " numstopsonmap: "
 				+ numStopsOnMap + " dist: " + dist);
-		if (gpsCords != null) {
+		if (gpsCords != null)
+		{
 			busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords,
 					provider, currentlocation, dist, numStops, false);
 		} else
@@ -507,10 +557,13 @@ public class Homescreen extends Activity {
 	/*
 	 * Validate input before sending to server
 	 */
-	public boolean validate(String input) {
+	public boolean validate(String input)
+	{
 		boolean check = false;
-		for (int i = 0; i < allStops.size(); i++) {
-			if (allStops.get(i).name.trim().equalsIgnoreCase(input.trim())) {
+		for (int i = 0; i < allStops.size(); i++)
+		{
+			if (allStops.get(i).name.trim().equalsIgnoreCase(input.trim()))
+			{
 				check = true;
 				break;
 			}
@@ -519,12 +572,15 @@ public class Homescreen extends Activity {
 		return check;
 	}
 
-	private void createLocationListener() {
-		locationListener = new LocationListener() {
+	private void createLocationListener()
+	{
+		locationListener = new LocationListener()
+		{
 
 			// This method runs whenever the criteria for change is met.
 			@Override
-			public void onLocationChanged(Location location) {
+			public void onLocationChanged(Location location)
+			{
 				System.out.println("LOCATIONLISTENER CALLED IN HOMESCREEN");
 				currentlocation = location;
 				// currentlocation.setLatitude(59.77075);
@@ -541,21 +597,24 @@ public class Homescreen extends Activity {
 			}
 
 			@Override
-			public void onProviderDisabled(String provider) {
+			public void onProviderDisabled(String provider)
+			{
 				Log.v("PROV", "PROV:DISABLED");
 				// TODO Auto-generated method stub
 
 			}
 
 			@Override
-			public void onProviderEnabled(String provider) {
+			public void onProviderEnabled(String provider)
+			{
 				Log.v("PROV", "PROV:ENABLED");
 
 			}
 
 			@Override
 			public void onStatusChanged(String provider, int status,
-					Bundle extras) {
+					Bundle extras)
+			{
 				Log.v("PROV", "PROV:STATUSCHANGE");
 
 			}
@@ -563,8 +622,10 @@ public class Homescreen extends Activity {
 		};
 	}
 
-	private void createLocationManager() {
-		try {
+	private void createLocationManager()
+	{
+		try
+		{
 			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 			Criteria criteria = new Criteria();
 			criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -572,7 +633,8 @@ public class Homescreen extends Activity {
 			k_browser = new Browser();
 			// Load real-time codes
 			long rt = System.nanoTime();
-			if (!server) {
+			if (!server)
+			{
 				realTimeCodes = k_browser.realTimeData();
 
 			}
@@ -583,17 +645,20 @@ public class Homescreen extends Activity {
 			// System.out.println("Realtinmecodessizefirst: " +
 			// realTimeCodes.size());
 			// Log.v("provider","provider:"+ provider);
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			System.out.println("ERROR");
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
 			// First input dialog
 			alert.setTitle("Tilkoblingsproblem");
 			alert.setMessage("Ingen tilkobling, har du nettilgang?");
 			alert.setPositiveButton("Avslutt",
-					new DialogInterface.OnClickListener() {
+					new DialogInterface.OnClickListener()
+					{
 						@Override
 						public void onClick(DialogInterface dialog,
-								int whichButton) {
+								int whichButton)
+						{
 							System.exit(0);
 
 						}
@@ -604,30 +669,36 @@ public class Homescreen extends Activity {
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
 		System.out.println("OnActivityResult()");
 		super.onActivityResult(requestCode, resultCode, data);
 		boolean change = false;
-		if (resultCode == Activity.RESULT_OK) {
+		if (resultCode == Activity.RESULT_OK)
+		{
 			Bundle extras = data.getExtras();
 			int m_numStops = extras.getInt("num1");
 			int m_numStopsOnMap = extras.getInt("num2");
 			int m_dist = extras.getInt("num3");
 			boolean m_fancy = extras.getBoolean("Orakelvalg");
 
-			if (numStops != m_numStops && m_numStops <= 5) {
+			if (numStops != m_numStops && m_numStops <= 5)
+			{
 				numStops = extras.getInt("num1");
 				change = true;
 			}
-			if (m_numStopsOnMap != numStopsOnMap && m_numStopsOnMap <= 20) {
+			if (m_numStopsOnMap != numStopsOnMap && m_numStopsOnMap <= 20)
+			{
 				numStopsOnMap = extras.getInt("num2");
 				change = true;
 			}
-			if (m_dist != dist && m_dist <= 1000) {
+			if (m_dist != dist && m_dist <= 1000)
+			{
 				dist = extras.getInt("num3");
 				change = true;
 			}
-			if (!fancyOracle && m_fancy || fancyOracle && !m_fancy) {
+			if (!fancyOracle && m_fancy || fancyOracle && !m_fancy)
+			{
 				fancyOracle = m_fancy;
 				change = true;
 			}
@@ -643,17 +714,20 @@ public class Homescreen extends Activity {
 
 	// Menu properties
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.layout.menu2, menu);
 		return true;
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
 		// Handle item selection
 
-		switch (item.getItemId()) {
+		switch (item.getItemId())
+		{
 		case R.id.addnew:
 			// Prompt user regarding destination
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -665,10 +739,12 @@ public class Homescreen extends Activity {
 			final EditText input = new EditText(this);
 			alert.setView(input);
 			alert.setPositiveButton("Lagre",
-					new DialogInterface.OnClickListener() {
+					new DialogInterface.OnClickListener()
+					{
 						@Override
 						public void onClick(DialogInterface dialog,
-								int whichButton) {
+								int whichButton)
+						{
 
 							String value = input.getText().toString();
 							ArrayList<String> queries = new ArrayList<String>();
@@ -676,14 +752,17 @@ public class Homescreen extends Activity {
 							queries.add(value);
 							// For now, store query as filename, as the file
 							// does not contain anything else
-							try {
+							try
+							{
 								if (SDCard.generateNoteOnSD(fav.getQuery(),
-										queries, "fav_routes")) {
+										queries, "fav_routes"))
+								{
 									updateButtons(busStop, buttons);
 								}
 							}
 
-							catch (Exception e) {
+							catch (Exception e)
+							{
 								e.printStackTrace();
 								Toast.makeText(
 										context,
@@ -701,10 +780,12 @@ public class Homescreen extends Activity {
 			return true;
 
 		case R.id.realtime:
-			try {
+			try
+			{
 				long time = System.nanoTime();
 				ArrayList<ClosestStopOnMap> holder = new ArrayList<ClosestStopOnMap>();
-				for (int i = 0; i < cl.length; i++) {
+				for (int i = 0; i < cl.length; i++)
+				{
 					holder.add(cl[i]);
 				}
 				Intent intent = new Intent(context, RealTimeList.class);
@@ -712,45 +793,33 @@ public class Homescreen extends Activity {
 				context.startActivity(intent);
 				Long newTime = System.nanoTime() - time;
 				System.out.println("TIME LOOKUP: " + newTime / 1000000000.0);
-			} catch (Exception e) {
+			} catch (Exception e)
+			{
 				Toast.makeText(context, "Kunne ikke hente ut sanntid",
 						Toast.LENGTH_LONG).show();
 			}
 			return false;
 
 		case R.id.speech:
-			try {
-				// Test
-				if (!recorder) {
-					sr = SpeechRecognizer.createSpeechRecognizer(this);
-
-					sr.setRecognitionListener(new Listener(context));
-				}
-
-				if (!recorder) {
-					Intent intent = new Intent(
-							RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-					intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-							RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-					intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
-							"calling_package");
-
-					intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
-					sr.startListening(intent);
-				} else
+			try
+			{
+			
 					startVoiceRecognitionActivity();
 
-			} catch (Exception e) {
+			} catch (Exception e)
+			{
 				Toast.makeText(context, "Kunne ikke hente ut sanntid",
 						Toast.LENGTH_LONG).show();
 			}
 			return false;
 
 		case R.id.history:
-			try {
+			try
+			{
 				Intent history = new Intent(context, History.class);
 				context.startActivity(history);
-			} catch (Exception e) {
+			} catch (Exception e)
+			{
 				Toast.makeText(context, "Klarte ikke hente ut historie",
 						Toast.LENGTH_LONG).show();
 			}
@@ -763,10 +832,12 @@ public class Homescreen extends Activity {
 			// startVoiceRecognitionActivity();
 
 		case R.id.about:
-			try {
+			try
+			{
 				Intent about = new Intent(context, About.class);
 				context.startActivity(about);
-			} catch (Exception e) {
+			} catch (Exception e)
+			{
 				Toast.makeText(context, "Could not start activity",
 						Toast.LENGTH_LONG).show();
 			}
@@ -780,7 +851,8 @@ public class Homescreen extends Activity {
 
 	// Thread classes //
 	// Thread starting the oracle queries
-	class OracleThread extends AsyncTask<Void, Void, Void> {
+	class OracleThread extends AsyncTask<Void, Void, Void>
+	{
 		private Context context;
 		ArrayList<Route> buf;
 		StringBuffer buffer = new StringBuffer();
@@ -795,18 +867,22 @@ public class Homescreen extends Activity {
 		boolean validated = false;
 		boolean empty = false;
 
-		public OracleThread(Context context) {
+		public OracleThread(Context context)
+		{
 			this.context = context;
 
 		}
 
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected Void doInBackground(Void... params)
+		{
 			long time = System.nanoTime();
-			if (currentlocation == null) {
+			if (currentlocation == null)
+			{
 				noLocCheck = true;
 				myDialog.dismiss();
-			} else if (sms && fancyOracle) {
+			} else if (sms && fancyOracle)
+			{
 
 				Helpers.sendSMS("2027", "rute "
 						+ cl[0].getStopName().toString() + " til "
@@ -816,7 +892,8 @@ public class Homescreen extends Activity {
 
 			}
 
-			else if (sms && !fancyOracle) {
+			else if (sms && !fancyOracle)
+			{
 				Helpers.sendSMS("2027",
 						"rute " + textView.getText().toString(), context);
 				System.out.println("SMS " + cl[0].getStopName().toString()
@@ -824,27 +901,36 @@ public class Homescreen extends Activity {
 
 			}
 
-			else {
-				try {
+			else
+			{
+				try
+				{
 					String query = textView.getText().toString().trim();
-					if (!server && fancyOracle) {
+					if (!server && fancyOracle)
+					{
 						// System.out.println("Her skal vi ikke havne");
-						if (!query.equals("")) {
+						if (!query.equals(""))
+						{
 							buf = Helpers.run(query, busStopsNoDuplicates,
 									k_browser, realTimeCodes);
-						} else {
+						} else
+						{
 							empty = true;
 						}
-					} else if (!fancyOracle) {
+					} else if (!fancyOracle)
+					{
 						// System.out.println("Her skal vi ikke havne");
-						if (!query.equals("")) {
+						if (!query.equals(""))
+						{
 							System.out.println("FUBAR");
 							buffer = Helpers.runStandard(query);
 						} else
 							empty = true;
 
-					} else {
-						if (!query.equals("")) {
+					} else
+					{
+						if (!query.equals(""))
+						{
 							long pre = System.nanoTime();
 							buf = Helpers.runServer(query, k_browser,
 									currentlocation, numStops, dist);
@@ -860,7 +946,8 @@ public class Homescreen extends Activity {
 					System.out
 							.println("TIME ORACLE: " + newTime / 1000000000.0);
 
-				} catch (Exception e) {
+				} catch (Exception e)
+				{
 					myDialog.dismiss();
 					e.printStackTrace();
 					ArrayList<String> err = new ArrayList<String>();
@@ -873,7 +960,8 @@ public class Homescreen extends Activity {
 		}
 
 		@Override
-		protected void onPreExecute() {
+		protected void onPreExecute()
+		{
 			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
 			if (sms)
@@ -882,10 +970,12 @@ public class Homescreen extends Activity {
 
 			myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
 			myDialog.setCancelable(true);
-			myDialog.setOnCancelListener(new OnCancelListener() {
+			myDialog.setOnCancelListener(new OnCancelListener()
+			{
 
 				@Override
-				public void onCancel(DialogInterface dialog) {
+				public void onCancel(DialogInterface dialog)
+				{
 					finish();
 					System.exit(0);
 
@@ -897,41 +987,50 @@ public class Homescreen extends Activity {
 		}
 
 		@Override
-		protected void onPostExecute(Void unused) {
+		protected void onPostExecute(Void unused)
+		{
 			myDialog.dismiss();
 
-			if (empty) {
+			if (empty)
+			{
 				Toast.makeText(context, "Tom input!", Toast.LENGTH_SHORT)
 						.show();
 
-			} else if (buf != null && fancyOracle && !sms) {
+			} else if (buf != null && fancyOracle && !sms)
+			{
 				// Error returned from bussTUC
 				if (buf.get(0).getBusStopName()
-						.equalsIgnoreCase("Bussorakelet")) {
+						.equalsIgnoreCase("Bussorakelet"))
+				{
 					Toast.makeText(context, noRoutes, Toast.LENGTH_LONG).show();
 				}
 
 				// No interenet connection
 				else if (buf.get(0).getBusStopName()
-						.equalsIgnoreCase("Nettilgang")) {
+						.equalsIgnoreCase("Nettilgang"))
+				{
 					Toast.makeText(context, noInternet, Toast.LENGTH_LONG)
 							.show();
 
 				}
 				// No location
-				else if (noLocCheck) {
+				else if (noLocCheck)
+				{
 					Toast.makeText(context, noLoc, Toast.LENGTH_LONG).show();
 
-				} else {
+				} else
+				{
 					double lat = currentlocation.getLatitude();
 					double lon = currentlocation.getLongitude();
 
 					Cursor areas = dbHelper.getAreaId(lat, lon);
 					int area = 0;
-					if (areas.getCount() == 0) {
+					if (areas.getCount() == 0)
+					{
 						area = dbHelper.AddArea(lat + 0.01, lat - 0.01,
 								lon + 0.01, lon - 0.01);
-					} else {
+					} else
+					{
 						areas.moveToFirst();
 						area = areas.getInt(0);
 					}
@@ -951,17 +1050,20 @@ public class Homescreen extends Activity {
 				}
 			}
 
-			else if (!fancyOracle && buffer != null && !sms) {
+			else if (!fancyOracle && buffer != null && !sms)
+			{
 				Intent intent = new Intent(getApplicationContext(),
 						Answer.class);
 				intent.putExtra("text", buffer.toString());
 				System.out.println("Started activity");
 				// intent.putExtra("test", buf);
 				context.startActivity(intent);
-			} else {
+			} else
+			{
 				myDialog.dismiss();
 
-				if (server && !validated && !sms) {
+				if (server && !validated && !sms)
+				{
 
 					Toast.makeText(
 							context,
@@ -979,22 +1081,27 @@ public class Homescreen extends Activity {
 
 	// Thread classes //
 	// Thread starting the oracle queries
-	class MapThread extends AsyncTask<Void, Void, Void> {
+	class MapThread extends AsyncTask<Void, Void, Void>
+	{
 		private Context context;
 		Intent intent;
 		ProgressDialog myDialog = null;
 
-		public MapThread(Context context) {
+		public MapThread(Context context)
+		{
 
 			this.context = context;
 		}
 
 		@Override
-		protected Void doInBackground(Void... params) {
-			try {
+		protected Void doInBackground(Void... params)
+		{
+			try
+			{
 				intent = new Intent(getApplicationContext(), BusTUCApp.class);
 				context.startActivity(intent);
-			} catch (Exception e) {
+			} catch (Exception e)
+			{
 				e.printStackTrace();
 				ArrayList<String> err = new ArrayList<String>();
 				err.add(e.toString());
@@ -1005,37 +1112,44 @@ public class Homescreen extends Activity {
 		}
 
 		@Override
-		protected void onPreExecute() {
+		protected void onPreExecute()
+		{
 
 			myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
 
 		}
 
 		@Override
-		protected void onPostExecute(Void unused) {
+		protected void onPostExecute(Void unused)
+		{
 			myDialog.dismiss();
 
 		}
 	}
 
-	class StartUpThread extends AsyncTask<Void, Void, Void> {
+	class StartUpThread extends AsyncTask<Void, Void, Void>
+	{
 		private Context context;
 		Intent intent;
 		ProgressDialog myDialog = null;
 		boolean check = false;
 
-		public StartUpThread(Context context) {
+		public StartUpThread(Context context)
+		{
 
 			this.context = context;
 		}
 
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected Void doInBackground(Void... params)
+		{
 
-			try {
+			try
+			{
 				createLocationManager();
 
-			} catch (Exception e) {
+			} catch (Exception e)
+			{
 				System.out.println("Exception creating locManager");
 				myDialog.dismiss();
 				check = true;
@@ -1045,16 +1159,20 @@ public class Homescreen extends Activity {
 		}
 
 		@Override
-		protected void onPreExecute() {
+		protected void onPreExecute()
+		{
 
-			try {
+			try
+			{
 				myDialog = ProgressDialog.show(context, "Loading!",
 						"Laster holdeplasser");
 				myDialog.setCancelable(true);
-				myDialog.setOnCancelListener(new OnCancelListener() {
+				myDialog.setOnCancelListener(new OnCancelListener()
+				{
 
 					@Override
-					public void onCancel(DialogInterface dialog) {
+					public void onCancel(DialogInterface dialog)
+					{
 						finish();
 						System.exit(0);
 
@@ -1063,7 +1181,8 @@ public class Homescreen extends Activity {
 				createLocationListener();
 
 				// Only request updates if > 500 ms and 10 m
-			} catch (Exception e) {
+			} catch (Exception e)
+			{
 				e.printStackTrace();
 				myDialog.dismiss();
 
@@ -1072,25 +1191,30 @@ public class Homescreen extends Activity {
 		}
 
 		@Override
-		protected void onPostExecute(Void unused) {
+		protected void onPostExecute(Void unused)
+		{
 
 			myDialog.dismiss();
-			if (check) {
+			if (check)
+			{
 				AlertDialog.Builder alert = new AlertDialog.Builder(context);
 				// First input dialog
 				alert.setTitle("Tilkoblingsproblem");
 				alert.setMessage("Ingen tilkobling, har du nettilgang?");
 				alert.setPositiveButton("Avslutt",
-						new DialogInterface.OnClickListener() {
+						new DialogInterface.OnClickListener()
+						{
 							@Override
 							public void onClick(DialogInterface dialog,
-									int whichButton) {
+									int whichButton)
+							{
 								System.exit(0);
 
 							}
 						});
 				alert.show();
-			} else {
+			} else
+			{
 				locationManager.requestLocationUpdates(provider, 500, 10,
 						locationListener);
 				new LocationListenerThread(context).execute();
@@ -1104,30 +1228,37 @@ public class Homescreen extends Activity {
 	 * to ensure all necessary objects are created on forehand. If not, we can
 	 * end up in an eternal loop.
 	 */
-	class LocationListenerThread extends AsyncTask<Void, Void, Void> {
+	class LocationListenerThread extends AsyncTask<Void, Void, Void>
+	{
 		private Context context;
 		Intent intent;
 		ProgressDialog myDialog = null;
 		boolean noLoc = false;
 
-		public LocationListenerThread(Context context) {
+		public LocationListenerThread(Context context)
+		{
 
 			this.context = context;
 		}
 
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected Void doInBackground(Void... params)
+		{
 
-			try {
+			try
+			{
 				boolean locCheck = false;
-				while (!locCheck) {
-					if (currentlocation != null) {
+				while (!locCheck)
+				{
+					if (currentlocation != null)
+					{
 						locCheck = true;
 					}
 
 				}
 
-			} catch (Exception e) {
+			} catch (Exception e)
+			{
 				myDialog.dismiss(); //
 			}
 
@@ -1135,23 +1266,28 @@ public class Homescreen extends Activity {
 		}
 
 		@Override
-		protected void onPreExecute() {
+		protected void onPreExecute()
+		{
 
-			try {
+			try
+			{
 				myDialog = ProgressDialog.show(context, "Loading!",
 						"Setter lokasjon");
 				myDialog.setCancelable(true);
-				myDialog.setOnCancelListener(new OnCancelListener() {
+				myDialog.setOnCancelListener(new OnCancelListener()
+				{
 
 					@Override
-					public void onCancel(DialogInterface dialog) {
+					public void onCancel(DialogInterface dialog)
+					{
 						finish();
 						System.exit(0);
 
 					}
 				});
 
-			} catch (Exception e) {
+			} catch (Exception e)
+			{
 				e.printStackTrace();
 				myDialog.dismiss();
 
@@ -1160,7 +1296,8 @@ public class Homescreen extends Activity {
 		}
 
 		@Override
-		protected void onPostExecute(Void unused) {
+		protected void onPostExecute(Void unused)
+		{
 
 			myDialog.dismiss();
 			if (!server)
@@ -1171,12 +1308,16 @@ public class Homescreen extends Activity {
 	}
 
 	@Override
-	public void onBackPressed() {
+	public void onBackPressed()
+	{
 
-		DialogInterface.OnClickListener dc = new DialogInterface.OnClickListener() {
+		DialogInterface.OnClickListener dc = new DialogInterface.OnClickListener()
+		{
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				switch (which) {
+			public void onClick(DialogInterface dialog, int which)
+			{
+				switch (which)
+				{
 				case DialogInterface.BUTTON_POSITIVE:
 					((Activity) context).finish();
 					ext.release();
@@ -1198,17 +1339,20 @@ public class Homescreen extends Activity {
 	}
 
 	@Override
-	protected void onStart() {
+	protected void onStart()
+	{
 		super.onStart();
 
 	}
 
-	public void onDestroy() {
+	public void onDestroy()
+	{
 		super.onDestroy();
 	}
 
 	@Override
-	protected void onResume() {
+	protected void onResume()
+	{
 		int c = dbHelper.getQueryCount();
 		this.setTitle("AndroidAmble - " + c + " Søk gjort");
 		super.onResume();
@@ -1216,22 +1360,26 @@ public class Homescreen extends Activity {
 		textView.setEnabled(true);
 		goButton.setEnabled(true);
 
-		try {
+		try
+		{
 			// Sets the restrictions on the location update. If no
 			// locationmanager object exists, error message is sent to user,
 			// requiring closing of app
 			locationManager.requestLocationUpdates(
 					locationManager.NETWORK_PROVIDER, 10, 1, locationListener);
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			AlertDialog.Builder alert = new AlertDialog.Builder(context);
 			// First input dialog
 			alert.setTitle("Tilkoblingsproblem");
 			alert.setMessage("Ingen tilkobling, har du nettilgang?");
 			alert.setPositiveButton("Avslutt",
-					new DialogInterface.OnClickListener() {
+					new DialogInterface.OnClickListener()
+					{
 						@Override
 						public void onClick(DialogInterface dialog,
-								int whichButton) {
+								int whichButton)
+						{
 							System.exit(0);
 
 						}
@@ -1242,12 +1390,14 @@ public class Homescreen extends Activity {
 	}
 
 	@Override
-	protected void onPause() {
+	protected void onPause()
+	{
 		super.onPause();
 		locationManager.removeUpdates(locationListener);
 	}
 
-	private String getSuggestionBasedOnPosition() {
+	private String getSuggestionBasedOnPosition()
+	{
 		double lat = currentlocation.getLatitude();
 		double lon = currentlocation.getLongitude();
 		int time = Helpers.minutesFromDate(new Date());
@@ -1260,9 +1410,11 @@ public class Homescreen extends Activity {
 		String whereTo = "";
 		ArrayList<Query> destinations = new ArrayList<Query>();
 
-		if (areas.getCount() > 0) {
+		if (areas.getCount() > 0)
+		{
 			areas.moveToFirst();
-			while (!areas.isLast()) {
+			while (!areas.isLast())
+			{
 				destinations.add(new Query(areas.getInt(2), areas.getString(1),
 						areas.getInt(3), areas.getInt(4)));
 				areas.moveToNext();
@@ -1271,16 +1423,19 @@ public class Homescreen extends Activity {
 			destinations.add(new Query(areas.getInt(2), areas.getString(1),
 					areas.getInt(3), areas.getInt(4)));
 			whereTo += areas.getString(1);
-		} else {
+		} else
+		{
 			whereTo = " et annet sted";
 		}
 		areas.close();
-		for (Query q : destinations) {
+		for (Query q : destinations)
+		{
 			q.setEuclideanDistance(time, day);
 		}
 		Collections.sort(destinations);
 
-		for (Query q : destinations) {
+		for (Query q : destinations)
+		{
 			System.out.println(q.toString());
 		}
 		// HashMap<String,Integer> sortedDestinations =
@@ -1298,7 +1453,8 @@ public class Homescreen extends Activity {
 		return whereTo;
 	}
 
-	public class ActivitySwipeDetector implements View.OnTouchListener {
+	public class ActivitySwipeDetector implements View.OnTouchListener
+	{
 
 		static final String logTag = "ActivitySwipeDetector";
 		private Activity activity;
@@ -1306,43 +1462,52 @@ public class Homescreen extends Activity {
 		private float downX, downY, upX, upY;
 		LinearLayout ll = (LinearLayout) findViewById(R.id.homelayout);
 
-		public ActivitySwipeDetector(Activity activity) {
+		public ActivitySwipeDetector(Activity activity)
+		{
 			this.activity = activity;
 		}
 
-		public void onRightToLeftSwipe() {
+		public void onRightToLeftSwipe()
+		{
 			Log.i(logTag, "RightToLeftSwipe!");
 			if (currentBgColor > 0)
 				currentBgColor--;
 			line.setBackgroundColor(Color.parseColor(bgColors[currentBgColor]));
 		}
 
-		public void onLeftToRightSwipe() {
+		public void onLeftToRightSwipe()
+		{
 			Log.i(logTag, "LeftToRightSwipe!");
 			if (currentBgColor < (bgColors.length - 1))
 				currentBgColor++;
 			line.setBackgroundColor(Color.parseColor(bgColors[currentBgColor]));
 		}
 
-		public void onTopToBottomSwipe() {
+		public void onTopToBottomSwipe()
+		{
 			Log.i(logTag, "onTopToBottomSwipe!");
 
 		}
 
-		public void onBottomToTopSwipe() {
+		public void onBottomToTopSwipe()
+		{
 			Log.i(logTag, "onBottomToTopSwipe!");
 
 		}
 
 		@Override
-		public boolean onTouch(View v, MotionEvent event) {
-			switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN: {
+		public boolean onTouch(View v, MotionEvent event)
+		{
+			switch (event.getAction())
+			{
+			case MotionEvent.ACTION_DOWN:
+			{
 				downX = event.getX();
 				downY = event.getY();
 				return true;
 			}
-			case MotionEvent.ACTION_UP: {
+			case MotionEvent.ACTION_UP:
+			{
 				upX = event.getX();
 				upY = event.getY();
 
@@ -1350,33 +1515,41 @@ public class Homescreen extends Activity {
 				float deltaY = downY - upY;
 
 				// swipe horizontal?
-				if (Math.abs(deltaX) > MIN_DISTANCE) {
+				if (Math.abs(deltaX) > MIN_DISTANCE)
+				{
 					// left or right
-					if (deltaX < 0) {
+					if (deltaX < 0)
+					{
 						this.onLeftToRightSwipe();
 						return true;
 					}
-					if (deltaX > 0) {
+					if (deltaX > 0)
+					{
 						this.onRightToLeftSwipe();
 						return true;
 					}
-				} else {
+				} else
+				{
 					Log.i(logTag, "Swipe was only " + Math.abs(deltaX)
 							+ " long, need at least " + MIN_DISTANCE);
 				}
 
 				// swipe vertical?
-				if (Math.abs(deltaY) > MIN_DISTANCE) {
+				if (Math.abs(deltaY) > MIN_DISTANCE)
+				{
 					// top or down
-					if (deltaY < 0) {
+					if (deltaY < 0)
+					{
 						this.onTopToBottomSwipe();
 						return true;
 					}
-					if (deltaY > 0) {
+					if (deltaY > 0)
+					{
 						this.onBottomToTopSwipe();
 						return true;
 					}
-				} else {
+				} else
+				{
 					Log.i(logTag, "Swipe was only " + Math.abs(deltaX)
 							+ " long, need at least " + MIN_DISTANCE);
 				}
@@ -1388,20 +1561,11 @@ public class Homescreen extends Activity {
 		}
 
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	private void startVoiceRecognitionActivity()
 	{
 		final HTTP http = new HTTP();
+		final String cbr = getSuggestionBasedOnPosition();
 		AlertDialog.Builder alert = new AlertDialog.Builder(this); // First
 		alert.setTitle("Snakk i vei");
 		alert.setMessage("Trykk når du er ferdig");
@@ -1415,14 +1579,15 @@ public class Homescreen extends Activity {
 						stopRecording = true;
 						ext.stop();
 						long first = System.nanoTime();
-						DummyObj dummy = http.sendPost(filePath2);
+						DummyObj dummy = http.sendPost(filePath2, cbr);
 						long sec = System.nanoTime() - first;
-						Toast.makeText(context,
-								"You said: " + dummy.getAnswer() + " "+sec/1000000000.0 + " sec",
+						Toast.makeText(
+								context,
+								"You said: " + dummy.getAnswer() + " " + sec
+										/ 1000000000.0 + " sec",
 								Toast.LENGTH_LONG).show();
 						textView.setText(dummy.getAnswer());
 						new OracleThread(context).execute();
-						
 
 					}
 				});
@@ -1432,7 +1597,6 @@ public class Homescreen extends Activity {
 
 		new RecordThread(context).execute();
 	}
-
 
 	class RecordThread extends AsyncTask<Void, Void, Void>
 	{

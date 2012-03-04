@@ -16,7 +16,6 @@ import test.BusTUC.Favourites.Favourite;
 import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.Main.Homescreen.MapThread;
 import test.BusTUC.Speech.HTTP;
-import test.BusTUC.Speech.Listener;
 import test.BusTUC.Stops.BusSuggestion;
 import test.BusTUC.Stops.ClosestStopOnMap;
 import android.app.AlertDialog;
@@ -352,7 +351,7 @@ public class Answer extends ListActivity
 			try
 			{
 				System.out.println("ANSWER: " + answerText);
-				if(!file.exists())http.sendPostTTS(answerText);
+				if(!file.exists())http.sendGetTTS(answerText);
 			} catch (Exception e)
 			{
 				myDialog.dismiss();
