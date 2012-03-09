@@ -664,7 +664,7 @@ public class Helpers
 	 * Runs query against Retro's server
 	 * According methods such as createJSONServer are modified versions of the existing
 	 */
-	public static ArrayList <Route> runServer(String input, Browser k_browser, Location location, int numStops, int dist)
+	public static ArrayList <Route> runServer(String input, Browser k_browser, Location location, int numStops, int dist, Context context)
 	{
 		Route[] finalRoutes;
 		// Perform action on clicks
@@ -672,7 +672,7 @@ public class Helpers
 		try
 		{
 			long time = System.nanoTime();
-			String html_page = k_browser.getRequestServer(input,false, location, numStops, dist);   
+			String html_page = k_browser.getRequestServer(input,false, location, numStops, dist, context);   
 			// No internet connection
 			if(html_page == null)
 			{

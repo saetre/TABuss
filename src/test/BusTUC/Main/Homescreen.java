@@ -933,7 +933,7 @@ public class Homescreen extends Activity
 						{
 							long pre = System.nanoTime();
 							buf = Helpers.runServer(query, k_browser,
-									currentlocation, numStops, dist);
+									currentlocation, numStops, dist, context);
 							long post = System.nanoTime() - pre;
 							System.out.println("POST-TIME: "
 									+ (post / 1000000000.0));

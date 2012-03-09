@@ -123,7 +123,7 @@ public class Answer extends ListActivity
 							+ bs.arrivaltime + ", og ankommer " + bs.destination + " klokka " + bs.departuretime + ".";
 
 				}
-				answerText += ", Fred ut!";
+				answerText += ", Løp for faen!";
 
 				setListAdapter(new SimpleAdapter(context, busSuggestions,
 						R.layout.suggestion, new String[]
