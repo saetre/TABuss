@@ -61,6 +61,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.net.ParseException;
 import android.os.AsyncTask;
+import android.telephony.TelephonyManager;
 import android.text.InputFilter.LengthFilter;
 import android.util.Log;
 import android.webkit.WebView;
@@ -155,7 +156,7 @@ public class Browser
 		return html_string; 
 	}
 
-	public String getRequestServer(String stop, Boolean formated, Location location, int numStops, int dist)
+	public String getRequestServer(String stop, Boolean formated, Location location, int numStops, int dist, Context context)
 	{
 		String html_string = null; 
 		HttpGet m_get = new HttpGet();	    
@@ -167,7 +168,9 @@ public class Browser
 		}
 		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
 		try {
-			m_get.setURI(new URI("http://busstjener.idi.ntnu.no/MultiBRISserver/MBServlet?dest="+stop+"&lat="+location.getLatitude()+"&long="+location.getLongitude() + "&type=json&nStops="+numStops +"&maxWalkDist="+dist+"&key=SoapMacTavish"));
+			final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+			String t_id = tm.getDeviceId();
+			m_get.setURI(new URI("http://busstjener.idi.ntnu.no/MultiBRISserver/MBServlet?dest="+stop+"&lat="+location.getLatitude()+"&long="+location.getLongitude() + "&type=json&nStops="+numStops +"&maxWalkDist="+dist+"&key="+t_id));
 			//http://furu.idi.ntnu.no:1337/MultiBRISserver/MBServlet?dest=Ila&type=json&lat=63.4169548&long=10.40284478 n�
 			// 			m_get.setURI(new URI("http://ec2-79-125-87-39.eu-west-1.compute.amazonaws.com:8080/MultiBRISserver/MBServlet?dest="+stop+"&type=json&lat="+location.getLatitude()+"&long="+location.getLongitude()));
 			HttpResponse m_response = m_client.execute(m_get);
