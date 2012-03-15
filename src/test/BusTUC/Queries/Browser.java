@@ -52,6 +52,7 @@ import test.BusTUC.Stops.BusDeparture;
 import test.BusTUC.Stops.BusStop;
 
 import test.BusTUC.Main.BusTUCApp;
+import test.BusTUC.Main.Helpers;
 
 
 
@@ -473,7 +474,7 @@ public class Browser
 		Log.v("string",str1);
 		return str1; 
 	}
-	public BusDeparture specificRequest(int k_RealTimeId, int k_specifiedLine)
+	public BusDeparture specificRequest(int k_RealTimeId, int k_specifiedLine,ArrayList <String> m_list)
 	{
 		int realTimeId = k_RealTimeId;   
 		int specifiedLine = k_specifiedLine;
@@ -485,8 +486,8 @@ public class Browser
 		soap.append("<soap:Body>");
 		soap.append("<getUserRealTimeForecast xmlns=\"http://miz.it/infotransit\">");
 		soap.append("<auth>");
-		soap.append("<user>Lingit</user>");
-		soap.append("<password>t1gn1l</password>");
+		soap.append("<user>"+m_list.get(0)+"</user>");
+		soap.append("<password>"+m_list.get(1)+"</password>");
 		soap.append("</auth>");
 		soap.append("<busStopId>"+realTimeId+"</busStopId>");
 		soap.append("</getUserRealTimeForecast>");
@@ -540,7 +541,7 @@ public class Browser
 		return realTimeNumbers; 
 	}
 
-	public static ArrayList <BusDeparture> specificRequestForStop(int k_RealTimeId)
+	public static ArrayList <BusDeparture> specificRequestForStop(int k_RealTimeId, ArrayList <String> m_list)
 	{
 		int realTimeId = k_RealTimeId;  
 		System.out.println("REAL-TIME ID RECEIVED: " + realTimeId);
@@ -552,8 +553,8 @@ public class Browser
 		soap.append("<soap:Body>");
 		soap.append("<getUserRealTimeForecast xmlns=\"http://miz.it/infotransit\">");
 		soap.append("<auth>");
-		soap.append("<user>Lingit</user>");
-		soap.append("<password>t1gn1l</password>");
+		soap.append("<user>"+m_list.get(0)+"</user>");
+		soap.append("<password>"+m_list.get(1)+"</password>");
 		soap.append("</auth>");
 		soap.append("<busStopId>"+realTimeId+"</busStopId>");
 		soap.append("</getUserRealTimeForecast>");

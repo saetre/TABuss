@@ -910,8 +910,10 @@ public class Homescreen extends Activity
 					{
 						if (!query.equals(""))
 						{
+							InputStream is = getAssets().open("real_time.txt");
+							ArrayList <String> m_list = Helpers.readStuff(is);
 							buf = Helpers.run(query, busStopsNoDuplicates,
-									k_browser, realTimeCodes);
+									k_browser, realTimeCodes,m_list);
 						} else
 						{
 							empty = true;

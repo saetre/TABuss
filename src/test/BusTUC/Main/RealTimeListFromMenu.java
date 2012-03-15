@@ -1,6 +1,7 @@
 package test.BusTUC.Main;
 
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -90,8 +91,9 @@ public class RealTimeListFromMenu extends ListActivity
 
 			text.setText(stopName);
 
-
-			if(!server)stops = Browser.specificRequestForStop(stopId); 
+			InputStream is = getAssets().open("real_time.txt");
+			ArrayList <String> m_list = Helpers.readStuff(is);
+			if(!server)stops = Browser.specificRequestForStop(stopId, m_list); 
 			else stops = Browser.specificRequestForStopServer(outgoing);
 
 			long currenttimeInMillis = date.getTime();
