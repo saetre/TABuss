@@ -111,7 +111,7 @@ public class BusTUCApp extends MapActivity{
 				}
 				StackTraceElement e = st[stackLevel];
 				Log.d( BusTUC_Label, e.getMethodName() + ": " + msg + " at (" + e.getFileName()+":"+e.getLineNumber() +")" );
-			}
+			} // if DEBUG verbosity level is high enough 
 		} // debug
 
 
