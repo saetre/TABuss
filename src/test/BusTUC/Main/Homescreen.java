@@ -908,7 +908,6 @@ public class Homescreen extends Activity
 					String query = textView.getText().toString().trim();
 					if (!server && fancyOracle)
 					{
-						// System.out.println("Her skal vi ikke havne");
 						if (!query.equals(""))
 						{
 							buf = Helpers.run(query, busStopsNoDuplicates,
@@ -919,7 +918,6 @@ public class Homescreen extends Activity
 						}
 					} else if (!fancyOracle)
 					{
-						// System.out.println("Her skal vi ikke havne");
 						if (!query.equals(""))
 						{
 							System.out.println("FUBAR");
