@@ -1,3 +1,22 @@
+/**
+ * Copyright (C) 2010-2012 Magnus Raaum, Lars Moland Eliassen, Christoffer Jun Marcussen, Rune Sætre
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * README:
+ * 
+ */
+
 package test.BusTUC.Main;
 
 import java.io.File;
@@ -522,8 +541,7 @@ public class Homescreen extends Activity
 		}
 	}
 
-	private void loadStops()
-	{
+	private void loadStops(){
 		System.out.println("numstops: " + numStops + " numstopsonmap: "
 				+ numStopsOnMap + " dist: " + dist);
 		if (gpsCords != null)
@@ -597,35 +615,25 @@ public class Homescreen extends Activity
 			}
 
 			@Override
-			public void onProviderDisabled(String provider)
-			{
+			public void onProviderDisabled(String provider)	{
 				Log.v("PROV", "PROV:DISABLED");
 				// TODO Auto-generated method stub
-
 			}
 
 			@Override
-			public void onProviderEnabled(String provider)
-			{
+			public void onProviderEnabled(String provider){
 				Log.v("PROV", "PROV:ENABLED");
-
 			}
 
 			@Override
-			public void onStatusChanged(String provider, int status,
-					Bundle extras)
-			{
+			public void onStatusChanged(String provider, int status,	Bundle extras)	{
 				Log.v("PROV", "PROV:STATUSCHANGE");
-
 			}
-
 		};
 	}
 
-	private void createLocationManager()
-	{
-		try
-		{
+	private void createLocationManager(){
+		try	{
 			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 			Criteria criteria = new Criteria();
 			criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -633,49 +641,42 @@ public class Homescreen extends Activity
 			k_browser = new Browser();
 			// Load real-time codes
 			long rt = System.nanoTime();
-			if (!server)
-			{
+			if (!server){
 				realTimeCodes = k_browser.realTimeData();
-
 			}
 
 			long rt2 = System.nanoTime() - rt;
 			System.out.println("TIME SPENT REALTIMECODES: "
 					+ (rt2 / 1000000000.0));
-			// System.out.println("Realtinmecodessizefirst: " +
-			// realTimeCodes.size());
-			// Log.v("provider","provider:"+ provider);
-		} catch (Exception e)
-		{
+			if (realTimeCodes != null){
+				System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
+			}
+			Log.v("provider","provider:"+ provider);
+		} catch (Exception e){
+			e.printStackTrace();
 			System.out.println("ERROR");
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
 			// First input dialog
 			alert.setTitle("Tilkoblingsproblem");
 			alert.setMessage("Ingen tilkobling, har du nettilgang?");
 			alert.setPositiveButton("Avslutt",
-					new DialogInterface.OnClickListener()
-					{
+					new DialogInterface.OnClickListener()		{
 						@Override
 						public void onClick(DialogInterface dialog,
-								int whichButton)
-						{
+								int whichButton){
 							System.exit(0);
-
 						}
 					});
 			alert.show();
-
 		}
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
+	protected void onActivityResult(int requestCode, int resultCode, Intent data){
 		System.out.println("OnActivityResult()");
 		super.onActivityResult(requestCode, resultCode, data);
 		boolean change = false;
-		if (resultCode == Activity.RESULT_OK)
-		{
+		if (resultCode == Activity.RESULT_OK){
 			Bundle extras = data.getExtras();
 			int m_numStops = extras.getInt("num1");
 			int m_numStopsOnMap = extras.getInt("num2");
@@ -986,6 +987,7 @@ public class Homescreen extends Activity
 
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override
 		protected void onPostExecute(Void unused)
 		{
@@ -1191,12 +1193,10 @@ public class Homescreen extends Activity
 		}
 
 		@Override
-		protected void onPostExecute(Void unused)
-		{
+		protected void onPostExecute(Void unused){
 
 			myDialog.dismiss();
-			if (check)
-			{
+			if (check){
 				AlertDialog.Builder alert = new AlertDialog.Builder(context);
 				// First input dialog
 				alert.setTitle("Tilkoblingsproblem");
@@ -1213,10 +1213,12 @@ public class Homescreen extends Activity
 							}
 						});
 				alert.show();
-			} else
-			{
-				locationManager.requestLocationUpdates(provider, 500, 10,
-						locationListener);
+			} else {
+				if (provider == null){
+					System.err.println(" Fuck Up!" );
+					provider = locationManager.getBestProvider(new Criteria(), true);
+				}
+				locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
 				new LocationListenerThread(context).execute();
 			}
 
@@ -1266,58 +1268,45 @@ public class Homescreen extends Activity
 		}
 
 		@Override
-		protected void onPreExecute()
-		{
+		protected void onPreExecute(){
 
-			try
-			{
+			try{
 				myDialog = ProgressDialog.show(context, "Loading!",
 						"Setter lokasjon");
 				myDialog.setCancelable(true);
-				myDialog.setOnCancelListener(new OnCancelListener()
-				{
+				myDialog.setOnCancelListener(new OnCancelListener(){
 
 					@Override
-					public void onCancel(DialogInterface dialog)
-					{
+					public void onCancel(DialogInterface dialog){
 						finish();
 						System.exit(0);
 
 					}
 				});
 
-			} catch (Exception e)
-			{
+			} catch (Exception e){
 				e.printStackTrace();
 				myDialog.dismiss();
-
 			}
-
 		}
 
 		@Override
-		protected void onPostExecute(Void unused)
-		{
+		protected void onPostExecute(Void unused){
 
 			myDialog.dismiss();
 			if (!server)
 				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords,
 						provider, currentlocation, dist, numStops, false);
-
 		}
 	}
 
 	@Override
-	public void onBackPressed()
-	{
+	public void onBackPressed(){
 
-		DialogInterface.OnClickListener dc = new DialogInterface.OnClickListener()
-		{
+		DialogInterface.OnClickListener dc = new DialogInterface.OnClickListener(){
 			@Override
-			public void onClick(DialogInterface dialog, int which)
-			{
-				switch (which)
-				{
+			public void onClick(DialogInterface dialog, int which)	{
+				switch (which)	{
 				case DialogInterface.BUTTON_POSITIVE:
 					((Activity) context).finish();
 					ext.release();
@@ -1326,33 +1315,25 @@ public class Homescreen extends Activity
 				case DialogInterface.BUTTON_NEGATIVE:
 					// Do nothing
 					break;
-
 				}
-
 			}
-
 		};
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage("Avslutte?").setPositiveButton("Ja", dc)
 				.setNegativeButton("Nei", dc).show();
-
 	}
 
 	@Override
-	protected void onStart()
-	{
+	protected void onStart(){
 		super.onStart();
-
 	}
 
-	public void onDestroy()
-	{
+	public void onDestroy()	{
 		super.onDestroy();
 	}
-
+	
 	@Override
-	protected void onResume()
-	{
+	protected void onResume(){
 		int c = dbHelper.getQueryCount();
 		this.setTitle("AndroidAmble - " + c + " Søk gjort");
 		super.onResume();
@@ -1360,15 +1341,13 @@ public class Homescreen extends Activity
 		textView.setEnabled(true);
 		goButton.setEnabled(true);
 
-		try
-		{
+		try	{
 			// Sets the restrictions on the location update. If no
 			// locationmanager object exists, error message is sent to user,
 			// requiring closing of app
 			locationManager.requestLocationUpdates(
-					locationManager.NETWORK_PROVIDER, 10, 1, locationListener);
-		} catch (Exception e)
-		{
+					LocationManager.NETWORK_PROVIDER, 10, 1, locationListener);
+		} catch (Exception e){
 			AlertDialog.Builder alert = new AlertDialog.Builder(context);
 			// First input dialog
 			alert.setTitle("Tilkoblingsproblem");
@@ -1386,21 +1365,19 @@ public class Homescreen extends Activity
 					});
 			alert.show();
 		}
-
 	}
 
 	@Override
-	protected void onPause()
-	{
+	protected void onPause(){
 		super.onPause();
 		locationManager.removeUpdates(locationListener);
 	}
 
-	private String getSuggestionBasedOnPosition()
-	{
+	private String getSuggestionBasedOnPosition(){
 		double lat = currentlocation.getLatitude();
 		double lon = currentlocation.getLongitude();
 		int time = Helpers.minutesFromDate(new Date());
+		@SuppressWarnings("deprecation")
 		int day = new Date().getDay();
 		Cursor areas = dbHelper.getQueryFromArea(lat, lon, time + 120,
 				time - 120);

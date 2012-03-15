@@ -11,8 +11,15 @@
         android:enabled="true"
         android:clickable="true"
 
-        android:apiKey="05MLhk0p9hp2l6gi5P2sy-NJPyNEi-gtfd9Bq6g"/>
-
+        android:apiKey="05MLhk0p9hp3JBgHGNN8QZVa-D8D3Pz6h4TuRjA"/>
+<!-- Obtain Your Own Debug Google Map API key from here:
+http://code.google.com/intl/no/android/add-ons/google-apis/maps-api-signup.html
+ android:apiKey="
+ Jun's Key: 		05MLhk0p9hp2l6gi5P2sy-NJPyNEi-gtfd9Bq6g
+ Rune's Laptop Key:	05MLhk0p9hp3JBgHGNN8QZVa-D8D3Pz6h4TuRjA Works with cityexplorer/debug.keystore !
+ Rune's MAC Key:	05MLhk0p9hp3ISqul1fOOQfXG53U8Cv7J-I_FfA
+-->
+        
     <LinearLayout android:id="@+id/zoom" 
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content" 

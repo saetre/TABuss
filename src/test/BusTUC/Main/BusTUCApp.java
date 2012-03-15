@@ -1,3 +1,24 @@
+/**
+ * Copyright (C) 2010-2012 Magnus Raaum, Lars Moland Eliassen, Christoffer Jun Marcussen, Rune Sætre
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * README:
+ * - To compile:	javac -d . -cp "httpcomponents-client-4.2-beta1/lib/httpmime-4.2-beta1.jar:android.jar:." -encoding UTF-8 src/test/BusTUC/*.java
+ * - To run:		java  -cp  .:httpcomponents-client-4.2-beta1/lib/httpmime-4.2-beta1.jar test/BusTUC/Main/BusTUCApp
+ * 
+ */
+
 package test.BusTUC.Main;
 
 import java.net.URL;
@@ -51,8 +72,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-public class BusTUCApp extends MapActivity 
-{    
+public class BusTUCApp extends MapActivity{
+
+	public static final int DEBUG = 1;
+	public static final String BusTUC_Label = "BusTUC";
+
 	MapOverlay mapOverlay;
 	ArrayList <ClosestStopOnMap> temp;
 	ArrayList <Integer> id;
@@ -72,10 +96,28 @@ public class BusTUCApp extends MapActivity
 	Browser k_browser;
 	/** Called when the activity is first created. */
 
-	@SuppressWarnings("deprecation")
+
+	// STATIC METHODS
+
+		/*
+		 * Debug method to include the filename, line-number and method of the caller
+		 */
+		public static void debug(int d, String msg) {
+			if (DEBUG >= d) {
+				StackTraceElement[] st = Thread.currentThread().getStackTrace();
+				int stackLevel = 2;
+				while ( st[stackLevel].getMethodName().equals("debug") || st[stackLevel].getMethodName().equals("access$0") ){
+					stackLevel++;
+				}
+				StackTraceElement e = st[stackLevel];
+				Log.d( BusTUC_Label, e.getMethodName() + ": " + msg + " at (" + e.getFileName()+":"+e.getLineNumber() +")" );
+			}
+		} // debug
+
+
+@SuppressWarnings("deprecation")
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		mapView = (MapView) findViewById(R.id.mapView); 
@@ -94,48 +136,34 @@ public class BusTUCApp extends MapActivity
 
 		mc = mapView.getController();
 
-
-
-		try
-		{
-			if(!server)
-			{
+		try		{
+			if(!server)			{
 				realTimeCodes = Homescreen.realTimeCodes;
-				if(realTimeCodes == null)
-				{
-					try
-					{
+				if(realTimeCodes == null)				{
+					try					{
 						//Toast.makeText(context, "Mangler sanntidsinfo, returnerer til hjemmeskjerm", Toast.LENGTH_LONG).show();
 						//returnHome();
 						Browser browser = new Browser();
 						realTimeCodes = browser.realTimeData();
-					}
-					catch(Exception e)
-					{
+					}	catch(Exception e)	{
 						e.printStackTrace();
 					}
 				}
-			}
+			} // if ( not server )
 
 			currentLocation = Homescreen.currentlocation;
 
-			if(currentLocation == null)
-			{
-				try
-				{
+			if(currentLocation == null)	{
+				try	{
 					Toast.makeText(context, "Mangler informasjon, returnerer til hjemmeskjerm", Toast.LENGTH_LONG).show();
 					returnHome();
-				}
-				catch(Exception e)
-				{
+				}	catch(Exception e)	{
 					e.printStackTrace();
 				}
-			}
+			} // if ( currentLocation == null )
 
 			//System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
-		}
-		catch(Exception e)
-		{
+		}	catch(Exception e)	{
 			Toast.makeText(context, "No connection", Toast.LENGTH_LONG).show();
 			ArrayList <String> err = new ArrayList <String>();
 			err.add(e.toString());
@@ -279,11 +307,10 @@ public class BusTUCApp extends MapActivity
 
 		//System.out.println("My loc: " + Homescreen.currentlocation.getLatitude() *1E6 + "  " + Homescreen.currentlocation.getLongitude() *1E6);
 		new LocationListenerThread(context).execute();
-	}	
+	}//onCreate
 
 
-	public void drivingPath(double []dest, Location loc)
-	{
+	public void drivingPath(double []dest, Location loc){
 		System.out.println("dest: " + dest[0] + "  " + dest[1]);
 		// Create driving path
 		Location lastKnownLocation = loc;

@@ -1,3 +1,24 @@
+/**
+ * Copyright (C) 2010-2012 Magnus Raaum, Lars Moland Eliassen, Christoffer Jun Marcussen, Rune Sætre
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * README:
+ * - To compile:	javac -d . -cp "httpcomponents-client-4.2-beta1/lib/httpmime-4.2-beta1.jar:android.jar:." -encoding UTF-8 src/test/BusTUC/*.java
+ * - To run:		java  -cp  .:httpcomponents-client-4.2-beta1/lib/httpmime-4.2-beta1.jar test/BusTUC/Main/BusTUCApp
+ * 
+ */
+
 package test.BusTUC.Main;
 
 import java.io.BufferedInputStream;
@@ -83,6 +104,7 @@ public class Helpers
 		return retList;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void killApp(boolean killSafely)
 	{
 		if (killSafely)
@@ -218,6 +240,7 @@ public class Helpers
 		return format.format(cal.getTime());
 	}
 
+	@SuppressWarnings("deprecation")
 	public static int minutesFromDate(Date date)
 	{
 		return date.getHours() * 60 + date.getMinutes();
@@ -1080,6 +1103,7 @@ public class Helpers
 
 				Thread thread = new Thread(new Runnable()
 				{
+					@SuppressWarnings("deprecation")
 					public void run()
 					{
 
