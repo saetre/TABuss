@@ -11,6 +11,7 @@
         android:enabled="true"
         android:clickable="true"
 
+
         android:apiKey="05MLhk0p9hp3JBgHGNN8QZVa-D8D3Pz6h4TuRjA"/>
 <!-- Obtain Your Own Debug Google Map API key from here:
 http://code.google.com/intl/no/android/add-ons/google-apis/maps-api-signup.html
