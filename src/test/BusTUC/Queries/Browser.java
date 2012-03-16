@@ -198,59 +198,6 @@ public class Browser
 		return html_string;
 	}
 
-	public static String sendSoapRequest(String postHeader, String soapMessage)
-	{
-		byte[] result = null;
-		String soap = soapMessage;
-		HttpParams httpParameters = new BasicHttpParams();
-		int timeoutConnection = 50000;
-		HttpConnectionParams.setConnectionTimeout(httpParameters,
-				timeoutConnection);
-		int timeoutSocket = 50000;
-		HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-
-		DefaultHttpClient httpclient = new DefaultHttpClient(httpParameters);
-		HttpPost httppost = new HttpPost(postHeader);
-		httppost.setHeader("Content-Type", "text/xml; charset=utf-8");
-
-		try
-		{
-			HttpEntity entity = new StringEntity(soap, HTTP.UTF_8);
-			httppost.setEntity(entity);
-			HttpResponse response = httpclient.execute(httppost);
-			HttpEntity r_entity = response.getEntity();
-
-			Header[] headers = response.getAllHeaders();
-			// for(Header h:headers){
-			// Log.v("Reponse Header",h.getName() + ": " + h.getValue());
-			// }
-			if (r_entity != null)
-			{
-				result = new byte[(int) r_entity.getContentLength()]; // read
-																		// the
-																		// output
-																		// message
-				if (r_entity.isStreaming())
-				{
-					DataInputStream is = new DataInputStream(
-							r_entity.getContent());
-					is.readFully(result);
-				}
-			}
-		} catch (Exception E)
-		{
-			Log.v("Exception While Connecting", "" + E.getMessage());
-			E.printStackTrace();
-		}
-
-		httpclient.getConnectionManager().shutdown(); // shut down the
-														// connection
-		// return result;
-		// Log.v("lengt","l:"+result.length);
-		String str1 = new String(result);
-		Log.v("string", str1);
-		return str1;
-	}
 
 
 	public static ArrayList<BusDeparture> specificRequestForStopServer(
