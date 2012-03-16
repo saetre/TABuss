@@ -104,12 +104,8 @@ public class Homescreen extends Activity
 	private int numStopsOnMap;
 	private int dist;
 	private boolean fancyOracle;
-	// private int[] buttons =
-	// {R.id.button1,R.id.button2,R.id.button3,R.id.button4,R.id.button5,
-	// R.id.button6};
 	private Button[] buttons;
 	private Button goButton, amazeButton;
-	// private EditText editText;
 	// Global variables that need to be accessed from other contexts
 	// No prob to let them stay public static, as they anyway are accessed by
 	// the same process
@@ -215,7 +211,6 @@ public class Homescreen extends Activity
 		{
 			if (!Helpers.containsIgnoreCase(temp, favorites.get(i)))
 			{
-				System.out.println("Does not contain ");
 				busStop[addedfavorites] = favorites.get(i);
 				addedfavorites++;
 			}
@@ -248,9 +243,6 @@ public class Homescreen extends Activity
 		setContentView(R.layout.homescreen);
 		new StartUpThread(context).execute();
 		dbHelper = new DatabaseHelper(context);
-		// this.setRequestedOrientation(
-		// ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
 		// Set properties according to existing preferences
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
@@ -266,7 +258,6 @@ public class Homescreen extends Activity
 		buttons = new Button[6];
 		goButton = (Button) this.findViewById(R.id.goButton);
 		amazeButton = (Button) this.findViewById(R.id.amazebutton);
-		// editText = (EditText)this.findViewById(R.id.editText);
 
 		loadDictionaries();
 
@@ -396,12 +387,6 @@ public class Homescreen extends Activity
 					"dictionary");
 
 		}
-
-		// TODO:
-		/*
-		 * Move out of onCreate(), as modifying UI during onCreate() is
-		 * unpopular..
-		 */
 		catch (Exception e)
 		{
 			e.printStackTrace();
@@ -601,11 +586,6 @@ public class Homescreen extends Activity
 			{
 				System.out.println("LOCATIONLISTENER CALLED IN HOMESCREEN");
 				currentlocation = location;
-				// currentlocation.setLatitude(59.77075);
-				// currentlocation.setLongitude(9.91087);
-				// ila 10.367672,63.429256
-				// 10.394555,63.43109
-				// getSuggestionBasedOnPosition();
 				loadStops();
 				Toast.makeText(context, "Lokasjon oppdatert",
 						Toast.LENGTH_SHORT).show();
@@ -642,16 +622,14 @@ public class Homescreen extends Activity
 			// Load real-time codes
 			long rt = System.nanoTime();
 			if (!server){
-				realTimeCodes = k_browser.realTimeData();
+				InputStream is = getAssets().open("real_time.txt");
+				ArrayList <String> m_list = Helpers.readStuff(is);
+				realTimeCodes = k_browser.realTimeData(m_list);
 			}
 
 			long rt2 = System.nanoTime() - rt;
 			System.out.println("TIME SPENT REALTIMECODES: "
 					+ (rt2 / 1000000000.0));
-			if (realTimeCodes != null){
-				System.out.println("Realtinmecodessizefirst: " + realTimeCodes.size());
-			}
-			Log.v("provider","provider:"+ provider);
 		} catch (Exception e){
 			e.printStackTrace();
 			System.out.println("ERROR");
@@ -857,9 +835,6 @@ public class Homescreen extends Activity
 		private Context context;
 		ArrayList<Route> buf;
 		StringBuffer buffer = new StringBuffer();
-
-		// StringBuffer buf = new StringBuffer();
-		// ArrayList <String> buf = new ArrayList <String>();
 		ProgressDialog myDialog = null;
 		String noLoc = "Ingen lokasjon tilgjengelig. Sjekk dine innstillinger";
 		String noRoutes = "Fant ingen ruter for søkekriterie. Sjekk søkeord";
@@ -913,6 +888,7 @@ public class Homescreen extends Activity
 						{
 							InputStream is = getAssets().open("real_time.txt");
 							ArrayList <String> m_list = Helpers.readStuff(is);
+							
 							buf = Helpers.run(query, busStopsNoDuplicates,
 									k_browser, realTimeCodes,m_list);
 						} else
@@ -923,7 +899,6 @@ public class Homescreen extends Activity
 					{
 						if (!query.equals(""))
 						{
-							System.out.println("FUBAR");
 							buffer = Helpers.runStandard(query);
 						} else
 							empty = true;
@@ -1149,6 +1124,12 @@ public class Homescreen extends Activity
 			try
 			{
 				createLocationManager();
+				InputStream is = getAssets().open("real_time.txt");
+				ArrayList <String> m_list = Helpers.readStuff(is);
+				for(String t : m_list)
+				{
+					System.out.println("READ: " + t);
+				}
 
 			} catch (Exception e)
 			{

@@ -53,7 +53,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import test.BusTUC.Calc.Calculate;
-import test.BusTUC.Calc.Sort;
 import test.BusTUC.Database.Query;
 import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.Queries.Browser;
@@ -280,34 +279,6 @@ public class Helpers
 
 	}
 
-	public static ArrayList<String> getTrainingSet()
-	{
-		ArrayList<String> speechList = SDCard.getFilesFromSD("speech_test");
-		return speechList;
-	}
-
-	public static ArrayList<String> addToTrainingSet(
-			ArrayList<String> receivedWords, ArrayList<String> trainingSet)
-	{
-		ArrayList<String> updatedList = new ArrayList<String>();
-		if (trainingSet.size() == 0)
-		{
-			trainingSet.addAll(receivedWords);
-			SDCard.generateNoteOnSD("speech_test", trainingSet, "speech");
-		} else
-		{
-			System.out.println("ADDED: " + receivedWords.get(0));
-			trainingSet.addAll(receivedWords);
-		}
-
-		updatedList = SDCard.getFilesFromSD("speech_test");
-		for (int i = 0; i < updatedList.size(); i++)
-		{
-			System.out.println("New list: " + updatedList.get(i));
-		}
-		return updatedList;
-
-	}
 
 	public static ArrayList<String> parseData(ArrayList<Route> value)
 	{
@@ -334,7 +305,7 @@ public class Helpers
 							+ ": Ta Buss " + value.get(i).getBusNumber()
 							+ " fra " + value.get(i).getBusStopName()
 							+ " klokken " + value.get(i).getArrivalTime()
-							+ ". Du vil n� " + value.get(i).getDestination()
+							+ ". Du vil nå " + value.get(i).getDestination()
 							+ " ca " + value.get(i).getTravelTime()
 							+ " minutter senere.\n");
 
@@ -345,7 +316,7 @@ public class Helpers
 							+ value.get(i).getBusStopName() + " ("
 							+ value.get(i).getWalkingDistance() + " meter)"
 							+ " klokken " + value.get(i).getArrivalTime()
-							+ ". Du vil n�� " + value.get(i).getDestination()
+							+ ". Du vil nå " + value.get(i).getDestination()
 							+ " ca " + value.get(i).getTravelTime()
 							+ " minutter senere.\n");
 				}
@@ -355,7 +326,7 @@ public class Helpers
 					text.add((i + 1) + ": Ta Buss "
 							+ value.get(i).getBusNumber() + " fra "
 							+ value.get(i).getBusStopName() + " klokken "
-							+ value.get(i).getArrivalTime() + ". Du vil n� "
+							+ value.get(i).getArrivalTime() + ". Du vil nå "
 							+ value.get(i).getDestination() + " ca "
 							+ value.get(i).getTravelTime()
 							+ " minutter senere.\n");
@@ -370,7 +341,7 @@ public class Helpers
 							+ value.get(i).getBusStopName() + " ("
 							+ value.get(i).getWalkingDistance() + " meter)"
 							+ " klokken " + value.get(i).getArrivalTime()
-							+ ". Du vil n� " + value.get(i).getDestination()
+							+ ". Du vil nå " + value.get(i).getDestination()
 							+ " ca " + value.get(i).getTravelTime()
 							+ " minutter senere.\n");
 				} else
@@ -378,7 +349,7 @@ public class Helpers
 					text.add((i + 1) + ": OVERGANG: Ta Buss "
 							+ value.get(i).getBusNumber() + " fra "
 							+ value.get(i).getBusStopName() + " klokken "
-							+ value.get(i).getArrivalTime() + ". Du vil n� "
+							+ value.get(i).getArrivalTime() + ". Du vil nå "
 							+ value.get(i).getDestination() + " ca "
 							+ value.get(i).getTravelTime()
 							+ " minutter senere.\n");
@@ -560,7 +531,7 @@ public class Helpers
 							.parseInt(transfer.getArrivalTime())))
 				{
 					String beforeTwelve = "0";
-					System.out.println("PR�VER � FINNE NY");
+					System.out.println("PRØVER Å FINNE NY");
 					if (value.get(i - 1).getArrivalTime().length() == 3)
 					{
 						beforeTwelve = beforeTwelve
@@ -698,13 +669,10 @@ public class Helpers
 		{
 			try
 			{
-				// System.out.println("K-browserobj " + k_browser.toString() +
-				// "realtimelength: " + realTimeCodes.size());
 
 				long time = System.nanoTime();
 				String[] html_page = k_browser.getRequest(tSetExclude, input,
 						false);
-				// tSetExclude
 				long newTime = System.nanoTime() - time;
 				System.out.println("TIME ORACLEREQUEST: " + newTime
 						/ 1000000000.0);
@@ -817,9 +785,6 @@ public class Helpers
 		{
 			try
 			{
-				// System.out.println("K-browserobj " + k_browser.toString() +
-				// "realtimelength: " + realTimeCodes.size());
-
 				long time = System.nanoTime();
 				String[] html_page = k_browser.getRequestString(tSetExclude,
 						input, false, additional);
@@ -827,8 +792,6 @@ public class Helpers
 				long newTime = System.nanoTime() - time;
 				System.out.println("TIME ORACLEREQUEST: " + newTime
 						/ 1000000000.0);
-				// System.out.println("TEKST: " + editTe.getText().toString() );
-				// System.out.println("HTML LENGTH: " + html_page.length);
 				StringBuilder str = new StringBuilder();
 				// Parses the returned html
 				if (!Helpers.parseHtml(html_page, str))
@@ -882,7 +845,6 @@ public class Helpers
 			}
 		} else
 			System.out.println("EMPTY LIST");
-		System.out.println("HER SKAL VI IKKE HAVNE");
 		return null;
 
 	}
@@ -1026,10 +988,6 @@ public class Helpers
 			// false
 			if (html_page[0].equalsIgnoreCase("error"))
 			{
-				// Toast.makeText(this, "Not found", Toast.LENGTH_SHORT).show();
-				System.out.println("NOT FOUND ERROR FOO");
-				// Toast.makeText(this, "Query timed out",
-				// Toast.LENGTH_LONG).show();
 				return false;
 			}
 		}
@@ -1054,10 +1012,7 @@ public class Helpers
 						&& s.distance != 0)
 				{
 					routes[i].setWalkingDistance((int) s.distance);
-				} else
-				{
-					// routes[i].setWalkingDistance(1000);
-				}
+				} 
 			}
 		}
 	}

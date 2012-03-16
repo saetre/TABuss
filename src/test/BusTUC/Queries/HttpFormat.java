@@ -147,7 +147,6 @@ public class HttpFormat {
 
 		catch(Exception ex){
 			result = "Error";
-			System.out.println("ERROR IN HTTPFORMAT!!!!!!!!!!!!!!");
 			ex.printStackTrace();
 			// Just add "error" as value. Detect in BusTUCApp
 			contentArray = new String[5];

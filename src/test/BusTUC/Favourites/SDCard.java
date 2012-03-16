@@ -44,8 +44,7 @@ public class SDCard
     		if(files[i].getName().equalsIgnoreCase(folderName) && files[i].isDirectory())
     		{
     			System.out.println("FOUND DIRECTORY " + files[i].listFiles().length);
-    			// In directory, now find files
-    			//File dir = new File(files[i].getName());
+
     			for(int j=0; j<files[i].listFiles().length; j++)
     			{    				
     					
@@ -72,8 +71,7 @@ public class SDCard
     		if(files[i].getName().equalsIgnoreCase(folderName) && files[i].isDirectory())
     		{
     			System.out.println("FOUND DIRECTORY " + files[i].listFiles().length);
-    			// In directory, now find files
-    			//File dir = new File(files[i].getName());
+
     			for(int j=0; j<files[i].listFiles().length; j++)
     			{
     				//File file = new File(files[i].listFiles()[j].getName());

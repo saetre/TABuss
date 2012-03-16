@@ -118,7 +118,6 @@ public class Browser
 			System.out.println("WALK: "+Double.parseDouble(keys[i].toString()));
 			String output2 = decifo.format(Math.ceil((Double.parseDouble(keys[i].toString())/1.7)/60));
 			start2 = start2 + "" + startMap.get(keys[i]).getProvider()+""+"+"+output2; 
-			System.out.println("START TO SATT: " + start2 + "  " + startMap.get(keys[i]).getProvider());
 			if(i+1<hSize)
 			{
 				start2 = start2 + ","; 
@@ -126,7 +125,6 @@ public class Browser
 		}
 		start2 = start2 + ")";
 		String wanted_string = start2 + " til " + stop ; 
-		String wanted_string2 = "fra gl�shaugen til nardo";
 		Log.v("BUSTUCSTR", "wanted_string :"+wanted_string);
 		HttpPost m_post= new HttpPost("http://www.idi.ntnu.no/~tagore/cgi-bin/busstuc/busq.cgi");
 		//HttpPost m_post= new HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
@@ -147,10 +145,8 @@ public class Browser
 			// Request
 			html_string = httpF.request(m_response);
 
-			// Will fail if server is busy or down
 			Log.v("html_string", "Returned html: " + html_string);
 			//Long newTime = System.nanoTime() - time;
-			//System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +  newTime/1000000000.0);
 		} catch (ClientProtocolException e) {
 			Log.v("CLIENTPROTOCOL EX", "e:"+e.toString());
 		} catch (IOException e) {
@@ -170,10 +166,6 @@ public class Browser
 			Log.v("FUCKINGTOLARGE", "Exception");
 		}
 
-		/*	for(int i =0; i< html_string.length;i++)
-		{
-			Log.v("HTMLFOO", html_string[i]);
-		}*/
 
 		return html_string; 
 	}
@@ -193,8 +185,6 @@ public class Browser
 			final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 			String t_id = tm.getDeviceId();
 			m_get.setURI(new URI("http://busstjener.idi.ntnu.no/MultiBRISserver/MBServlet?dest="+stop+"&lat="+location.getLatitude()+"&long="+location.getLongitude() + "&type=json&nStops="+numStops +"&maxWalkDist="+dist+"&key="+t_id));
-			//http://furu.idi.ntnu.no:1337/MultiBRISserver/MBServlet?dest=Ila&type=json&lat=63.4169548&long=10.40284478 n�
-			// 			m_get.setURI(new URI("http://ec2-79-125-87-39.eu-west-1.compute.amazonaws.com:8080/MultiBRISserver/MBServlet?dest="+stop+"&type=json&lat="+location.getLatitude()+"&long="+location.getLongitude()));
 			HttpResponse m_response = m_client.execute(m_get);
 			// Request
 			html_string = httpF.requestServer(m_response);			
@@ -258,12 +248,6 @@ public class Browser
 		{
 			e.printStackTrace();
 		}
-
-		/*	for(int i =0; i< html_string.length;i++)
-		{
-			Log.v("HTMLFOO", html_string[i]);
-		}*/
-
 		return html_string; 
 	}
 	
@@ -290,8 +274,6 @@ public class Browser
 		}
 		start2 = start2 + ")";
 		String wanted_string = start2 + " til " + stop ; 
-		String wanted_string2 = "fra gl�shaugen til nardo";
-		Log.v("BUSTUCSTR", "wanted_string:"+wanted_string);
 		HttpPost m_post= new HttpPost("http://www.idi.ntnu.no/~tagore/cgi-bin/busstuc/busq.cgi");
 
 
@@ -335,11 +317,6 @@ public class Browser
 		{
 			Log.v("FUCKINGTOLARGE", "Exception");
 		}
-
-		/*	for(int i =0; i< html_string.length;i++)
-		{
-			Log.v("HTMLFOO", html_string[i]);
-		}*/
 
 		return html_string; 
 	}
@@ -411,14 +388,9 @@ public class Browser
 			Log.v("FUCKINGTOLARGE", "Exception");
 		}
 
-		/*	for(int i =0; i< html_string.length;i++)
-		{
-			Log.v("HTMLFOO", html_string[i]);
-		}*/
-
 		return html_string; 
 	}
-	public HashMap <Integer,Integer> realTimeData()
+	public HashMap <Integer,Integer> realTimeData(ArrayList <String> m_list)
 	{ 
 		final StringBuffer soap = new StringBuffer();
 		soap.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
@@ -426,8 +398,8 @@ public class Browser
 		soap.append("<soap:Body>");
 		soap.append("<GetBusStopsList xmlns=\"http://miz.it/infotransit\">");    
 		soap.append("<auth>");
-		soap.append("<user>Lingit</user>");
-		soap.append("<password>t1gn1l</password>");
+		soap.append("<user>"+m_list.get(0)+"</user>");
+		soap.append("<password>"+m_list.get(1)+"</password>");
 		soap.append("</auth>");
 		soap.append("</GetBusStopsList>");
 		soap.append("</soap:Body>");
@@ -556,9 +528,6 @@ public class Browser
 				realTimeNumbers.put(mobileCode, new Integer(realTimeInt));
 			}
 		}
-		//       int check = 16011721; 
-		//      Log.v("Gl�shaugen","gs:"+realTimeNumbers.get(check));
-		//      realTimeCode = (Integer)realTimeNumbers.get(m_wantedBus);
 		return realTimeNumbers; 
 	}
 
@@ -690,7 +659,6 @@ public class Browser
 			}
 			catch(JSONException e)
 			{
-				System.out.println("FAAAAAAAAAAAIL");
 				e.printStackTrace();
 			}
 
@@ -751,13 +719,7 @@ public class Browser
 						t.realTime = false;
 					}
 
-					//       Log.d("line",String.valueOf(t.line));
-					//       Log.d("arrivalTime",String.valueOf(t.arrivalTime));
-					//       Log.d("ATB", t.toString());
-					//  if(wantedBusStop.getLine() == 9999)
-					//{
 					wantedBusStop = t;
-					//}
 					buses.add(t);
 				}
 			}
@@ -816,9 +778,7 @@ public class Browser
 			try
 			{
 				
-				//System.out.println("len p� array: " + j_a.length());
 				for (int i = 0; i < j_a.length(); i++){
-					//System.out.println("In for-loop j_a");
 					t = new BusDeparture();
 				
 					t.line = j_a.getJSONObject(i).getInt("descrizioneLinea");
@@ -840,11 +800,6 @@ public class Browser
 					else if (prev.equals("sched")){
 						t.realTime = false;
 					}
-
-					//       Log.d("line",String.valueOf(t.line));
-					//       Log.d("arrivalTime",String.valueOf(t.arrivalTime));
-					//       Log.d("ATB", t.toString());
-
 					// If the SOAP contains the line we want, return it
 					// Else break
 					if(t.line == wantedLine && wantedBusStop.getLine() == 9999)

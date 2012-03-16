@@ -21,6 +21,7 @@
 
 package test.BusTUC.Main;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -144,7 +145,9 @@ public class BusTUCApp extends MapActivity{
 						//Toast.makeText(context, "Mangler sanntidsinfo, returnerer til hjemmeskjerm", Toast.LENGTH_LONG).show();
 						//returnHome();
 						Browser browser = new Browser();
-						realTimeCodes = browser.realTimeData();
+						InputStream is = getAssets().open("real_time.txt");
+						ArrayList <String> m_list = Helpers.readStuff(is);
+						realTimeCodes = browser.realTimeData(m_list);
 					}	catch(Exception e)	{
 						e.printStackTrace();
 					}

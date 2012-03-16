@@ -91,7 +91,7 @@ public class Calculate {
 		}
 		catch(NullPointerException ex)
 		{
-			System.out.println("NULL I Calculate.createRouteServer()");
+			ex.printStackTrace();
 		}
 		return routeSuggestions;
 	}
