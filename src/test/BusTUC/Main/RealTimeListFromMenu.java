@@ -76,8 +76,6 @@ public class RealTimeListFromMenu extends ListActivity
 	ArrayList<HashMap<String,Object>> realTimeData;
 	HashMap<String, Object> hm;
 	ListView lv;
-	// Switch server on or off
-	boolean server = true;
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -87,7 +85,6 @@ public class RealTimeListFromMenu extends ListActivity
 		Bundle extras = getIntent().getExtras();
 		String stopName = extras.getString("stopName");
 		int stopId = 0;
-		if(!server)stopId = extras.getInt("stopId");
 		 outgoing = extras.getInt("key");
 		lv = getListView();
 		lv.setBackgroundColor(Color.parseColor("#FFFFFF"));
@@ -112,9 +109,7 @@ public class RealTimeListFromMenu extends ListActivity
 			text.setText(stopName);
 
 			InputStream is = getAssets().open("real_time.txt");
-			ArrayList <String> m_list = Helpers.readStuff(is);
-			if(!server)stops = Browser.specificRequestForStop(stopId, m_list); 
-			else stops = Browser.specificRequestForStopServer(outgoing);
+			stops = Browser.specificRequestForStopServer(outgoing);
 
 			long currenttimeInMillis = date.getTime();
 			long arrivaltimeInMillis, diff;

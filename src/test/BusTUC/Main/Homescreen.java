@@ -121,9 +121,8 @@ public class Homescreen extends Activity
 	// Changed to avoid raw type
 	public static HashMap<Integer, Integer> realTimeCodes;
 	public static ArrayList<BusStop> allStops;
-	ArrayList<BusStop> busStops, busStopsNoDuplicates;
-	// Switch server on or off
-	boolean server = true;
+	ArrayList<BusStop> busStops;
+
 	// Send sms, or query via net
 	boolean sms = false;
 	DatabaseHelper dbHelper;
@@ -402,7 +401,7 @@ public class Homescreen extends Activity
 		try
 		{
 
-			if (dictionary.size() == 0 || !server)
+			if (dictionary.size() == 0)
 			{
 				System.out.println("No dictionary present!");
 				gpsCoordinates = Helpers.readLines(getAssets().open(
@@ -529,12 +528,6 @@ public class Homescreen extends Activity
 	private void loadStops(){
 		System.out.println("numstops: " + numStops + " numstopsonmap: "
 				+ numStopsOnMap + " dist: " + dist);
-		if (gpsCords != null)
-		{
-			busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords,
-					provider, currentlocation, dist, numStops, false);
-		} else
-			busStopsNoDuplicates = new ArrayList<BusStop>();
 
 		long first = System.nanoTime();
 		// Not needed when running on ReTro's server. Switched on or of by a
@@ -619,17 +612,7 @@ public class Homescreen extends Activity
 			criteria.setAccuracy(Criteria.ACCURACY_FINE);
 			provider = locationManager.getBestProvider(criteria, true);
 			k_browser = new Browser();
-			// Load real-time codes
-			long rt = System.nanoTime();
-			if (!server){
-				InputStream is = getAssets().open("real_time.txt");
-				ArrayList <String> m_list = Helpers.readStuff(is);
-				realTimeCodes = k_browser.realTimeData(m_list);
-			}
-
-			long rt2 = System.nanoTime() - rt;
-			System.out.println("TIME SPENT REALTIMECODES: "
-					+ (rt2 / 1000000000.0));
+	
 		} catch (Exception e){
 			e.printStackTrace();
 			System.out.println("ERROR");
@@ -882,20 +865,7 @@ public class Homescreen extends Activity
 				try
 				{
 					String query = textView.getText().toString().trim();
-					if (!server && fancyOracle)
-					{
-						if (!query.equals(""))
-						{
-							InputStream is = getAssets().open("real_time.txt");
-							ArrayList <String> m_list = Helpers.readStuff(is);
-							
-							buf = Helpers.run(query, busStopsNoDuplicates,
-									k_browser, realTimeCodes,m_list);
-						} else
-						{
-							empty = true;
-						}
-					} else if (!fancyOracle)
+				  if (!fancyOracle)
 					{
 						if (!query.equals(""))
 						{
@@ -1039,7 +1009,7 @@ public class Homescreen extends Activity
 			{
 				myDialog.dismiss();
 
-				if (server && !validated && !sms)
+				if (!validated && !sms)
 				{
 
 					Toast.makeText(
@@ -1124,12 +1094,6 @@ public class Homescreen extends Activity
 			try
 			{
 				createLocationManager();
-				InputStream is = getAssets().open("real_time.txt");
-				ArrayList <String> m_list = Helpers.readStuff(is);
-				for(String t : m_list)
-				{
-					System.out.println("READ: " + t);
-				}
 
 			} catch (Exception e)
 			{
@@ -1275,9 +1239,7 @@ public class Homescreen extends Activity
 		protected void onPostExecute(Void unused){
 
 			myDialog.dismiss();
-			if (!server)
-				busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords,
-						provider, currentlocation, dist, numStops, false);
+
 		}
 	}
 

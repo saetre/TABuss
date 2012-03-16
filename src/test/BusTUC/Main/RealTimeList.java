@@ -49,22 +49,20 @@ public class RealTimeList extends ListActivity
 	Bundle extras;
 	TextView text;
 	Button other;
-	ArrayList <ClosestStopOnMap> holder;
-	ArrayList<HashMap<String,Object>> realTimeData, realTimeStop;
+	ArrayList<ClosestStopOnMap> holder;
+	ArrayList<HashMap<String, Object>> realTimeData, realTimeStop;
 	ClosestStopOnMap pressedStop;
-	int outgoing; 
-	ArrayList <BusDeparture> stops;
+	int outgoing;
+	ArrayList<BusDeparture> stops;
 	Context context;
 	HashMap<String, Object> hm, hm2;
 	ListView lv;
-	String [] stopNames;
-
-	boolean server = true;
+	String[] stopNames;
 
 	// Needed as this activity can be accessed from two places
 	// Not not want to register list item clicks if accessed from map
 	@Override
-	public void onCreate(Bundle savedInstanceState) 
+	public void onCreate(Bundle savedInstanceState)
 	{
 		context = this;
 		super.onCreate(savedInstanceState);
@@ -82,69 +80,50 @@ public class RealTimeList extends ListActivity
 		text.setText("Busstopp nær deg");
 		text.setHeight(50);
 		lv.addHeaderView(text);
-		
+
 		other = new Button(this);
 		other.setClickable(true);
 		other.setTextSize(21);
 		other.setBackgroundColor(Color.parseColor("#FFFFFF"));
 		other.setTextColor(Color.parseColor("#3C434A"));
-		other.setTypeface(null,Typeface.BOLD);
+		other.setTypeface(null, Typeface.BOLD);
 		other.setText("Annet busstopp");
-		other.setOnClickListener(new OnClickListener() 
+		other.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
 			{
-				@Override
-				public void onClick(View v) 
-				{
-					Intent intent = new Intent(context,OtherBusstop.class);
-					startActivity(intent);
-				}
-			});
+				Intent intent = new Intent(context, OtherBusstop.class);
+				startActivity(intent);
+			}
+		});
 		lv.addFooterView(other);
 		setFromExtras();
 
 	}
+
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
+	public void onConfigurationChanged(Configuration newConfig)
+	{
 		super.onConfigurationChanged(newConfig);
 	}
-
 
 	public void setFromMenu(int position)
 	{
 		try
 		{
-			Intent intent = new Intent(this,RealTimeListFromMenu.class);
-			pressedStop = holder.get(position-1);
+			Intent intent = new Intent(this, RealTimeListFromMenu.class);
+			pressedStop = holder.get(position - 1);
 
-			if(!server)
-			{
-				if(Homescreen.realTimeCodes == null)
-				{
-					returnHome();
-				}
-				else
-				{
-					outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(pressedStop.getBusStopID()).toString());
+			intent.putExtra("key", pressedStop.getBusStopID());
+			intent.putExtra("stopName", pressedStop.getStopName());
 
-					intent.putExtra("stopId", outgoing);
-					intent.putExtra("key", pressedStop.getBusStopID());
-					intent.putExtra("stopName", pressedStop.getStopName());
-				}
-
-			}
-			else
-			{
-				intent.putExtra("key", pressedStop.getBusStopID());
-				intent.putExtra("stopName", pressedStop.getStopName());
-			}
 			startActivity(intent);
 
-		}
-		catch(Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-
 
 	}
 
@@ -153,36 +132,41 @@ public class RealTimeList extends ListActivity
 		Intent intent = new Intent(this, Homescreen.class);
 		this.startActivity(intent);
 	}
+
 	public void setFromExtras()
 	{
 		try
 		{
 
-			//this.getListView().setBackgroundColor(Color.parseColor("#FFFFFF"));
-			realTimeStop = new ArrayList<HashMap<String,Object>>();
+			// this.getListView().setBackgroundColor(Color.parseColor("#FFFFFF"));
+			realTimeStop = new ArrayList<HashMap<String, Object>>();
 			holder = extras.getParcelableArrayList("test");
 			stopNames = new String[holder.size()];
 			Collections.sort(holder);
-			for(int i=0; i<holder.size(); i++)
+			for (int i = 0; i < holder.size(); i++)
 			{
 
-				String tmp = ""+holder.get(i).getBusStopID();		
-				if(Integer.parseInt((tmp.substring(4,5))) == 1)
+				String tmp = "" + holder.get(i).getBusStopID();
+				if (Integer.parseInt((tmp.substring(4, 5))) == 1)
 				{
 					tmp = "mot sentrum";
-				} else if(Integer.parseInt((tmp.substring(4,5))) == 0) tmp = "fra sentrum";
-				//holder.get(i).setStopName(holder.get(i).getStopName() + " " + tmp);
-				//stopNames[i] = holder.get(i).getStopName();
+				} else if (Integer.parseInt((tmp.substring(4, 5))) == 0)
+					tmp = "fra sentrum";
+				// holder.get(i).setStopName(holder.get(i).getStopName() + " " +
+				// tmp);
+				// stopNames[i] = holder.get(i).getStopName();
 				hm2 = new HashMap<String, Object>();
-				hm2.put("name", holder.get(i).getStopName() );
+				hm2.put("name", holder.get(i).getStopName());
 				hm2.put("toFrom", tmp);
 				realTimeStop.add(hm2);
 			}
-			setListAdapter(new SimpleAdapter(this, realTimeStop, R.layout.realtimestop,
-					new String[]{"name","toFrom"}, new int[]{R.id.stopName,R.id.toFrom}));
-			//setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, stopNames));
-		}
-		catch(Exception e)
+			setListAdapter(new SimpleAdapter(this, realTimeStop,
+					R.layout.realtimestop, new String[]
+					{ "name", "toFrom" }, new int[]
+					{ R.id.stopName, R.id.toFrom }));
+			// setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item,
+			// stopNames));
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 			Toast.makeText(this, "No connection", Toast.LENGTH_LONG).show();
@@ -191,11 +175,12 @@ public class RealTimeList extends ListActivity
 	}
 
 	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) 
+	protected void onListItemClick(ListView l, View v, int position, long id)
 	{
 		super.onListItemClick(l, v, position, id);
 		// Check from where this activity is started from
-		if(position!=0){
+		if (position != 0)
+		{
 			setFromMenu(position);
 		}
 

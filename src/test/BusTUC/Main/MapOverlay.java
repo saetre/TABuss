@@ -53,7 +53,6 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 	public String foundBusStop;
 	public int foundBusStopNr;
 	int lat,longi, outgoing, line;
-	boolean server = true;
 
 	HashMap <Integer, Integer> realTimeCodes;
 	ClosestStopOnMap[] cl;
@@ -111,7 +110,6 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 					foundBusStopNr = cl[i].getBusStopID();
 					line = cl[i].getBusStopID();
 
-					if(!server) outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(line).toString());
 					AlertDialog.Builder builder = new AlertDialog.Builder(m_Context);
 					String tmp = "" + cl[i].getBusStopID();
 					// Check which direction buses passing this stop are going
@@ -126,32 +124,10 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							Intent intent = new Intent(m_Context,RealTimeListFromMenu.class);
-							if(!server)
-							{
-								if(Homescreen.realTimeCodes == null)
-								{
-									Intent home = new Intent(m_Context, Homescreen.class);
-									m_Context.startActivity(home);
-								}
-								else
-								{
-									outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(foundBusStopNr).toString());						
-									intent.putExtra("stopId", outgoing);
-									intent.putExtra("stopName", foundBusStop);
-									intent.putExtra("key", line);
-									m_Context.startActivity(intent);
-
-								}
-							}
-							else
-							{
+						
 								intent.putExtra("stopName", foundBusStop);
 								intent.putExtra("key", line);
 								m_Context.startActivity(intent);
-
-							}
-
-
 						}
 
 					})

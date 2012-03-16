@@ -59,7 +59,8 @@ import test.BusTUC.GPS.GPS;
 import test.BusTUC.Main.Homescreen.OracleThread;
 import test.BusTUC.Stops.BusStop;
 
-public class OtherBusstop extends Activity {
+public class OtherBusstop extends Activity
+{
 	public static String[][] gpsCords;
 	AutoCompleteTextView textView;
 	Button button;
@@ -73,10 +74,8 @@ public class OtherBusstop extends Activity {
 	SimpleCursorAdapter mAdapter;
 	int[] to;
 
-	boolean server = true;
-
-
-	public void onCreate(Bundle savedInstanceState){
+	public void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		context = this;
 		setContentView(R.layout.otherbusstop);
@@ -85,97 +84,104 @@ public class OtherBusstop extends Activity {
 		lv.setCacheColorHint(Color.parseColor("#FFFFFF"));
 		lv.setClickable(true);
 		// Hide keyboard on start
-		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		//ll = (LinearLayout) findViewById(R.layout.realtimestop);
-		lv.setOnItemClickListener(new OnItemClickListener() {
-		    @Override
-		    public void onItemClick(AdapterView<?> arg0, View v, int arg2,
-					long arg3) { 
-				TextView tv = (TextView)v.findViewById(R.id.stopName);
-				TextView tv2 = (TextView)v.findViewById(R.id.toFrom);
-				ArrayList<Integer> stopName = findCodeFromStopName(tv.getText().toString());
+		this.getWindow().setSoftInputMode(
+				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		// ll = (LinearLayout) findViewById(R.layout.realtimestop);
+		lv.setOnItemClickListener(new OnItemClickListener()
+		{
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View v, int arg2,
+					long arg3)
+			{
+				TextView tv = (TextView) v.findViewById(R.id.stopName);
+				TextView tv2 = (TextView) v.findViewById(R.id.toFrom);
+				ArrayList<Integer> stopName = findCodeFromStopName(tv.getText()
+						.toString());
 				int realtimecode = 0;
-				
-				for(int code:stopName){
-					System.out.println("KODE:"+code);
-					if(Integer.parseInt(String.valueOf(code).substring(4, 5))==1 && tv2.getText().toString().equalsIgnoreCase("Mot Sentrum") ){
-						realtimecode = code; 
-					}else if(Integer.parseInt(String.valueOf(code).substring(4, 5))==0 && tv2.getText().toString().equalsIgnoreCase("Fra Sentrum")){
+
+				for (int code : stopName)
+				{
+					System.out.println("KODE:" + code);
+					if (Integer.parseInt(String.valueOf(code).substring(4, 5)) == 1
+							&& tv2.getText().toString()
+									.equalsIgnoreCase("Mot Sentrum"))
+					{
 						realtimecode = code;
-					}			
+					} else if (Integer.parseInt(String.valueOf(code).substring(
+							4, 5)) == 0
+							&& tv2.getText().toString()
+									.equalsIgnoreCase("Fra Sentrum"))
+					{
+						realtimecode = code;
+					}
 				}
 				Intent intent = new Intent(context, RealTimeListFromMenu.class);
 				int outgoing = 0;
-				if(!server)
-				{
-					outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(realtimecode).toString());
-					intent.putExtra("stopId", outgoing);
-					intent.putExtra("key", realtimecode);
-					intent.putExtra("stopName", tv.getText().toString());
-				}
-				else
-				{
-					System.out.println(realtimecode + ":" + tv.getText().toString());
-					intent.putExtra("key", realtimecode);
-					intent.putExtra("stopName", tv.getText().toString());
-				}
 
+				System.out
+						.println(realtimecode + ":" + tv.getText().toString());
+				intent.putExtra("key", realtimecode);
+				intent.putExtra("stopName", tv.getText().toString());
 				startActivity(intent);
-				
+
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
-	
-		
+
 		String[] gpsCoordinates;
-		try {
-			if(Homescreen.gpsCords2 != null)
+		try
+		{
+			if (Homescreen.gpsCords2 != null)
 			{
 				gpsCords = Homescreen.gpsCords2;
-			}
-			else
+			} else
 			{
-				gpsCoordinates = Helpers.readLines(this.getAssets().open("gps3.xml"));
+				gpsCoordinates = Helpers.readLines(this.getAssets().open(
+						"gps3.xml"));
 				gpsCords = GPS.formatCoordinates(gpsCoordinates);
 			}
 
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 		button = (Button) findViewById(R.id.goButton2);
-		ArrayList <String> dictionary = Helpers.getDictionary("dictionary2", "dictionaryAll");
-		if(dictionary.size() == 0)
-		{			
+		ArrayList<String> dictionary = Helpers.getDictionary("dictionary2",
+				"dictionaryAll");
+		if (dictionary.size() == 0)
+		{
 			dictionary = Helpers.createDictionary(gpsCords, "dictionaryAll");
-			// Only for oracle. Uncomment if system is not used with ReTro's server
+			// Only for oracle. Uncomment if system is not used with ReTro's
+			// server
 		}
 		textView = (AutoCompleteTextView) findViewById(R.id.autocomplete2);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, dictionary);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+				R.layout.list_item, dictionary);
 		textView.setAdapter(adapter);
 		textView.setOnItemClickListener(new OnItemClickListener()
 		{
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) 
+					long arg3)
 			{
 				run();
 			}
-			
+
 		});
-		
+
 		textView.setOnKeyListener(new OnKeyListener()
 		{
-			
+
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event)
 			{
-				switch(keyCode)
+				switch (keyCode)
 				{
 				case KeyEvent.KEYCODE_ENTER:
-					if(!textView.getText().toString().equals(""))
+					if (!textView.getText().toString().equals(""))
 					{
 						run();
 					}
@@ -185,96 +191,94 @@ public class OtherBusstop extends Activity {
 		});
 		context = this;
 
-		
 		dbHelper = new DatabaseHelper(this);
-        Cursor cursor = dbHelper.getAllRealtime();
-        startManagingCursor(cursor);
-        // the desired columns to be bound
-        columns = new String[] { DatabaseHelper.stopName, DatabaseHelper.toFrom};
-        // the XML defined views which the data will be bound to
-        to = new int[] {R.id.stopName, R.id.toFrom};
+		Cursor cursor = dbHelper.getAllRealtime();
+		startManagingCursor(cursor);
+		// the desired columns to be bound
+		columns = new String[]
+		{ DatabaseHelper.stopName, DatabaseHelper.toFrom };
+		// the XML defined views which the data will be bound to
+		to = new int[]
+		{ R.id.stopName, R.id.toFrom };
 
-        // create the adapter using the cursor pointing to the desired data as well as the layout information
-         mAdapter = new SimpleCursorAdapter(this, R.layout.realtimestop, cursor, columns, to);
-        // set this adapter as your ListActivity's adapter
-        lv.setAdapter(mAdapter);
-        
+		// create the adapter using the cursor pointing to the desired data as
+		// well as the layout information
+		mAdapter = new SimpleCursorAdapter(this, R.layout.realtimestop, cursor,
+				columns, to);
+		// set this adapter as your ListActivity's adapter
+		lv.setAdapter(mAdapter);
 
-
-		button.setOnClickListener(new OnClickListener() 
+		button.setOnClickListener(new OnClickListener()
 		{
 			@Override
-			public void onClick(View v) 
+			public void onClick(View v)
 			{
 				run();
 			}
-		});	
+		});
 
 	}
-	
+
 	private void run()
 	{
-		code = findCodeFromStopName(textView.getText().toString());				
-		items=new String[code.size()];
-		for(int i=0;i<code.size();i++){
-			if(Integer.parseInt(String.valueOf(code.get(i)).substring(4, 5)) == 1){
+		code = findCodeFromStopName(textView.getText().toString());
+		items = new String[code.size()];
+		for (int i = 0; i < code.size(); i++)
+		{
+			if (Integer.parseInt(String.valueOf(code.get(i)).substring(4, 5)) == 1)
+			{
 				items[i] = "Mot sentrum";
-			}else{
+			} else
+			{
 				items[i] = "Fra sentrum";
 			}
 		}
-		//final String [] items=new String []{"Item 1","Item 2","Item 3","Item 4"};
-		AlertDialog.Builder builder=new AlertDialog.Builder(context);
+		// final String [] items=new String
+		// []{"Item 1","Item 2","Item 3","Item 4"};
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setTitle(textView.getText().toString());
 
 		builder.setItems(items, new DialogInterface.OnClickListener()
 		{
 
-
 			@Override
-			public void onClick(DialogInterface dialog, int which) 
+			public void onClick(DialogInterface dialog, int which)
 			{
 				// TODO Auto-generated method stub
 				DatabaseHelper dbHelper = new DatabaseHelper(context);
-				dbHelper.addRealTime(textView.getText().toString(), items[which]);
+				dbHelper.addRealTime(textView.getText().toString(),
+						items[which]);
 				Intent intent = new Intent(context, RealTimeListFromMenu.class);
 				int outgoing = 0;
-				if(!server)
-				{
-					outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(code.get(which)).toString());
-					intent.putExtra("stopId", outgoing);
-					intent.putExtra("key", code.get(which));
-					intent.putExtra("stopName", textView.getText().toString());
-				}
-				else
-				{
-					intent.putExtra("key", code.get(which));
-					intent.putExtra("stopName", textView.getText().toString());
-				}
+
+				intent.putExtra("key", code.get(which));
+				intent.putExtra("stopName", textView.getText().toString());
 
 				startActivity(intent);
 			}
 		});
 
 		builder.show();
-		/*int outgoing = Integer.parseInt(Homescreen.realTimeCodes.get(code).toString());
+		/*
+		 * int outgoing =
+		 * Integer.parseInt(Homescreen.realTimeCodes.get(code).toString());
+		 * 
+		 * intent.putExtra("stopId", outgoing); intent.putExtra("key", code);
+		 * intent.putExtra("stopName", textView.getText().toString());
+		 * 
+		 * startActivity(intent);
+		 */
 
-		intent.putExtra("stopId", outgoing);
-		intent.putExtra("key", code);
-		intent.putExtra("stopName", textView.getText().toString());
+	}
 
-		startActivity(intent);*/
-	
-
-		}
-	
-
-	
-	private ArrayList<Integer> findCodeFromStopName(String stopname){
+	private ArrayList<Integer> findCodeFromStopName(String stopname)
+	{
 		ArrayList<Integer> stops = new ArrayList<Integer>();
-		for(BusStop s : Homescreen.allStops){
-			if(s.name.equalsIgnoreCase(stopname.trim())) stops.add(s.stopID);
+		for (BusStop s : Homescreen.allStops)
+		{
+			if (s.name.equalsIgnoreCase(stopname.trim()))
+				stops.add(s.stopID);
 		}
 		return stops;
-	}	
+	}
 }
