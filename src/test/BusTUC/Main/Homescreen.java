@@ -1161,14 +1161,13 @@ public class Homescreen extends Activity
 			} else {
 				if (provider == null){
 					System.err.println(" Fuck Up!" );
-					provider = locationManager.getBestProvider(new Criteria(), true);
+					createLocationManager(); //provider = locationManager.getBestProvider(new Criteria(), true); etc...
 				}
 				locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
 				new LocationListenerThread(context).execute();
-			}
-
-		}
-	}
+			}//if check else what?
+		}//onPostExecute
+	}//StartUpThread
 
 	/*
 	 * Make sure we get location before we can continue. Is in separate thread
@@ -1216,8 +1215,7 @@ public class Homescreen extends Activity
 		protected void onPreExecute(){
 
 			try{
-				myDialog = ProgressDialog.show(context, "Loading!",
-						"Setter lokasjon");
+				myDialog = ProgressDialog.show(context, "Loading!",	"Setter lokasjon");
 				myDialog.setCancelable(true);
 				myDialog.setOnCancelListener(new OnCancelListener(){
 
