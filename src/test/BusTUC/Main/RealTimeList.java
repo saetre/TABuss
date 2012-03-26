@@ -59,8 +59,6 @@ public class RealTimeList extends ListActivity
 	ListView lv;
 	String[] stopNames;
 
-	// Needed as this activity can be accessed from two places
-	// Not not want to register list item clicks if accessed from map
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{

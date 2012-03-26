@@ -35,6 +35,7 @@
         <activity android:name=".Main.About" />
         <activity android:name=".Main.Settings" />
         <activity android:name=".Main.OtherBusstop" />
+        <activity android:name=".Speech.SpeechAnswer" />
             <receiver android:name=".Main.SMSReceiver"> 
             <intent-filter> 
                 <action android:name=

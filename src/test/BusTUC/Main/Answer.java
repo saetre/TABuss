@@ -97,17 +97,13 @@ public class Answer extends ListActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-		// showButton = (Button)this.findViewById(R.id.showinmap);
 		super.onCreate(savedInstanceState);
 		context = this;
-		// value = new ArrayList<Route>();
 		String textContent;
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		lv.setBackgroundColor(Color.parseColor("#FFFFFF"));
-		// prepareTTSEngine();
-		// setContentView(R.layout.list_item);
-
+		
 		Bundle extras = getIntent().getExtras();
 
 		if (extras != null)
@@ -152,15 +148,7 @@ public class Answer extends ListActivity
 								R.id.answerdestination, R.id.origintime,
 								R.id.arrivaltime, R.id.isTransfer }));
 				String ttsText = answerText;
-				/*
-				 * try {
-				 * synthesis.getTTSEngine().setVoice("eurnorwegianfemale");
-				 * synthesis.speak(ttsText); } catch (BusyException e) { // TODO
-				 * Auto-generated catch block e.printStackTrace(); } catch
-				 * (NoNetworkException e) { // TODO Auto-generated catch block
-				 * e.printStackTrace(); } finally { if(synthesis != null)
-				 * synthesis.stop(); }
-				 */
+		
 			}
 
 			else if (textContent != null)
@@ -187,9 +175,6 @@ public class Answer extends ListActivity
 			this.finish();
 		}
 
-		// lv1.setAdapter(new ArrayAdapter<String>(this,R.layout.row,
-		// R.id.label,lv_arr));
-		// selection=(TextView)findViewById(R.id.selection);
 	}
 
 	@Override
@@ -301,50 +286,6 @@ public class Answer extends ListActivity
 		}
 	}
 
-	/*
-	 * private void prepareTTSEngine() { try { synthesis =
-	 * SpeechSynthesis.getInstance(this); synthesis.setSpeechSynthesisEvent(new
-	 * SpeechSynthesisEvent() {
-	 * 
-	 * public void onPlaySuccessful() { }
-	 * 
-	 * public void onPlayStopped() { }
-	 * 
-	 * public void onPlayFailed(Exception e) { e.printStackTrace(); }
-	 * 
-	 * public void onPlayStart() { }
-	 * 
-	 * @Override public void onPlayCanceled() { }
-	 * 
-	 * 
-	 * });
-	 * 
-	 * //synthesis.setVoiceType("usenglishfemale1"); // All the values available
-	 * to you can be found in the developer portal under your account
-	 * 
-	 * } catch (InvalidApiKeyException e) { Toast.makeText(context,
-	 * "ERROR: Invalid API key", Toast.LENGTH_LONG).show(); }
-	 * 
-	 * }
-	 * 
-	 * private class OnSpeakListener implements OnClickListener {
-	 * 
-	 * public void onClick(View v) {
-	 * 
-	 * try { String ttsText = answerText; synthesis.speak(ttsText);
-	 * 
-	 * } catch (BusyException e) { e.printStackTrace(); Toast.makeText(context,
-	 * "ERROR: SDK is busy", Toast.LENGTH_LONG).show(); } catch
-	 * (NoNetworkException e) { Toast.makeText(context,
-	 * "ERROR: Network is not available", Toast.LENGTH_LONG).show(); } } }
-	 * 
-	 * 
-	 * 
-	 * public class OnStopListener implements OnClickListener {
-	 * 
-	 * public void onClick(View v) { if (synthesis != null) { synthesis.stop();
-	 * } } }
-	 */
 
 	class ttsThread extends AsyncTask<Void, Void, Void>
 	{

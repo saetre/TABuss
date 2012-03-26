@@ -32,10 +32,6 @@ import android.util.Log;
 
 public class Calc
 {
-	
-	
-	
-	
 	public DummyObj parse(String jsonString)
 	{
 		DummyObj dummy = new DummyObj();

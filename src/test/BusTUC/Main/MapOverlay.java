@@ -47,9 +47,6 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 	private ArrayList<OverlayItem> items;
 
 	private Drawable drawable;
-	// Change to none-static later if necessary. Problem with parcelable in this case,
-	// is  the Date object
-	//public static ArrayList <BusDeparture> foundStopsList;
 	public String foundBusStop;
 	public int foundBusStopNr;
 	int lat,longi, outgoing, line;
@@ -61,20 +58,17 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem>
 		drawable = defaultMarker;
 		items = new ArrayList<OverlayItem>();
 
-		// TODO Auto-generated constructor stub
 	}
 
 	public MapOverlay(Drawable defaultMarker, Context context, ClosestStopOnMap[] cl) {
 		super(boundCenterBottom(defaultMarker));
 
-		//super(defaultMarker);
 		drawable = defaultMarker;
 		m_Context = context;
 		this.cl = cl;
 		items = new ArrayList<OverlayItem>();
 
 
-		// TODO Auto-generated constructor stub
 	}
 
 	public MapOverlay(Drawable defaultMarker, Context context)

@@ -81,47 +81,6 @@ import com.google.android.maps.OverlayItem;
 public class Helpers
 {
 	
-	
-
-	@SuppressWarnings("deprecation")
-	public static void killApp(boolean killSafely)
-	{
-		if (killSafely)
-		{
-			/*
-			 * Notify the system to finalize and collect all objects of the app
-			 * on exit so that the virtual machine running the app can be killed
-			 * by the system without causing issues. NOTE: If this is set to
-			 * true then the virtual machine will not be killed until all of its
-			 * threads have closed.
-			 */
-			System.runFinalizersOnExit(true);
-
-			/*
-			 * Force the system to close the app down completely instead of
-			 * retaining it in the background. The virtual machine that runs the
-			 * app will be killed. The app will be completely created as a new
-			 * app in a new virtual machine running in a new process if the user
-			 * starts the app again.
-			 */
-			System.exit(0);
-		} else
-		{
-			/*
-			 * Alternatively the process that runs the virtual machine could be
-			 * abruptly killed. This is the quickest way to remove the app from
-			 * the device but it could cause problems since resources will not
-			 * be finalized first. For example, all threads running under the
-			 * process will be abruptly killed when the process is abruptly
-			 * killed. If one of those threads was making multiple related
-			 * changes to the database, then it may have committed some of those
-			 * changes but not all of those changes when it was abruptly killed.
-			 */
-			android.os.Process.killProcess(android.os.Process.myPid());
-		}
-
-	}
-
 	/**
 	 * Method for sending a text message to the sms-oracle
 	 * 
@@ -371,7 +330,7 @@ public class Helpers
 	 * Runs query against Retro's server According methods such as
 	 * createJSONServer are modified versions of the existing
 	 */
-	public static ArrayList<Route> runServer(String input, Browser k_browser,
+	public static ArrayList<Route> runServer(String input,
 			Location location, int numStops, int dist, Context context)
 	{
 		Route[] finalRoutes;
@@ -379,6 +338,7 @@ public class Helpers
 
 		try
 		{
+			Browser k_browser = new Browser();
 			long time = System.nanoTime();
 			String html_page = k_browser.getRequestServer(input, false,
 					location, numStops, dist, context);
@@ -565,81 +525,6 @@ public class Helpers
 		}
 	}
 
-
-	/*
-	 * Remove stupid suggestions
-	 */
-	public static ArrayList<Route> removeStupid(Route[] tempRoutes)
-	{
-		ArrayList<Route> list = new ArrayList<Route>(Arrays.asList(tempRoutes));
-		System.out.println("Init size: " + tempRoutes.length);
-
-		// Remove stupid suggestions
-		Route temp = new Route();
-		int count = 0;
-		for (int i = 0; i < list.size(); i++)
-		{
-			temp = list.get(i);
-			System.out.println("Travel total times: "
-					+ list.get(i).getBusStopName() + " nr: "
-					+ list.get(i).getBusNumber() + " to "
-					+ list.get(i).getDestination() + "   "
-					+ list.get(i).getTotalTime());
-			// If Route[i-1] has
-			for (int j = 0; j < list.size(); j++)
-			{
-				// If same bus stop name
-				if (list.get(j).getBusStopName().equals(temp.getBusStopName()))
-				{
-					count++;
-					// And not itself
-					if (count > 1)
-					{
-						// If the found has twice the total time, and total time
-						// is minimum 20 minutes
-						if (list.get(j).getTotalTime() >= (temp.getTotalTime() * 2)
-								&& temp.getTotalTime() > 20)
-						{
-							System.out.println("Comaring: "
-									+ list.get(j).getTotalTime() + " and "
-									+ temp.getTotalTime() * 2);
-							System.out.println("Removed i: "
-									+ list.get(j).getBusStopName() + "  "
-									+ list.get(j).getTotalTime() + "  "
-									+ list.get(j).getBusNumber()
-									+ " Opposed to: " + temp.getBusStopName()
-									+ "  " + temp.getTotalTime());
-
-							list.remove(list.get(j));
-							list.trimToSize();
-						}
-						// If temp has twice the travel time
-						else if (list.get(j).getTotalTime() * 2 <= temp
-								.getTotalTime()
-								&& list.get(j).getTotalTime() > 20)
-						{
-							System.out.println("Comaring: "
-									+ list.get(j).getTotalTime() + " and "
-									+ temp.getTotalTime() * 2);
-							System.out.println("Removed temp: "
-									+ temp.getBusStopName() + "  "
-									+ temp.getTotalTime() + "  "
-									+ temp.getBusNumber() + " Opposed to: "
-									+ list.get(j).getBusStopName() + "  "
-									+ list.get(j).getTotalTime());
-
-							list.remove(temp);
-							list.trimToSize();
-						}
-					}
-				}
-
-				temp = list.get(i);
-			}
-
-		}
-		return list;
-	}
 
 	public static boolean containsIgnoreCase(List<String> l, String s)
 	{

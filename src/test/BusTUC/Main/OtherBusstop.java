@@ -86,7 +86,6 @@ public class OtherBusstop extends Activity
 		// Hide keyboard on start
 		this.getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		// ll = (LinearLayout) findViewById(R.layout.realtimestop);
 		lv.setOnItemClickListener(new OnItemClickListener()
 		{
 			@Override
@@ -124,7 +123,6 @@ public class OtherBusstop extends Activity
 				intent.putExtra("stopName", tv.getText().toString());
 				startActivity(intent);
 
-				// TODO Auto-generated method stub
 
 			}
 		});
@@ -233,8 +231,6 @@ public class OtherBusstop extends Activity
 				items[i] = "Fra sentrum";
 			}
 		}
-		// final String [] items=new String
-		// []{"Item 1","Item 2","Item 3","Item 4"};
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setTitle(textView.getText().toString());
 

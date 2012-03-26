@@ -77,7 +77,6 @@ public class RealTimeListFromMenu extends ListActivity
 	HashMap<String, Object> hm;
 	ListView lv;
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{

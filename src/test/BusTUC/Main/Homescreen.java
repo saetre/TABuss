@@ -19,7 +19,11 @@
 
 package test.BusTUC.Main;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,6 +34,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import test.BusTUC.Database.DatabaseHelper;
 
 import com.google.android.maps.GeoPoint;
@@ -40,9 +45,12 @@ import test.BusTUC.Favourites.Favourite;
 import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.GPS.GPS;
 import test.BusTUC.Queries.Browser;
+import test.BusTUC.Speech.CBRAnswer;
 import test.BusTUC.Speech.DummyObj;
 import test.BusTUC.Speech.ExtAudioRecorder;
 import test.BusTUC.Speech.HTTP;
+import test.BusTUC.Speech.MfccMaker;
+import test.BusTUC.Speech.SpeechAnswer;
 import test.BusTUC.Stops.BusStop;
 import test.BusTUC.Stops.ClosestStopOnMap;
 
@@ -65,6 +73,7 @@ import android.location.LocationManager;
 import android.media.AudioFormat;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -96,6 +105,11 @@ import android.widget.Toast;
 
 public class Homescreen extends Activity
 {
+	File sdCard = Environment.getExternalStorageDirectory();
+	File wav = new File(sdCard.getAbsolutePath() + "/dictionary/liverpool.wav");
+	File config = new File(sdCard.getAbsolutePath() + "/dictionary/config.xml");
+	File mfccFile = new File(sdCard.getAbsolutePath() + "/dictionary/test.mfc");
+
 	private String[] bgColors =
 	{ "#3C434A", "#A3AB19", "#F66F89", "#D9F970" };
 	private int currentBgColor = 0;
@@ -104,24 +118,15 @@ public class Homescreen extends Activity
 	private int numStopsOnMap;
 	private int dist;
 	private boolean fancyOracle;
+
 	private Button[] buttons;
 	private Button goButton, amazeButton;
-	// Global variables that need to be accessed from other contexts
-	// No prob to let them stay public static, as they anyway are accessed by
-	// the same process
 	public static String[][] gpsCords, gpsCords2; // Array containing bus stops
 	public static Location currentlocation; // Location objects
-	// public static HashMap<Integer,HashMap<Integer,Location>> locationsArray;
-	// // GPS coordinates
-	public static Browser k_browser; // Object doing communation with bussTUC
-										// and Real-Time system
-	// public static HashMap <Integer,Location> tSetAllStops;
 	public static ClosestStopOnMap[] cl; // Object containing geopoint of
 											// closest stops.
-	// Changed to avoid raw type
 	public static HashMap<Integer, Integer> realTimeCodes;
 	public static ArrayList<BusStop> allStops;
-	ArrayList<BusStop> busStops;
 
 	// Send sms, or query via net
 	boolean sms = false;
@@ -133,9 +138,6 @@ public class Homescreen extends Activity
 	GeoPoint p, p2; // p is current location, p2 is closest bus stop.
 	GPS k_gps; // Object of the GetGPS class.
 
-	// Static because of access from BusList
-	// HashMap<Integer,Location> tSetExclude; // HashMap used for finding
-	// closest locations. Ignores stops at both sides of the road
 	LocationManager locationManager; // Location Manager
 	String provider; // Provider
 	LocationListener locationListener;
@@ -158,12 +160,6 @@ public class Homescreen extends Activity
 	private TextView title;
 	private ImageView icon;
 
-	/*
-	 * 
-	 * 
-	 * Speech test
-	 */
-
 	private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
 	private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
 	private static final int CALLBACK_PERIOD = 4000;
@@ -171,13 +167,7 @@ public class Homescreen extends Activity
 	final ExtAudioRecorder ext = ExtAudioRecorder.getInstance(false);
 	private String filePath = "";
 	private String filePath2 = "";
-	RandomAccessFile randomAccessWriter;
-	private short nChannels = 1;
-	private short bSamples = 16; // 16 bit
-	private int sRate = 16000;
-	private int framePeriod = 40;
-	private int payloadSize = 0;
-	private int cAmplitude = 0;
+
 	private SpeechRecognizer sr;
 	boolean stopRecording = false;
 	boolean recorder = true;
@@ -202,10 +192,7 @@ public class Homescreen extends Activity
 		}
 		List<String> temp = Arrays.asList(busStop);
 		int addedfavorites = 0;
-		// Set font
-		// Typeface font = Typeface.createFromAsset(getAssets(),
-		// "dotmatrix.ttf");
-		// Iterate through stops, and add from SD-card
+		
 		for (int i = 0; i < busStop.length && i < favorites.size(); i++)
 		{
 			if (!Helpers.containsIgnoreCase(temp, favorites.get(i)))
@@ -376,17 +363,14 @@ public class Homescreen extends Activity
 		long s = System.nanoTime() - f;
 		System.out
 				.println("TIME SPENT FINDING LOCATION: " + s / (1000000000.0));
-		// Autocompletion
 		ArrayList<String> dictionary;
 		// Check if SD-card is present
-
 		try
 		{
 			dictionary = Helpers.getDictionary("dictionary_finalv2",
 					"dictionary");
 
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 			dictionary = new ArrayList<String>();
@@ -412,6 +396,7 @@ public class Homescreen extends Activity
 
 		} catch (Exception e)
 		{
+			e.printStackTrace();
 			// System.exit(0);
 		}
 
@@ -525,17 +510,12 @@ public class Homescreen extends Activity
 		}
 	}
 
-	private void loadStops(){
+	private void loadStops()
+	{
 		System.out.println("numstops: " + numStops + " numstopsonmap: "
 				+ numStopsOnMap + " dist: " + dist);
 
 		long first = System.nanoTime();
-		// Not needed when running on ReTro's server. Switched on or of by a
-		// bool val
-		// if(!server)busStopsNoDuplicates = Helpers.getLocationsArray(gpsCords,
-		// provider, currentlocation, dist,numStops,false);
-
-		// All stops
 		allStops = Helpers.getAllLocations(gpsCords2, provider);
 		long second = System.nanoTime() - first;
 		System.out.println("LAT:" + currentlocation.getLatitude() + "LONG:"
@@ -550,23 +530,6 @@ public class Homescreen extends Activity
 		updateTextViewHint();
 	}
 
-	/*
-	 * Validate input before sending to server
-	 */
-	public boolean validate(String input)
-	{
-		boolean check = false;
-		for (int i = 0; i < allStops.size(); i++)
-		{
-			if (allStops.get(i).name.trim().equalsIgnoreCase(input.trim()))
-			{
-				check = true;
-				break;
-			}
-		}
-
-		return check;
-	}
 
 	private void createLocationListener()
 	{
@@ -588,32 +551,38 @@ public class Homescreen extends Activity
 			}
 
 			@Override
-			public void onProviderDisabled(String provider)	{
+			public void onProviderDisabled(String provider)
+			{
 				Log.v("PROV", "PROV:DISABLED");
 				// TODO Auto-generated method stub
 			}
 
 			@Override
-			public void onProviderEnabled(String provider){
+			public void onProviderEnabled(String provider)
+			{
 				Log.v("PROV", "PROV:ENABLED");
 			}
 
 			@Override
-			public void onStatusChanged(String provider, int status,	Bundle extras)	{
+			public void onStatusChanged(String provider, int status,
+					Bundle extras)
+			{
 				Log.v("PROV", "PROV:STATUSCHANGE");
 			}
 		};
 	}
 
-	private void createLocationManager(){
-		try	{
+	private void createLocationManager()
+	{
+		try
+		{
 			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 			Criteria criteria = new Criteria();
 			criteria.setAccuracy(Criteria.ACCURACY_FINE);
 			provider = locationManager.getBestProvider(criteria, true);
-			k_browser = new Browser();
-	
-		} catch (Exception e){
+
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 			System.out.println("ERROR");
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -621,10 +590,12 @@ public class Homescreen extends Activity
 			alert.setTitle("Tilkoblingsproblem");
 			alert.setMessage("Ingen tilkobling, har du nettilgang?");
 			alert.setPositiveButton("Avslutt",
-					new DialogInterface.OnClickListener()		{
+					new DialogInterface.OnClickListener()
+					{
 						@Override
 						public void onClick(DialogInterface dialog,
-								int whichButton){
+								int whichButton)
+						{
 							System.exit(0);
 						}
 					});
@@ -633,11 +604,13 @@ public class Homescreen extends Activity
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data){
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
 		System.out.println("OnActivityResult()");
 		super.onActivityResult(requestCode, resultCode, data);
 		boolean change = false;
-		if (resultCode == Activity.RESULT_OK){
+		if (resultCode == Activity.RESULT_OK)
+		{
 			Bundle extras = data.getExtras();
 			int m_numStops = extras.getInt("num1");
 			int m_numStopsOnMap = extras.getInt("num2");
@@ -761,12 +734,17 @@ public class Homescreen extends Activity
 						Toast.LENGTH_LONG).show();
 			}
 			return false;
+		case R.id.setting:
+			Intent intent = new Intent(context, Settings.class);
+			startActivityForResult(intent, REQUEST_CODE);
+			return false;
+			// startVoiceRecognitionActivity();
 
 		case R.id.speech:
 			try
 			{
-			
-					startVoiceRecognitionActivity();
+
+				startVoiceRecognitionActivity();
 
 			} catch (Exception e)
 			{
@@ -786,13 +764,9 @@ public class Homescreen extends Activity
 						Toast.LENGTH_LONG).show();
 			}
 			return false;
+		
 
-		case R.id.setting:
-			Intent intent = new Intent(context, Settings.class);
-			startActivityForResult(intent, REQUEST_CODE);
-			return false;
-			// startVoiceRecognitionActivity();
-
+		
 		case R.id.about:
 			try
 			{
@@ -865,7 +839,7 @@ public class Homescreen extends Activity
 				try
 				{
 					String query = textView.getText().toString().trim();
-				  if (!fancyOracle)
+					if (!fancyOracle)
 					{
 						if (!query.equals(""))
 						{
@@ -878,7 +852,7 @@ public class Homescreen extends Activity
 						if (!query.equals(""))
 						{
 							long pre = System.nanoTime();
-							buf = Helpers.runServer(query, k_browser,
+							buf = Helpers.runServer(query,
 									currentlocation, numStops, dist, context);
 							long post = System.nanoTime() - pre;
 							System.out.println("POST-TIME: "
@@ -1138,10 +1112,12 @@ public class Homescreen extends Activity
 		}
 
 		@Override
-		protected void onPostExecute(Void unused){
+		protected void onPostExecute(Void unused)
+		{
 
 			myDialog.dismiss();
-			if (check){
+			if (check)
+			{
 				AlertDialog.Builder alert = new AlertDialog.Builder(context);
 				// First input dialog
 				alert.setTitle("Tilkoblingsproblem");
@@ -1158,16 +1134,21 @@ public class Homescreen extends Activity
 							}
 						});
 				alert.show();
-			} else {
-				if (provider == null){
-					System.err.println(" Fuck Up!" );
-					createLocationManager(); //provider = locationManager.getBestProvider(new Criteria(), true); etc...
+			} else
+			{
+				if (provider == null)
+				{
+					System.err.println(" Fuck Up!");
+					provider = locationManager.getBestProvider(new Criteria(),
+							true);
 				}
-				locationManager.requestLocationUpdates(provider, 500, 10, locationListener);
+				locationManager.requestLocationUpdates(provider, 500, 10,
+						locationListener);
 				new LocationListenerThread(context).execute();
-			}//if check else what?
-		}//onPostExecute
-	}//StartUpThread
+			}
+
+		}
+	}
 
 	/*
 	 * Make sure we get location before we can continue. Is in separate thread
@@ -1212,29 +1193,36 @@ public class Homescreen extends Activity
 		}
 
 		@Override
-		protected void onPreExecute(){
+		protected void onPreExecute()
+		{
 
-			try{
-				myDialog = ProgressDialog.show(context, "Loading!",	"Setter lokasjon");
+			try
+			{
+				myDialog = ProgressDialog.show(context, "Loading!",
+						"Setter lokasjon");
 				myDialog.setCancelable(true);
-				myDialog.setOnCancelListener(new OnCancelListener(){
+				myDialog.setOnCancelListener(new OnCancelListener()
+				{
 
 					@Override
-					public void onCancel(DialogInterface dialog){
+					public void onCancel(DialogInterface dialog)
+					{
 						finish();
 						System.exit(0);
 
 					}
 				});
 
-			} catch (Exception e){
+			} catch (Exception e)
+			{
 				e.printStackTrace();
 				myDialog.dismiss();
 			}
 		}
 
 		@Override
-		protected void onPostExecute(Void unused){
+		protected void onPostExecute(Void unused)
+		{
 
 			myDialog.dismiss();
 
@@ -1242,12 +1230,16 @@ public class Homescreen extends Activity
 	}
 
 	@Override
-	public void onBackPressed(){
+	public void onBackPressed()
+	{
 
-		DialogInterface.OnClickListener dc = new DialogInterface.OnClickListener(){
+		DialogInterface.OnClickListener dc = new DialogInterface.OnClickListener()
+		{
 			@Override
-			public void onClick(DialogInterface dialog, int which)	{
-				switch (which)	{
+			public void onClick(DialogInterface dialog, int which)
+			{
+				switch (which)
+				{
 				case DialogInterface.BUTTON_POSITIVE:
 					((Activity) context).finish();
 					ext.release();
@@ -1265,16 +1257,19 @@ public class Homescreen extends Activity
 	}
 
 	@Override
-	protected void onStart(){
+	protected void onStart()
+	{
 		super.onStart();
 	}
 
-	public void onDestroy()	{
+	public void onDestroy()
+	{
 		super.onDestroy();
 	}
-	
+
 	@Override
-	protected void onResume(){
+	protected void onResume()
+	{
 		int c = dbHelper.getQueryCount();
 		this.setTitle("AndroidAmble - " + c + " Søk gjort");
 		super.onResume();
@@ -1282,13 +1277,15 @@ public class Homescreen extends Activity
 		textView.setEnabled(true);
 		goButton.setEnabled(true);
 
-		try	{
+		try
+		{
 			// Sets the restrictions on the location update. If no
 			// locationmanager object exists, error message is sent to user,
 			// requiring closing of app
 			locationManager.requestLocationUpdates(
 					LocationManager.NETWORK_PROVIDER, 10, 1, locationListener);
-		} catch (Exception e){
+		} catch (Exception e)
+		{
 			AlertDialog.Builder alert = new AlertDialog.Builder(context);
 			// First input dialog
 			alert.setTitle("Tilkoblingsproblem");
@@ -1309,12 +1306,14 @@ public class Homescreen extends Activity
 	}
 
 	@Override
-	protected void onPause(){
+	protected void onPause()
+	{
 		super.onPause();
 		locationManager.removeUpdates(locationListener);
 	}
 
-	private String getSuggestionBasedOnPosition(){
+	private String getSuggestionBasedOnPosition()
+	{
 		double lat = currentlocation.getLatitude();
 		double lon = currentlocation.getLongitude();
 		int time = Helpers.minutesFromDate(new Date());
@@ -1483,7 +1482,10 @@ public class Homescreen extends Activity
 	private void startVoiceRecognitionActivity()
 	{
 		final HTTP http = new HTTP();
-		final String cbr = getSuggestionBasedOnPosition();
+		final ArrayList<Thread> threadList = new ArrayList<Thread>();
+		final double[] coords = new double[2];
+		final Intent intent = new Intent(getApplicationContext(),
+				SpeechAnswer.class);
 		AlertDialog.Builder alert = new AlertDialog.Builder(this); // First
 		alert.setTitle("Snakk i vei");
 		alert.setMessage("Trykk når du er ferdig");
@@ -1497,73 +1499,115 @@ public class Homescreen extends Activity
 						stopRecording = true;
 						ext.stop();
 						long first = System.nanoTime();
-						DummyObj dummy = http.sendPost(filePath2, cbr);
-						long sec = System.nanoTime() - first;
-						Toast.makeText(
-								context,
-								"You said: " + dummy.getAnswer() + " " + sec
-										/ 1000000000.0 + " sec",
-								Toast.LENGTH_LONG).show();
-						textView.setText(dummy.getAnswer());
-						new OracleThread(context).execute();
+						// DummyObj dummy = http.sendPost(filePath2);
+						File config = new File(sdCard.getAbsolutePath()
+								+ "/dictionary/config.xml");
+						if (!config.exists())
+						{
+							BufferedWriter bufferedWriter = null;
+							// Get the config file to be used with Sphinx
+							try
+							{
+								StringBuffer sb = http
+										.executeHttpGet("http://idi.ntnu.no/~chrimarc/config.xml");
+								if (sb != null)
+								{
+									bufferedWriter = new BufferedWriter(
+											new FileWriter(config
+													.getAbsolutePath()));
+									bufferedWriter.write(sb.toString());
+								}
+							} catch (Exception e)
+							{
+								e.printStackTrace();
+							} finally
+							{
+								if (bufferedWriter != null)
+									try
+									{
+										bufferedWriter.close();
+									} catch (IOException e)
+									{
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+							}
+						}
+						// Wait for all threads to finish
+						for (Thread t : threadList)
+						{
+							try
+							{
+								t.join();
+							} catch (InterruptedException e)
+							{
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+
+						context.startActivity(intent);
+						// new OracleThread(context).execute();
 
 					}
 				});
 		alert.show();
 
 		stopRecording = false;
-
-		new RecordThread(context).execute();
-	}
-
-	class RecordThread extends AsyncTask<Void, Void, Void>
-	{
-		private Context context;
-		Intent intent;
-		ProgressDialog myDialog = null;
-		boolean check = false;
-
-		public RecordThread(Context context)
+		// Get CBR guess
+		Thread cbrThread = new Thread(new Runnable()
 		{
+			public void run()
+			{
+				coords[0] = currentlocation.getLatitude();
+				coords[1] = currentlocation.getLongitude();
+				intent.putExtra("coords", coords);
+				CBRAnswer answ = http
+						.getCBRGuess(coords[0], coords[1], context);
+				intent.putExtra("cbr", answ);
 
-			this.context = context;
-		}
+			}
 
-		@Override
-		protected Void doInBackground(Void... params)
+		});
+		cbrThread.start();
+
+		threadList.add(cbrThread);
+		// Get ASR result
+		Thread speechThread = new Thread(new Runnable()
 		{
-			while (!stopRecording)
-				ext.record();
-			return null;
-
-		}
-
-		@Override
-		protected void onPreExecute()
-		{
-
-			try
+			public void run()
 			{
 				filePath = "/sdcard/dictionary/liverpool.wav";
 				filePath2 = "/dictionary/liverpool.wav";
 
-				ext.setOutputFile(filePath);
+				ext.setOutputFile(wav.getAbsolutePath());
 				ext.prepare();
 				ext.start();
 
-			} catch (Exception e)
-			{
-				e.printStackTrace();
-				myDialog.dismiss();
+				while (!stopRecording)
+				{
+					ext.record();
+				}
+				// If file has been created, perform feature extraction
+				if (wav.exists())
+				{
+					MfccMaker mfcc = new MfccMaker(config.getAbsolutePath(),
+							wav.getAbsolutePath(), mfccFile.getAbsolutePath());
+					mfcc.setupSphinx();
+					mfcc.produceFeatures();
+					DummyObj dummy = http.sendPost(mfccFile.getAbsolutePath());
+
+					String speechAnswer = dummy.getAnswer();
+					intent.putExtra("speech", speechAnswer);
+				}
+				ext.reset();
 
 			}
 
-		}
+		});
+		speechThread.start();
+		threadList.add(speechThread);
 
-		@Override
-		protected void onPostExecute(Void unused)
-		{
-			ext.reset();
-		}
 	}
+
 }

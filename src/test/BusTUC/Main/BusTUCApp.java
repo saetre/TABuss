@@ -87,9 +87,7 @@ public class BusTUCApp extends MapActivity
 	List<String> prov; // List of providers
 	GeoPoint p, p2; // p is current location, p2 is closest bus stop.
 	GPS k_gps; // Object of the GetGPS class.
-	// HashMap<Integer,Location> tSetAllStops; // HashMap used for finding
-	// closest locations. Adds stops from both sides of the road. For use on map
-	// w
+
 	String provider; // Provider
 	HashMap<Integer, Integer> realTimeCodes;
 	MyLocationOverlay myLocation;
@@ -161,10 +159,7 @@ public class BusTUCApp extends MapActivity
 				{
 					e.printStackTrace();
 				}
-			} // if ( currentLocation == null )
-
-			// System.out.println("Realtinmecodessizefirst: " +
-			// realTimeCodes.size());
+			}
 		} catch (Exception e)
 		{
 			Toast.makeText(context, "No connection", Toast.LENGTH_LONG).show();
@@ -315,11 +310,8 @@ public class BusTUCApp extends MapActivity
 		mc.animateTo(p);
 		mc.setZoom(16);
 
-		// System.out.println("My loc: " +
-		// Homescreen.currentlocation.getLatitude() *1E6 + "  " +
-		// Homescreen.currentlocation.getLongitude() *1E6);
 		new LocationListenerThread(context).execute();
-	}// onCreate
+	}
 
 	public void drivingPath(double[] dest, Location loc)
 	{
@@ -372,22 +364,16 @@ public class BusTUCApp extends MapActivity
 	public void drawPath(NavigationDataSet navSet, int color, MapView mMapView01)
 	{
 
-		// Log.d(myapp.APP, "map color before: " + color);
-
-		// color correction for dining, make it darker
 		if (color == Color.parseColor("#add331"))
 			color = Color.parseColor("#6C8715");
-		// Log.d(myapp.APP, "map color after: " + color);
 
 		Collection<Overlay> overlaysToAddAgain = new ArrayList<Overlay>();
 		for (Iterator<Overlay> iter = mMapView01.getOverlays().iterator(); iter
 				.hasNext();)
 		{
 			Object o = iter.next();
-			// Log.d(myapp.APP, "overlay type: " + o.getClass().getName());
 			if (!RouteOverlay.class.getName().equals(o.getClass().getName()))
 			{
-				// mMapView01.getOverlays().remove(o);
 				overlaysToAddAgain.add((Overlay) o);
 			}
 		}
@@ -395,17 +381,12 @@ public class BusTUCApp extends MapActivity
 		mMapView01.getOverlays().addAll(overlaysToAddAgain);
 
 		String path = navSet.getRoutePlacemark().getCoordinates();
-		// Log.d(myapp.APP, "path=" + path);
 		if (path != null && path.trim().length() > 0)
 		{
 			String[] pairs = path.trim().split(" ");
-			String[] lngLat = pairs[0].split(","); // lngLat[0]=longitude
-													// lngLat[1]=latitude
-													// lngLat[2]=height
+			String[] lngLat = pairs[0].split(","); 
 			if (lngLat.length < 3)
-				lngLat = pairs[1].split(","); // if first pair is not
-												// transferred completely, take
-												// seconds pair //TODO
+				lngLat = pairs[1].split(","); 
 
 			try
 			{
@@ -439,30 +420,23 @@ public class BusTUCApp extends MapActivity
 						{
 							mMapView01.getOverlays().add(
 									new RouteOverlay(gp1, gp2, 2, color));
-							// Log.d(myapp.APP, "draw:" + gp1.getLatitudeE6() +
-							// "/" + gp1.getLongitudeE6() + " TO " +
-							// gp2.getLatitudeE6() + "/" +
-							// gp2.getLongitudeE6());
+						
 						}
 					}
-					// Log.d(myapp.APP,"pair:" + pairs[i]);
 				}
-				// routeOverlays.add(new RouteOverlay(gp2,gp2, 3));
 				mMapView01.getOverlays().add(new RouteOverlay(gp2, gp2, 3));
 			} catch (NumberFormatException e)
 			{
-				// Log.e(myapp.APP, "Cannot draw route.", e);
+				e.printStackTrace();
 			}
 		}
-		// mMapView01.getOverlays().addAll(routeOverlays); // use the default
-		// color
+		
 		mMapView01.setEnabled(true);
 	}
 
 	public void drawPath(ArrayList<Integer> id)
 	{
 		ArrayList<GeoPoint> busStop = findStopInCl(id, temp);
-		// System.out.println("Found point: " + busStop);
 		if (p != null && temp != null)
 		{
 			mapView.getOverlays().add(new DirectionPathOverlay(p, busStop));
