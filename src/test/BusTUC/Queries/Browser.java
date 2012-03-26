@@ -170,8 +170,6 @@ public class Browser
 					"http://busstjener.idi.ntnu.no/busstuc/oracle?q="
 							+ URLEncoder.encode(buf, "UTF-8"));
 			HttpResponse m_response = m_client.execute(m_post);
-			// Log.v("m_response",
-			// inputStreamToString(m_response.getEntity().getContent()));
 			System.out.println("Wanted String: " + buf);
 			// Request
 			html_string = httpF.requestStandard(m_response);
@@ -206,25 +204,20 @@ public class Browser
 		int realTimeId = k_RealTimeId;
 		String html_string = null;
 		HttpGet m_get = new HttpGet();
-		// HttpPost m_post= new
-		// HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
 		try
 		{
 			m_get.setURI(new URI(
 					"http://busstjener.idi.ntnu.no/MultiBRISserver/RealTime?bID="
 							+ realTimeId + "&key=SoapMacTavish"));
-			// http://furu.idi.ntnu.no:1337/MultiBRISserver/MBServlet?dest=Ila&type=json&lat=63.4169548&long=10.40284478
-			// n�
-			// m_get.setURI(new
-			// URI("http://ec2-79-125-87-39.eu-west-1.compute.amazonaws.com:8080/MultiBRISserver/MBServlet?dest="+stop+"&type=json&lat="+location.getLatitude()+"&long="+location.getLongitude()));
+			System.out.println("SENDING REQUEST " + realTimeId);
+
 			HttpResponse m_response = m_client.execute(m_get);
+			System.out.println("RESPONSE RECEIVED");
 			// Request
 			html_string = httpF.requestServer(m_response);
 			// Will fail if server is busy or down
 			Log.v("html_string", "Returned html: " + html_string);
-			// Long newTime = System.nanoTime() - time;
-			// System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +
-			// newTime/1000000000.0);
+
 		} catch (ClientProtocolException e)
 		{
 			Log.v("CLIENTPROTOCOL EX", "e:" + e.toString());

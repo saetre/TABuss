@@ -107,7 +107,6 @@ public class RealTimeListFromMenu extends ListActivity
 
 			text.setText(stopName);
 
-			InputStream is = getAssets().open("real_time.txt");
 			stops = Browser.specificRequestForStopServer(outgoing);
 
 			long currenttimeInMillis = date.getTime();
@@ -122,14 +121,11 @@ public class RealTimeListFromMenu extends ListActivity
 				arrivaltimeInMillis = stops.get(i).getArrivalTime().getTime();
 				diff = arrivaltimeInMillis - currenttimeInMillis;
 				System.out.println("DIFF: " + arrivaltimeInMillis + "  " + currenttimeInMillis + "  " +diff);
-				//Date d2 = new Date(diff);
 
-				// long hours =  //TimeUnit.MILLISECONDS.toHours(diff);
 				int m_minutes = (int) Math.ceil((TimeUnit.MILLISECONDS.toSeconds(diff)) / 60);
 				int hours = m_minutes / 60;
 				int minutes = m_minutes % 60;
-				//int minutes = (int) TimeUnit.MILLISECONDS.toSeconds(duration)
-				//long minutes = TimeUnit.MILLISECONDS.toMinutes(diff)-(hours*60);
+
 				String nAtm = "";
 				if(hours == 0){
 					nAtm = minutes + " min";
