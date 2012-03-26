@@ -165,8 +165,6 @@ public class Homescreen extends Activity
 	private static final int CALLBACK_PERIOD = 4000;
 	byte[] myBuffer;
 	final ExtAudioRecorder ext = ExtAudioRecorder.getInstance(false);
-	private String filePath = "";
-	private String filePath2 = "";
 
 	private SpeechRecognizer sr;
 	boolean stopRecording = false;
@@ -1577,8 +1575,7 @@ public class Homescreen extends Activity
 		{
 			public void run()
 			{
-				filePath = "/sdcard/dictionary/liverpool.wav";
-				filePath2 = "/dictionary/liverpool.wav";
+				
 
 				ext.setOutputFile(wav.getAbsolutePath());
 				ext.prepare();
