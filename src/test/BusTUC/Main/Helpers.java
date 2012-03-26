@@ -80,7 +80,7 @@ import com.google.android.maps.OverlayItem;
  */
 public class Helpers
 {
-	
+	//
 	/**
 	 * Method for sending a text message to the sms-oracle
 	 * 
