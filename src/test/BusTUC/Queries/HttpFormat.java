@@ -79,7 +79,7 @@ public class HttpFormat {
 			//System.out.println("FIRST");
 			InputStream in = response.getEntity().getContent();
 			// System.out.println("SECOND");
-			BufferedReader reader = new BufferedReader(new InputStreamReader(in, "ISO-8859-1"));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in, "ISO8859-1"));
 
 			String line = null;
 			//  System.out.println("IN HTTPFORMAT");

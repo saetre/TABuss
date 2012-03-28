@@ -87,30 +87,36 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-public class Browser {
+public class Browser
+{
 	WebView web;
 	static HttpClient m_client;
 	static HttpFormat httpF;
 
-	public Browser() {
+	public Browser()
+	{
 		m_client = new DefaultHttpClient();
 		httpF = new HttpFormat();
 
 	}
 
 	public String getRequestServer(String stop, Boolean formated,
-			Location location, int numStops, int dist, Context context) {
+			Location location, int numStops, int dist, Context context)
+	{
 		String html_string = null;
 		HttpGet m_get = new HttpGet();
-		try {
+		try
+		{
 			stop = URLEncoder.encode(stop, "UTF-8");
-		} catch (UnsupportedEncodingException e1) {
+		} catch (UnsupportedEncodingException e1)
+		{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		// HttpPost m_post= new
 		// HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
-		try {
+		try
+		{
 			final TelephonyManager tm = (TelephonyManager) context
 					.getSystemService(Context.TELEPHONY_SERVICE);
 			String t_id = tm.getDeviceId();
@@ -131,69 +137,84 @@ public class Browser {
 			// Long newTime = System.nanoTime() - time;
 			// System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +
 			// newTime/1000000000.0);
-		} catch (ClientProtocolException e) {
+		} catch (ClientProtocolException e)
+		{
 			Log.v("CLIENTPROTOCOL EX", "e:" + e.toString());
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			Log.v("IO EX", "e:" + e.toString());
 
-		} catch (NullPointerException e) {
+		} catch (NullPointerException e)
+		{
 			Log.v("NULL", "NullPointer");
-		} catch (StringIndexOutOfBoundsException e) {
+		} catch (StringIndexOutOfBoundsException e)
+		{
 			Log.v("StringIndexOutOfBounds", "Exception");
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 
 		return html_string;
 	}
 
-	public StringBuffer getRequestStandard(String buf) {
-		StringBuffer html_string = null;
-
+	public StringBuffer getRequestStandard(String buf)
+	{
+		StringBuffer html_string = new StringBuffer();
+		String foo = "";
 		Long time = System.nanoTime();
-		try {
+		try
+		{
 			HttpPost m_post = new HttpPost(
 					"http://busstjener.idi.ntnu.no/busstuc/oracle?q="
-							+ URLEncoder.encode(buf, "UTF-8"));
-			HttpResponse m_response = m_client.execute(m_post);
+							+ URLEncoder.encode(buf, "ISO8859-1"));
+			//HttpResponse m_response = m_client.execute(m_post);
 			System.out.println("Wanted String: " + buf);
-			// Request
-			html_string = httpF.requestStandard(m_response);
-
+			// quick hax
+			foo = EntityUtils.toString(m_client.execute(m_post)
+					.getEntity(), "UTF-8");//httpF.requestStandard(m_response);
+			html_string.append(foo);
 			// Will fail if server is busy or down
 			Log.v("html_string", "Returned html: " + html_string);
-		} catch (ClientProtocolException e) {
+		} catch (ClientProtocolException e)
+		{
 			Log.v("CLIENTPROTOCOL EX", "e:" + e.toString());
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			Log.v("IO EX", "e:" + e.toString());
 
-		} catch (NullPointerException e) {
+		} catch (NullPointerException e)
+		{
 			Log.v("NULL", "NullPointer");
-		} catch (StringIndexOutOfBoundsException e) {
+		} catch (StringIndexOutOfBoundsException e)
+		{
 			Log.v("StringIndexOutOfBounds", "Exception");
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 		return html_string;
 	}
 
 	public static ArrayList<BusDeparture> specificRequestForStopServer(
-			int k_RealTimeId) {
+			int k_RealTimeId)
+	{
 		int realTimeId = k_RealTimeId;
 		String html_string = null;
 		HttpGet m_get = new HttpGet();
 		ArrayList<BusDeparture> test = null;
-		if(m_client == null)
+		if (m_client == null)
 		{
 			m_client = new DefaultHttpClient();
 
 		}
-		if(httpF == null)
+		if (httpF == null)
 		{
 			httpF = new HttpFormat();
 
 		}
-		try {
+		try
+		{
 			m_get.setURI(new URI(
 					"http://busstjener.idi.ntnu.no/MultiBRISserver/RealTime?bID="
 							+ realTimeId + "&key=SoapMacTavish"));
@@ -204,19 +225,22 @@ public class Browser {
 			// Request
 			html_string = httpF.requestServer(m_response);
 			// Will fail if server is busy or down
-			Log.v("html_string", "Returned html: " + html_string);			
+			Log.v("html_string", "Returned html: " + html_string);
 
 			test = parseRealTimeDataForStopServer(html_string.toString());
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return test;
 	}
 
-	@SuppressWarnings({ "unused", "deprecation" })
+	@SuppressWarnings(
+	{ "unused", "deprecation" })
 	public static ArrayList<BusDeparture> parseRealTimeDataForStopServer(
-			String data) throws JSONException, java.text.ParseException {
+			String data) throws JSONException, java.text.ParseException
+	{
 		ArrayList<BusDeparture> buses = new ArrayList<BusDeparture>();
 
 		JSONObject j_o = null;
@@ -227,9 +251,12 @@ public class Browser {
 		System.out.println("J_a length: " + j_a.length());
 		BusDeparture wantedBusStop = new BusDeparture();
 		wantedBusStop.setLine(9999);
-		if (j_a != null) {
-			try {
-				for (int i = 0; i < j_a.length(); i++) {
+		if (j_a != null)
+		{
+			try
+			{
+				for (int i = 0; i < j_a.length(); i++)
+				{
 
 					BusDeparture t = new BusDeparture();
 					t.line = j_a.getJSONObject(i).getInt("line");
@@ -247,13 +274,15 @@ public class Browser {
 					wantedBusStop = t;
 					buses.add(t);
 				}
-			} catch (JSONException e) {
+			} catch (JSONException e)
+			{
 				e.printStackTrace();
 			}
 
 		}
 
-		else {
+		else
+		{
 			System.out.println("Could not find property in Browser");
 		}
 
