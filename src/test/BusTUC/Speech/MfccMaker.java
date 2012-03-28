@@ -120,27 +120,39 @@ public class MfccMaker
 				feature = frontEnd.getData();
 			}
 
-			outStream = new DataOutputStream(new FileOutputStream(
-			outputMfccFile));
-			outStream.writeInt(allFeatures.size() * featureLength);
-		
+			/*int size = 0; // fos.write(buffer.array()); // buffer.clear();
+			for (float[] f : allFeatures)
+			{
+				size += f.length;
+
+			}
+			ByteBuffer buffer = ByteBuffer.allocate(size + 4);
+			buffer.order(ByteOrder.LITTLE_ENDIAN);
+			fos = new FileOutputStream(outputMfccFile);
+			buffer.putInt(allFeatures.size() * featureLength);
 			for (float[] f : allFeatures)
 			{
 				for (float val : f)
 				{
-
-					// float reverseVal = reverse(val);
-					// fos.write(reverseVal);
-					// outStream.writeFloat(reverseVal);
-					 outStream.writeFloat(val);
-
-					/*
-					 * int buf = swabInt(Float.floatToIntBits(val)); float tmp =
-					 * Float.intBitsToFloat(buf); outStream.writeFloat(tmp);
-					 */
+					buffer.putFloat(val); //
+					fos.write(buffer.array()); // buffer.clear();
 				}
-		
+
 			}
+			fos.write(buffer.array());*/
+
+			
+			 outStream = new DataOutputStream(new FileOutputStream(
+			 outputMfccFile)); outStream.writeInt(allFeatures.size() *
+			 featureLength);
+			 
+			 for (float[] f : allFeatures) { for (float val : f) {
+			 outStream.writeFloat(val);
+			 
+			 }
+			 
+			 }
+			
 
 		} catch (Exception e)
 		{
@@ -149,32 +161,18 @@ public class MfccMaker
 		{
 			try
 			{
-				/*
-				 * if (outStream != null) { outStream.close(); }
-				 */
+
+				if (outStream != null)
+				{
+					outStream.close();
+				}
+
 			} catch (Exception e)
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-
-		return;
 	}
 
-	public final static int swabInt(int v)
-	{
-		return (v >>> 24) | (v << 24) | ((v << 8) & 0x00FF0000)
-				| ((v >> 8) & 0x0000FF00);
-	}
-
-	public static float reverse(float val)
-	{
-		ByteBuffer buf = ByteBuffer.allocate(8);
-		buf.order(ByteOrder.LITTLE_ENDIAN);
-		buf.asFloatBuffer().put(val);
-		buf.flip();
-		// buf.order(ByteOrder.LITTLE_ENDIAN);
-		return buf.getFloat(0);
-	}
 }
