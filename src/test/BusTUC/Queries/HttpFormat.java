@@ -71,37 +71,7 @@ public class HttpFormat {
 	}
 
 
-	public StringBuffer requestStandard(HttpResponse response){
-		String result = "";
-		String[] contentArray = null;
-		StringBuffer retBuffer = new StringBuffer();
-		try{
-			//System.out.println("FIRST");
-			InputStream in = response.getEntity().getContent();
-			// System.out.println("SECOND");
-			BufferedReader reader = new BufferedReader(new InputStreamReader(in, "ISO8859-1"));
-
-			String line = null;
-			//  System.out.println("IN HTTPFORMAT");
-
-			while((line = reader.readLine()) != null)
-			{
-				retBuffer.append(line +"\n");
-			}
-			in.close();
-			reader.close();
-		
-		
-			return retBuffer;
-		}
-		catch(Exception ex){
-			ex.printStackTrace();
-		
-		}
-		return null;
-		
-	}
-
+	
 
 
 }

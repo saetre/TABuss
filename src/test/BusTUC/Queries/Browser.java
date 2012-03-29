@@ -172,7 +172,7 @@ public class Browser
 			System.out.println("Wanted String: " + buf);
 			// quick hax
 			foo = EntityUtils.toString(m_client.execute(m_post)
-					.getEntity(), "UTF-8");//httpF.requestStandard(m_response);
+					.getEntity(), "UTF-8");;
 			html_string.append(foo);
 			// Will fail if server is busy or down
 			Log.v("html_string", "Returned html: " + html_string);
