@@ -23,6 +23,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +36,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.omg.IOP.Encoding;
+import org.xiph.speex.spi.SpeexAudioFileReader;
+import org.xiph.speex.spi.SpeexFormatConvertionProvider;
+import org.xiph.speex.*;
 import test.BusTUC.Database.DatabaseHelper;
 
 import com.google.android.maps.GeoPoint;
@@ -106,9 +111,10 @@ import android.widget.Toast;
 public class Homescreen extends Activity
 {
 	File sdCard = Environment.getExternalStorageDirectory();
-	File wav = new File(sdCard.getAbsolutePath() + "/dictionary/liverpool.wav");
-	File config = new File(sdCard.getAbsolutePath() + "/dictionary/config.xml");
-	File mfccFile = new File(sdCard.getAbsolutePath() + "/dictionary/test.mfc");
+	File wav = null;
+	File config = null;// new File(sdCard.getAbsolutePath() +
+						// "/dictionary/config.xml");
+	File mfccFile = null;
 
 	private String[] bgColors =
 	{ "#3C434A", "#A3AB19", "#F66F89", "#D9F970" };
@@ -190,7 +196,7 @@ public class Homescreen extends Activity
 		}
 		List<String> temp = Arrays.asList(busStop);
 		int addedfavorites = 0;
-		
+
 		for (int i = 0; i < busStop.length && i < favorites.size(); i++)
 		{
 			if (!Helpers.containsIgnoreCase(temp, favorites.get(i)))
@@ -242,7 +248,41 @@ public class Homescreen extends Activity
 		buttons = new Button[6];
 		goButton = (Button) this.findViewById(R.id.goButton);
 		amazeButton = (Button) this.findViewById(R.id.amazebutton);
-
+		File configFolder = new File(sdCard.getAbsolutePath() + "/asr");
+		if (!configFolder.exists())
+			configFolder.mkdir();
+		config = new File(configFolder.getAbsolutePath() + "/config.xml");
+		if (!config.exists())
+		{
+			BufferedWriter bufferedWriter = null;
+			HTTP http = new HTTP();
+			// Get the config file to be used with Sphinx
+			try
+			{
+				StringBuffer sb = http
+						.executeHttpGet("http://idi.ntnu.no/~chrimarc/config.xml");
+				if (sb != null)
+				{
+					bufferedWriter = new BufferedWriter(new FileWriter(
+							config.getAbsolutePath()));
+					bufferedWriter.write(sb.toString());
+				}
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			} finally
+			{
+				if (bufferedWriter != null)
+					try
+					{
+						bufferedWriter.close();
+					} catch (IOException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			}
+		}
 		loadDictionaries();
 
 		ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(
@@ -528,7 +568,6 @@ public class Homescreen extends Activity
 		updateTextViewHint();
 	}
 
-
 	private void createLocationListener()
 	{
 		locationListener = new LocationListener()
@@ -762,9 +801,7 @@ public class Homescreen extends Activity
 						Toast.LENGTH_LONG).show();
 			}
 			return false;
-		
 
-		
 		case R.id.about:
 			try
 			{
@@ -850,8 +887,8 @@ public class Homescreen extends Activity
 						if (!query.equals(""))
 						{
 							long pre = System.nanoTime();
-							buf = Helpers.runServer(query,
-									currentlocation, numStops, dist, context);
+							buf = Helpers.runServer(query, currentlocation,
+									numStops, dist, context);
 							long post = System.nanoTime() - pre;
 							System.out.println("POST-TIME: "
 									+ (post / 1000000000.0));
@@ -1485,6 +1522,7 @@ public class Homescreen extends Activity
 		final Intent intent = new Intent(getApplicationContext(),
 				SpeechAnswer.class);
 		AlertDialog.Builder alert = new AlertDialog.Builder(this); // First
+
 		alert.setTitle("Snakk i vei");
 		alert.setMessage("Trykk når du er ferdig");
 		alert.setPositiveButton("Avslutt",
@@ -1498,39 +1536,7 @@ public class Homescreen extends Activity
 						ext.stop();
 						long first = System.nanoTime();
 						// DummyObj dummy = http.sendPost(filePath2);
-						File config = new File(sdCard.getAbsolutePath()
-								+ "/dictionary/config.xml");
-						if (!config.exists())
-						{
-							BufferedWriter bufferedWriter = null;
-							// Get the config file to be used with Sphinx
-							try
-							{
-								StringBuffer sb = http
-										.executeHttpGet("http://idi.ntnu.no/~chrimarc/config.xml");
-								if (sb != null)
-								{
-									bufferedWriter = new BufferedWriter(
-											new FileWriter(config
-													.getAbsolutePath()));
-									bufferedWriter.write(sb.toString());
-								}
-							} catch (Exception e)
-							{
-								e.printStackTrace();
-							} finally
-							{
-								if (bufferedWriter != null)
-									try
-									{
-										bufferedWriter.close();
-									} catch (IOException e)
-									{
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-							}
-						}
+
 						// Wait for all threads to finish
 						for (Thread t : threadList)
 						{
@@ -1569,14 +1575,15 @@ public class Homescreen extends Activity
 		});
 		cbrThread.start();
 
+		// Send wav or MFCC. TODO: Create setting
+		final boolean sendWav = false;
 		threadList.add(cbrThread);
 		// Get ASR result
 		Thread speechThread = new Thread(new Runnable()
 		{
 			public void run()
 			{
-				
-
+				wav = new File(sdCard.getAbsolutePath() + "/asr/liverpool.wav");
 				ext.setOutputFile(wav.getAbsolutePath());
 				ext.prepare();
 				ext.start();
@@ -1588,14 +1595,27 @@ public class Homescreen extends Activity
 				// If file has been created, perform feature extraction
 				if (wav.exists())
 				{
-					MfccMaker mfcc = new MfccMaker(config.getAbsolutePath(),
-							wav.getAbsolutePath(), mfccFile.getAbsolutePath());
-					mfcc.setupSphinx();
-					mfcc.produceFeatures();
-					DummyObj dummy = http.sendPost(mfccFile.getAbsolutePath());
+					if (!sendWav)
+					{
+						mfccFile = new File(sdCard.getAbsolutePath()
+								+ "/asr/test.mfc");
+						MfccMaker mfcc = new MfccMaker(
+								config.getAbsolutePath(),
+								wav.getAbsolutePath(), mfccFile
+										.getAbsolutePath());
+						mfcc.setupSphinx();
+						mfcc.produceFeatures();
+						DummyObj dummy = http.sendPost(mfccFile
+								.getAbsolutePath());
 
-					String speechAnswer = dummy.getAnswer();
-					intent.putExtra("speech", speechAnswer);
+						String speechAnswer = dummy.getAnswer();
+						intent.putExtra("speech", speechAnswer);
+					} else
+					{
+						DummyObj dummy = http.sendPost(wav.getAbsolutePath());
+						String speechAnswer = dummy.getAnswer();
+						intent.putExtra("speech", speechAnswer);
+					}
 				}
 				ext.reset();
 
