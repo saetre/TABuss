@@ -194,10 +194,11 @@ public class HTTP
 		try
 		{
 			MultipartEntity entity = new MultipartEntity();
-			entity.addPart("speechinput", new FileBody(file, "multipart/form-data;charset=\"UTF-8\""));
 			entity.addPart("lat",new StringBody(String.valueOf(lat)));
 			entity.addPart("lon",new StringBody(String.valueOf(lon)));
 			entity.addPart("devID",new StringBody(tmp+p_id));
+			entity.addPart("speechinput", new FileBody(file, "multipart/form-data;charset=\"UTF-8\""));
+
 			httppost.setEntity(entity);
 			response = EntityUtils.toString(httpclient.execute(httppost)
 					.getEntity(), "UTF-8");
