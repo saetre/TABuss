@@ -37,9 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.omg.IOP.Encoding;
-import org.xiph.speex.spi.SpeexAudioFileReader;
-import org.xiph.speex.spi.SpeexFormatConvertionProvider;
-import org.xiph.speex.*;
 import test.BusTUC.Database.DatabaseHelper;
 
 import com.google.android.maps.GeoPoint;
@@ -1519,6 +1516,8 @@ public class Homescreen extends Activity
 		final HTTP http = new HTTP();
 		final ArrayList<Thread> threadList = new ArrayList<Thread>();
 		final double[] coords = new double[2];
+		coords[0] = currentlocation.getLatitude();
+		coords[1] = currentlocation.getLongitude();
 		final Intent intent = new Intent(getApplicationContext(),
 				SpeechAnswer.class);
 		AlertDialog.Builder alert = new AlertDialog.Builder(this); // First
@@ -1563,8 +1562,7 @@ public class Homescreen extends Activity
 		{
 			public void run()
 			{
-				coords[0] = currentlocation.getLatitude();
-				coords[1] = currentlocation.getLongitude();
+				
 				intent.putExtra("coords", coords);
 				CBRAnswer answ = http
 						.getCBRGuess(coords[0], coords[1], context);
@@ -1606,13 +1604,13 @@ public class Homescreen extends Activity
 						mfcc.setupSphinx();
 						mfcc.produceFeatures();
 						DummyObj dummy = http.sendPost(mfccFile
-								.getAbsolutePath());
+								.getAbsolutePath(), context, coords[0], coords[1]);
 
 						String speechAnswer = dummy.getAnswer();
 						intent.putExtra("speech", speechAnswer);
 					} else
 					{
-						DummyObj dummy = http.sendPost(wav.getAbsolutePath());
+						DummyObj dummy = http.sendPost(wav.getAbsolutePath(), context,coords[0], coords[1]);
 						String speechAnswer = dummy.getAnswer();
 						intent.putExtra("speech", speechAnswer);
 					}

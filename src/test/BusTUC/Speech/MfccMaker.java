@@ -62,6 +62,7 @@ public class MfccMaker
 		StreamDataSource audioSource = null;
 		List<float[]> allFeatures;
 		int featureLength = -1;
+		System.out.println("CONFIG: " + configFile);
 		ConfigurationManager cm = new ConfigurationManager(configFile);
 		try
 		{
