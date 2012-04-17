@@ -292,8 +292,8 @@ public class Homescreen extends Activity
 
 		updateButtons(busStop, buttons);
 
-		if (currentlocation != null)
-			this.getSuggestionBasedOnPosition();
+		// if (currentlocation != null)
+		// this.getSuggestionBasedOnPosition();
 		// binds listener to the button
 		goButton.setOnClickListener(new OnClickListener()
 		{
@@ -319,10 +319,16 @@ public class Homescreen extends Activity
 						switch (which)
 						{
 						case DialogInterface.BUTTON_POSITIVE:
-							textView.setText(whereTo);
-							Toast.makeText(context, "I'm awesome!",
-									Toast.LENGTH_SHORT).show();
-							queryOrSMS();
+							if (whereTo != null && currentlocation != null)
+							{
+								textView.setText(whereTo);
+								Toast.makeText(context, "I'm awesome!",
+										Toast.LENGTH_SHORT).show();
+								queryOrSMS();
+							} else
+							{
+								break;
+							}
 
 							break;
 						case DialogInterface.BUTTON_NEGATIVE:
@@ -643,6 +649,7 @@ public class Homescreen extends Activity
 		System.out.println("OnActivityResult()");
 		super.onActivityResult(requestCode, resultCode, data);
 		boolean change = false;
+		System.out.println("onactivityresult() " + resultCode);
 		if (resultCode == Activity.RESULT_OK)
 		{
 			Bundle extras = data.getExtras();
@@ -650,7 +657,9 @@ public class Homescreen extends Activity
 			int m_numStopsOnMap = extras.getInt("num2");
 			int m_dist = extras.getInt("num3");
 			boolean m_fancy = extras.getBoolean("Orakelvalg");
-
+			boolean printLocCheck = true;
+			boolean newSpeechQuery = extras.getBoolean("newSpeechQuery");
+			
 			if (numStops != m_numStops && m_numStops <= 5)
 			{
 				numStops = extras.getInt("num1");
@@ -671,11 +680,18 @@ public class Homescreen extends Activity
 				fancyOracle = m_fancy;
 				change = true;
 			}
+			System.out.println("New Speech: " + newSpeechQuery);
+			if(newSpeechQuery)
+			{
+				printLocCheck = false;
+				startVoiceRecognitionActivity();
+			}
 
-			if (change)
+			if (change && printLocCheck)
 				Toast.makeText(context,
 						"Endringer trer i kraft ved neste lokasjonssjekk",
 						Toast.LENGTH_LONG).show();
+			
 
 		}
 
@@ -1548,8 +1564,8 @@ public class Homescreen extends Activity
 								e.printStackTrace();
 							}
 						}
-
-						context.startActivity(intent);
+						startActivityForResult(intent, REQUEST_CODE);
+					//	context.startActivity(intent);
 						// new OracleThread(context).execute();
 
 					}
@@ -1558,24 +1574,21 @@ public class Homescreen extends Activity
 
 		stopRecording = false;
 		// Get CBR guess
-		Thread cbrThread = new Thread(new Runnable()
-		{
-			public void run()
-			{
-				
-				intent.putExtra("coords", coords);
-				CBRAnswer answ = http
-						.getCBRGuess(coords[0], coords[1], context);
-				intent.putExtra("cbr", answ);
-
-			}
-
-		});
-		cbrThread.start();
+		/*
+		 * Thread cbrThread = new Thread(new Runnable() { public void run() {
+		 * 
+		 * intent.putExtra("coords", coords); CBRAnswer answ = http
+		 * .getCBRGuess(coords[0], coords[1], context); intent.putExtra("cbr",
+		 * answ);
+		 * 
+		 * }
+		 * 
+		 * }); cbrThread.start();
+		 */
 
 		// Send wav or MFCC. TODO: Create setting
 		final boolean sendWav = false;
-		threadList.add(cbrThread);
+		// threadList.add(cbrThread);
 		// Get ASR result
 		Thread speechThread = new Thread(new Runnable()
 		{
@@ -1603,16 +1616,21 @@ public class Homescreen extends Activity
 										.getAbsolutePath());
 						mfcc.setupSphinx();
 						mfcc.produceFeatures();
-						DummyObj dummy = http.sendPost(mfccFile
-								.getAbsolutePath(), context, coords[0], coords[1]);
+						DummyObj dummy = http.sendPost(
+								mfccFile.getAbsolutePath(), context, coords[0],
+								coords[1]);
 
 						String speechAnswer = dummy.getAnswer();
 						intent.putExtra("speech", speechAnswer);
+						//intent.putExtra("coords", coords);
+
 					} else
 					{
-						DummyObj dummy = http.sendPost(wav.getAbsolutePath(), context,coords[0], coords[1]);
+						DummyObj dummy = http.sendPost(wav.getAbsolutePath(),
+								context, coords[0], coords[1]);
 						String speechAnswer = dummy.getAnswer();
 						intent.putExtra("speech", speechAnswer);
+					//intent.putExtra("coords", coords);
 					}
 				}
 				ext.reset();

@@ -4,11 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 
 import test.BusTUC.R;
+import test.BusTUC.Main.Homescreen;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -23,7 +26,6 @@ public class SpeechAnswer extends ListActivity
 {
 	private Context context;
 	private ArrayList<String> answer;
-	CBRAnswer current;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -32,14 +34,12 @@ public class SpeechAnswer extends ListActivity
 		context = this;
 		// Get the extras from the Homescreen activity
 		final Bundle extras = getIntent().getExtras();
-		final CBRAnswer cbrAnsw = extras.getParcelable("cbr");
 		final String speechAnsw = extras.getString("speech");
-		current = new CBRAnswer();
 		answer = new ArrayList <String>();
 		// Set up list adapter
 		final ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(
 				context, R.layout.list_item, answer);
-		setupList(answer, speechAnsw, cbrAnsw, listAdapter);
+		setupList(answer, speechAnsw, listAdapter);
 		final HTTP http = new HTTP();
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
@@ -49,8 +49,9 @@ public class SpeechAnswer extends ListActivity
 					int position, long id)
 			{
 				// Get the user's coordinates from the Homescreen activity
-				final double[] coords = extras.getDoubleArray("coords");
-				if (position == 1 && cbrAnsw != null && coords != null)
+			//	final double[] coords = extras.getDoubleArray("coords");
+				//System.out.println("POS: " + position + " sAnsw: " + speechAnsw + " coords: " + coords);
+				if (position == 0 && speechAnsw != null)// && coords != null)
 				{
 					AlertDialog.Builder alert2 = new AlertDialog.Builder(
 							context);
@@ -73,8 +74,14 @@ public class SpeechAnswer extends ListActivity
 								public void onClick(DialogInterface dialog,
 										int whichButton)
 								{
+									Intent intent = new Intent(context, Homescreen.class);
+									intent.putExtra("newSpeechQuery", true);
+									setResult(Activity.RESULT_OK, intent);
+								//	context.startActivity(intent);
+									finish();
+									
 									// Black list unwanted suggestion
-									CBRAnswer newAnswer = blackList(coords[0],
+								/*CBRAnswer newAnswer = blackList(coords[0],
 											coords[1], context, http);
 									if (newAnswer != null)
 									{
@@ -83,7 +90,7 @@ public class SpeechAnswer extends ListActivity
 										setupList(answer, speechAnsw,
 												newAnswer, listAdapter);
 										listAdapter.notifyDataSetChanged();
-									}
+									}*/
 								}
 							});
 
@@ -96,22 +103,19 @@ public class SpeechAnswer extends ListActivity
 	}
 
 	public void setupList(ArrayList<String> answer, String speechAnsw,
-			CBRAnswer cbrAnsw, ArrayAdapter<String> listAdapter)
+			ArrayAdapter<String> listAdapter)
 	{
-		if (speechAnsw != null && cbrAnsw != null && answer != null)
+		if (speechAnsw != null  && answer != null)
 		{
 			answer.clear();
 			answer.add("ASR: " + speechAnsw);
-			answer.add("CBR: " + cbrAnsw.getAnswer() + " Score: "
-					+ cbrAnsw.getScore());
 			setListAdapter(listAdapter);
-			current = cbrAnsw;
 		}
 	}
 
-	public CBRAnswer blackList(double lat, double lon, Context context,
+	/*public CBRAnswer blackList(double lat, double lon, Context context,
 			HTTP http)
 	{
 		return http.blackList(lat, lon, current.getAnswer(), context);
-	}
+	}*/
 }
