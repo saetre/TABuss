@@ -168,7 +168,7 @@ public class Homescreen extends Activity
 	private static final int CALLBACK_PERIOD = 4000;
 	byte[] myBuffer;
 	final ExtAudioRecorder ext = ExtAudioRecorder.getInstance(false);
-
+	private SharedPreferences preferences;
 	private SpeechRecognizer sr;
 	boolean stopRecording = false;
 	boolean recorder = true;
@@ -231,17 +231,9 @@ public class Homescreen extends Activity
 		new StartUpThread(context).execute();
 		dbHelper = new DatabaseHelper(context);
 		// Set properties according to existing preferences
-		SharedPreferences preferences = PreferenceManager
+		 preferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
-		PreferenceManager.setDefaultValues(context, R.layout.preference, false);
-		String foo = preferences.getString("num1", "");
-		numStops = Integer.parseInt(foo);
-		String foo2 = preferences.getString("num2", "");
-		numStopsOnMap = Integer.parseInt(foo2);
-		String foo3 = preferences.getString("num3", "");
-		dist = Integer.parseInt(foo3);
-		fancyOracle = preferences.getBoolean("Orakelvalg", fancyOracle);
-
+		 adjustSettings();
 		buttons = new Button[6];
 		goButton = (Button) this.findViewById(R.id.goButton);
 		amazeButton = (Button) this.findViewById(R.id.amazebutton);
@@ -350,6 +342,20 @@ public class Homescreen extends Activity
 
 		createButtonListeners();
 
+	}
+
+	public void adjustSettings()
+	{
+
+		PreferenceManager.setDefaultValues(context, R.layout.preference, false);
+		String foo = preferences.getString("num1", "");
+		numStops = Integer.parseInt(foo);
+		String foo2 = preferences.getString("num2", "");
+		numStopsOnMap = Integer.parseInt(foo2);
+		String foo3 = preferences.getString("num3", "");
+		dist = Integer.parseInt(foo3);
+		fancyOracle = preferences.getBoolean("Orakelvalg", fancyOracle);
+		System.out.println("onCreate: FancyOracle: " + fancyOracle);
 	}
 
 	private void queryOrSMS()
@@ -659,7 +665,7 @@ public class Homescreen extends Activity
 			boolean m_fancy = extras.getBoolean("Orakelvalg");
 			boolean printLocCheck = true;
 			boolean newSpeechQuery = extras.getBoolean("newSpeechQuery");
-			
+
 			if (numStops != m_numStops && m_numStops <= 5)
 			{
 				numStops = extras.getInt("num1");
@@ -681,17 +687,27 @@ public class Homescreen extends Activity
 				change = true;
 			}
 			System.out.println("New Speech: " + newSpeechQuery);
-			if(newSpeechQuery)
+			if (newSpeechQuery)
 			{
 				printLocCheck = false;
 				startVoiceRecognitionActivity();
 			}
+			if (!newSpeechQuery)
+			{
+				String speechAnswer = extras.getString("speechAnswer");
+				if (speechAnswer != null && !speechAnswer.trim().equals(""))
+				{
+					textView.setText(speechAnswer);
+					System.out.println("FANCYORACLE: " + fancyOracle);
+					adjustSettings();
+					new OracleThread(context).execute();
+				}
+			}
 
-			if (change && printLocCheck)
+			/*if (change && printLocCheck)
 				Toast.makeText(context,
 						"Endringer trer i kraft ved neste lokasjonssjekk",
-						Toast.LENGTH_LONG).show();
-			
+						Toast.LENGTH_LONG).show();*/
 
 		}
 
@@ -1565,7 +1581,7 @@ public class Homescreen extends Activity
 							}
 						}
 						startActivityForResult(intent, REQUEST_CODE);
-					//	context.startActivity(intent);
+						// context.startActivity(intent);
 						// new OracleThread(context).execute();
 
 					}
@@ -1622,7 +1638,7 @@ public class Homescreen extends Activity
 
 						String speechAnswer = dummy.getAnswer();
 						intent.putExtra("speech", speechAnswer);
-						//intent.putExtra("coords", coords);
+						// intent.putExtra("coords", coords);
 
 					} else
 					{
@@ -1630,7 +1646,7 @@ public class Homescreen extends Activity
 								context, coords[0], coords[1]);
 						String speechAnswer = dummy.getAnswer();
 						intent.putExtra("speech", speechAnswer);
-					//intent.putExtra("coords", coords);
+						// intent.putExtra("coords", coords);
 					}
 				}
 				ext.reset();

@@ -64,6 +64,12 @@ public class SpeechAnswer extends ListActivity
 								public void onClick(DialogInterface dialog,
 										int whichButton)
 								{
+									Intent intent = new Intent(context, Homescreen.class);
+									intent.putExtra("newSpeechQuery", false);
+									intent.putExtra("speechAnswer", speechAnsw);
+									setResult(Activity.RESULT_OK, intent);
+								//	context.startActivity(intent);
+									finish();
 								}
 							});
 					alert2.setNegativeButton("Hell no!",
