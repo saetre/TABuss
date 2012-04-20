@@ -21,14 +21,20 @@ package test.BusTUC.Main;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -231,9 +237,8 @@ public class Homescreen extends Activity
 		new StartUpThread(context).execute();
 		dbHelper = new DatabaseHelper(context);
 		// Set properties according to existing preferences
-		 preferences = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		 adjustSettings();
+		preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		adjustSettings();
 		buttons = new Button[6];
 		goButton = (Button) this.findViewById(R.id.goButton);
 		amazeButton = (Button) this.findViewById(R.id.amazebutton);
@@ -341,6 +346,73 @@ public class Homescreen extends Activity
 		});
 
 		createButtonListeners();
+
+	}
+
+	native byte[] encode(short[] inputData);
+
+	native void init();
+
+	static
+	{
+		System.loadLibrary("speex");
+	}
+
+	public void go()
+	{
+		File file = wav;
+		// short[] inputArray = new short[320];
+		// Write data to inputArray.
+		InputStream is;
+		try
+		{
+			is = new FileInputStream(file);
+
+			// Get the size of the file
+			long length = file.length();
+
+			if (length > Integer.MAX_VALUE)
+			{
+				// File is too large
+			}
+
+			// Create the byte array to hold the data
+			byte[] bytes = new byte[(int) length];
+
+			// Read in the bytes
+			int offset = 0;
+			int numRead = 0;
+			while (offset < bytes.length
+					&& (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0)
+			{
+				offset += numRead;
+			}
+
+			// Ensure all the bytes have been read in
+			if (offset < bytes.length)
+			{
+				throw new IOException("Could not completely read file "
+						+ file.getName());
+			}
+			// Close the input stream and return bytes
+			is.close();
+			short[] shorts = new short[bytes.length / 2];
+			// to turn bytes to shorts as either big endian or little endian.
+			ShortBuffer buf = ByteBuffer.wrap(bytes)
+					.order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(shorts);
+			System.out.println("SHORTS " + shorts.length);
+			init();
+			byte[] encodedBuffer = encode(shorts);
+			String path = sdCard.getAbsolutePath() + "/asr/GOGO.wav";
+
+			FileOutputStream fos = new FileOutputStream(new File(path));
+			fos.write(encodedBuffer);
+			fos.close();
+		} catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -704,10 +776,11 @@ public class Homescreen extends Activity
 				}
 			}
 
-			/*if (change && printLocCheck)
-				Toast.makeText(context,
-						"Endringer trer i kraft ved neste lokasjonssjekk",
-						Toast.LENGTH_LONG).show();*/
+			/*
+			 * if (change && printLocCheck) Toast.makeText(context,
+			 * "Endringer trer i kraft ved neste lokasjonssjekk",
+			 * Toast.LENGTH_LONG).show();
+			 */
 
 		}
 
@@ -1543,8 +1616,9 @@ public class Homescreen extends Activity
 
 	}
 
-	private void startVoiceRecognitionActivity()
+	public void startVoiceRecognitionActivity()
 	{
+
 		final HTTP http = new HTTP();
 		final ArrayList<Thread> threadList = new ArrayList<Thread>();
 		final double[] coords = new double[2];
@@ -1580,6 +1654,7 @@ public class Homescreen extends Activity
 								e.printStackTrace();
 							}
 						}
+						go();
 						startActivityForResult(intent, REQUEST_CODE);
 						// context.startActivity(intent);
 						// new OracleThread(context).execute();
