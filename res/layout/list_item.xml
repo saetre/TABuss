@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:textColor="#A3AB19"
-	android:background="#FFFFFF"
+    android:id="@+id/speechAnswer"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:padding="10dp"
-    android:textSize="16sp">
+    android:textColor="#ffaa0e"
+    android:textSize="40sp" >
 </TextView>
+
+<!--  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF" >
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
+
+</LinearLayout>-->

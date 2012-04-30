@@ -6,15 +6,19 @@ import java.util.ArrayList;
 import test.BusTUC.R;
 import test.BusTUC.Main.Homescreen;
 
+
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -32,17 +36,26 @@ public class SpeechAnswer extends ListActivity
 	{
 		super.onCreate(savedInstanceState);
 		context = this;
+		//setContentView(R.layout.list_item);
+
 		// Get the extras from the Homescreen activity
 		final Bundle extras = getIntent().getExtras();
 		final String speechAnsw = extras.getString("speech");
 		answer = new ArrayList <String>();
+	
 		// Set up list adapter
-		final ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(
-				context, R.layout.list_item, answer);
+		/*final ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(
+				context, R.layout.list_item, answer);*/
+		
+		
+		ListView lv = getListView();//(ListView) findViewById(R.layout.list);//
+		final CustomAdapter listAdapter = new CustomAdapter(this,
+				R.layout.list_item, answer);
 		setupList(answer, speechAnsw, listAdapter);
-		final HTTP http = new HTTP();
-		ListView lv = getListView();
+
 		lv.setTextFilterEnabled(true);
+		final HTTP http = new HTTP();
+	
 		lv.setOnItemClickListener(new OnItemClickListener()
 		{
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -105,16 +118,20 @@ public class SpeechAnswer extends ListActivity
 
 			}
 		});
+		
 
 	}
 
+
+	
+	
 	public void setupList(ArrayList<String> answer, String speechAnsw,
 			ArrayAdapter<String> listAdapter)
 	{
 		if (speechAnsw != null  && answer != null)
 		{
 			answer.clear();
-			answer.add("ASR: " + speechAnsw);
+			answer.add(speechAnsw);
 			setListAdapter(listAdapter);
 		}
 	}
