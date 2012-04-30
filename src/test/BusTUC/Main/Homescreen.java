@@ -136,7 +136,7 @@ public class Homescreen extends Activity
 											// closest stops.
 	public static HashMap<Integer, Integer> realTimeCodes;
 	public static ArrayList<BusStop> allStops;
-
+	public int newSpeechCounter = 0;
 	// Send sms, or query via net
 	boolean sms = false;
 	DatabaseHelper dbHelper;
@@ -349,72 +349,45 @@ public class Homescreen extends Activity
 
 	}
 
-	native byte[] encode(short[] inputData);
-
-	native void init();
-
-	static
-	{
-		System.loadLibrary("speex");
-	}
-
-	public void go()
-	{
-		File file = wav;
-		// short[] inputArray = new short[320];
-		// Write data to inputArray.
-		InputStream is;
-		try
-		{
-			is = new FileInputStream(file);
-
-			// Get the size of the file
-			long length = file.length();
-
-			if (length > Integer.MAX_VALUE)
-			{
-				// File is too large
-			}
-
-			// Create the byte array to hold the data
-			byte[] bytes = new byte[(int) length];
-
-			// Read in the bytes
-			int offset = 0;
-			int numRead = 0;
-			while (offset < bytes.length
-					&& (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0)
-			{
-				offset += numRead;
-			}
-
-			// Ensure all the bytes have been read in
-			if (offset < bytes.length)
-			{
-				throw new IOException("Could not completely read file "
-						+ file.getName());
-			}
-			// Close the input stream and return bytes
-			is.close();
-			short[] shorts = new short[bytes.length / 2];
-			// to turn bytes to shorts as either big endian or little endian.
-			ShortBuffer buf = ByteBuffer.wrap(bytes)
-					.order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(shorts);
-			System.out.println("SHORTS " + shorts.length);
-			init();
-			byte[] encodedBuffer = encode(shorts);
-			String path = sdCard.getAbsolutePath() + "/asr/GOGO.wav";
-
-			FileOutputStream fos = new FileOutputStream(new File(path));
-			fos.write(encodedBuffer);
-			fos.close();
-		} catch (Exception e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
+	/*
+	 * native byte[] encode(short[] inputData);
+	 * 
+	 * native void init();
+	 * 
+	 * static { System.loadLibrary("speex"); }
+	 * 
+	 * public void go() { File file = wav; // short[] inputArray = new
+	 * short[320]; // Write data to inputArray. InputStream is; try { is = new
+	 * FileInputStream(file);
+	 * 
+	 * // Get the size of the file long length = file.length();
+	 * 
+	 * if (length > Integer.MAX_VALUE) { // File is too large }
+	 * 
+	 * // Create the byte array to hold the data byte[] bytes = new byte[(int)
+	 * length];
+	 * 
+	 * // Read in the bytes int offset = 0; int numRead = 0; while (offset <
+	 * bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset))
+	 * >= 0) { offset += numRead; }
+	 * 
+	 * // Ensure all the bytes have been read in if (offset < bytes.length) {
+	 * throw new IOException("Could not completely read file " +
+	 * file.getName()); } // Close the input stream and return bytes is.close();
+	 * short[] shorts = new short[bytes.length / 2]; // to turn bytes to shorts
+	 * as either big endian or little endian. ShortBuffer buf =
+	 * ByteBuffer.wrap(bytes)
+	 * .order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(shorts);
+	 * System.out.println("SHORTS " + shorts.length); init(); byte[]
+	 * encodedBuffer = encode(shorts); String path = sdCard.getAbsolutePath() +
+	 * "/asr/GOGO.wav";
+	 * 
+	 * FileOutputStream fos = new FileOutputStream(new File(path));
+	 * fos.write(encodedBuffer); fos.close(); } catch (Exception e) { // TODO
+	 * Auto-generated catch block e.printStackTrace(); }
+	 * 
+	 * }
+	 */
 
 	public void adjustSettings()
 	{
@@ -727,7 +700,7 @@ public class Homescreen extends Activity
 		System.out.println("OnActivityResult()");
 		super.onActivityResult(requestCode, resultCode, data);
 		boolean change = false;
-		System.out.println("onactivityresult() " + resultCode);
+		System.out.println("fancyoracle " + fancyOracle);
 		if (resultCode == Activity.RESULT_OK)
 		{
 			Bundle extras = data.getExtras();
@@ -761,8 +734,20 @@ public class Homescreen extends Activity
 			System.out.println("New Speech: " + newSpeechQuery);
 			if (newSpeechQuery)
 			{
-				printLocCheck = false;
-				startVoiceRecognitionActivity();
+				newSpeechCounter++;
+				adjustSettings();
+				if (newSpeechCounter > 2)
+				{
+					newSpeechCounter = 0;
+					Toast.makeText(
+							context,
+							"Klarte ikke kjenne igjen hva du sa. \n Vennligst skriv inn isteden",
+							Toast.LENGTH_SHORT).show();
+				} else
+				{
+					printLocCheck = false;
+					startVoiceRecognitionActivity();
+				}
 			}
 			if (!newSpeechQuery)
 			{
@@ -774,6 +759,7 @@ public class Homescreen extends Activity
 					adjustSettings();
 					new OracleThread(context).execute();
 				}
+
 			}
 
 			/*
@@ -1654,7 +1640,7 @@ public class Homescreen extends Activity
 								e.printStackTrace();
 							}
 						}
-						go();
+						// go();
 						startActivityForResult(intent, REQUEST_CODE);
 						// context.startActivity(intent);
 						// new OracleThread(context).execute();
