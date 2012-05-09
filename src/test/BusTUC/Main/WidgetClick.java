@@ -89,13 +89,18 @@ public class WidgetClick extends Activity
 
 		ImageButton button = (ImageButton) findViewById(R.id.btnDone);
 		final HTTP http = new HTTP();
+		// final ArrayList<Thread> threadList = new ArrayList<Thread>();
+		final double[] coords = new double[2];
+		
+		// HAXX
+		
+		final int[] attemptCounter = new int[1];
 		button.setOnTouchListener(new OnTouchListener()
 		{
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event)
 			{
-
 				if (event.getAction() == MotionEvent.ACTION_DOWN)
 				{
 					startVoiceRecognitionActivity();
@@ -104,6 +109,8 @@ public class WidgetClick extends Activity
 				{
 					stopRecording = true;
 					ext.stop();
+					coords[0] = currentlocation.getLatitude();
+					coords[1] = currentlocation.getLongitude();
 					long first = System.nanoTime();
 					// DummyObj dummy = http.sendPost(filePath2);
 
@@ -118,6 +125,115 @@ public class WidgetClick extends Activity
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+					}
+
+					if (wav.exists())
+					{
+
+						mfccFile = new File(sdCard.getAbsolutePath()
+								+ "/asr/test.mfc");
+						MfccMaker mfcc = new MfccMaker(
+								config.getAbsolutePath(),
+								wav.getAbsolutePath(), mfccFile
+										.getAbsolutePath());
+						mfcc.setupSphinx();
+						mfcc.produceFeatures();
+						DummyObj dummy = http.sendPost(
+								mfccFile.getAbsolutePath(), context, coords[0],
+								coords[1]);
+
+						final String speechAnswer = dummy.getAnswer();
+
+						AlertDialog.Builder alert2 = new AlertDialog.Builder(
+								context);
+						alert2.setMessage(speechAnswer);
+
+						alert2.setPositiveButton("Riktig",
+								new DialogInterface.OnClickListener()
+								{
+									@Override
+									public void onClick(DialogInterface dialog,
+											int whichButton)
+									{
+										AppWidgetManager appWidgetManager = AppWidgetManager
+												.getInstance(context);
+
+										RemoteViews remoteViews = new RemoteViews(
+												context.getPackageName(),
+												R.layout.widget_layout);
+
+										ComponentName thisWidget = new ComponentName(
+												context, Widget.class);
+
+										Intent answerScreen = new Intent(
+												context, Answer.class);
+										try
+										{
+											ArrayList<Route> routeSuggestions = Helpers
+													.runServer(speechAnswer,
+															currentlocation,
+															numStops, dist,
+															context);
+
+											answerScreen
+													.putParcelableArrayListExtra(
+															"test",
+															routeSuggestions);
+
+											answerScreen.putExtra("speech",
+													true);
+											Typeface clock = Typeface
+													.createFromAsset(
+															getApplicationContext()
+																	.getAssets(),
+															"dotmatrix.ttf");
+											System.out
+													.println("Broadcast sent back to activity");
+											appWidgetManager.updateAppWidget(
+													thisWidget, remoteViews);
+											context.startActivity(answerScreen);
+											finish();
+										} catch (Exception e)
+										{
+											e.printStackTrace();
+										}
+
+									}
+								});
+						alert2.setNegativeButton("Feil",
+								new DialogInterface.OnClickListener()
+								{
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int whichButton)
+									{
+										attemptCounter[0]++; 
+										System.out.println("ATTEPT: " + attemptCounter[0]);
+										if (attemptCounter[0] <= 3)
+										{
+											http.blackList(coords[0],
+													coords[1], speechAnswer,
+													context);
+
+											Toast.makeText(context,
+													"Prøv på nytt",
+													Toast.LENGTH_SHORT).show();
+										}
+										else
+										{
+											Toast.makeText(context,
+													"Klarte ikke å finne noe, starter TABuss",
+													Toast.LENGTH_SHORT).show();
+											attemptCounter[0] = 0;
+											Intent intent = new Intent(context,Homescreen.class);
+											context.startActivity(intent);
+										}
+									}
+								}); 
+
+						alert2.show();
+
 					}
 				}
 				return false;
@@ -194,11 +310,7 @@ public class WidgetClick extends Activity
 
 	public void startVoiceRecognitionActivity()
 	{
-		final HTTP http = new HTTP();
-		// final ArrayList<Thread> threadList = new ArrayList<Thread>();
-		final double[] coords = new double[2];
-		coords[0] = currentlocation.getLatitude();
-		coords[1] = currentlocation.getLongitude();
+
 		/*
 		 * AlertDialog.Builder alert = new AlertDialog.Builder(this); // First
 		 * 
@@ -240,108 +352,15 @@ public class WidgetClick extends Activity
 					ext.record();
 				}
 				// If file has been created, perform feature extraction
-				if (wav.exists())
-				{
 
-					mfccFile = new File(sdCard.getAbsolutePath()
-							+ "/asr/test.mfc");
-					MfccMaker mfcc = new MfccMaker(config.getAbsolutePath(),
-							wav.getAbsolutePath(), mfccFile.getAbsolutePath());
-					mfcc.setupSphinx();
-					mfcc.produceFeatures();
-					DummyObj dummy = http.sendPost(mfccFile.getAbsolutePath(),
-							context, coords[0], coords[1]);
-
-					String speechAnswer = dummy.getAnswer();
-
-					AppWidgetManager appWidgetManager = AppWidgetManager
-							.getInstance(context);
-
-					RemoteViews remoteViews = new RemoteViews(context
-							.getPackageName(), R.layout.widget_layout);
-
-					ComponentName thisWidget = new ComponentName(context,
-							Widget.class);
-					/*
-					 * System.out.println(speechAnswer + "  " + currentlocation
-					 * + "  " + numStops + "   " + dist + "  " + context);
-					 * ArrayList<Route> routeSuggestions = Helpers.runServer(
-					 * speechAnswer, currentlocation, numStops, dist, context);
-					 * System.out.println("RUNSERVER: " +
-					 * routeSuggestions.size()); Intent answerScreen = new
-					 * Intent(context, Answer.class);
-					 * answerScreen.putParcelableArrayListExtra("test",
-					 * routeSuggestions); answerScreen.putExtra("speech", true);
-					 */
-					// notifyMessage(answerScreen, "Ruteforslag tilgjengelig");
-
-					/*
-					 * Intent intent = new Intent(context, Widget.class);
-					 * Widget.foo = speechAnswer;
-					 * intent.setAction(Widget.ACTION_WIDGET_RECEIVER);
-					 * intent.putExtra("speechAnswer", speechAnswer);
-					 * intent.putExtra("location", currentlocation);
-					 * intent.putExtra("numStops", numStops);
-					 * intent.putExtra("dist", dist);
-					 * context.sendBroadcast(intent); SharedPreferences.Editor
-					 * editor = preferences.edit();
-					 * editor.putString("speechAnswer", speechAnswer); // value
-					 * to store editor.putString("lat",
-					 * ""+currentlocation.getLatitude());
-					 * editor.putString("lon",
-					 * ""+currentlocation.getLongitude());
-					 * editor.putInt("numStops", numStops);
-					 * editor.putInt("dist", +dist);
-					 * 
-					 * 
-					 * 
-					 * editor.commit();
-					 */
-					Intent answerScreen = new Intent(context, Answer.class);
-					try
-					{
-						ArrayList<Route> routeSuggestions = Helpers.runServer(
-								speechAnswer, currentlocation, numStops, dist,
-								context);
-
-						answerScreen.putParcelableArrayListExtra("test",
-								routeSuggestions);
-
-						answerScreen.putExtra("speech", true);
-						Typeface clock = Typeface.createFromAsset(
-								getApplicationContext().getAssets(),
-								"dotmatrix.ttf");
-						// Singleton sing = new Singleton(speechAnswer,
-						// currentlocation, numStops,dist);
-						
-						// Bitmap foo = Widget.buildUpdate(speechAnswer, clock);
-		
-						
-					//	Bitmap foo = Widget.buildUpdate(answ, clock);
-						//remoteViews.setImageViewBitmap(R.id.text, foo);
-						// notifyMessage(answerScreen,
-						// "Ruteforslag til "+speechAnswer +
-						// " er tilgjengelig");
-						System.out.println("Broadcast sent back to activity");
-						appWidgetManager.updateAppWidget(thisWidget,
-								remoteViews);
-						context.startActivity(answerScreen);
-						finish();
-					} catch (Exception e)
-					{
-						e.printStackTrace();
-					}
-					// intent.putExtra("coords", coords);
-
-				}
 				ext.reset();
 
 			}
 
 		});
+
 		speechThread.start();
 		threadList.add(speechThread);
-
 	}
 
 	public static ArrayList<Route> run(Context context)

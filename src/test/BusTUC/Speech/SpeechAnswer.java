@@ -62,7 +62,7 @@ public class SpeechAnswer extends ListActivity
 					int position, long id)
 			{
 				// Get the user's coordinates from the Homescreen activity
-			//	final double[] coords = extras.getDoubleArray("coords");
+				final double[] coords = extras.getDoubleArray("coords");
 				//System.out.println("POS: " + position + " sAnsw: " + speechAnsw + " coords: " + coords);
 				if (position == 0 && speechAnsw != null)// && coords != null)
 				{
@@ -93,6 +93,7 @@ public class SpeechAnswer extends ListActivity
 								public void onClick(DialogInterface dialog,
 										int whichButton)
 								{
+									http.blackList(coords[0], coords[1], speechAnsw, context);
 									Intent intent = new Intent(context, Homescreen.class);
 									intent.putExtra("newSpeechQuery", true);
 									setResult(Activity.RESULT_OK, intent);

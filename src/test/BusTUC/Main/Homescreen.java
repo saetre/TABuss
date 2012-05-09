@@ -1683,7 +1683,7 @@ public class Homescreen extends Activity
 
 						String speechAnswer = dummy.getAnswer();
 						intent.putExtra("speech", speechAnswer);
-						// intent.putExtra("coords", coords);
+						intent.putExtra("coords", coords);
 
 					} else
 					{
@@ -1691,7 +1691,7 @@ public class Homescreen extends Activity
 								context, coords[0], coords[1]);
 						String speechAnswer = dummy.getAnswer();
 						intent.putExtra("speech", speechAnswer);
-						// intent.putExtra("coords", coords);
+						 intent.putExtra("coords", coords);
 					}
 				}
 				ext.reset();
