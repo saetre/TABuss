@@ -1,34 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/full_widget" android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	    android:orientation="horizontal"
-	
-	    android:layout_margin="10dp"
-	
-	android:background="@android:color/black" >
-	<Button android:id = "@+id/button"
-	android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="somebutton"/>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:background="@drawable/background3"
+  android:padding="12dp">
+<LinearLayout  
+	android:id="@+id/full_widget" android:layout_width="fill_parent"
+	android:layout_height="fill_parent"  android:orientation="horizontal">
 
-	<ImageView android:id="@+id/text" 
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" 
-		android:adjustViewBounds="true"
-		android:scaleType="fitXY" 
-		android:layout_alignParentLeft="true"
-		android:layout_toRightOf="@id/button" 
-		        android:padding="10dp"
+
+	<ImageButton android:id="@+id/button" android:layout_width="40dp"
+		android:layout_height="40dp" 
+		android:background="@drawable/busicon"
 		
-		android:layout_centerHorizontal="true"
-		android:layout_weight="1"
-		android:minWidth = "600dp"
-		android:maxWidth="900dp" android:minHeight="100dp" />
-	<!-- <TextView android:id="@+id/label" android:layout_width="match_parent" 
-		android:layout_height="wrap_content" android:layout_toRightOf="@id/logo" 
-		android:textStyle="bold" android:textColor="@android:color/black" android:textSize="16dp" 
-		android:padding="3dp" /> -->
+		/>
+
+		<ImageView android:id="@+id/text" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:adjustViewBounds="true"
+			android:scaleType="fitStart" android:layout_alignParentLeft="true"
+			android:layout_toRightOf ="@id/button"
+			 
+/>
+		<!-- <TextView android:id="@+id/label" android:layout_width="match_parent" 
+			android:layout_height="wrap_content" android:layout_toRightOf="@id/logo" 
+			android:textStyle="bold" android:textColor="@android:color/black" android:textSize="16dp" 
+			android:padding="3dp" /> -->
 
 </LinearLayout>
+</FrameLayout>

@@ -22,26 +22,14 @@ package test.BusTUC.Main;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
-/*import org.ispeech.SpeechSynthesis;
- import org.ispeech.SpeechSynthesisEvent;
- import org.ispeech.error.BusyException;
- import org.ispeech.error.InvalidApiKeyException;
- import org.ispeech.error.NoNetworkException;
- */
 import test.BusTUC.R;
-import test.BusTUC.Favourites.Favourite;
 import test.BusTUC.Favourites.SDCard;
-import test.BusTUC.Main.Homescreen.MapThread;
 import test.BusTUC.Speech.HTTP;
 import test.BusTUC.Stops.BusSuggestion;
-import test.BusTUC.Stops.ClosestStopOnMap;
-import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -49,16 +37,11 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -88,7 +71,7 @@ public class Answer extends ListActivity
 	private String sms;
 	// SpeechSynthesis synthesis;
 	private String answerText = "";
-
+	private boolean speech = false;
 	public Answer()
 	{
 
@@ -112,7 +95,7 @@ public class Answer extends ListActivity
 			value = extras.getParcelableArrayList("test");
 			textContent = extras.getString("text");
 			sms = extras.getString("sms");
-
+			speech = extras.getBoolean("speech");
 			// Parse extracted into answer
 
 			if (value != null)
@@ -181,7 +164,7 @@ public class Answer extends ListActivity
 	protected void onListItemClick(ListView l, View v, int position, long id)
 	{
 		super.onListItemClick(l, v, position, id);
-		if (!standardOracle)
+		if (!standardOracle && !speech)
 		{
 			o = this.getListAdapter().getItem(position);
 			System.out.println("TRYKKET PÅ POSISJON: " + position);

@@ -68,9 +68,9 @@ public class SpeechAnswer extends ListActivity
 				{
 					AlertDialog.Builder alert2 = new AlertDialog.Builder(
 							context);
-					alert2.setMessage("U cool?");
+					alert2.setMessage("Riktig forslag?");
 
-					alert2.setPositiveButton("Yeah boy!",
+					alert2.setPositiveButton("Ja",
 							new DialogInterface.OnClickListener()
 							{
 								@Override
@@ -85,7 +85,7 @@ public class SpeechAnswer extends ListActivity
 									finish();
 								}
 							});
-					alert2.setNegativeButton("Hell no!",
+					alert2.setNegativeButton("Nei",
 							new DialogInterface.OnClickListener()
 							{
 

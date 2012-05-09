@@ -21,24 +21,13 @@
 
 package test.BusTUC.Main;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.URL;
-import java.net.URLEncoder;
-
-import java.text.DecimalFormat;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -46,27 +35,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.lang.Thread;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import test.BusTUC.Calc.Calculate;
-import test.BusTUC.Database.Query;
 import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.Queries.Browser;
-import test.BusTUC.Stops.BusDeparture;
 import test.BusTUC.Stops.BusStop;
 import test.BusTUC.Stops.BusSuggestion;
 import test.BusTUC.Stops.ClosestStopOnMap;
-import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -342,6 +320,55 @@ public class Helpers
 			long time = System.nanoTime();
 			String html_page = k_browser.getRequestServer(input, false,
 					location, numStops, dist, context);
+			// No internet connection
+			if (html_page == null)
+			{
+				ArrayList<Route> temp = new ArrayList<Route>();
+				temp.add(new Route());
+				temp.get(0).setBusStopName("Nettilgang");
+				return temp;
+			}
+			long newTime = System.nanoTime() - time;
+			System.out.println("TIME ORACLEREQUEST: " + newTime / 1000000000.0);
+			Calculate calculator = new Calculate();
+
+			// Create routes based on jsonSubString
+			Route[] routes = createJSONServer(html_page.toString(), calculator,
+					input);
+			if (routes != null)
+			{
+				calculator.printOutRoutes("BEFORE", routes, false);
+				ArrayList<Route> returnRoutes = new ArrayList<Route>();
+				for (int i = 0; i < routes.length; i++)
+				{
+					returnRoutes.add(routes[i]);
+				}
+				return returnRoutes;
+			} else
+				return null;
+		}
+		// }
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+	
+	
+	public static ArrayList<Route> runServer2(String input,
+			double lat,double lon, int numStops, int dist, Context context)
+	{
+		Route[] finalRoutes;
+		// Perform action on clicks
+
+		try
+		{
+			Browser k_browser = new Browser();
+			long time = System.nanoTime();
+			String html_page = k_browser.getRequestServer2(input, false,
+					lat, lon, numStops, dist, context);
 			// No internet connection
 			if (html_page == null)
 			{

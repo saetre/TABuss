@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import test.BusTUC.R;
+import test.BusTUC.Stops.BusDeparture;
+import test.BusTUC.Stops.ClosestStopOnMap;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -38,10 +41,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import test.BusTUC.R;
-import test.BusTUC.Main.Homescreen.OracleThread;
-import test.BusTUC.Stops.BusDeparture;
-import test.BusTUC.Stops.ClosestStopOnMap;
 
 public class RealTimeList extends ListActivity
 {

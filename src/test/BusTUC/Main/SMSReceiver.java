@@ -19,18 +19,11 @@
 
 package test.BusTUC.Main;
 
-import java.util.ArrayList;
-
-import test.BusTUC.Favourites.SDCard;
-import android.os.Bundle;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.telephony.SmsMessage;
-import android.widget.EditText;
-import android.widget.Toast;
 
 public class SMSReceiver extends BroadcastReceiver
 {

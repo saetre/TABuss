@@ -8,7 +8,7 @@
         android:maxSdkVersion="10"
         android:minSdkVersion="8"
         android:targetSdkVersion="8" />
-
+ 
     <application
         android:icon="@drawable/icon"
         android:label="@string/app_name"
@@ -36,7 +36,8 @@
         <activity android:name=".Main.About" />
         <activity android:name=".Main.Settings" />
         <activity android:name=".Main.OtherBusstop" />
-        <activity android:name=".Speech.SpeechAnswer" />
+        <activity android:name=".Speech.SpeechAnswer" >
+        </activity>
 
         <receiver android:name=".Main.SMSReceiver" >
             <intent-filter >
@@ -59,14 +60,32 @@
         <receiver android:name=".Main.Widget" >
             <intent-filter >
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="test.BusTUC.Main.Widget.ACTION_WIDGET_RECEIVER" />
+                
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget" />
         </receiver>
-            <service android:enabled="true" android:name=".Main.MyService" />
-            
+
+        <activity
+            android:excludeFromRecents="true"
+            android:name=".Main.WidgetClick"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Dialog" >
+            <intent-filter >
+                
+                <action android:name="test.BusTUC.Main.Widget.ACTION_WIDGET_CONFIGURE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="test.BusTUC.Main.Widget.ACTION_WIDGET_RECEIVER" />
+            </intent-filter>
+
+            <!-- <service android:enabled="true" android:name=".Main.MyService" /> -->
+
+        </activity>
+        <!-- <service android:enabled="true" android:name=".Main.MyService" /> -->
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

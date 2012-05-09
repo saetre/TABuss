@@ -158,6 +158,65 @@ public class Browser
 		return html_string;
 	}
 
+	
+	public String getRequestServer2(String stop, Boolean formated,
+			double lat, double lon, int numStops, int dist, Context context)
+	{
+		String html_string = null;
+		HttpGet m_get = new HttpGet();
+		try
+		{
+			stop = URLEncoder.encode(stop, "UTF-8");
+		} catch (UnsupportedEncodingException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		// HttpPost m_post= new
+		// HttpPost("http://m.atb.no/xmlhttprequest.php?service=routeplannerOracle.getOracleAnswer&question=");
+		try
+		{
+			final TelephonyManager tm = (TelephonyManager) context
+					.getSystemService(Context.TELEPHONY_SERVICE);
+			String t_id = tm.getDeviceId();
+			String tmp = "TABuss";
+			String p_id = Secure.getString(context.getContentResolver(),
+					Secure.ANDROID_ID);
+			m_get.setURI(new URI(
+					"http://busstjener.idi.ntnu.no/MultiBRISserver/MBServlet?dest="
+							+ stop + "&lat=" + lat
+							+ "&long=" + lon
+							+ "&type=json&nStops=" + numStops + "&maxWalkDist="
+							+ dist + "&key=" + tmp + p_id));
+			HttpResponse m_response = m_client.execute(m_get);
+			// Request
+			html_string = httpF.requestServer(m_response);
+			// Will fail if server is busy or down
+			Log.v("html_string", "Returned html: " + html_string);
+			// Long newTime = System.nanoTime() - time;
+			// System.out.println("TIMEEEEEEEEEEEEEEEEEEEEE: " +
+			// newTime/1000000000.0);
+		} catch (ClientProtocolException e)
+		{
+			Log.v("CLIENTPROTOCOL EX", "e:" + e.toString());
+		} catch (IOException e)
+		{
+			Log.v("IO EX", "e:" + e.toString());
+
+		} catch (NullPointerException e)
+		{
+			Log.v("NULL", "NullPointer");
+		} catch (StringIndexOutOfBoundsException e)
+		{
+			Log.v("StringIndexOutOfBounds", "Exception");
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return html_string;
+	}
+
 	public StringBuffer getRequestStandard(String buf)
 	{
 		StringBuffer html_string = new StringBuffer();
