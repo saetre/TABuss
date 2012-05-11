@@ -406,7 +406,7 @@ public class Homescreen extends Activity
 	private void queryOrSMS()
 	{
 
-		AlertDialog.Builder alert = new AlertDialog.Builder(context);
+		/*AlertDialog.Builder alert = new AlertDialog.Builder(context);
 
 		// First input dialog
 		alert.setTitle("Velg kjøring. SMS koster 1 kr");
@@ -433,7 +433,13 @@ public class Homescreen extends Activity
 			}
 		});
 
-		alert.show();
+		alert.show();*/
+		
+		
+		// Removed SMS-func for now
+		
+		sms = false;
+		new OracleThread(context).execute();
 	}
 
 	private void loadDictionaries()
