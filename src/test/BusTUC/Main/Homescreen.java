@@ -128,7 +128,7 @@ public class Homescreen extends Activity
 	GPS k_gps; // Object of the GetGPS class.
 
 	LocationManager locationManager; // Location Manager
-	String provider; // Provider
+	String provider = ""; // Provider
 	LocationListener locationListener;
 
 	String[] busStop = new String[numButtons];
