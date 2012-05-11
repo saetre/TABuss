@@ -19,22 +19,10 @@
 
 package test.BusTUC.Main;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,18 +30,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.omg.IOP.Encoding;
-import test.BusTUC.Database.DatabaseHelper;
-
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapController;
 import test.BusTUC.R;
+import test.BusTUC.Database.DatabaseHelper;
 import test.BusTUC.Database.Query;
 import test.BusTUC.Favourites.Favourite;
 import test.BusTUC.Favourites.SDCard;
 import test.BusTUC.GPS.GPS;
-import test.BusTUC.Queries.Browser;
-import test.BusTUC.Speech.CBRAnswer;
 import test.BusTUC.Speech.DummyObj;
 import test.BusTUC.Speech.ExtAudioRecorder;
 import test.BusTUC.Speech.HTTP;
@@ -61,17 +43,14 @@ import test.BusTUC.Speech.MfccMaker;
 import test.BusTUC.Speech.SpeechAnswer;
 import test.BusTUC.Stops.BusStop;
 import test.BusTUC.Stops.ClosestStopOnMap;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
-import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Criteria;
@@ -83,7 +62,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -96,20 +74,22 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.View.OnLongClickListener;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapController;
 
 public class Homescreen extends Activity
 {
@@ -297,6 +277,7 @@ public class Homescreen extends Activity
 			@Override
 			public void onClick(View v)
 			{
+				System.out.println("goButton.onClickListener()");
 				queryOrSMS();
 			}
 		});
@@ -321,6 +302,7 @@ public class Homescreen extends Activity
 								textView.setText(whereTo);
 								Toast.makeText(context, "I'm awesome!",
 										Toast.LENGTH_SHORT).show();
+								System.out.println("amazeButton.onClickListener()");
 								queryOrSMS();
 							} else
 							{
@@ -346,7 +328,8 @@ public class Homescreen extends Activity
 		});
 
 		createButtonListeners();
-
+		Bundle extras = getIntent().getExtras();
+		
 	}
 
 	/*
@@ -547,6 +530,7 @@ public class Homescreen extends Activity
 				@Override
 				public void onClick(View v)
 				{
+					System.out.println("createButtonListeners()");
 					textView.setText(shortcutButtons.getText());
 					queryOrSMS();
 
@@ -1405,7 +1389,7 @@ public class Homescreen extends Activity
 		// editText.setEnabled(true);
 		textView.setEnabled(true);
 		goButton.setEnabled(true);
-
+	
 		try
 		{
 			// Sets the restrictions on the location update. If no
@@ -1705,7 +1689,7 @@ public class Homescreen extends Activity
 
 						String speechAnswer = dummy.getAnswer();
 						intent.putExtra("speech", speechAnswer);
-						// intent.putExtra("coords", coords);
+						intent.putExtra("coords", coords);
 
 					} else
 					{
@@ -1713,7 +1697,7 @@ public class Homescreen extends Activity
 								context, coords[0], coords[1]);
 						String speechAnswer = dummy.getAnswer();
 						intent.putExtra("speech", speechAnswer);
-						// intent.putExtra("coords", coords);
+						 intent.putExtra("coords", coords);
 					}
 				}
 				ext.reset();

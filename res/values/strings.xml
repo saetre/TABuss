@@ -12,6 +12,7 @@
      <string name= "speech">Tale</string>
      <string name= "tts">Tale</string>
     <string name="splash_screen">SplashScreen</string>
+    <string name="title">Trykk knapp for å snakke</string>
     <style name="ButtonText">
     <item name="android:layout_width">fill_parent</item>
     <item name="android:layout_height">wrap_content</item>

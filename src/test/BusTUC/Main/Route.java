@@ -19,18 +19,12 @@
 
 package test.BusTUC.Main;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-
-import com.google.android.maps.GeoPoint;
-
-import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import test.BusTUC.R;
+import com.google.android.maps.GeoPoint;
 
-// Parcelable will assure Route objects can be sent as extra, to
+// Parcelable will assure Route objects can be sent as extra to
 // other activities. Can be seen as marshalling
 public class Route implements Comparable<Route>, Parcelable
 {

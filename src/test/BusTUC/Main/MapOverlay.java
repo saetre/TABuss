@@ -22,19 +22,13 @@ package test.BusTUC.Main;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import test.BusTUC.Favourites.SDCard;
-import test.BusTUC.Queries.Browser;
-import test.BusTUC.Stops.BusDeparture;
 import test.BusTUC.Stops.ClosestStopOnMap;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;

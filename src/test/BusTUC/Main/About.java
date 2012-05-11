@@ -21,8 +21,6 @@ package test.BusTUC.Main;
 
 
 import test.BusTUC.R;
-
-
 import android.app.Activity;
 import android.os.Bundle;
 

@@ -20,7 +20,6 @@
 package test.BusTUC.Main;
 import test.BusTUC.R;
 import test.BusTUC.Database.DatabaseHelper;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +30,6 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;

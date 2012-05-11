@@ -62,15 +62,15 @@ public class SpeechAnswer extends ListActivity
 					int position, long id)
 			{
 				// Get the user's coordinates from the Homescreen activity
-			//	final double[] coords = extras.getDoubleArray("coords");
+				final double[] coords = extras.getDoubleArray("coords");
 				//System.out.println("POS: " + position + " sAnsw: " + speechAnsw + " coords: " + coords);
 				if (position == 0 && speechAnsw != null)// && coords != null)
 				{
 					AlertDialog.Builder alert2 = new AlertDialog.Builder(
 							context);
-					alert2.setMessage("U cool?");
+					alert2.setMessage("Riktig forslag?");
 
-					alert2.setPositiveButton("Yeah boy!",
+					alert2.setPositiveButton("Ja",
 							new DialogInterface.OnClickListener()
 							{
 								@Override
@@ -85,7 +85,7 @@ public class SpeechAnswer extends ListActivity
 									finish();
 								}
 							});
-					alert2.setNegativeButton("Hell no!",
+					alert2.setNegativeButton("Nei",
 							new DialogInterface.OnClickListener()
 							{
 
@@ -93,6 +93,7 @@ public class SpeechAnswer extends ListActivity
 								public void onClick(DialogInterface dialog,
 										int whichButton)
 								{
+									http.blackList(coords[0], coords[1], speechAnsw, context);
 									Intent intent = new Intent(context, Homescreen.class);
 									intent.putExtra("newSpeechQuery", true);
 									setResult(Activity.RESULT_OK, intent);

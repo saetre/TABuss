@@ -21,13 +21,13 @@
 
 package test.BusTUC.Main;
 
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -43,17 +43,6 @@ import test.BusTUC.Path.RouteOverlay;
 import test.BusTUC.Queries.Browser;
 import test.BusTUC.Stops.BusStop;
 import test.BusTUC.Stops.ClosestStopOnMap;
-
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapController;
-import com.google.android.maps.MapView;
-import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.Overlay;
-import com.google.android.maps.MapView.LayoutParams;
-import com.google.android.maps.OverlayItem;
-import com.google.android.maps.Projection;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -72,6 +61,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapController;
+import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.Overlay;
+import com.google.android.maps.Projection;
 
 public class BusTUCApp extends MapActivity
 {
