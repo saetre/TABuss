@@ -128,7 +128,7 @@ public class Homescreen extends Activity
 	GPS k_gps; // Object of the GetGPS class.
 
 	LocationManager locationManager; // Location Manager
-	String provider; // Provider
+	String provider = ""; // Provider
 	LocationListener locationListener;
 
 	String[] busStop = new String[numButtons];
@@ -389,7 +389,7 @@ public class Homescreen extends Activity
 	private void queryOrSMS()
 	{
 
-		AlertDialog.Builder alert = new AlertDialog.Builder(context);
+		/*AlertDialog.Builder alert = new AlertDialog.Builder(context);
 
 		// First input dialog
 		alert.setTitle("Velg kjøring. SMS koster 1 kr");
@@ -416,7 +416,13 @@ public class Homescreen extends Activity
 			}
 		});
 
-		alert.show();
+		alert.show();*/
+		
+		
+		// Removed SMS-func for now
+		
+		sms = false;
+		new OracleThread(context).execute();
 	}
 
 	private void loadDictionaries()
