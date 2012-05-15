@@ -210,7 +210,7 @@ public class WidgetClick extends Activity
 									{
 										attemptCounter[0]++; 
 										System.out.println("ATTEPT: " + attemptCounter[0]);
-										if (attemptCounter[0] > 2)
+										if (attemptCounter[0] < 2)
 										{
 											http.blackList(coords[0],
 													coords[1], speechAnswer,
