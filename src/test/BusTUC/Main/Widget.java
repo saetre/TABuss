@@ -45,23 +45,7 @@ public class Widget extends AppWidgetProvider
 	public static String ACTION_WIDGET_CONFIGURE = "ConfigureWidget";
 	public static String ACTION_WIDGET_RECEIVER = "ActionReceiverWidget";
 	public static String ACTION_WIDGET_REFRESH = "ActionReceiverRefresh";
-	public static Context c = null;
-	// Fail
-	Location loc = null;
-	String speechAnswer = "";
-	int numStops = 0;
-	int dist = 0;
-	public static String foo;
-
-	public Singleton sing = null;
-
-	/*
-	 * @Override public void onReceive(Context context, Intent intent) { // TODO
-	 * Auto-generated method stub super.onReceive(context, intent);
-	 * 
-	 * if (MY_WIDGET_UPDATE.equals(intent.getAction())) {
-	 * Toast.makeText(context, "onReceiver()", Toast.LENGTH_LONG).show(); } }
-	 */
+	
 
 	@Override
 	public void onReceive(Context context, Intent intent)
@@ -83,51 +67,7 @@ public class Widget extends AppWidgetProvider
 		} else
 		{
 
-			// Run query
-			if (intent.getAction().equals(ACTION_WIDGET_RECEIVER))
-			{
-				/*System.out.println("RECEIVE");
-				Bundle extras = intent.getExtras();
-				if (extras.get("speechAnswer") != null )
-				{
-					System.out.println("SETTINGS" );
-					loc = (Location) extras.get("location");
-					speechAnswer = extras.getString("speechAnswer");
-					numStops = extras.getInt("numStops");
-					dist = extras.getInt("dist");
-					//System.out.println("SETTINGS2: " + loc + " " + speechAnswer + "  " + numStops  );
-				}
-				//System.out.println("LOC: " + loc + " numStops " + numStops
-					//	+ " dist " + dist + " answ " + speechAnswer + " foo " + foo);
-				//if (extras.getString("which").equals("answer") && loc != null)
-				//{
-					//System.out.println("LOC: " + loc + " numStops " + numStops
-						//	+ " dist " + dist + " answ " + speechAnswer);
-
-					Intent answer = new Intent(context, Answer.class);
-					ArrayList<Route> routeSuggestions = WidgetClick.run(context);
-					answer.putParcelableArrayListExtra("test", routeSuggestions);
-					answer.putExtra("speech", true);
-					//intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					//context.startActivity(answer);
-					
-					PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
-					 
-				//}
-				// Run speech input
-				/*
-				 * else if (extras.getString("which").equals("speech")) {
-				 * 
-				 * System.out.println("LATEST: " + latestAnswer); PendingIntent
-				 * contentIntent = PendingIntent.getActivity( context, 0,
-				 * intent, 0); // Toast.makeText(context, "Pressed button",
-				 * Toast.LENGTH_SHORT) // .show();
-				 * 
-				 * }
-				 */
-
-			}
-
+			
 			super.onReceive(context, intent);
 
 		}
@@ -165,32 +105,7 @@ public class Widget extends AppWidgetProvider
 
 	}
 
-	/*
-	 * @Override public void onUpdate(Context context, AppWidgetManager
-	 * appWidgetManager, int[] appWidgetIds) {
-	 * 
-	 * System.out.println("UPDATE WIDGET"); final AlarmManager m =
-	 * (AlarmManager) context .getSystemService(Context.ALARM_SERVICE); final
-	 * Calendar TIME = Calendar.getInstance(); TIME.set(Calendar.MINUTE, 0);
-	 * TIME.set(Calendar.SECOND, 0); TIME.set(Calendar.MILLISECOND, 0);
-	 * 
-	 * final Intent i = new Intent(context, MyService.class);
-	 * 
-	 * if (service == null) { service = PendingIntent.getService(context, 0, i,
-	 * PendingIntent.FLAG_CANCEL_CURRENT); }
-	 * 
-	 * m.setRepeating(AlarmManager.RTC, TIME.getTime().getTime(), 1000 * 60,
-	 * service);
-	 * 
-	 * }
-	 */
 
-	/*
-	 * @Override public void onDisabled(Context context) { final AlarmManager m
-	 * = (AlarmManager) context .getSystemService(Context.ALARM_SERVICE);
-	 * 
-	 * m.cancel(service); }
-	 */
 
 	public static Bitmap buildUpdate(String input, Typeface clock)
 	{
@@ -230,33 +145,5 @@ public class Widget extends AppWidgetProvider
 		return myBitmap;
 	}
 
-	/*
-	 * public static void updateWidgetContent(Context context, AppWidgetManager
-	 * appWidgetManager) {
-	 * 
-	 * RemoteViews remoteView = new RemoteViews(context.getPackageName(),
-	 * R.layout.widget_layout);
-	 * 
-	 * Typeface clock = Typeface.createFromAsset(context.getAssets(),
-	 * "dotmatrix.ttf"); String input = "Einar Tambarskjelves gate";
-	 * 
-	 * Bitmap foo = Widget.buildUpdate(input, clock); //
-	 * remoteView.setBitmap(R.id.text, "setBackgroundDrawable", foo); //
-	 * remoteView.setTextViewText(R.id.label, "Test");
-	 * remoteView.setImageViewBitmap(R.id.text, foo);
-	 * 
-	 * // remoteView.setTextViewText(R.id.label, "GLØSHAUGEN"); Intent i = new
-	 * Intent(context, Widget.class); PendingIntent pi =
-	 * PendingIntent.getBroadcast(context, 0, i, 0);
-	 * remoteView.setOnClickPendingIntent(R.id.button, pi);
-	 * remoteView.setOnClickPendingIntent(R.id.text, pi); // Push update for
-	 * this widget to the home screen ComponentName thisWidget = new
-	 * ComponentName(context, Widget.class);
-	 * 
-	 * AppWidgetManager manager = AppWidgetManager.getInstance(context);
-	 * manager.updateAppWidget(thisWidget, remoteView);
-	 * 
-	 * }
-	 */
 
 }

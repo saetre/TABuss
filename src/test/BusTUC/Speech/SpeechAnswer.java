@@ -98,19 +98,9 @@ public class SpeechAnswer extends ListActivity
 									intent.putExtra("newSpeechQuery", true);
 									setResult(Activity.RESULT_OK, intent);
 								//	context.startActivity(intent);
-									finish();
 									
-									// Black list unwanted suggestion
-								/*CBRAnswer newAnswer = blackList(coords[0],
-											coords[1], context, http);
-									if (newAnswer != null)
-									{
-										// Update list
-										listAdapter.clear();
-										setupList(answer, speechAnsw,
-												newAnswer, listAdapter);
-										listAdapter.notifyDataSetChanged();
-									}*/
+									finish();
+
 								}
 							});
 
@@ -137,9 +127,9 @@ public class SpeechAnswer extends ListActivity
 		}
 	}
 
-	/*public CBRAnswer blackList(double lat, double lon, Context context,
+	public CBRAnswer blackList(String speechAnsw,double lat, double lon, Context context,
 			HTTP http)
 	{
-		return http.blackList(lat, lon, current.getAnswer(), context);
-	}*/
+		return http.blackList(lat, lon, speechAnsw, context);
+	}
 }
