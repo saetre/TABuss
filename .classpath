@@ -6,6 +6,6 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="httpcomponents-client-4.2-beta1-bin/httpcomponents-client-4.2-beta1/lib/httpmime-4.2-beta1.jar"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="C:/cygwin/home/satre/git/TABuss/libs/sphinx4.jar"/>
+	<classpathentry kind="lib" path="libs/sphinx4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
