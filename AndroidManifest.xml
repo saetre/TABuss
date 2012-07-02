@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="test.BusTUC"
-    android:versionCode="5"
-    android:versionName="1.0.4" >
+    package="org.ubicompforall.BusTUC"
+    android:versionCode="6"
+    android:versionName="1.1.0" >
 
-    <uses-sdk
-        android:maxSdkVersion="10"
-        android:minSdkVersion="8"
-        android:targetSdkVersion="8" />
+  <uses-sdk
+      android:minSdkVersion="8"
+      android:targetSdkVersion="8" />
  
-    <application
+  <application
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.NoTitleBar" >
@@ -60,7 +59,7 @@
         <receiver android:name=".Main.Widget" >
             <intent-filter >
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="test.BusTUC.Main.Widget.ACTION_WIDGET_RECEIVER" />
+                <action android:name="org.ubicompforall.BusTUC.Main.Widget.ACTION_WIDGET_RECEIVER" />
                 
             </intent-filter>
 
@@ -76,9 +75,9 @@
             android:theme="@android:style/Theme.Dialog" >
             <intent-filter >
                 
-                <action android:name="test.BusTUC.Main.Widget.ACTION_WIDGET_CONFIGURE" />
+                <action android:name="org.ubicompforall.BusTUC.Main.Widget.ACTION_WIDGET_CONFIGURE" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="test.BusTUC.Main.Widget.ACTION_WIDGET_RECEIVER" />
+                <action android:name="org.ubicompforall.BusTUC.Main.Widget.ACTION_WIDGET_RECEIVER" />
             </intent-filter>
 
             <!-- <service android:enabled="true" android:name=".Main.MyService" /> -->
@@ -86,17 +85,13 @@
         </activity>
         <!-- <service android:enabled="true" android:name=".Main.MyService" /> -->
 
-    </application>
+		<uses-permission android:name="android.permission.INTERNET" />
+		<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+		<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+		
+		<uses-permission android:name="android.permission.RECORD_AUDIO" />
+		<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+		<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <uses-permission android:name="android.permission.RECORD_AUDIO" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" >
-    </uses-permission>
-
+	</application>
 </manifest>
