@@ -45,7 +45,7 @@ public class SMSReceiver extends BroadcastReceiver
 		{
 			receivedMessage = smsMessage[0].getMessageBody();
 
-			Intent answer = new Intent(Homescreen.context, Answer.class);
+			Intent answer = new Intent(Homescreen.context, org.ubicompforall.BusTUC.Main.Answer.class);
 			answer.putExtra("sms", receivedMessage);
 			System.out.println("Started activity");
 			//intent.putExtra("test", buf);

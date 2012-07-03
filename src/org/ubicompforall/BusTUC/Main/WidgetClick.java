@@ -166,7 +166,7 @@ public class WidgetClick extends Activity
 												context, Widget.class);
 
 										Intent answerScreen = new Intent(
-												context, Answer.class);
+												context, org.ubicompforall.BusTUC.Main.Answer.class);
 										try
 										{
 											ArrayList<Route> routeSuggestions = Helpers

@@ -47,8 +47,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-public class Answer extends ListActivity
-{
+public class Answer extends ListActivity {
 
 	private ArrayAdapter<String> ad;
 	private ArrayList<Route> value;
@@ -73,25 +72,23 @@ public class Answer extends ListActivity
 	// SpeechSynthesis synthesis;
 	private String answerText = "";
 	private boolean speech = false;
-	public Answer()
-	{
+
+	public Answer() {
 
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		context = this;
 		String textContent;
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 		lv.setBackgroundColor(Color.parseColor("#FFFFFF"));
-		
+
 		Bundle extras = getIntent().getExtras();
 
-		if (extras != null)
-		{
+		if (extras != null) {
 
 			value = extras.getParcelableArrayList("test");
 			textContent = extras.getString("text");
@@ -106,37 +103,36 @@ public class Answer extends ListActivity
 
 				busSuggestions = new ArrayList<HashMap<String, Object>>();
 
-				for (BusSuggestion bs : sug)
-				{
+				for (BusSuggestion bs : sug) {
 
 					hm = new HashMap<String, Object>();
 					hm.put("busNumber", bs.line);
-					hm.put("origin", bs.origin + "("+bs.walkingDistance+"m)");
+					hm.put("origin", bs.origin + "(" + bs.walkingDistance
+							+ "m)");
 					hm.put("destination", bs.destination);
 					hm.put("departuretime", bs.departuretime);
 					hm.put("arrivaltime", bs.arrivaltime);
 					hm.put("transfer", bs.isTransfer);
 					busSuggestions.add(hm);
 					answerText += "Buss " + bs.line + " går fra " + bs.origin
-							+ " klokka "
-							+ bs.arrivaltime + ", og ankommer " + bs.destination + " klokka " + bs.departuretime + ".";
+							+ " klokka " + bs.arrivaltime + ", og ankommer "
+							+ bs.destination + " klokka " + bs.departuretime
+							+ ".";
 
 				}
 
 				setListAdapter(new SimpleAdapter(context, busSuggestions,
-						R.layout.suggestion, new String[]
-						{ "busNumber", "origin", "destination",
-								"departuretime", "arrivaltime", "transfer" },
-						new int[]
-						{ R.id.answerrouteNumber, R.id.answerorigin,
+						R.layout.suggestion, new String[] { "busNumber",
+								"origin", "destination", "departuretime",
+								"arrivaltime", "transfer" }, new int[] {
+								R.id.answerrouteNumber, R.id.answerorigin,
 								R.id.answerdestination, R.id.origintime,
 								R.id.arrivaltime, R.id.isTransfer }));
 				String ttsText = answerText;
-		
+
 			}
 
-			else if (textContent != null)
-			{
+			else if (textContent != null) {
 				standardOracle = true;
 				String[] tmp = new String[1];
 				tmp[0] = textContent;
@@ -144,8 +140,7 @@ public class Answer extends ListActivity
 				setListAdapter(ad);
 			}
 
-			else if (sms != null)
-			{
+			else if (sms != null) {
 				standardOracle = true;
 				String[] tmp = new String[1];
 				tmp[0] = sms;
@@ -153,8 +148,7 @@ public class Answer extends ListActivity
 				setListAdapter(ad);
 			}
 
-		} else
-		{
+		} else {
 			returnHome();
 			this.finish();
 		}
@@ -162,11 +156,9 @@ public class Answer extends ListActivity
 	}
 
 	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id)
-	{
+	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		if (!standardOracle && !speech)
-		{
+		if (!standardOracle && !speech) {
 			o = this.getListAdapter().getItem(position);
 			System.out.println("TRYKKET PÅ POSISJON: " + position);
 			positionInTable = position;
@@ -175,15 +167,13 @@ public class Answer extends ListActivity
 
 	}
 
-	public void returnHome()
-	{
+	public void returnHome() {
 		Intent intent = new Intent(context, Homescreen.class);
 		context.startActivity(intent);
 	}
 
 	@Override
-	public void onBackPressed()
-	{
+	public void onBackPressed() {
 		File sdCard = Environment.getExternalStorageDirectory();
 		File dir = new File(sdCard.getAbsolutePath() + "/tts");
 		File file = new File(dir, "tmp.wav");
@@ -193,26 +183,21 @@ public class Answer extends ListActivity
 
 	// Thread classes //
 	// Thread starting the oracle queries
-	class MapThread extends AsyncTask<Void, Void, Void>
-	{
+	class MapThread extends AsyncTask<Void, Void, Void> {
 		private Context context;
 		Intent intent;
 		ProgressDialog myDialog = null;
 
-		public MapThread(Context context)
-		{
+		public MapThread(Context context) {
 
 			this.context = context;
 		}
 
 		@Override
-		protected Void doInBackground(Void... params)
-		{
-			try
-			{
+		protected Void doInBackground(Void... params) {
+			try {
 				context.startActivity(intent);
-			} catch (Exception e)
-			{
+			} catch (Exception e) {
 				myDialog.dismiss();
 				ArrayList<String> err = new ArrayList<String>();
 				err.add(e.toString());
@@ -226,8 +211,7 @@ public class Answer extends ListActivity
 		}
 
 		@Override
-		protected void onPreExecute()
-		{
+		protected void onPreExecute() {
 			intent = new Intent(context, BusTUCApp.class);
 			intent.putParcelableArrayListExtra("test", value);
 			intent.putExtra("pos", positionInTable);
@@ -237,8 +221,7 @@ public class Answer extends ListActivity
 		}
 
 		@Override
-		protected void onPostExecute(Void unused)
-		{
+		protected void onPostExecute(Void unused) {
 			myDialog.dismiss();
 
 		}
@@ -246,20 +229,17 @@ public class Answer extends ListActivity
 
 	// Menu properties
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
+	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.layout.menu3, menu);
 		return true;
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
+	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 
-		switch (item.getItemId())
-		{
+		switch (item.getItemId()) {
 		case R.id.tts:
 			new ttsThread(context).execute();
 			return true;
@@ -270,9 +250,7 @@ public class Answer extends ListActivity
 		}
 	}
 
-
-	class ttsThread extends AsyncTask<Void, Void, Void>
-	{
+	class ttsThread extends AsyncTask<Void, Void, Void> {
 		private Context context;
 		Intent intent;
 		ProgressDialog myDialog = null;
@@ -282,21 +260,18 @@ public class Answer extends ListActivity
 		File dir = new File(sdCard.getAbsolutePath() + "/tts");
 		File file = new File(dir, "tmp.wav");
 
-		public ttsThread(Context context)
-		{
+		public ttsThread(Context context) {
 
 			this.context = context;
 		}
 
 		@Override
-		protected Void doInBackground(Void... params)
-		{
-			try
-			{
+		protected Void doInBackground(Void... params) {
+			try {
 				System.out.println("ANSWER: " + answerText);
-				if(!file.exists())http.sendGetTTS(answerText);
-			} catch (Exception e)
-			{
+				if (!file.exists())
+					http.sendGetTTS(answerText);
+			} catch (Exception e) {
 				myDialog.dismiss();
 				e.printStackTrace();
 			}
@@ -304,36 +279,30 @@ public class Answer extends ListActivity
 		}
 
 		@Override
-		protected void onPreExecute()
-		{
+		protected void onPreExecute() {
 			http = new HTTP();
 			myDialog = ProgressDialog.show(context, "Loading", "Vent nu!");
 
 		}
 
 		@Override
-		protected void onPostExecute(Void unused)
-		{
+		protected void onPostExecute(Void unused) {
 			myDialog.dismiss();
-			
-			try
-			{
+
+			try {
 				mp = new MediaPlayer();
 				if (mp.isPlaying())
 					mp.reset();
 				mp.setDataSource(file.getAbsolutePath());
 				mp.prepare();
-			} catch (Exception e)
-			{
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			mp.start();
-			mp.setOnCompletionListener(new OnCompletionListener()
-			{
+			mp.setOnCompletionListener(new OnCompletionListener() {
 
 				@Override
-				public void onCompletion(MediaPlayer mp)
-				{
+				public void onCompletion(MediaPlayer mp) {
 					// TODO Auto-generated method stub
 					mp.release();
 				}

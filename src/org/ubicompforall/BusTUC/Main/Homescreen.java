@@ -952,7 +952,7 @@ public class Homescreen extends Activity {
 							new Date().getDay()));
 					System.out.println("Starting activity");
 					Intent intent = new Intent(getApplicationContext(),
-							Answer.class);
+							org.ubicompforall.BusTUC.Main.Answer.class);
 					intent.putParcelableArrayListExtra("test", buf);
 
 					// intent.putExtra("test", buf);
@@ -962,7 +962,7 @@ public class Homescreen extends Activity {
 
 			else if (!fancyOracle && buffer != null && !sms) {
 				Intent intent = new Intent(getApplicationContext(),
-						Answer.class);
+						org.ubicompforall.BusTUC.Main.Answer.class);
 				intent.putExtra("text", buffer.toString());
 				System.out.println("Started activity");
 				// intent.putExtra("test", buf);
@@ -1105,8 +1105,9 @@ public class Homescreen extends Activity {
 					provider = locationManager.getBestProvider(new Criteria(),
 							true);
 				}
-				if (provider != null){
-					locationManager.requestLocationUpdates(provider, 500, 10, locationListener );
+				if (provider != null) {
+					locationManager.requestLocationUpdates(provider, 500, 10,
+							locationListener);
 				}
 				new LocationListenerThread(context).execute();
 			}
