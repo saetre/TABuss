@@ -3,7 +3,7 @@ package org.ubicompforall.BusTUC.Speech;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.ubicompforall.BusTUC.R;
+import test.BusTUC.R;
 import org.ubicompforall.BusTUC.Main.Homescreen;
 
 

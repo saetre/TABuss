@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
 
-import org.ubicompforall.BusTUC.R;
+import test.BusTUC.R;
 import org.ubicompforall.BusTUC.Main.Homescreen.LocationListenerThread;
 import org.ubicompforall.BusTUC.Speech.DummyObj;
 import org.ubicompforall.BusTUC.Speech.ExtAudioRecorder;

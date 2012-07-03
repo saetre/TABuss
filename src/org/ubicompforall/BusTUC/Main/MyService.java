@@ -1,6 +1,6 @@
 package org.ubicompforall.BusTUC.Main;
 
-import org.ubicompforall.BusTUC.R;
+import test.BusTUC.R;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;

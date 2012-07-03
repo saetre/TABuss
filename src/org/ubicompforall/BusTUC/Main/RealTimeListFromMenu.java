@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-import org.ubicompforall.BusTUC.R;
+import test.BusTUC.R;
 import org.ubicompforall.BusTUC.Queries.Browser;
 import org.ubicompforall.BusTUC.Stops.BusDeparture;
 import android.app.ListActivity;

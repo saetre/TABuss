@@ -26,7 +26,7 @@ import java.io.InputStreamReader;
 import org.apache.http.HttpResponse;
 
 import android.widget.Toast;
-import org.ubicompforall.BusTUC.R;
+import test.BusTUC.R;
 
 public class HttpFormat {
 	HttpFormat()

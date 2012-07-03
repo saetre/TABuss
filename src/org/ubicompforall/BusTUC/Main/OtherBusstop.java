@@ -22,7 +22,7 @@ package org.ubicompforall.BusTUC.Main;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.ubicompforall.BusTUC.R;
+import test.BusTUC.R;
 import org.ubicompforall.BusTUC.Database.DatabaseHelper;
 import org.ubicompforall.BusTUC.GPS.GPS;
 import org.ubicompforall.BusTUC.Stops.BusStop;

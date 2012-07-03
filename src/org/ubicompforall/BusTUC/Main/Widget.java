@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import org.ubicompforall.BusTUC.R;
+import test.BusTUC.R;
 import org.ubicompforall.BusTUC.Speech.DummyObj;
 import org.ubicompforall.BusTUC.Speech.HTTP;
 import org.ubicompforall.BusTUC.Speech.MfccMaker;

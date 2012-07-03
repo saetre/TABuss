@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import org.ubicompforall.BusTUC.R;
+import test.BusTUC.R;
 import org.ubicompforall.BusTUC.Stops.BusDeparture;
 import org.ubicompforall.BusTUC.Stops.ClosestStopOnMap;
 import android.app.ListActivity;

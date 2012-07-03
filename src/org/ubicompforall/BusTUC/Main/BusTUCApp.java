@@ -35,7 +35,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import org.ubicompforall.BusTUC.Main.Homescreen;
-import org.ubicompforall.BusTUC.R;
+import test.BusTUC.R;
 import org.ubicompforall.BusTUC.Favourites.SDCard;
 import org.ubicompforall.BusTUC.GPS.GPS;
 import org.ubicompforall.BusTUC.Path.NavigationDataSet;

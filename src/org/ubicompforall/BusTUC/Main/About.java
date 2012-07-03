@@ -20,7 +20,7 @@
 package org.ubicompforall.BusTUC.Main;
 
 
-import org.ubicompforall.BusTUC.R;
+import test.BusTUC.R;
 import android.app.Activity;
 import android.os.Bundle;
 

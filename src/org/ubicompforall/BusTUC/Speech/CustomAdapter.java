@@ -2,7 +2,7 @@ package org.ubicompforall.BusTUC.Speech;
 
 import java.util.ArrayList;
 
-import org.ubicompforall.BusTUC.R;
+import test.BusTUC.R;
 
 import android.content.Context;
 import android.graphics.Typeface;

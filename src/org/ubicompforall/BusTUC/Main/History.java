@@ -20,7 +20,7 @@
 package org.ubicompforall.BusTUC.Main;
 
 
-import org.ubicompforall.BusTUC.R;
+import test.BusTUC.R;
 import org.ubicompforall.BusTUC.Database.DatabaseHelper;
 import android.app.ListActivity;
 import android.database.Cursor;

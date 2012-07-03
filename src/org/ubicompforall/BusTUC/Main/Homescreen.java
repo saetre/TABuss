@@ -30,7 +30,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.ubicompforall.BusTUC.R;
 import org.ubicompforall.BusTUC.Database.DatabaseHelper;
 import org.ubicompforall.BusTUC.Database.Query;
 import org.ubicompforall.BusTUC.Favourites.Favourite;
@@ -43,6 +42,8 @@ import org.ubicompforall.BusTUC.Speech.MfccMaker;
 import org.ubicompforall.BusTUC.Speech.SpeechAnswer;
 import org.ubicompforall.BusTUC.Stops.BusStop;
 import org.ubicompforall.BusTUC.Stops.ClosestStopOnMap;
+
+import test.BusTUC.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -1026,7 +1027,7 @@ public class Homescreen extends Activity {
 		}
 	}
 
-	class StartUpThread extends AsyncTask<Void, Void, Void> {
+	public class StartUpThread extends AsyncTask<Void, Void, Void> {
 		private Context context;
 		Intent intent;
 		ProgressDialog myDialog = null;

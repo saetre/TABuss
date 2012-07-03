@@ -23,10 +23,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.ubicompforall.BusTUC.R;
 import org.ubicompforall.BusTUC.Favourites.SDCard;
 import org.ubicompforall.BusTUC.Speech.HTTP;
 import org.ubicompforall.BusTUC.Stops.BusSuggestion;
+
+import test.BusTUC.R;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;

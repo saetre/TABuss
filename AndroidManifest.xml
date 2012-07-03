@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.ubicompforall.BusTUC"
+    package="test.BusTUC"
     android:versionCode="7"
     android:versionName="1.1.0" >
 
@@ -25,28 +25,28 @@
         <activity
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
-            android:name=".Main.Homescreen" >
+            android:name="org.ubicompforall.BusTUC.Main.Homescreen" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Main.BusTUCApp" />
+        <activity android:name="org.ubicompforall.Main.BusTUCApp" />
         <activity
             android:configChanges="keyboardHidden|orientation"
-            android:name=".Main.RealTimeList" />
-        <activity android:name=".Main.RealTimeListFromMenu" />
-        <activity android:name=".Favourites.Favourite_Act" />
-        <activity android:name=".Main.Answer" />
-        <activity android:name=".Main.History" />
-        <activity android:name=".Main.About" />
-        <activity android:name=".Main.Settings" />
-        <activity android:name=".Main.OtherBusstop" />
-        <activity android:name=".Speech.SpeechAnswer" >
+            android:name="org.ubicompforall.Main.RealTimeList" />
+        <activity android:name="org.ubicompforall.Main.RealTimeListFromMenu" />
+        <activity android:name="org.ubicompforall.Favourites.Favourite_Act" />
+        <activity android:name="org.ubicompforall.Main.Answer" />
+        <activity android:name="org.ubicompforall.Main.History" />
+        <activity android:name="org.ubicompforall.Main.About" />
+        <activity android:name="org.ubicompforall.Main.Settings" />
+        <activity android:name="org.ubicompforall.Main.OtherBusstop" />
+        <activity android:name="org.ubicompforall.Speech.SpeechAnswer" >
         </activity>
 
-        <receiver android:name=".Main.SMSReceiver" >
+        <receiver android:name="org.ubicompforall.Main.SMSReceiver" >
             <intent-filter >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
@@ -64,7 +64,7 @@
             android:name="debug"
             android:value="false" />
 
-        <receiver android:name=".Main.Widget" >
+        <receiver android:name="org.ubicompforall.Main.Widget" >
             <intent-filter >
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="org.ubicompforall.BusTUC.Main.Widget.ACTION_WIDGET_RECEIVER" />
@@ -78,7 +78,7 @@
 
         <activity
             android:excludeFromRecents="true"
-            android:name=".Main.WidgetClick"
+            android:name="org.ubicompforall.Main.WidgetClick"
             android:noHistory="true"
             android:theme="@android:style/Theme.Dialog" >
             <intent-filter >
@@ -88,10 +88,10 @@
                 <action android:name="org.ubicompforall.BusTUC.Main.Widget.ACTION_WIDGET_RECEIVER" />
             </intent-filter>
 
-            <!-- <service android:enabled="true" android:name=".Main.MyService" /> -->
+            <!-- <service android:enabled="true" android:name="org.ubicompforall.Main.MyService" /> -->
 
         </activity>
-        <!-- <service android:enabled="true" android:name=".Main.MyService" /> -->
+        <!-- <service android:enabled="true" android:name="org.ubicompforall.Main.MyService" /> -->
 
 	</application>
 </manifest>
